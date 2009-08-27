@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <abstractTag name="car" abstractType="Car" concreteTypeAttribute="type">
+    <constructor>
+      <child name="engine"/>
+      <child name="tire"/>
+    </constructor>
+  </abstractTag>
+  <abstractTag name="person" abstractType="Person" concreteTypeAttribute="type" setter="setDriver"/>
+  <abstractTag name="tire" abstractType="Tire" concreteTypeAttribute="type"/>
+  <abstractTag name="engine" abstractType="Engine" concreteTypeAttribute="type"/>
+</defines>

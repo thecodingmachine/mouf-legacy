@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns:cfg="http://stubbles.net/util/XJConf"
+    xmlns="http://stubbles.net/websites">
+  <page>
+    <properties>
+      <property name="skin">default</property>
+    </properties>
+
+    <xmlElement type="org::stubbles::examples::pageelements::TestShopPageElement" name="shopData"/>
+  </page>
+</xj:configuration>

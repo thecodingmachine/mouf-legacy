@@ -1,0 +1,229 @@
+<?php
+/**
+ * Proxy for patTemplate.
+ *
+ * @author      Frank Kleine <mikey@stubbles.net>
+ * @package     stubbles
+ * @subpackage  websites_memphis
+ */
+stubClassLoader::load('net::stubbles::lang::stubRegistry',
+                      'net::stubbles::lang::exceptions::stubConfigurationException',
+                      'net::stubbles::lang::exceptions::stubIllegalAccessException',
+                      'net::stubbles::websites::memphis::stubMemphisTemplate'
+);
+/**
+ * Proxy for patTemplate.
+ *
+ * @author      Frank Kleine <mikey@stubbles.net>
+ * @package     stubbles
+ * @subpackage  websites_memphis
+ */
+// @codeCoverageIgnoreStart
+class stubMemphisPatTemplate extends stubBaseObject implements stubMemphisTemplate
+{
+    /**
+     * the patTemplate instance
+     *
+     * @var  patTemplate
+     */
+    protected $template;
+    /**
+     * switch whether template classes are already initialized or not
+     *
+     * @var  bool
+     */
+    protected static $initialized = false;
+
+    /**
+     * constructor
+     *
+     * @param   string  $baseDir     directory where template files can be found
+     * @param   array   $namespaces  optional  namespaces for patTemplate tags, default patTemplate
+     * @param   array   $options     optional  configuration options for patTemplate
+     * @throws  stubConfigurationException
+     */
+    public function __construct($baseDir, array $namespaces = array(), array $options = array())
+    {
+        if (false === self::$initialized) {
+            // do not use __static() because we want to load the code only when
+            // it is really required
+            if (stubRegistry::hasConfig('net.php-tools.path') === false) {
+                throw new stubConfigurationException('The registry entry net.php-tools.path is not configured.');
+            }
+
+            stubClassLoader::load('net::stubbles::util::ext::stubPhpToolsClassLoader');
+            $patClassLoader = new stubPhpToolsClassLoader(stubRegistry::getConfig('net.php-tools.path'));
+            stubClassLoader::registerForeignClassLoader($patClassLoader);
+            stubClassLoader::load('net::php-tools::patErrorManager');
+            stubClassLoader::load('net::php-tools::patTemplate');
+            self::$initialized = true;
+        }
+
+        if (count($namespaces) === 0) {
+            $namespaces = array('patTemplate');
+        }
+
+        if (isset($options['componentExtension']) === false) {
+            $options['componentExtension'] = '.tmpl';
+        }
+
+        $this->template = new patTemplate();
+        $this->template->setBasedir($baseDir);
+        $this->template->setNamespace($namespaces);
+        foreach ($options as $optionName => $optionValue) {
+            $this->template->setOption($optionName, $optionValue);
+        }
+    }
+
+    /**
+     * enables the cache
+     *
+     * If no cacheDir is given cache files will be stored in
+     * stubConfig::getCachePath() . '/patTemplate'. The default prefix will be
+     * 'tmpl_', the default patTemplate cache driver used will be the File driver.
+     *
+     * @param  string  $cacheDir  optional  directory to put cache files into
+     * @param  string  $prefix    optional  prefix for cache files
+     * @param  string  $type      optional  patTemplate cache driver
+     */
+    public function enableCache($cacheDir = null, $prefix = 'tmpl_', $type = 'File')
+    {
+        if (null == $cacheDir) {
+            $cacheDir = stubConfig::getCachePath() . '/patTemplate';
+        }
+
+        $this->template->useTemplateCache($type, array('cacheFolder' => $cacheDir,
+                                                       'prefix'      => $prefix
+                                                 )
+        );
+    }
+
+    /**
+     * open any input and parse for patTemplate tags
+     *
+     * @param   string  $input      name of the input (filename, shm segment, etc.)
+     * @param   string  $reader     optional  driver that is used as reader, you may also pass a Reader object
+     * @param   array   $options    optional  additional options that will only be used for this template
+     * @param   string  $parseInto  optional  name of the template that should be used as a container
+     * @return  bool    true, if the template could be parsed, false otherwise
+     * @throws  stubException
+     */
+    public function readTemplatesFromInput($input, $reader = 'File', array $options = null, $parseInto = null)
+    {
+        $return = $this->template->readTemplatesFromInput($input, $reader, $options, $parseInto);
+        if (patErrorManager::isError($return) === true) {
+            throw new stubException($return->getMessage());
+        }
+
+        return $return;
+    }
+
+    /**
+     * add a variable to a template
+     *
+     * A variable may also be an indexed array, but not an associative array!
+     *
+     * @param   string  $template  name of the template
+     * @param   string  $varname   name of the variable
+     * @param   mixed   $value     value of the variable
+     * @return  bool
+     */
+    public function addVar($template, $varname, $value)
+    {
+        return $this->template->addVar($template, $varname, $value);
+    }
+
+    /**
+     * adds several variables to a template
+     *
+     * Each Template can have an unlimited amount of its own variables
+     * $variables has to be an assotiative array containing variable/value pairs.
+     *
+     * @param   string  $template   name of the template
+     * @param   array   $variables  assotiative array of the variables
+     * @param   string  $prefix     optional  prefix for all variable names
+     * @return  bool
+     */
+    public function addVars($template, $variables, $prefix = '')
+    {
+        return $this->template->addVars($template, $variables, $prefix);
+    }
+
+    /**
+     * adds a global variable
+     *
+     * Global variables are valid in all templates of this object.
+     * A global variable has to be scalar, it will be converted to a string.
+     *
+     * @param   string  $varname  name of the global variable
+     * @param   string  $value    value of the variable
+     * @return  bool
+     */
+    public function addGlobalVar($varname, $value)
+    {
+        return $this->template->addGlobalVar($varname, $value);
+    }
+
+    /**
+     * Adds several global variables
+     *
+     * Global variables are valid in all templates of this object.
+     *
+     * $variables is an associative array, containing name/value pairs of the variables.
+     *
+     * @param   array   $variables  array containing the variables
+     * @param   string  $prefix     optional  prefix for variable names
+     * @return  bool
+     */
+    public function addGlobalVars($variables, $prefix = '')
+    {
+        return $this->template->addGlobalVars($variables, $prefix);
+    }
+
+    /**
+     * returns a parsed template
+     *
+     * If the template already has been parsed, it just returns the parsed template.
+     * If the template has not been loaded, it will be loaded.
+     *
+     * @param   string  $name          optional  name of the template
+     * @param   bool    $applyFilters  optional  whether to apply output filters
+     * @return  string
+     * @throws  stubException
+     */
+    public function getParsedTemplate($name = null, $applyFilters = false)
+    {
+        $return = $this->template->getParsedTemplate($name, $applyFilters);
+        if (patErrorManager::isError($return) === true) {
+            throw new stubException($return->getMessage());
+        }
+
+        return $return;
+    }
+
+    /**
+     * redirects all calls to the instance of patTemplate
+     *
+     * @param   string  $method     name of method to call
+     * @param   array   $arguments  arguments to call method with
+     * @return  mixed
+     * @throws  stubIllegalAccessException
+     * @throws  stubException
+     */
+    public function __call($method, $arguments)
+    {
+        if (method_exists($this->template, $method) === true) {
+            $return = call_user_func_array(array($this->template, $method), $arguments);
+            if (patErrorManager::isError($return) === true) {
+                throw new stubException($return->getMessage());
+            }
+
+            return $return;
+        }
+
+        $backtrace = debug_backtrace();
+        throw new stubIllegalAccessException('Method patTemplate::' . $method . ' called in ' . $backtrace[2]['class'] . '::' . $backtrace[2]['function'] . '() on line ' . $backtrace[2]['line'] . ' does not exist.');
+    }
+}
+// @codeCoverageIgnoreEnd
+?>

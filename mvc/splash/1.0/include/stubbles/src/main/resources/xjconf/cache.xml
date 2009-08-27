@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/util/cache">
+    <tag name="cache" type="net::stubbles::util::cache::stubCache" />
+    <abstractTag name="container" abstractType="net::stubbles::util::cache::stubCacheContainer" setter="addContainer" concreteTypeAttribute="type">
+      <constructor>
+        <attribute name="id" type="string" />
+      </constructor>
+    </abstractTag>
+    <tag name="fileContainer" type="net::stubbles::util::cache::stubFileCacheContainer" setter="addContainer">
+      <constructor>
+        <attribute name="id" type="string" />
+      </constructor>
+    </tag>
+    <tag name="cacheDirectory" type="string" />
+    <abstractTag name="strategy" abstractType="net::stubbles::util::cache::stubCacheStrategy" setter="setStrategy" concreteTypeAttribute="type" />
+    <tag name="defaultStrategy" type="net::stubbles::util::cache::stubDefaultCacheStrategy" setter="setStrategy">
+      <constructor>
+        <attribute name="ttl" type="int" />
+        <attribute name="maxSize" type="int" />
+        <attribute name="gcProbability" type="int" />
+      </constructor>
+    </tag>
+    <tag name="xjConfStrategy" type="net::stubbles::util::cache::stubXJConfCacheStrategy" setter="setStrategy">
+      <constructor>
+        <attribute name="maxSize" type="int" />
+        <attribute name="gcProbability" type="int" />
+      </constructor>
+      <tag name="configDirectory" type="string" />
+    </tag>
+  </namespace>
+</defines>

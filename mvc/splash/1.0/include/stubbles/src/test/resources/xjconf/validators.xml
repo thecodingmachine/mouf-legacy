@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/ipo/request/validator">
+  <contains setterMethod="contains">foo</contains>
+  <equal setterMethod="equal">3</equal>
+  <ip setterMethod="ip"/>
+  <mail  setterMethod="mail"/>
+  <maxLength setterMethod="maxLength">4</maxLength>
+  <maxNumber setterMethod="maxNumber">5</maxNumber>
+  <minLength setterMethod="minLength">4</minLength>
+  <minNumber setterMethod="minNumber">5</minNumber>
+  <passThru setterMethod="passThru"/>
+  <preSelect setterMethod="preSelect">
+    <values>
+      <value>313</value>
+      <value>Donald Duck</value>
+      <value>true</value>
+    </values>
+  </preSelect>
+  <regex setterMethod="regex">/([a-Z]){1,3}/</regex>
+  
+  <and setterMethod="and">
+    <equal setterMethod="addValidator">This must be equal.</equal>
+    <maxNumber setterMethod="addValidator">5.5</maxNumber>
+  </and>
+  <or setterMethod="or">
+    <equal setterMethod="addValidator">true</equal>
+    <minNumber setterMethod="addValidator">5.5</minNumber>
+  </or>
+  <xor setterMethod="xor">
+    <equal setterMethod="addValidator">null</equal>
+    <regex setterMethod="addValidator">([a-Z]){1,3}</regex>
+  </xor>
+</xj:configuration>

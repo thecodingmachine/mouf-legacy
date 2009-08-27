@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <tag name="logDir" type="string"/>
+  <namespace uri="http://stubbles.net/util/log">
+    <tag name="logger" type="net::stubbles::util::log::stubLogger">
+      <factoryMethod name="getInstance">
+        <attribute name="id" type="string"/>
+        <attribute name="level" type="int"/>
+      </factoryMethod>
+    </tag>
+    <abstractTag name="logAppender" abstractType="net::stubbles::util::log::stubLogAppender" concreteTypeAttribute="type" setter="addLogAppender"/>
+    <tag name="fileLogAppender" type="net::stubbles::util::log::stubFileLogAppender" setter="addLogAppender">
+      <attribute name="mode" type="int"/>
+    </tag>
+  </namespace>
+</defines>

@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<chapter xml:id="installation" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="www.w3.org/1999/xlink"
+    xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0CR7/xsd/docbook.xsd">
+  <title>Requirements and installation</title>    
+  <section xml:id="installation.requirements.main">
+    <title>Requirements</title>
+    <para>
+     Before we can get started, you have to make sure that some requirements
+     are met by your development environment. You will need:
+    </para>
+    <itemizedlist>
+      <listitem>
+        PHP 5.2.0 or newer
+      </listitem>
+      <listitem>
+        ext/spl
+      </listitem>
+    </itemizedlist>
+  </section>
+  <section xml:id="installation.requirements.other">
+    <title>Requirements for different parts</title>
+    <para>
+     To use our infracstructure (building STAR-archives, run tests), you require:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <link xlink:href="http://phing.info/">Phing 2.2.0</link> or newer
+      </listitem>
+      <listitem>
+        <link xlink:href="http://pear.php.net/package/Console_GetArgs">PEAR::Console_GetArgs</link>
+      </listitem>
+      <listitem>
+        <link xlink:href="http://phpunit.de/">PHPUnit</link>
+      </listitem>
+    </itemizedlist>
+    <para>
+     Requirements for some packages like the MVC implementation:
+    </para>
+    <itemizedlist>
+      <listitem>
+        ext/xmlreader
+      </listitem>
+      <listitem>
+        ext/mbstring
+      </listitem>
+      <listitem>
+        ext/dom or ext/xmlwriter
+      </listitem>
+      <listitem>
+        ext/xsl
+      </listitem>
+      <listitem>
+        <link xlink:href="http://php.xjconf.net/">XJConf</link>, this is
+        bundled as a star file within the Stubbles release
+      </listitem>
+    </itemizedlist>
+    <para>
+     To use the JSON-RPC functionality, you require:
+    </para>
+    <itemizedlist>
+      <listitem>
+        The <link xlink:href="http://developer.yahoo.com/yui">YAHOO! User
+        Interface Library 2.2.0 or newer</link>, which can also be served by
+        <link xlink:href="http://developer.yahoo.com/yui/articles/hosting/">YAHOO hosting</link>.
+      </listitem>
+    </itemizedlist>
+  </section>
+  <section xml:id="installation.setup">
+    <title>Installation</title>
+    <section>
+      <title>Where to obtain Stubbles</title>
+      <para>
+        Download the latest version from our <link xlink:href="http://downloads.stubbles.net/">download page</link>.
+      </para>
+    </section>
+    <section>
+      <title>Installing</title>
+      <para>
+        Unpack the contents of <filename>stubbles-{VERSION}.tgz</filename> to any
+        place you like on the desired web server. The directory named docroot is
+        the location where the web server's document root should point to. It is
+        not necessary to use this directory as document root, any directory within
+        the default document root of the web server will fit. However we strongly
+        recommend that all other directories are not placed into the document root
+        of the web server.
+      </para>
+    </section>
+    <section>
+      <title>Setup</title>
+      <para>
+        *nix systems:
+        <command>cd path/to/stubbles</command>
+        <command>./stubbles</command>
+      </para>
+      <para>
+        Windows
+        <command>cd path\to\stubbles</command>
+        <command>stubbles.bat</command>
+      </para>
+      <para>After running this command, you will be asked several questions:</para>
+      <itemizedlist>
+        <listitem>
+          installation name - The build process will ask you for the name of
+          your installation. This is only needed for the Phing build file created
+          in this process, it can easily be changed afterwards. If your project
+          name contains ampersands please make sure that you mask them as &amp;amp;
+          by yourself instead of just typing &amp;. Not masking the ampersand
+          results in a broken generated build file. 
+        </listitem>
+        <listitem>
+          permissions for cache/lib/log folder - The build process will
+          automatically set the permissions for all folders, that will contain
+          cache files. Please make sure, that the cache permissions allow the
+          webserver to write in these folders.
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+</chapter>

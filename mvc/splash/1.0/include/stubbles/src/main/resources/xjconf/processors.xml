@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/websites">
+    <tag name="defaultResolver" type="net::stubbles::websites::processors::stubDefaultProcessorResolver" key="resolver">
+      <attribute name="default" type="string" setter="setDefaultProcessor"/>
+      <methodCallTag name="processor" method="addProcessor">
+        <attribute name="name" type="string"/>
+        <attribute name="type" type="string"/>
+        <attribute name="interceptorDescriptor" type="string"/>
+        <attribute name="pageFactoryClass" type="string"/>
+      </methodCallTag>
+    </tag>
+    <tag name="simpleResolver" type="net::stubbles::websites::processors::stubSimpleProcessorResolver" key="resolver">
+      <attribute name="processor" type="string"/>
+      <attribute name="pageFactoryClass" type="string"/>
+    </tag>
+  </namespace>
+</defines>

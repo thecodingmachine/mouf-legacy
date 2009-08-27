@@ -1,0 +1,11 @@
+Options FollowSymLinks
+RewriteEngine on
+RewriteBase /splash
+
+# HERE IS A GOOD PLACE TO ADD THE OLD SCRIPT REDIRECTION
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# RewriteRule ^(.+)$ index.php/$1
+RewriteRule !\.(js|ico|gif|jpg|png|css)$ index.php

@@ -1,0 +1,341 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parts
+    xmlns:stub="http://stubbles.net/stub"
+    xmlns:ixsl="http://www.w3.org/1999/XSL/Transform">
+  <part name="content">
+   <!--
+   <div class="box">
+      <div class="header">
+        <h3>Shopdaten verwalten</h3>
+      </div>
+      <div class="footer">
+        <stub:form send-to-page="shop"> 
+          <stub:itemframe id="shopData">
+            <stub:item name="id" type="text" path="/document/shopData/analyzable/@id"/>
+            <stub:item name="title" type="text"/>
+            <stub:item name="url" type="text"/>
+            <ixsl:if test="/document/shopData/analyzable/@id">
+              <stub:item name="status" type="select">
+                <stub:option value="enabled">Aktiviert</stub:option>
+                <stub:option value="disabled">Deaktiviert</stub:option>
+              </stub:item>
+            </ixsl:if>
+            <stub:item name="action" type="submit" value="Speichern"/>
+          </stub:itemframe>
+        </stub:form>
+      </div>
+    </div>
+	<hr/><br/><br/><br/><br/> -->
+  
+ <div class="containter_box">
+    <stub:form send-to-page="shop">
+    <h2>stub:ingrid Form Example</h2>
+       <div class="container_form">  
+        <stub:ingrid prefix="newcustomer">
+           <row>
+              <both class="other" id="foo">
+               <item type="freetext">
+               Formular-Elemente mit der stub:ingrid gebaut
+               </item>
+              </both>
+            </row>
+            <row>
+              <left/>
+              <right>
+                <item class="inline" type="radio" value="PRIVATE" name="LegalMode" default="true" />
+                <label class="inline" for="LegalMode-PRIVATE" style="padding-right: 25px;" colon="false"/>
+                <item class="inline" type="radio" value="COMPANY" name="LegalMode" />
+                <label class="inline" for="LegalMode-COMPANY" colon="false"/>
+              </right>
+            </row>
+            <row id="toggle.Company">
+              <left>
+                <label for="Company" mandatory="true"/>
+              </left>
+              <right>
+                <item maxlength="30" name="Company"/>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Salutation" mandatory="true"/>
+              </left>
+              <right>
+                <item name="Salutation" omitoptioninclude="true" type="select">
+                  <option value="Herr">Herr</option>
+                  <option value="Frau">Frau</option>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Title"/>
+              </left>
+              <right>
+                <item name="Title" omitoptioninclude="true" type="select">
+                  <option value="">[Bitte auswählen]</option>            
+                  <option value="Dr.">Dr.</option>
+                  <option value="Prof.">Prof.</option>
+                  <option value="Dr. Dr.">Dr. Dr.</option>
+                  <option value="Prof. Dr.">Prof. Dr.</option>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="FirstName" mandatory="true"/>
+              </left>
+              <right>
+                <item type="text" name="FirstName" size="30"/>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="LastName" mandatory="true"/>
+              </left>
+              <right>
+                <item type="text" name="LastName" size="30"/>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="CountryCode" mandatory="true"/>
+              </left>
+              <right>      
+                 <ixsl:choose>
+                   <ixsl:when test="/formresult/mobility/order">
+                   <item name="CountryCode" omitoptioninclude="true" type="select" onchange="toggleCountryCode();">  
+                      <option value="DE">Deutschland</option>   
+                    </item>                          
+                   </ixsl:when>
+                   <ixsl:otherwise>
+                   <item name="CountryCode" omitoptioninclude="true" type="select" onchange="toggleCountryCode();">  
+                      <option value="DE">Deutschland</option>            
+                      <option value="AT">Österreich</option>
+                      </item>
+                   </ixsl:otherwise>
+                 </ixsl:choose>
+                
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Postcode" mandatory="true"/>
+              </left>
+              <right>
+                <item type="multi">
+                  <ixsl:choose>
+                    <ixsl:when test="/formresult/addresschoice/plzchoice">
+                      <item class="inline" name="Postcode" type="dynamic" path="/formresult/addresschoice/plzchoice"/>
+                    </ixsl:when>
+                    <ixsl:otherwise>
+                      <item class="inline" name="Postcode" size="5" type="text" />
+                    </ixsl:otherwise>
+                  </ixsl:choose>
+                  <label for="Location" class="inline" mandatory="true"/>
+                  <ixsl:choose>
+                    <ixsl:when test="/formresult/addresschoice/citychoice">
+                      <item name="Location" class="nospace" type="dynamic" path="/formresult/addresschoice/citychoice"/>
+                    </ixsl:when>
+                    <ixsl:otherwise>
+                      <item name="Location" class="nospace" size="33" type="text" />
+                    </ixsl:otherwise>
+                  </ixsl:choose>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Street" mandatory="true"/>
+              </left>
+              <right>
+                <item type="multi">
+                  <ixsl:choose>
+                    <ixsl:when test="/formresult/addresschoice/streetchoice">
+                      <item class="inline" name="Street" type="dynamic" path="/formresult/addresschoice/streetchoice"/>
+                    </ixsl:when>
+                    <ixsl:otherwise>
+                      <item class="inline" name="Street" size="23" type="text" />
+                    </ixsl:otherwise>
+                  </ixsl:choose>
+                  <label for="StreetNumber" class="inline" mandatory="true"/>
+                  <item name="StreetNumber" class="inline nospace" size="4" type="text" />
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="StreetExtension"/>
+              </left>
+              <right>
+                <item type="text" name="StreetExtension" size="30"/>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Phone2" mandatory="true"/>
+              </left>
+              <right>
+                <item type="multi">
+                  <info for="Phone1" class="big">
+                  Ihre Telefonnummer benötigen wir für Rückrufe aus dem Support.
+                  </info>
+                  <item class="inline" maxlength="8" name="Phone1" size="8" type="text"/>
+                  <item class="inline" noid="true" type="freetext">/</item>
+                  <item maxlength="10" name="Phone2" size="15" type="text"/>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Fax2"/>
+              </left>
+              <right>
+                <item type="multi">
+                  <item class="inline" maxlength="8" name="Fax1" size="8" type="text"/>
+                  <item class="inline" noid="true" type="freetext">/</item>
+                  <item class="inline" maxlength="10" name="Fax2" size="15" type="text"/>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Email" mandatory="true"/>
+              </left>
+              <right>
+                <item type="multi">
+                  <item class="inline" maxlength="80" name="Email" size="8" type="text"/>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left>
+                <label for="Comment" mandatory="true"/>
+              </left>
+              <right>
+                <item type="multi">
+                  <item cols="25" rows="3" name="Comment" type="area"/>
+                </item>
+              </right>
+            </row>
+            <row>
+              <left/>
+              <right>
+                <item type="submit" name="send" value="senden"/>
+              </right>
+            </row>
+            <row>
+              <left/>
+              <right>
+                <item type="image" name="send" value="senden"/>
+              </right>
+            </row>              
+      </stub:ingrid>
+     </div>
+    </stub:form>
+  </div> 
+</part>
+
+  
+  
+  <part name="label_newcustomer_Salutation">
+    Anrede
+  </part>
+
+  <part name="label_newcustomer_Title">
+    Titel
+  </part>
+
+  <part name="label_newcustomer_LegalMode-PRIVATE">
+    Privat
+  </part>
+
+  <part name="label_newcustomer_LegalMode-COMPANY">
+    Firma
+  </part>
+  <part name="label_newcustomer_FirstName">
+    Vorname
+  </part>
+
+  <part name="label_newcustomer_LastName">
+    Nachname
+  </part>
+
+  <part name="label_newcustomer_Street">
+    Straße
+  </part>
+
+  <part name="label_newcustomer_StreetSelection">
+    Straßen-Auswahl
+  </part>
+
+  <part name="default_newcustomer.StreetSelection">
+    [Bitte auswählen]
+  </part>
+
+  <part name="label_newcustomer_StreetNumber">
+    Hausnr.
+  </part>
+
+  <part name="label_newcustomer_StreetExtension">
+    Adresszusatz
+  </part>
+
+  <part name="label_newcustomer_Postcode">
+    Postleitzahl
+  </part>
+
+  <part name="label_newcustomer_PostcodeSelection">
+    PLZ-Auswahl
+  </part>
+
+  <part name="default_newcustomer.PostcodeSelection">
+    [Bitte auswählen]
+  </part>
+
+  <part name="label_newcustomer_Location">
+    Ort
+  </part>
+
+  <part name="label_newcustomer_LocationSelection">
+    Ort
+  </part>
+
+  <part name="label_newcustomer_CountryCode">
+    Land
+  </part>
+
+  <part name="label_newcustomer_Phone1">
+    Vorwahl
+  </part>
+
+  <part name="label_newcustomer_Phone2">
+    Telefon
+  </part>
+
+  <part name="label_newcustomer_Fax1">
+    Vorwahl
+  </part>
+  
+  <part name="label_newcustomer_Fax2">
+    Fax
+  </part>
+  
+  <part name="label_newcustomer_Email">
+    E-Mail-Adresse
+  </part>
+  
+  <part name="label_newcustomer_Company">
+    Firma
+  </part>
+
+  <part name="label_newcustomer_Comment">
+    Kommentar
+  </part>
+
+
+  <part name="shopData.id">Site-Id:</part>
+  <part name="shopData.title">Name des Shops:</part>
+  <part name="shopData.url">URL des Shops:</part>
+  <part name="shopData.status">Status:</part>
+</parts>

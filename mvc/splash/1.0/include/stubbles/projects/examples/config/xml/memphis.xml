@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns:ws="http://stubbles.net/websites"
+    xmlns="http://stubbles.net/websites/memphis">
+  <config>
+    <parts>
+      <part name="content" />
+      <part name="navteasers" />
+      <part name="teasers" />
+      <part name="annotations" />
+      <part name="header" />
+    </parts>
+    <frames>
+      <frame name="default">frame.tmpl</frame>
+    </frames>
+    <metaTags>
+      <meta name="description">This is a description.</meta>
+      <meta name="keywords">keyword1, keyword2</meta>
+    </metaTags>
+  </config>
+</xj:configuration>

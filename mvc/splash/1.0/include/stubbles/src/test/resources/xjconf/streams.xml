@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/streams">
+  <fileInputStream setterMethod="fileInputStream" file="build.properties" mode="r"/>
+  <fileOutputStream setterMethod="fileOutputStream" file="build.properties" mode="a"/>
+  <memoryInputStream setterMethod="memoryInputStream" buffer="foo"/>
+  <memoryOutputStream setterMethod="memoryOutputStream"/>
+  <decodingInputStream setterMethod="decodingInputStream" charset="utf-8">
+    <inputStream type="net::stubbles::streams::stubMemoryInputStream"/>
+  </decodingInputStream>
+  <encodingOutputStream setterMethod="encodingOutputStream" charset="utf-8">
+    <outputStream type="net::stubbles::streams::stubMemoryOutputStream"/>
+  </encodingOutputStream>
+</xj:configuration>

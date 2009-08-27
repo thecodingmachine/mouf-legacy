@@ -1,0 +1,1 @@
+<html><head><title><?php echo $this->request->getMethod();?></title></head><body><?php echo $this->session->getValue('foo'); $this->response->setStatusCode(304);?></body></html>

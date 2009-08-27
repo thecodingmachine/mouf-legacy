@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <!--
+    Definitions for tags used in the website component
+
+    @author Frank Kleine <mikey@stubbles.net>
+    @author Stephan Schmidt <schst@stubbles.net>
+  -->
+  <namespace uri="http://stubbles.net/websites">
+    <tag name="page" type="net::stubbles::websites::stubPage" />
+    <tag name="properties" type="array" />
+    <tag name="property" type="string" keyAttribute="name" />
+    <tag name="resources" type="array" />
+    <tag name="resource" type="array" keyAttribute="name">
+      <attribute name="interface" type="string"/>
+    </tag>
+
+    <abstractTag name="element" abstractType="net::stubbles::websites::stubPageElement" concreteTypeAttribute="type" setter="addElement" key="__none">
+      <attribute name="name" type="string" />
+    </abstractTag>
+
+    <!-- Memphis -->
+    <abstractTag name="memphisElement" extends="element" abstractType="net::stubbles::websites::memphis::stubMemphisPageElement" concreteTypeAttribute="type" setter="addElement" key="__none">
+      <attribute name="parts" type="string" />
+    </abstractTag>
+
+    <tag name="includeFile" extends="memphisElement" type="net::stubbles::websites::memphis::stubMemphisIncludeFilePageElement" setter="addElement" key="__none">
+      <attribute name="source" type="string" />
+    </tag>
+
+    <tag name="includeTemplate" extends="memphisElement" type="net::stubbles::websites::memphis::stubMemphisIncludeTemplatePageElement" setter="addElement" key="__none">
+      <attribute name="source" type="string" />
+    </tag>
+
+    <tag name="loadExtension" extends="memphisElement" type="net::stubbles::websites::memphis::stubMemphisLoadExtensionPageElement" setter="addElement" key="__none">
+      <attribute name="extension" type="string" />
+    </tag>
+
+    <!--tag name="conditions" type="array"/>
+    <abstractTag name="condition" abstractType="net::stubbles::websites::memphis::conditions::stubMemphisPageElementCondition" concreteTypeAttribute="type" setter="setCondition">
+      <attribute name="value" type="string" />
+    </abstractTag-->
+
+    <!-- XML/XSL -->
+    <abstractTag name="xmlElement" extends="element" abstractType="net::stubbles::websites::xml::page::stubXMLPageElement" concreteTypeAttribute="type" setter="addElement" key="__none" />
+
+    <tag name="xmlPassThru" extends="xmlElement" type="net::stubbles::websites::xml::page::stubXMLPassThruPageElement" setter="addElement" key="__none">
+      <attribute name="directory" type="string"/>
+      <attribute name="fileName" type="string"/>
+    </tag>
+
+    <!-- Decorators -->
+    <abstractTag name="xmlElementDecorator" abstractType="net::stubbles::websites::xml::page::stubXMLPageElement" concreteTypeAttribute="type" setter="addElement" key="__none">
+      <constructor>
+        <child name="xmlElement"/>
+      </constructor>
+    </abstractTag>
+
+    <tag name="xmlElementCachingDecorator" extends="xmlElementDecorator" type="net::stubbles::websites::xml::page::stubXMLPageElementCachingDecorator" setter="addElement" key="__none">
+      <attribute name="lifetime" type="int"/>
+    </tag>
+
+  </namespace>
+</defines>

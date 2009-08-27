@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/lang/registry">
+    <tag name="config" type="net::stubbles::lang::stubRegistry">
+      <factoryMethod name="setConfig">
+        <attribute name="name" type="string" />
+        <attribute name="value" type="string" />
+      </factoryMethod>
+    </tag>
+  </namespace>
+</defines>

@@ -1,0 +1,22 @@
+<stub:document xmlns:stub="http://stubbles.net/stub" method="xml" omit-xml-declaration="yes" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html>
+    <head>
+      <title>Default-Skin</title>
+	  <link rel="stylesheet" type="text/css" href="/common/stageassistant/css/stageassistant.css"/>
+      <script type="text/javascript" src="/common/javascript/stub-base-min.js"></script>
+      <script type="text/javascript" src="/common/javascript/stageassistant-min.js"></script>
+      <stub:script>
+        function init()
+        {
+            if (typeof onStageAssistantLoad != 'undefined') {
+                onStageAssistantLoad();
+            }
+        }
+      </stub:script>
+    </head>
+    <body onload="init();">
+	  <stub:assistant/>
+      <stub:maincontent part="content" path=""/>
+    </body>
+  </html>
+</stub:document>

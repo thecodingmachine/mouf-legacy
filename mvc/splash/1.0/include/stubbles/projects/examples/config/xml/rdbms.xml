@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/rdbms">
+  <pool>
+    <connection>
+      <dsn>mysql:host=localhost;dbname=example</dsn>
+      <userName>root</userName>
+      <password>foo</password>
+    </connection>
+  </pool>
+</xj:configuration>

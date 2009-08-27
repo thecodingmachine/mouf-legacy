@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="${installation.name}" basedir="." default="main">
+
+  <!--
+    Add your own phing tasks in this target.
+  -->
+  <target name="main" description="Build project.">
+    <property file="build.properties"/>
+    <phing phingfile="build-stubbles.xml" target="main"/>
+  </target>
+
+  <target name="setup-project" description="Create a new project within installation.">
+    <phing phingfile="build-project.xml" target="setup-project"/>
+  </target>
+
+  <target name="generate-clients" description="Generates JSON-RPC clients for all projects.">
+    <phing phingfile="build-project.xml" target="generate-clients"/>
+  </target>
+
+  <target name="clear-cache" description="Removes all cache files.">
+    <phing phingfile="build-stubbles.xml" target="clear-cache"/>
+  </target>
+
+  <target name="clean-dist" description="Removes left-over dist-files from the build.">
+    <phing phingfile="build-stubbles.xml" target="clean-dist"/>
+  </target>
+
+  <target name="setup-examples" description="Sets up all examples.">
+    <phing phingfile="build-stubbles.xml" target="setup-examples"/>
+  </target>
+
+  <target name="clean-examples" description="Removes all example related stuff.">
+    <phing phingfile="build-stubbles.xml" target="clean-examples"/>
+  </target>
+</project>

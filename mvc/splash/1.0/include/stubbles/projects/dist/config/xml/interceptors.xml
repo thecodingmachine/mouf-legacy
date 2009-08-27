@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/ipo/interceptors">
+  <preInterceptors>
+    <preInterceptor type="net::stubbles::websites::xml::stubShowLastXMLInterceptor" />
+    <preInterceptor type="net::stubbles::ioc::stubIOCPreInterceptor" />
+  </preInterceptors>
+  <postInterceptors>
+  </postInterceptors>
+</xj:configuration>

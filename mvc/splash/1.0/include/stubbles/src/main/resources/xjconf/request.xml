@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/ipo/request">
+	<tag name="error" type="stubRequestValueError" keyAttribute="id">
+	  <constructor>
+	    <attribute name="id" type="string" />
+	    <child name="messages" />
+	    <child name="valueKeys" />
+	  </constructor>
+	</tag>
+	<tag name="messages" type="array" />
+	<tag name="message" type="string" keyAttribute="locale" />
+	<tag name="valueKeys" type="array" />
+	<tag name="valueKey" type="string" key="__none" />
+  </namespace>
+</defines>

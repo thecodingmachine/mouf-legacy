@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteRule xml(/([a-zA-Z0-9_\-\.]*)?)?(;(PHPSESSID)=([a-zA-Z0-9]{1,32}))?$ index.php?processor=xml&page=$2&$4=$5&%{QUERY_STRING} [L]
+RewriteRule page(/([a-zA-Z0-9_\-\.]*)?)?(;(PHPSESSID)=([a-zA-Z0-9]{1,32}))?$ index.php?processor=page&page=$2&$4=$5&%{QUERY_STRING} [L]
+RewriteRule jsonrpc/__generateProxy/([a-zA-Z_\-\.]*)?$ index.php?processor=jsonrpc&__generateProxy=$1 [L]
+RewriteRule rss/([a-zA-Z_\-\.]*)?$ index.php?processor=rss&feed=$1 [L]

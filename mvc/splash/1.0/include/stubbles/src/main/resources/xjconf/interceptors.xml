@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/ipo/interceptors">
+    <tag name="preInterceptors" type="array" />
+    <tag name="postInterceptors" type="array" />
+    <abstractTag name="preInterceptor" abstractType="net::stubbles::ipo::interceptors::stubPreInterceptor" concreteTypeAttribute="type" key="__none"/>
+    <abstractTag name="postInterceptor" abstractType="net::stubbles::ipo::interceptors::stubPostInterceptor" concreteTypeAttribute="type" key="__none"/>
+    <tag name="requestPreInterceptor" type="net::stubbles::ipo::interceptors::stubRequestPreInterceptor" key="__none">
+      <constructor>
+        <child name="decoratedInterceptor" />
+        <child name="requestParam" />
+      </constructor>
+    </tag>
+    <tag name="decoratedInterceptor" type="string" />
+    <tag name="requestParam" type="string" />
+  </namespace>
+</defines>

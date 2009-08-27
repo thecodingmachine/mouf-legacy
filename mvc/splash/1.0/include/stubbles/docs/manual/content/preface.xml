@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<preface xml:id="introduction" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="www.w3.org/1999/xlink"
+    xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0CR7/xsd/docbook.xsd">
+  <title>Introduction</title>
+  <para>
+    Stubbles is a PHP 5 framework. We are developing it mainly to build web
+    applications based on XML and XSLT. But Stubbles is very modular, so
+    you may use single packages like the Extended Reflection Features, the XML
+    packages or the Inversion of Control container, without worrying about our
+    MVC architecture.
+  </para>
+  <para>
+    This reference guide covers all important topics that you need to know when
+    working with any aspects of Stubbles.
+  </para>
+</preface>

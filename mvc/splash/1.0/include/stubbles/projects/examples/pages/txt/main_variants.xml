@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<parts
+    xmlns:stub="http://stubbles.net/stub"
+    xmlns:variant="http://stubbles.net/variant"
+    xmlns:ixsl="http://www.w3.org/1999/XSL/Transform">
+  <part name="content">
+    <div class="box">
+      <div class="header">
+        <h3>Variantenbasiertes anzeigen</h3>
+      </div>
+      <div class="footer">
+        Aktuelle Variante: <variant:get-current/><br />
+        Aktuelle Base-Variante: <variant:get-current-base/><br />
+        <br /><br />
+        <variant:restrict-to variant="request">
+          Dieser Text ist nur in der Variante &quot;request&quot; zu sehen.<br /><br />
+        </variant:restrict-to>
+        <variant:restrict-to base="random1">
+          Dieser Text ist nur in der Basis-Variante &quot;random1&quot; zu sehen.<br /><br />
+        </variant:restrict-to>
+        <variant:restrict-to end="lead">
+          Dieser Text ist nur in der Variante &quot;random1:lead&quot; zu sehen.<br /><br />
+        </variant:restrict-to>
+        <variant:restrict-to start="random">
+          Dieser Text ist nur in den Varianten &quot;random1&quot; und &quot;random2&quot; zu sehen.<br /><br />
+        </variant:restrict-to>
+        <variant:restrict-to alias="preferred">
+          Dieser Text ist nur in der Variante &quot;random2&quot; zu sehen.<br /><br />
+        </variant:restrict-to>
+        <br /><br />
+        <variant:except variant="request">
+          Dieser Text ist in allen Varianten außer &quot;request&quot; zu sehen.<br /><br />
+        </variant:except>
+        <variant:except base="random1">
+          Dieser Text ist in allen Varianten außer &quot;random1&quot; zu sehen.<br /><br />
+        </variant:except>
+        <variant:except end="lead">
+          Dieser Text ist in allen Varianten außer &quot;random1:lead&quot; zu sehen.<br /><br />
+        </variant:except>
+        <variant:except start="random">
+          Dieser Text ist in allen Varianten außer &quot;random1&quot; und &quot;random2&quot; zu sehen.<br /><br />
+        </variant:except>
+        <variant:except alias="preferred">
+          Dieser Text ist in allen Varianten außer &quot;random2&quot; zu sehen.<br /><br />
+        </variant:except>
+        <br /><br />
+        <variant:choose>
+          <variant:when variant="request">
+            Dieser Text ist nur in der Variante &quot;request&quot; zu sehen.<br /><br />
+          </variant:when>
+          <variant:otherwise>
+            Dieser Text ist in allen Varianten außer &quot;request&quot; zu sehen.<br /><br />
+          </variant:otherwise>
+        </variant:choose>
+      </div>
+    </div>
+  </part>
+</parts>

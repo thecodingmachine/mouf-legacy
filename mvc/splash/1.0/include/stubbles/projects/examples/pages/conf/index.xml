@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns:cfg="http://stubbles.net/util/XJConf"
+    xmlns="http://stubbles.net/websites">
+  <page>
+    <properties>
+      <property name="skin">default</property>
+    </properties>
+    <resources>
+      <resource name="counter">MyResource</resource>
+    </resources>
+    <xmlElement type="org::stubbles::examples::pageelements::TestXMLPageElement" name="Test"/>
+
+    <xmlElementCachingDecorator lifetime="60">
+      <xmlElement type="org::stubbles::examples::pageelements::CurrentTimeXMLPageElement" name="cached"/>
+    </xmlElementCachingDecorator>
+    <xmlElement type="org::stubbles::examples::pageelements::CurrentTimeXMLPageElement" name="uncached"/>
+    <xmlElement type="org::stubbles::examples::pageelements::TestElementWithInjectedResource" name="counter"/>
+
+    <xmlPassThru fileName="test.xml" name="passThru">
+      <cfg:stubConfig name="directory" method="getConfigPath" append="/misc"/>
+    </xmlPassThru>
+  </page>
+</xj:configuration>

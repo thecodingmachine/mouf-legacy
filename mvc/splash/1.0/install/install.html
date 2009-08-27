@@ -1,0 +1,63 @@
+<html>
+	<head>
+		<title>Splash install</title>
+	</head>
+	<body>
+		<h1>Splash install</h1>
+		<h2>SVN checkout</h2>
+		<p>
+			Recover the Splash sources to http://www.thecodingmachine.com/svn/splash/trunk and place them in a splah/ directory in your project.
+			For example create your project directory project/ and create the splash directory project/splash/.
+		</p>
+		<h2>Copy install directory</h2>
+		<p>
+			Go to install/ directory (project/splash/install/) and copy the content to the root of your project (project/).
+		</p>
+		<h2>Splash configuration</h2>
+		<p>
+			Copy the config.template.php in the root project directory (project/config.php).
+			Change the config file:<br/ >
+			<code>
+				<?php
+				define("ROOT_URL", "/project/");
+				define("FULL_URL", "http://localhost/project/");
+
+				define("GREENBUILD_USER", "root");
+				define("GREENBUILD_PWD", "");
+				define("GREENBUILD_SERVER_NAME", "localhost");
+				define("GREENBUILD_DB_NAME", "project");
+
+				//Debug Mode
+				define("DEBUG_MODE", true);
+
+				// TRACKING option
+				define("TRACKING", TRACKING_TRACE);
+
+				//HTTPS settings
+				define("USE_HTTPS", false);
+
+				// Caching
+				define("USE_ANNOTATION_CACHE", false);
+
+				// Project theme
+				define("SPLASH_THEME", "Splash");
+				?>
+			</code>
+		</p>
+		<p>
+			Change the .htaccess file:
+			<code>
+				Options FollowSymLinks
+				RewriteEngine on
+				RewriteBase /project
+
+				RewriteCond %{REQUEST_FILENAME} !-f
+
+				# RewriteRule ^(.+)$ index.php/$1
+				RewriteRule !\.(js|ico|gif|jpg|png|css)$ splash/index.php
+			</code>
+		</p>
+		<h2></h2>
+		<p></p>
+	</body>
+</html>

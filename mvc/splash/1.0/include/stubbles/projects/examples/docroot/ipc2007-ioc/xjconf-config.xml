@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <car type="BMW">
+    <engine type="TwoLitresEngine"/>
+    <tire type="Goodyear"/>
+    <person type="Schst"/>
+  </car>
+</configuration>

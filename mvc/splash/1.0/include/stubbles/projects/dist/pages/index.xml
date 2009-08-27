@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/websites">
+  <page>
+    <properties>
+      <property name="skin">default</property>
+      <property name="title">Übersicht</property>
+    </properties>
+    <includeFile source="contentFile.txt" parts="content" name="index"/>
+  </page>
+</xj:configuration>

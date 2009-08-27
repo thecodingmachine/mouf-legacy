@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="www.w3.org/1999/xlink"
+    xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0CR7/xsd/docbook.xsd">
+  <bookinfo>
+    <title>Stubbles Reference Documentation</title>
+    <copyright>
+      <holder>Stubbles Development Team</holder>
+      <year>2007</year>
+      <year>2008</year>
+    </copyright>
+    <authorgroup>
+      <author>
+        <firstname>Frank</firstname>
+        <surname>Kleine</surname>
+      </author>
+      <author>
+        <firstname>Stephan</firstname>
+        <surname>Schmidt</surname>
+      </author>
+    </authorgroup>
+  </bookinfo>
+  <xi:include href="preface.xml"/>
+  <xi:include href="installation.xml"/>
+  <!--xi:include href="xml_xsl_producer_view.xml"/>
+  <xi:include href="basic_concepts.xml"/>
+  <xi:include href="ioc.xml"/>
+  <xi:include href="xml_xsl_developer_view.xml"/>
+  <xi:include href="working_with_xml.xml"/>
+  <xi:include href="working_with_databases.xml"/>
+  <xi:include href="console.xml"/>
+  <xi:include href="other_packages.xml"/-->
+</book>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Stubbles" basedir="." default="main">
+  <property name="stubbles.lib.path" value="${project.basedir}/lib"/>
+  <property name="stubbles.projects.path" value="${project.basedir}/projects"/>
+  <property name="stubbles.src.path" value="${project.basedir}/src/main"/>
+  <property name="stubbles.project.path" value="${stubbles.projects.path}/${stubbles.project}"/>
+  <property name="phing.task.dir" value="${project.basedir}/src/main/php/org/stubbles/phing/tasks"/>
+  <taskDef name="stubInitConfig" classname="stubInitConfigTask" classpath="${phing.task.dir}"/>
+  <taskDef name="stubInitClassLoader" classname="stubInitClassLoaderTask" classpath="${phing.task.dir}"/>
+  <taskDef name="stubGenerateJsonRpcProxies" classname="stubGenerateJsonRpcProxiesTask" classpath="${phing.task.dir}"/>
+
+  <target name="main" depends="prepare-folders, generate-clients" description="Executes all targets.">
+  </target>
+
+  <target name="setup" depends="setup-build, prepare-folders" description="Does the initial setup after installation.">
+    <input propertyname="single.lib" promptChar="?" defaultValue="Y">Do you want to use lib/stubbles.php? (Y/N)</input>
+    <if>
+      <equals arg1="${single.lib}" arg2="Y" casesensitive="false"/>
+      <then>
+        <delete>
+          <fileset dir="${stubbles.lib.path}">
+            <include name="*.star"/>
+            <include name="stubbles-core*.php"/>
+            <exclude name="xjconf.star"/>
+          </fileset>
+        </delete>
+      </then>
+      <else>
+        <delete file="${stubbles.lib.path}/stubbles.php"/>
+      </else>
+    </if>
+    <echo>Your installation ${installation.name} has been set up correctly.</echo>
+    <echo>You may now create a new project with "phing setup-project".</echo>
+  </target>
+
+  <target name="setup-build" description="Asks for the name of the installation.">
+    <input propertyname="installation.name" promptChar=":">Please enter the name of this installation</input>
+    <touch file="${project.basedir}/build.properties"/>
+    <!-- We need to copy and to delete instead of moving the file because move
+         does not support the filterchain filter, probably a bug in Phing? /-->
+    <copy file="${project.basedir}/build-dist.xml" tofile="${project.basedir}/build.xml" overwrite="false">
+      <filterchain>
+        <expandproperties/>
+      </filterchain>
+    </copy>
+    <delete file="${project.basedir}/build-dist.xml"/>
+  </target>
+
+  <target name="setup-examples" description="Sets up all examples.">
+    <echo>----------------------------------</echo>
+    <echo>| Setup examples                 |</echo>
+    <echo>----------------------------------</echo>
+    <if>
+      <available file="${stubbles.projects.path}/examples/build.xml"/>
+      <then>
+        <phing phingfile="${stubbles.projects.path}/examples/build.xml" inheritAll="false" target="main">
+          <property name="javascript.srcpath" value="${stubbles.projects.path}/common/docroot/javascript"/>
+        </phing>
+      </then>
+      <else>
+        <echo>Project examples not available, can not setup examples.</echo>
+      </else>
+    </if>
+  </target>
+
+  <target name="clean-examples" description="Removes all example related stuff.">
+    <delete dir="${stubbles.src.path}/php/org/stubbles/examples" includeemptydirs="true" verbose="true" failonerror="true"/>
+    <delete dir="${stubbles.projects.path}/examples" includeemptydirs="true" verbose="true" failonerror="true"/>
+  </target>
+
+  <target name="clean-dist" description="Removes project dist from the build.">
+    <echo>----------------------------------</echo>
+    <echo>| Removing dist project          |</echo>
+    <echo>----------------------------------</echo>
+    <echo>After removing the dist files, you will not be able to execute "setup-project" anymore.</echo>
+    <input propertyname="cleanup.dist.confirm" promptChar="?" defaultValue="N">Are you sure, you want to remove project dist? (Y/N)</input>
+    <if>
+      <equals arg1="${cleanup.dist.confirm}" arg2="Y" casesensitive="false"/>
+      <then>
+        <delete dir="${stubbles.projects.path}/dist" includeemptydirs="true" verbose="true" failonerror="true"/>
+      </then>
+    </if>
+  </target>
+
+  <target name="clear-cache" description="Removes all cache files.">
+    <echo>----------------------------------</echo>
+    <echo>| Clearing cache                 |</echo>
+    <echo>----------------------------------</echo>
+    <delete file="${stubbles.lib.path}/.cache" verbose="true"/>
+    <delete>
+      <fileset dir="${stubbles.projects.path}">
+        <include name="**/cache/**"/>
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="cache-permission-check" unless="cache.permissions" description="Checks, whether cache permissions have been specified">
+    <echo>----------------------------------</echo>
+    <echo>| Preparing cache                |</echo>
+    <echo>----------------------------------</echo>
+    <input propertyname="cache.permissions" promptChar=":" defaultValue="0777">Please supply permissions for cache/lib/log folders</input>
+    <append destFile="build.properties" text="cache.permissions=${cache.permissions}${line.separator}"/>
+  </target>
+
+  <target name="prepare-folders" depends="cache-permission-check" description="Adjusts permissions of directories.">
+    <echo>----------------------------------</echo>
+    <echo>| Setting folder permissions     |</echo>
+    <echo>----------------------------------</echo>
+    <chmod mode="${cache.permissions}">
+      <fileset dir="${stubbles.lib.path}">
+        <include name="**/*"/>
+      </fileset>
+    </chmod>
+    <chmod mode="${cache.permissions}">
+      <fileset dir="${stubbles.projects.path}">
+        <include name="**/log"/>
+        <include name="**/cache"/>
+      </fileset>
+    </chmod>
+  </target>
+
+  <target name="generate-clients" description="Generates JSON-RPC clients for all projects.">
+    <echo>----------------------------------</echo>
+    <echo>| Generating JSON-RPC proxies    |</echo>
+    <echo>----------------------------------</echo>
+    <adhoc-task name="projectList"><![CDATA[
+      class Projectlist extends Task
+      {
+          /**
+           * directory where projects reside
+           *
+           * @var  string
+           */
+          protected $projectDir;
+          
+          /**
+           * sets directory where projects reside
+           *
+           * @var  string  $projectDir
+           */
+          public function setProjectDir($projectDir)
+          {
+              $this->projectDir = $projectDir;
+          }
+          
+          /**
+           * main execution method
+           */
+          public function main()
+          {
+              $projects = array();
+              $dirIt    = new DirectoryIterator($this->projectDir);
+              foreach ($dirIt as $dir) {
+                  if ($dir->isDot() === true || $dir->isDir() === false) {
+                      continue;
+                  }
+                  
+                  if (file_exists($dir->getPathname() . '/config/json-rpc-service.ini') === true) {
+                      $projects[] = $dir->getFilename();
+                  }
+              }
+              
+              $this->project->setProperty('projects', join(',', $projects));
+              if (isset($projects[0]) === true) {
+                  $this->project->setProperty('first.project', $projects[0]);
+              }
+          }
+      }
+    ]]></adhoc-task>
+    <projectList projectDir="${stubbles.projects.path}"/>
+    <if>
+      <isset property="first.project"/>
+      <then>
+        <if>
+          <isset property="config.file"/>
+          <then>
+            <stubInitConfig configPath="${stubbles.projects.path}/${first.project}/config"
+                            configFile="${config.file}"/>
+          </then>
+          <else>
+            <stubInitConfig configPath="${stubbles.projects.path}/${first.project}/config"/>
+          </else>
+        </if>
+        <stubInitClassLoader sourcePath="${stubbles.src.path}" libPath="${stubbles.lib.path}"/>
+        <foreach list="${projects}" param="stubbles.project" target="generate-client-project"/>
+      </then>
+      <else>
+        <echo>No project with JSON-RPC-Service configuration found.</echo>
+      </else>
+    </if>
+  </target>
+
+  <target name="generate-client-project" description="Generates JSON-RPC clients for a specific project.">
+    <if>
+      <available file="${stubbles.projects.path}/${stubbles.project}/config/json-rpc-service.ini"/>
+      <then>
+        <stubGenerateJsonRpcProxies serviceFile="${stubbles.projects.path}/${stubbles.project}/config/json-rpc-service.ini"
+                                    docroot="${stubbles.projects.path}/${stubbles.project}/docroot"/>
+      </then>
+      <else>
+        <echo>No json-rpc-service.ini configuration file available for project ${stubbles.project}.</echo>
+        <echo>Skipping JSON-RPC client generation.</echo>
+      </else>
+    </if>
+  </target>
+</project>

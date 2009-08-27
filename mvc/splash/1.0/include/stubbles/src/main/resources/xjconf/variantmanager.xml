@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <!--
+    Namespace definitions for the variants
+    @author Niels Schelbach
+    @author Stephan Schmidt
+    @author Frank Kleine
+  -->
+  <namespace uri="http://stubbles.net/websites/variantmanager">
+    <tag name="variants" type="net::stubbles::websites::variantmanager::stubVariantsMap">
+      <attribute name="name" type="string" required="true"/>
+      <attribute name="usePersistence" type="boolean" required="false"/>
+    </tag>	
+    
+    <!-- Variant Types -->
+    <abstractTag name="variant" abstractType="net::stubbles::websites::variantmanager::types::stubVariant" concreteTypeAttribute="type" setter="addChild">
+      <attribute name="name" type="string" required="true"/>
+      <attribute name="title" type="string" required="true"/>
+      <attribute name="alias" type="string" required="false"/>
+    </abstractTag>
+    
+    <tag name="lead" type="net::stubbles::websites::variantmanager::types::stubLeadVariant" extends="variant" />
+    
+    <tag name="random" type="net::stubbles::websites::variantmanager::types::stubRandomVariant" extends="variant">
+      <attribute name="weight" type="int" required="true"/>
+    </tag>
+    
+    <tag name="dummy" type="net::stubbles::websites::variantmanager::types::stubDummyVariant" extends="variant" />
+    
+    <tag name="requestParam" type="net::stubbles::websites::variantmanager::types::stubRequestParamVariant" extends="variant">
+      <attribute name="paramName" type="string" required="true"/>
+      <attribute name="paramValue" type="string" required="false"/>
+    </tag>
+    
+  </namespace>
+</defines>

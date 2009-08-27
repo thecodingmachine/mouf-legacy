@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns:cfg="http://stubbles.net/util/XJConf"
+    xmlns="http://stubbles.net/util/cache">
+  <cache>
+    <fileContainer id="default">
+      <cfg:stubConfig name="cacheDirectory" method="getCachePath" />
+      <defaultStrategy ttl="86400" maxSize="-1" gcProbability="1" />
+    </fileContainer>
+    <fileContainer id="skin">
+      <cfg:stubConfig name="cacheDirectory" method="getCachePath" />
+      <defaultStrategy ttl="86400" maxSize="-1" gcProbability="1" />
+    </fileContainer>
+  </cache>
+</xj:configuration>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <!--
+    Definitions for tags used in the memphis website component
+
+    @author Frank Kleine <mikey@stubbles.net>
+  -->
+  <namespace uri="http://stubbles.net/websites/memphis">
+    <tag name="config" type="array" />
+    <tag name="parts" type="array" />
+    <tag name="part" type="array" keyAttribute="name" />
+    <tag name="defaultElements" type="array" />
+    <tag name="frames" type="array" />
+    <tag name="frame" type="string" keyAttribute="name" />
+    <tag name="metaTags" type="array" />
+    <tag name="meta" type="string" keyAttribute="name" />
+  </namespace>
+</defines>

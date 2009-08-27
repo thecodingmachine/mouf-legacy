@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns:ws="http://stubbles.net/websites"
+    xmlns="http://stubbles.net/websites/memphis">
+  <config>
+    <parts>
+      <part name="content" />
+      <part name="navteasers">
+        <defaultElements>
+          <ws:includeFile name="acup" source="contentFile.txt">
+            <!--ws:conditions>
+              <ws:condition type="net::stubbles::websites::memphis::conditions::stubMemphisPageElementExcludePagesCondition" value="jobs_*, press_*, acup, hilfe-kontakt, faq, beratung"/>
+            </ws:conditions-->
+          </ws:includeFile>
+          <ws:includeFile name="search" source="contentFile.txt">
+            <!--ws:conditions>
+              <ws:condition type="net::stubbles::websites::memphis::conditions::stubMemphisPageElementExcludePagesCondition" value="suche"/>
+            </ws:conditions-->
+          </ws:includeFile>
+        </defaultElements>
+      </part>
+      <part name="teasers" />
+      <part name="annotations" />
+      <part name="header" />
+    </parts>
+    <frames>
+      <frame name="default">frame/default.tmpl</frame>
+      <frame name="default_platin">frame/platin.tmpl</frame>
+      <frame name="default_index">frame/index.tmpl</frame>
+      <frame name="weitere">frame/weitere.tmpl</frame>
+      <frame name="popup">frame/popup.tmpl</frame>
+      <frame name="popup_top">frame/popup_top.tmpl</frame>
+      <frame name="blank">frame/blank.tmpl</frame>
+      <frame name="empty">frame/empty.tmpl</frame>
+    </frames>
+    <metaTags>
+      <meta name="description">This is a description.</meta>
+      <meta name="keywords">keyword1, keyword2</meta>
+    </metaTags>
+  </config>
+</xj:configuration>

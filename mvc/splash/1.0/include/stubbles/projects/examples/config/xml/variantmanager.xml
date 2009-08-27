@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/websites/variantmanager">
+  <variants name="default">
+    <requestParam name="request" title="request" paramName="var"/>
+    <random name="random1" title="random1" weight="1">
+      <lead name="lead" title="lead"/>
+    </random>
+    <random name="random2" title="random2" weight="2" alias="preferred"/>
+  </variants>
+</xj:configuration>

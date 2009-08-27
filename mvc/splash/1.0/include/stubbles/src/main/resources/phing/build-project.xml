@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Stubbles" basedir="." default="main">
+  <property name="stubbles.lib.path" value="${project.basedir}/lib"/>
+  <property name="stubbles.projects.path" value="${project.basedir}/projects"/>
+  <property name="stubbles.src.path" value="${project.basedir}/src/main"/>
+  <property name="phing.task.dir" value="${project.basedir}/src/main/php/org/stubbles/phing/tasks"/>
+  <property name="processors.all" value="xml,page,jsonrpc,rss"/>
+  <taskDef name="stubGenerateRewriteRules" classname="stubGenerateRewriteRulesTask" classpath="${phing.task.dir}"/>
+
+  <target name="setup-project"
+          depends="init, projectcopy, setup-website, setup-processors, setup-rewrite-rules,
+                   setup-json-rpc, setup-logging"
+          description="Create a new project within installation.">
+    <echo>The new project ${stubbles.project} has been set up correctly</echo>
+    <echo>You may now adjust the configuration files in ${stubbles.project.path}/config</echo>
+    <echo>If you finished adjusting configuration files, please run "phing"</echo>
+  </target>
+
+  <target name="init" description="Base initialization.">
+    <echo>----------------------------------</echo>
+    <echo>| Setting up new project         |</echo>
+    <echo>----------------------------------</echo>
+    <input propertyname="stubbles.project" promptChar=":">Please enter the name of the project</input>
+    <property name="stubbles.project.path" value="${stubbles.projects.path}/${stubbles.project}"/>
+    <if>
+      <available file="${stubbles.project.path}" type="dir"/>
+      <then>
+        <fail message="Project ${stubbles.project} already exists!"/>
+      </then>
+    </if>
+  </target>
+
+  <target name="projectcopy" unless="stubbles.project.copy">
+    <input propertyname="stubbles.project.copy" promptChar=":" defaultValue="dist">Please enter the name of the project to copy from</input>
+    <if>
+      <not>
+        <available file="${stubbles.projects.path}/${stubbles.project.copy}" type="dir"/>
+      </not>
+      <then>
+        <fail message="Project ${stubbles.project.copy} does not exist!"/>
+      </then>
+    </if>
+  </target>
+
+  <target name="setup-website" description="Basic setup for website functionality">
+    <mkdir dir="${stubbles.project.path}/cache"/>
+    <mkdir dir="${stubbles.project.path}/docroot"/>
+    <mkdir dir="${stubbles.project.path}/pages"/>
+    <mkdir dir="${stubbles.project.path}/pages/conf"/>
+    <mkdir dir="${stubbles.project.path}/pages/skin"/>
+    <mkdir dir="${stubbles.project.path}/pages/txt"/>
+    <copy file="${stubbles.projects.path}/${stubbles.project.copy}/config/xsl-callbacks.ini" tofile="${stubbles.project.path}/config/xsl-callbacks.ini" overwrite="true"/>
+    <copy file="${stubbles.projects.path}/${stubbles.project.copy}/config/php/config.php" tofile="${stubbles.project.path}/config/php/config.php" overwrite="true"/>
+    <copy file="${stubbles.projects.path}/${stubbles.project.copy}/config/errors/500.html" tofile="${stubbles.project.path}/config/errors/500.html" overwrite="true"/>
+    <if>
+      <available file="${stubbles.projects.path}/${stubbles.project.copy}/config/rss-feeds.ini"/>
+      <then>
+        <copy file="${stubbles.projects.path}/${stubbles.project.copy}/config/rss-feeds.ini" tofile="${stubbles.project.path}/config/rss-feeds.ini" overwrite="true"/>
+      </then>
+    </if>
+    <copy todir="${stubbles.project.path}/config/xml">
+      <fileset dir="${stubbles.projects.path}/${stubbles.project.copy}/config/xml">
+        <include name="config*.xml"/>
+      </fileset>
+    </copy>
+    <copy todir="${stubbles.project.path}/config/xml">
+      <fileset dir="${stubbles.projects.path}/${stubbles.project.copy}/config/xml">
+        <include name="interceptors*.xml"/>
+      </fileset>
+    </copy>
+    <input propertyname="variantmanager.enabled" promptChar="?" defaultValue="Y">Do you want to enable variant manager functionality? (Y/N)</input>
+    <if>
+      <equals arg1="${variantmanager.enabled}" arg2="Y" casesensitive="false"/>
+      <then>
+        <echo>-------------------------------------</echo>
+        <echo>| Setting up VariantManager package |</echo>
+        <echo>-------------------------------------</echo>
+        <copy file="${stubbles.projects.path}/${stubbles.project.copy}/config/xml/variantmanager.xml" tofile="${stubbles.project.path}/config/xml/variantmanager.xml" overwrite="true"/>
+        <echo>Do not forget to add net::stubbles::websites::variantmanager::stubVariantsPreInterceptor as preinterceptor to the preinterceptor configuration.</echo>
+      </then>
+      <else>
+        <echo>Variant manager initialization skipped.</echo>
+      </else>
+    </if>
+  </target>
+
+  <target name="setup-processors" description="Set up processors to be used.">
+    <echo>-------------------------</echo>
+    <echo>| Setting up processors |</echo>
+    <echo>-------------------------</echo>
+    <echo>Please choose which of the processors you'd like to have.</echo>
+    <echo>Just comma seperate them (e.g. bla,bla,bla).</echo>
+    <input propertyname="processors.choosen" promptChar=":" defaultValue="${processors.all}">choose processors</input>
+    <if>
+      <contains string="${processors.choosen}" substring="xml"/>
+      <then>
+        <input propertyname="processors.default" promptChar=":" validArgs="${processors.choosen}" defaultValue="xml">choose default processor</input>
+      </then>
+      <else>
+        <input propertyname="processors.default" promptChar=":" validArgs="${processors.choosen}">choose default processor</input>
+      </else>
+    </if>
+    <xslt file="${stubbles.projects.path}/${stubbles.project.copy}/config/xml/processors.xml" tofile="${stubbles.project.path}/config/xml/processors.xml" style="${stubbles.src.path}/resources/build/processors.xsl" overwrite="true">
+        <param name="choosenProcs" expression="${processors.choosen}"/>
+        <param name="defaultProc" expression="${processors.default}"/>
+    </xslt>
+  </target>
+
+  <target name="setup-rewrite-rules" description="Set rewrite rules based on processor configuration.">
+    <echo>----------------------------</echo>
+    <echo>| Setting up rewrite rules |</echo>
+    <echo>----------------------------</echo>
+    <stubGenerateRewriteRules selectedProcessors="${processors.choosen}"
+                              destinationDir="${stubbles.project.path}/docroot"
+                              htaccessSource="${stubbles.src.path}/resources/build/.htaccess-dist"/>
+  </target>
+
+  <target name="setup-json-rpc" description="Basic setup for JSON-RPC functionality.">
+    <if>
+      <or>
+        <contains string="${processors.choosen}" substring="jsonrpc"/>
+        <contains string="${processors.choosen}" substring="json-rpc"/>
+      </or>
+      <then>
+        <echo>----------------------------------</echo>
+        <echo>| Setting up JSON-RPC package    |</echo>
+        <echo>----------------------------------</echo>
+        <copy file="${stubbles.projects.path}/${stubbles.project.copy}/config/json-rpc-service.ini" tofile="${stubbles.project.path}/config/json-rpc-service.ini" overwrite="true"/>
+      </then>
+      <else>
+        <echo>Processor jsonrpc not enabled, JSON-RPC initialization skipped.</echo>
+      </else>
+    </if>
+  </target>
+
+  <target name="setup-logging" description="Basic setup for logging functionality">
+    <input propertyname="logging.enabled" promptChar="?" defaultValue="Y">Do you want to enable logging functionality? (Y/N)</input>
+    <if>
+      <equals arg1="${logging.enabled}" arg2="Y" casesensitive="false"/>
+      <then>
+        <echo>----------------------------------</echo>
+        <echo>| Setting up logging package     |</echo>
+        <echo>----------------------------------</echo>
+        <mkdir dir="${stubbles.project.path}/log"/>
+        <copy todir="${stubbles.project.path}/config/xml">
+          <fileset dir="${stubbles.projects.path}/${stubbles.project.copy}/config/xml">
+            <include name="logging*.xml"/>
+          </fileset>
+        </copy>
+      </then>
+      <else>
+        <echo>Logging initialization skipped.</echo>
+      </else>
+    </if>
+  </target>
+
+</project>

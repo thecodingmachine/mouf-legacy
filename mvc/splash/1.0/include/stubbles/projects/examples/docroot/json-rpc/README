@@ -1,0 +1,8 @@
+To make use of the JSON-RPC processor, you will need the YAHOO User Interface Library.
+
+Please follow these steps:
+
+1. Dowload the latest release from http://developer.yahoo.com/yui/
+2. Extract the archive
+3. Move the "yui" folder into the /examples folder
+4. Make sure, that all javascript files from stubbles are copied to this directory, by executing "phing setup" in the Stubbles checkout folder

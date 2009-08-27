@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/php/string">
+  <base64 setterMethod="base64"/>
+  <md5 setterMethod="md5"/>
+  <url setterMethod="url"/>
+  <utf8 setterMethod="utf8"/>
+</xj:configuration>

@@ -1,0 +1,50 @@
+<patTemplate:tmpl name="frame">
+<html>
+  <head>
+    <title>Stubbles examples</title>
+    <style type="text/css">
+      body {
+        font: normal 13px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+      }
+      h1, h2, h3, h4 {
+       font-family: arial,verdana,'Bitstream Vera Sans',helvetica,sans-serif;
+       font-weight: bold;
+       letter-spacing: -0.018em;
+      }
+      h1 { font-size: 19px; margin: 18px 0 0 0 }
+      h2 { font-size: 16px }
+      h3 { font-size: 14px }
+      /* Link styles */
+      :link, :visited {
+       text-decoration: none;
+       color: #b00;
+       border-bottom: 1px dotted #bbb;
+      }
+      :link:hover, :visited:hover {
+       background-color: #eee;
+       color: #555;
+      }
+      p {
+       margin-left: 25px;
+      }
+      DIV.warning {
+       border: 2px solid #cc0000;
+       color: #990000;
+       padding: 12px;
+       margin: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    <img src="data/images/stubbles.png" alt="" style="padding: 2px;">
+    <div style="text-align: right; padding: 0 5px  0 5px; font-size: 11px; margin: 13px 0 0 2px; background: url(http://stubbles.net/chrome/common/topbar_gradient.png); height: 16px; border: 1px #000 solid;">
+
+      <a href="http://www.stubbles.net/">Go to Stubbles Homepage</a>
+    </div>
+    <h1 style="font-size: 21px;">Stubbles Memphis view engine example</h1>
+
+    {CONTENT}
+  </body>
+
+</html>
+</patTemplate:tmpl>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="stubbles-json-rpc-lab" basedir="." default="main">
+  <taskDef name="stubInit" classname="stubInitTask" classpath="${project.basedir}/../../src/main/php/info/phing/tasks" />
+  <taskDef name="stubGenerateJsonRpcProxies" classname="stubGenerateJsonRpcProxiesTask" classpath="${project.basedir}/../../src/main/php/info/phing/tasks" />
+
+  <property name="proxies.target" value="${project.basedir}/generated-scripts"/>
+
+  <target name="main" depends="init">
+    <stubGenerateJsonRpcProxies serviceFile="${project.basedir}/../../config/xml/json-rpc-service.xml"
+                                targetFolder="${proxies.target}"/>
+  </target>
+
+  <target name="init">
+    <stubInit configPath="${project.basedir}/../../config/"/>
+    <mkdir dir="${proxies.target}"/>
+  </target>
+
+</project>

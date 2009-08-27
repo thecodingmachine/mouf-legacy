@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/lang/registry">
+  <config name="net.stubbles.language" value="en_EN"/>
+  <config name="net.stubbles.number.decimals" value="4"/>
+  <config name="net.stubbles.util.log.class" value="net::stubbles::util::log::stubBaseLogData"/>
+  <config name="net.stubbles.ipo.request.class" value="net::stubbles::ipo::request::stubWebRequest"/>
+  <config name="net.stubbles.ipo.session.class" value="net::stubbles::ipo::session::stubPHPSession"/>
+</xj:configuration>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/ipo/request">
+  <error id="FIELD_EMPTY">
+    <messages>
+      <message locale="default">Please enter a value.</message>
+      <message locale="en_*">Please enter a value.</message>
+      <message locale="de_*">Bitte geben Sie einen Wert an.</message>
+      <message locale="fr_*">Veuillez remplir le champ.</message>
+      <message locale="es_*">Este campo es obligatorio.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="FIELD_NO_SELECT">
+    <messages>
+      <message locale="default">Please choose a value.</message>
+      <message locale="en_*">Please choose a value.</message>
+      <message locale="de_*">Bitte wählen Sie einen Wert aus.</message>
+      <message locale="fr_*">Veuillez choisir un élément parmi la liste.</message>
+      <message locale="es_*">Por favor, seleccione una opción de la lista.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="FIELD_WRONG_VALUE">
+    <messages>
+      <message locale="default">Please enter a correct value.</message>
+      <message locale="en_*">Please enter a correct value.</message>
+      <message locale="de_*">Bitte geben Sie einen korrekten Wert an.</message>
+      <message locale="fr_*">Votre choix n’est pas valide. Veuillez modifier votre choix.</message>
+      <message locale="es_*">Selección no válida. Vuelva a realizar la selección.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="VALUE_TOO_SMALL">
+    <messages>
+      <message locale="default">Please enter a value greater or equal to {minNumber}.</message>
+      <message locale="en_*">Please enter a value greater or equal to {minNumber}.</message>
+      <message locale="de_*">Bitte geben Sie einen Wert größer oder gleich {minNumber} an.</message>
+    </messages>
+    <valueKeys>
+      <valueKey>minNumber</valueKey>
+    </valueKeys>
+  </error>
+  <error id="VALUE_TOO_GREAT">
+    <messages>
+      <message locale="default">Please enter a value smaller or equal to {maxNumber}.</message>
+      <message locale="en_*">Please enter a value smaller or equal to {maxNumber}.</message>
+      <message locale="de_*">Bitte geben Sie einen Wert kleiner oder gleich {maxNumber} an.</message>
+    </messages>
+    <valueKeys>
+      <valueKey>maxNumber</valueKey>
+    </valueKeys>
+  </error>
+  <error id="PASSWORDS_NOT_EQUAL">
+    <messages>
+      <message locale="default">Your passwords are not equal. Please enter the same password in both fields.</message>
+      <message locale="en_*">Your passwords are not equal. Please enter the same password in both fields.</message>
+      <message locale="de_*">Die eingegebenen Passwörter stimmen nicht überein. Bitte geben Sie in beiden Feldern das gleiche Passwort an.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="PASSWORD_INVALID">
+    <messages>
+      <message locale="default">You choose an invalid password. Please choose another password.</message>
+      <message locale="en_*">You choose an invalid password. Please choose another password.</message>
+      <message locale="de_*">Sie haben ein ungültiges Passwort angegeben. Bitte wählen Sie ein anderes Passwort.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="PASSWORD_TOO_LESS_DIFF_CHARS">
+    <messages>
+      <message locale="default">Your password has to less different characters. Please choose another password.</message>
+      <message locale="en_*">Your password has to less different characters. Please choose another password.</message>
+      <message locale="de_*">Ihr Passwort hat zu wenig unterschiedliche Zeichen. Bitte wählen Sie ein anderes Passwort.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="STRING_TOO_SHORT">
+    <messages>
+      <message locale="default">Please enter at least {minLength} characters.</message>
+      <message locale="en_*">Please enter at least {minLength} characters.</message>
+      <message locale="de_*">Bitte geben Sie mindestens {minLength} Zeichen an.</message>
+      <message locale="fr_*">Veuillez saisir au minimum {minLength} caractères.</message>
+      <message locale="es_*">Debe incluir un mínimo de {minLength} caracteres.</message>
+    </messages>
+    <valueKeys>
+      <valueKey>minLength</valueKey>
+    </valueKeys>
+  </error>
+  <error id="STRING_TOO_LONG">
+    <messages>
+      <message locale="default">Please use not more than {maxLength} characters.</message>
+      <message locale="en_*">Please use not more than {maxLength} characters.</message>
+      <message locale="de_*">Bitte geben Sie nicht mehr als {maxLength} Zeichen an.</message>
+      <message locale="fr_*">Veuillez saisir au maximum {maxLength} caractères.</message>
+      <message locale="es_*">Debe incluir un máximo de {maxLength} caracteres.</message>
+    </messages>
+    <valueKeys>
+      <valueKey>maxLength</valueKey>
+    </valueKeys>
+  </error>
+  <error id="DATE_INVALID">
+    <messages>
+      <message locale="default">Please enter a correct date.</message>
+      <message locale="en_*">Please enter a correct date.</message>
+      <message locale="de_*">Bitte wählen Sie ein korrektes Datum.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="DATE_TOO_EARLY">
+    <messages>
+      <message locale="default">The choosen date is too early. The earliest possible date is {earliestDate}.</message>
+      <message locale="en_*">The choosen date is too early. The earliest possible date is {earliestDate}.</message>
+      <message locale="de_*">Das gewählte Datum ist zu früh. Das frühestmögliche Datum ist {earliestDate}.</message>
+    </messages>
+    <valueKeys>
+      <valueKey>earliestDate</valueKey>
+    </valueKeys>
+  </error>
+  <error id="DATE_TOO_LATE">
+    <messages>
+      <message locale="default">The choosen date is too late. The latest possible date is {latestDate}.</message>
+      <message locale="en_*">The choosen date is too late. The latest possible date is {latestDate}.</message>
+      <message locale="de_*">Das gewählte Datum ist zu spät. Das spätestmögliche Datum ist {latestDate}.</message>
+    </messages>
+    <valueKeys>
+      <valueKey>latestDate</valueKey>
+    </valueKeys>
+  </error>
+  <error id="MAILADDRESS_CANNOT_CONTAIN_SPACES">
+    <messages>
+      <message locale="default">The mail address can not contain spaces.</message>
+      <message locale="en_*">The mail address can not contain spaces.</message>
+      <message locale="de_*">Die E-Mail Adresse darf keine Leerzeichen enthalten.</message>
+      <message locale="fr_*">L’adresse email ne doit pas comporter d’espace.</message>
+      <message locale="es_*">La dirección de e-mail no deberá contener espacios en blanco.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="MAILADDRESS_CANNOT_CONTAIN_UMLAUTS">
+    <messages>
+      <message locale="default">The mail address can not contain german umlauts nor the character 'ß'.</message>
+      <message locale="en_*">The mail address can not contain german umlauts nor the character 'ß'.</message>
+      <message locale="de_*">Die E-Mail Adresse darf keine Umlaute oder 'ß' enthalten.</message>
+      <message locale="fr_*">L’adresse email ne doit pas comporter d’accent.</message>
+      <message locale="es_*">La dirección de e-mail no deberá contener caracteres con tilde o diéresis.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="MAILADDRESS_CONTAINS_ILLEGAL_CHARS">
+    <messages>
+      <message locale="default">The mail address contains illegal characters.</message>
+      <message locale="en_*">The mail address contains illegal characters.</message>
+      <message locale="de_*">Die E-Mail Adresse enthält ungültige Zeichen.</message>
+      <message locale="fr_*">L’adresse email comporte des caractères invalides.</message>
+      <message locale="es_*">La dirección de e-mail contiene caracteres no válidos.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="MAILADDRESS_MUST_CONTAIN_ONE_AT">
+    <messages>
+      <message locale="default">The mail address must contain exactly one '@' sign.</message>
+      <message locale="en_*">The mail address must contain exactly one '@' sign.</message>
+      <message locale="de_*">Eine E-Mail-Adresse muss genau ein '@' enthalten.</message>
+      <message locale="fr_*">Une adresse email doit comporter exactement un '@'.</message>
+      <message locale="es_*">La dirección de e-mail introducida no es válida. Por favor, introdúzcala de nuevo correctamente.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="MAILADDRESS_CONTAINS_TWO_FOLLOWING_DOTS">
+    <messages>
+      <message locale="default">The mail address can not contain two consecutive dots.</message>
+      <message locale="en_*">The mail address can not contain two consecutive dots.</message>
+      <message locale="de_*">Die E-Mail Adresse darf keine zwei aufeinanderfolgenden Punkte enthalten.</message>
+      <message locale="fr_*">L’adresse email ne doit pas comporter deux points à la suite.</message>
+      <message locale="es_*">La dirección de e-mail no deberá incluir dos puntos seguidos.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="MAILADDRESS_INCORRECT">
+    <messages>
+      <message locale="default">The mail address is not correct.</message>
+      <message locale="en_*">The mail address is not correct.</message>
+      <message locale="de_*">Die E-Mail-Adresse ist nicht korrekt.</message>
+      <message locale="fr_*">Le format de l’adresse email est invalide. Veuillez modifier votre saisie selon le modèle [nom@domaine.fr].</message>
+      <message locale="es_*">El formato del e-mail no es válido. Por favor, introduzca su e-mail de nuevo correctamente.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="URL_INCORRECT">
+    <messages>
+      <message locale="default">The URL is not a valid HTTP-URL.</message>
+      <message locale="en_*">The URL is not a valid HTTP-URL.</message>
+      <message locale="de_*">Der URL ist kein gültiger HTTP-URL.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+  <error id="URL_NOT_AVAILABLE">
+    <messages>
+      <message locale="default">The URL is not available.</message>
+      <message locale="en_*">The URL is not available.</message>
+      <message locale="de_*">Der URL ist nicht erreichbar.</message>
+    </messages>
+    <valueKeys/>
+  </error>
+</xj:configuration>

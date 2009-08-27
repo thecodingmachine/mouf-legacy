@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/streams">
+    <abstractTag name="inputStream" abstractType="net::stubbles::streams::stubInputStream" concreteTypeAttribute="type" keyAttribute="setterMethod"/>
+    <abstractTag name="outputStream" abstractType="net::stubbles::streams::stubOutputStream" concreteTypeAttribute="type" keyAttribute="setterMethod"/>
+    <tag name="fileInputStream" type="net::stubbles::streams::file::stubFileInputStream" keyAttribute="setterMethod" extends="inputStream">
+      <constructor>
+        <attribute name="file" type="string"/>
+        <attribute name="mode" type="string"/>
+      </constructor>
+    </tag>
+    <tag name="fileOutputStream" type="net::stubbles::streams::file::stubFileOutputStream" keyAttribute="setterMethod" extends="outputStream">
+      <constructor>
+        <attribute name="file" type="string"/>
+        <attribute name="mode" type="string"/>
+      </constructor>
+    </tag>
+    <tag name="memoryInputStream" type="net::stubbles::streams::memory::stubMemoryInputStream" keyAttribute="setterMethod" extends="inputStream">
+      <constructor>
+        <attribute name="buffer" type="string"/>
+      </constructor>
+    </tag>
+    <tag name="memoryOutputStream" type="net::stubbles::streams::memory::stubMemoryOutputStream" keyAttribute="setterMethod" extends="outputStream"/>
+    <tag name="decodingInputStream" type="net::stubbles::streams::stubDecodingInputStream" keyAttribute="setterMethod" extends="inputStream">
+      <constructor>
+        <child name="inputStream"/>
+        <attribute name="charset" type="string"/>
+      </constructor>
+    </tag>
+    <tag name="encodingOutputStream" type="net::stubbles::streams::stubEncodingOutputStream" keyAttribute="setterMethod" extends="outputStream">
+      <constructor>
+        <child name="outputStream"/>
+        <attribute name="charset" type="string"/>
+      </constructor>
+    </tag>
+  </namespace>
+</defines>

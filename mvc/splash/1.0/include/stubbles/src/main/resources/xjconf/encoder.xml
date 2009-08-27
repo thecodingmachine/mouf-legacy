@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/php/string">
+    <abstractTag name="encoder" abstractType="net::stubbles::php::string::stubStringEncoder" concreteTypeAttribute="type" keyAttribute="setterMethod"/>
+    <tag name="base64" type="net::stubbles::php::string::stubBase64Encoder" keyAttribute="setterMethod"/>
+    <tag name="md5" type="net::stubbles::php::string::stubMd5Encoder" keyAttribute="setterMethod"/>
+    <tag name="url" type="net::stubbles::php::string::stubURLEncoder" keyAttribute="setterMethod"/>
+    <tag name="utf8" type="net::stubbles::php::string::stubUTF8Encoder" keyAttribute="setterMethod"/>
+  </namespace>
+</defines>

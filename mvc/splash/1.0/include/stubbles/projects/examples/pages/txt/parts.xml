@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<parts
+    xmlns:stub="http://stubbles.net/stub"
+    exclude-result-prefixes="stub">
+  <part name="disclaimer">
+    <p>(C) 2007 <a href="http://www.stubbles.net">Stubbles</a>.</p>
+  </part>
+</parts>

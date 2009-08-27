@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Stubbles" basedir="." default="main">
+  <property name="examples.base.dir" value="${project.basedir}" />
+  <property file="examples.properties" />
+
+  <target name="main" depends="prepare-examples, json-rpc" description="Setup all examples" />
+
+  <target name="prepare-examples" description="Prepare folders for the examples.">
+    <echo>Project basedir: ${project.basedir}</echo>
+    <!-- cache permissions -->
+    <if>
+      <isset property="cache.permissions"/>
+      <then>
+        <echo>Cache folder permissions set to ${cache.permissions}.</echo>
+      </then>
+      <else>
+        <input propertyname="cache.permissions" promptChar=":" defaultValue="0777">Please supply permissions for cache folders</input>
+        <append destFile="examples.properties" text="cache.permissions=${cache.permissions}${line.separator}"/>
+      </else>
+    </if>
+    <chmod file="${project.basedir}/../../lib" mode="${cache.permissions}"/>
+    <chmod file="${project.basedir}/cache" mode="${cache.permissions}"/>
+    <delete file="${project.basedir}/../../lib/.cache" verbose="true"/>
+    <delete>
+      <fileset dir="${project.basedir}/cache">
+        <include name="**/*.cache" />
+      </fileset>
+    </delete>
+
+    <!-- log permissions -->
+    <if>
+      <isset property="log.permissions"/>
+      <then>
+        <echo>Log folder permissions set to ${log.permissions}.</echo>
+      </then>
+      <else>
+        <input propertyname="log.permissions" promptChar=":" defaultValue="0777">Please supply permissions for log folders</input>
+        <append destFile="examples.properties" text="log.permissions=${log.permissions}${line.separator}"/>
+      </else>
+    </if>
+    <chmod file="${project.basedir}/log" mode="${log.permissions}"/>
+  </target>
+
+  <target name="json-rpc" description="Setup the JSON-RPC examples">
+    <!-- JSON-RPC -->
+    <resolvepath propertyName="examples.absolute.dir" file="${project.basedir}"/>
+    <if>
+      <available file="${project.basedir}/../common/docroot/javascript"/>
+      <then>
+        <resolvepath propertyName="javascript.src.dir" file="${project.basedir}/../common/docroot/javascript"/>
+      </then>
+      <else>
+        <resolvepath propertyName="javascript.src.dir" file="${project.basedir}/../../src/main/javascript"/>
+      </else>
+    </if>
+    <echo>-------------------------------------------</echo>
+    <echo>| Setting up JSON-RPC example             |</echo>
+    <echo>-------------------------------------------</echo>
+    <mkdir dir="${examples.base.dir}/docroot/javascript"/>
+    <copy todir="${examples.base.dir}/docroot/javascript">
+      <fileset dir="${javascript.src.dir}">
+        <include name="**/*.js"/>
+      </fileset>
+    </copy>
+  </target>
+</project>

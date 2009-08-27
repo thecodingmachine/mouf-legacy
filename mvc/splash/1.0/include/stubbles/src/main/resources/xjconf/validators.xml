@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/ipo/request/validator">
+    <abstractTag name="validator" abstractType="net::stubbles::ipo::request::validator::stubValidator" concreteTypeAttribute="type" keyAttribute="setterMethod"/>
+    <tag name="contains" type="net::stubbles::ipo::request::validator::stubContainsValidator" keyAttribute="setterMethod">
+      <cdata type="xjconf:auto-primitive"/>
+    </tag>
+    <tag name="equal" type="net::stubbles::ipo::request::validator::stubEqualValidator" keyAttribute="setterMethod">
+      <cdata type="xjconf:auto-primitive"/>
+    </tag>
+    <tag name="ip" type="net::stubbles::ipo::request::validator::stubIpValidator" keyAttribute="setterMethod"/>
+    <tag name="mail" type="net::stubbles::ipo::request::validator::stubMailValidator" keyAttribute="setterMethod"/>
+    <tag name="maxLength" type="net::stubbles::ipo::request::validator::stubMaxLengthValidator" keyAttribute="setterMethod">
+      <cdata type="int"/>
+    </tag>
+    <tag name="maxNumber" type="net::stubbles::ipo::request::validator::stubMaxNumberValidator" keyAttribute="setterMethod">
+      <cdata type="xjconf:auto-primitive"/>
+    </tag>
+    <tag name="minLength" type="net::stubbles::ipo::request::validator::stubMinLengthValidator" keyAttribute="setterMethod">
+      <cdata type="int"/>
+    </tag>
+    <tag name="minNumber" type="net::stubbles::ipo::request::validator::stubMinNumberValidator" keyAttribute="setterMethod">
+      <cdata type="xjconf:auto-primitive"/>
+    </tag>
+    <tag name="passThru" type="net::stubbles::ipo::request::validator::stubPassThruValidator" keyAttribute="setterMethod"/>
+    <tag name="preSelect" type="net::stubbles::ipo::request::validator::stubPreSelectValidator" keyAttribute="setterMethod">
+      <constructor>
+        <child name="values"/>
+      </constructor>
+    </tag>
+    <tag name="values" type="array"/>
+    <tag name="value" type="xjconf:auto-primitive" key="__none"/>
+    <tag name="regex" type="net::stubbles::ipo::request::validator::stubRegexValidator" keyAttribute="setterMethod">
+      <cdata type="string"/>
+    </tag>
+    
+    <abstractTag name="compositeValidator" abstractType="net::stubbles::ipo::request::validator::stubCompositeValidator" concreteTypeAttribute="type" keyAttribute="setterMethod"/>
+    <tag name="and" type="net::stubbles::ipo::request::validator::stubAndValidator" keyAttribute="setterMethod"/>
+    <tag name="or" type="net::stubbles::ipo::request::validator::stubOrValidator" keyAttribute="setterMethod"/>
+    <tag name="xor" type="net::stubbles::ipo::request::validator::stubXorValidator" keyAttribute="setterMethod"/>
+  </namespace>
+</defines>

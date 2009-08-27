@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xj:configuration
+    xmlns:xj="http://xjconf.net/XJConf"
+    xmlns="http://stubbles.net/websites">
+  <defaultResolver default="xml">
+    <processor name="xml" type="net::stubbles::websites::xml::stubXMLProcessor" interceptorDescriptor="interceptors-xml" pageFactoryClass="net::stubbles::websites::stubPageXJConfFactory"/>
+    <processor name="page" type="net::stubbles::websites::memphis::stubMemphisProcessor" interceptorDescriptor="interceptors" pageFactoryClass="net::stubbles::websites::stubPageXJConfFactory"/>
+    <processor name="jsonrpc" type="net::stubbles::service::jsonrpc::stubJsonRpcProcessor"/>
+  </defaultResolver>
+</xj:configuration>

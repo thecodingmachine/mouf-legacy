@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defines>
+  <namespace uri="http://stubbles.net/rdbms">
+    <tag name="pool" type="net::stubbles::rdbms::stubDatabaseConnectionPool" static="true"/>
+    <tag name="connection" type="net::stubbles::rdbms::stubDatabaseConnectionData" setter="addConnectionData"/>
+    <tag name="id" type="string"/>
+    <tag name="connectionClassName" type="string"/>
+    <tag name="dsn" type="string"/>
+    <tag name="userName" type="string"/>
+    <tag name="password" type="string"/>
+    <tag name="driverOptions" type="array"/>
+    <tag name="driverOption" keyAttribute="name" type="string">
+      <attribute name="name" type="string"/>
+    </tag>
+    <tag name="initialQuery" type="string"/>
+  </namespace>
+</defines>
