@@ -36,6 +36,8 @@ MoufManager::getMoufManager()->declareComponent('rootController', 'MoufRootContr
 MoufManager::getMoufManager()->declareComponent('jQuery', 'HtmlJSJQuery');
 MoufManager::getMoufManager()->declareComponent('jqueryui', 'HtmlJSJQueryUI');
 MoufManager::getMoufManager()->declareComponent('componentsLabelMenuItem', 'SplashMenuItem');
+MoufManager::getMoufManager()->declareComponent('packagesLabelMenuItem', 'SplashMenuItem');
+MoufManager::getMoufManager()->declareComponent('managePackagesMenuItem', 'SplashMenuItem');
 
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'title', 'Mouf - Build your website');
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'logoImg', 'mouf/views/images/MoufLogo.png');
@@ -61,6 +63,16 @@ MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuText
 MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuLink', '');
 MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuCssClass', '');
 MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'propagatedUrlParameters', false);
+MoufManager::getMoufManager()->setParameter('packagesLabelMenuItem', 'menuText', '<b>Packages</b>');
+MoufManager::getMoufManager()->setParameter('packagesLabelMenuItem', 'menuLink', '');
+MoufManager::getMoufManager()->setParameter('packagesLabelMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('packagesLabelMenuItem', 'propagatedUrlParameters', false);
+MoufManager::getMoufManager()->setParameter('managePackagesMenuItem', 'menuText', 'Enable/disable packages');
+MoufManager::getMoufManager()->setParameter('managePackagesMenuItem', 'menuLink', 'mouf/packages');
+MoufManager::getMoufManager()->setParameter('managePackagesMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('managePackagesMenuItem', 'propagatedUrlParameters', array (
+  0 => 'selfedit',
+));
 
 MoufManager::getMoufManager()->bindComponents('splash', 'log', 'errorLogger');
 MoufManager::getMoufManager()->bindComponents('splash', 'defaultTemplate', 'splashTemplate');
@@ -74,9 +86,11 @@ MoufManager::getMoufManager()->bindComponent('moufTemplate', 'left', array (
   0 => 'actionMenu',
 ));
 MoufManager::getMoufManager()->bindComponent('actionMenu', 'menuItems', array (
-  0 => 'componentsLabelMenuItem',
-  1 => 'viewInstancesMenuItem',
-  2 => 'newInstanceMenuItem',
+  0 => 'packagesLabelMenuItem',
+  1 => 'managePackagesMenuItem',
+  2 => 'componentsLabelMenuItem',
+  3 => 'viewInstancesMenuItem',
+  4 => 'newInstanceMenuItem',
 ));
 MoufManager::getMoufManager()->bindComponent('splashTemplate', 'head', array (
   0 => 'prototype',
@@ -177,6 +191,20 @@ class MoufAdmin {
 	 */
 	 public function getComponentsLabelMenuItem() {
 	 	return MoufManager::getMoufManager()->getInstance('componentsLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getPackagesLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('packagesLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getManagePackagesMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('managePackagesMenuItem');
 	 }
 
 }
