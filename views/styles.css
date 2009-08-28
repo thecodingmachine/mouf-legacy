@@ -1,0 +1,7 @@
+
+div.moveable {
+	width: 15px;
+	height: 15px;
+	background-image:url(images/updown.png);
+	float:left
+}

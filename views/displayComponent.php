@@ -22,6 +22,7 @@ dropDownCnt = 0;
 function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKey) {
 	var str = "";
 	str += "<div id='"+name+"_mouf_dropdown_"+dropDownCnt+"'>";
+	str += "<div class='moveable'></div>";
 	if (defaultValue != "") {
 		str += "<span id='"+name+"_mouf_dropdown_text_"+dropDownCnt+"'>";
 		if (hasKey) {
@@ -63,11 +64,32 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 function addNewTextBox(element, name, defaultValue, hasKey, defaultKey) {
 	var str = "";
 	str += "<div id='"+name+"_mouf_dropdown_"+dropDownCnt+"'>";
+	str += "<div class='moveable'></div>";
 	if (hasKey) {
 		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
 		str += "=&gt;";
 	}
 	str += "<input type='text' name='"+name+"[]' value=\""+defaultValue+"\">";
+	str += "<a onclick='$(\""+name+"_mouf_dropdown_"+dropDownCnt+"\").remove()'><img src=\"<?php echo ROOT_URL ?>mouf/views/images/cross.png\"></a>";
+	str += "</div>";
+	element.insert(str);
+	dropDownCnt++;
+}
+
+/*
+ * Adds a new checkbox dynamically inside element "element".
+ * name is the name of the select box.
+ * defaultvalue its default value
+ */
+function addNewCheckBox(element, name, defaultValue, hasKey, defaultKey) {
+	var str = "";
+	str += "<div id='"+name+"_mouf_dropdown_"+dropDownCnt+"'>";
+	str += "<div class='moveable'></div>";
+	if (hasKey) {
+		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
+		str += "=&gt;";
+	}
+	str += "<input type='checkbox' name='"+name+"[]' value=\"true\" "+(defaultValue?"checked=\"checked\"":"")+"\" >";
 	str += "<a onclick='$(\""+name+"_mouf_dropdown_"+dropDownCnt+"\").remove()'><img src=\"<?php echo ROOT_URL ?>mouf/views/images/cross.png\"></a>";
 	str += "</div>";
 	element.insert(str);
@@ -149,7 +171,11 @@ foreach ($this->properties as $property) {
 		if ($lowerVarType == "string" || $lowerVarType == "bool" || $lowerVarType == "boolean" || $lowerVarType == "int" || $lowerVarType == "integer" || $lowerVarType == "double" || $lowerVarType == "float" || $lowerVarType == "real" || $lowerVarType == "mixed" || $lowerVarType == "callback") {
 			$defaultValue = $this->getValueForProperty($propertyName);
 		
-			echo '<input type="text" id="'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
+			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
+				echo '<input type="checkbox" id="'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='chacked'":"").'"/>';
+			} else {
+				echo '<input type="text" id="'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
+			}
 		} else if ($lowerVarType == "array") {
 			$recursiveType = $varTypeAnnot->getSubType();
 			
@@ -177,6 +203,9 @@ foreach ($this->properties as $property) {
 						}
 					}
 				}
+				
+				echo "jQuery('#".$property->getName()."_mouf_array').sortable({handle:'.moveable'});";
+
 				echo "\n});\n";
 				echo "</script>";
 				echo "<a onclick='addNewTextBox($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"\", ".(($isAssociative)?"true":"false").", \"\");'>Add a value</a>";
@@ -218,6 +247,10 @@ foreach ($this->properties as $property) {
 						}
 					}
 				}
+				
+
+				echo "jQuery('#".$property->getName()."_mouf_array').sortable({handle:'.moveable'});";
+				
 				echo "\n});\n";
 				echo "</script>";
 				

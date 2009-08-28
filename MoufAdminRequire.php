@@ -10,6 +10,8 @@ require_once dirname(__FILE__).'/../plugins/html/htmlelement/1.0/HtmlFromFunctio
 require_once dirname(__FILE__).'/../plugins/html/htmlelement/1.0/HtmlString.php';
 require_once dirname(__FILE__).'/../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php';
 require_once dirname(__FILE__).'/../plugins/javascript/jit/1.1.2/HtmlJSJit.php';
+require_once dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
+require_once dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/Splash.php';
@@ -17,5 +19,6 @@ require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/TemplateInterf
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/themes/Splash/SplashTemplate.php';
 require_once dirname(__FILE__).'/../plugins/utils/log/errorlog_logger/ErrorLogLogger.php';
 require_once dirname(__FILE__).'/controllers/MoufController.php';
+require_once dirname(__FILE__).'/controllers/MoufRootController.php';
 
 ?>

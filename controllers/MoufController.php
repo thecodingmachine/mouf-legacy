@@ -136,6 +136,11 @@ class MoufController extends Controller {
 				
 				if ($lowerVarType == "string" || $lowerVarType == "bool" || $lowerVarType == "boolean" || $lowerVarType == "int" || $lowerVarType == "integer" || $lowerVarType == "double" || $lowerVarType == "float" || $lowerVarType == "real" || $lowerVarType == "mixed") {
 					$value = get($property->getName());
+					if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
+						if ($value == "true") {
+							$value = true;
+						}
+					}
 					$this->moufManager->setParameter($instanceName, $property->getName(), $value);
 				} else if ($lowerVarType == "array") {
 					$recursiveType = $varTypeAnnot->getSubType();

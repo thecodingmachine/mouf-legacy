@@ -12,6 +12,8 @@ MoufManager::getMoufManager()->registerComponent('../plugins/html/htmlelement/1.
 MoufManager::getMoufManager()->registerComponent('../plugins/html/htmlelement/1.0/HtmlString.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jit/1.1.2/HtmlJSJit.php');
+MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php');
+MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/html/template/SplashTemplate/1.0/SplashMenu.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/models/Splash.php');
@@ -19,6 +21,7 @@ MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/mode
 MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/themes/Splash/SplashTemplate.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/utils/log/errorlog_logger/ErrorLogLogger.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufController.php');
+MoufManager::getMoufManager()->registerComponent('controllers/MoufRootController.php');
 
 MoufManager::getMoufManager()->declareComponent('splash', 'Splash');
 MoufManager::getMoufManager()->declareComponent('splashTemplate', 'SplashTemplate');
@@ -29,30 +32,51 @@ MoufManager::getMoufManager()->declareComponent('prototype', 'HtmlJSPrototype');
 MoufManager::getMoufManager()->declareComponent('newInstanceMenuItem', 'SplashMenuItem');
 MoufManager::getMoufManager()->declareComponent('actionMenu', 'SplashMenu');
 MoufManager::getMoufManager()->declareComponent('viewInstancesMenuItem', 'SplashMenuItem');
+MoufManager::getMoufManager()->declareComponent('rootController', 'MoufRootController');
+MoufManager::getMoufManager()->declareComponent('jQuery', 'HtmlJSJQuery');
+MoufManager::getMoufManager()->declareComponent('jqueryui', 'HtmlJSJQueryUI');
+MoufManager::getMoufManager()->declareComponent('componentsLabelMenuItem', 'SplashMenuItem');
 
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'title', 'Mouf - Build your website');
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'logoImg', 'mouf/views/images/MoufLogo.png');
+MoufManager::getMoufManager()->setParameter('moufTemplate', 'css_files', array (
+  0 => 'mouf/views/styles.css',
+));
 MoufManager::getMoufManager()->setParameter('newInstanceMenuItem', 'menuText', 'Create a new instance');
 MoufManager::getMoufManager()->setParameter('newInstanceMenuItem', 'menuLink', 'mouf/mouf/newInstance');
 MoufManager::getMoufManager()->setParameter('newInstanceMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('newInstanceMenuItem', 'propagatedUrlParameters', array (
+  0 => 'selfedit',
+));
 MoufManager::getMoufManager()->setParameter('viewInstancesMenuItem', 'menuText', 'View declared instances');
 MoufManager::getMoufManager()->setParameter('viewInstancesMenuItem', 'menuLink', 'mouf/mouf/');
 MoufManager::getMoufManager()->setParameter('viewInstancesMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('viewInstancesMenuItem', 'propagatedUrlParameters', array (
+  0 => 'selfedit',
+));
 MoufManager::getMoufManager()->setParameter('splashTemplate', 'logoImg', '');
 MoufManager::getMoufManager()->setParameter('splashTemplate', 'title', 'Mouf - Your website');
+MoufManager::getMoufManager()->setParameter('jQuery', 'noConflictMode', true);
+MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuText', '<b>Components</b>');
+MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuLink', '');
+MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'propagatedUrlParameters', false);
 
 MoufManager::getMoufManager()->bindComponents('splash', 'log', 'errorLogger');
 MoufManager::getMoufManager()->bindComponents('splash', 'defaultTemplate', 'splashTemplate');
 MoufManager::getMoufManager()->bindComponents('mouf', 'template', 'moufTemplate');
 MoufManager::getMoufManager()->bindComponent('moufTemplate', 'head', array (
   0 => 'prototype',
+  1 => 'jQuery',
+  2 => 'jqueryui',
 ));
 MoufManager::getMoufManager()->bindComponent('moufTemplate', 'left', array (
-  0 => 'newInstanceMenuItem',
-  1 => 'viewInstancesMenuItem',
+  0 => 'actionMenu',
 ));
 MoufManager::getMoufManager()->bindComponent('actionMenu', 'menuItems', array (
-  0 => 'newInstanceMenuItem',
+  0 => 'componentsLabelMenuItem',
+  1 => 'viewInstancesMenuItem',
+  2 => 'newInstanceMenuItem',
 ));
 MoufManager::getMoufManager()->bindComponent('splashTemplate', 'head', array (
   0 => 'prototype',
@@ -125,6 +149,34 @@ class MoufAdmin {
 	 */
 	 public function getViewInstancesMenuItem() {
 	 	return MoufManager::getMoufManager()->getInstance('viewInstancesMenuItem');
+	 }
+
+	/**
+	 * @return MoufRootController
+	 */
+	 public function getRootController() {
+	 	return MoufManager::getMoufManager()->getInstance('rootController');
+	 }
+
+	/**
+	 * @return HtmlJSJQuery
+	 */
+	 public function getJQuery() {
+	 	return MoufManager::getMoufManager()->getInstance('jQuery');
+	 }
+
+	/**
+	 * @return HtmlJSJQueryUI
+	 */
+	 public function getJqueryui() {
+	 	return MoufManager::getMoufManager()->getInstance('jqueryui');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getComponentsLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('componentsLabelMenuItem');
 	 }
 
 }
