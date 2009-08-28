@@ -75,8 +75,4 @@ Log::trace("DB _init");
 
 //Internationalization
 require_once 'utils/languageUtils.php';
-
-
-// Load User Files
-if(file_exists(ROOT_PATH."load.php")) require_once ROOT_PATH."load.php";
 ?>
