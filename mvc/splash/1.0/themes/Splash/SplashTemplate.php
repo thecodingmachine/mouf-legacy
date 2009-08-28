@@ -85,9 +85,17 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	private $javascript_files;
 
 	/**
-	 * A list of css files to be loaded.
+	 * A list of css files that are used by the template and that msut be included.
 	 */
-	private $css_files;
+	private $private_css_files;
+	
+	/**
+	 * A list of css files to be loaded.
+	 * 
+	 * @Property
+	 * @var array<string>
+	 */
+	public $css_files;
 
 	/**
 	 * The default scope for the files that will be executed using addXxxFile.
@@ -109,7 +117,7 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		//$this->params = array();
 		$this->javascript = array();
 		$this->javascript_files = array();
-		$this->css_files = array(TEMPLATE_ROOT_URL."css/reset.css", TEMPLATE_ROOT_URL."css/splash.css", TEMPLATE_ROOT_URL."css/styles.css");
+		$this->private_css_files = array(TEMPLATE_ROOT_URL."css/reset.css", TEMPLATE_ROOT_URL."css/splash.css", TEMPLATE_ROOT_URL."css/styles.css");
 		$this->logoImg = "plugins/mvc/splash/1.0/themes/Splash/css/images/logo.png";
 	}
 	
@@ -459,9 +467,15 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 */
 	protected function getCssFiles() {
 		$html = '';
-		foreach ($this->css_files as $file) {
+		foreach ($this->private_css_files as $file) {
 			$html .= "<link href='$file' rel='stylesheet' type='text/css' />\n";
 
+		}
+		if (is_array($this->css_files)) {
+			foreach ($this->css_files as $file) {
+				$html .= "<link href='".ROOT_URL."$file' rel='stylesheet' type='text/css' />\n";
+	
+			}
 		}
 		return $html;
 	}

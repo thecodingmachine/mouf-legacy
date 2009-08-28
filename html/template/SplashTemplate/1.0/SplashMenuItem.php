@@ -34,14 +34,60 @@ class SplashMenuItem implements HtmlElementInterface {
 	 */
 	public $menuCssClass;
 	
+	/**
+	 * A list of parameters that are propagated by the link.
+	 * For instance, if the parameter "mode" is set to 42 on the page (because the URL is http://mywebsite/myurl?mode=42),
+	 * then if you choose to propagate the "mode" parameter, the menu link will have "mode=42" as a parameter.
+	 *
+	 * @Property
+ 	 * @var array<string>
+	 */
+	public $propagatedUrlParameters;
+	
 	public function toHtml() {
 		echo '<li ';
 		if (!empty($this->menuCssClass)) {
 			echo 'class="'.$this->menuCssClass.'"';
 		}
-		echo '><a href="'.$this->getLink().'" >'.$this->menuText.'</a>';
+		echo '>';
+		if (!empty($this->menuLink)) {
+			echo '<a href="'.$this->getLinkWithParams().'" >';
+		}
+		echo $this->menuText;
+		if (!empty($this->menuLink)) {
+			echo '</a>';
+		}
 		echo '</li>';
 		
+	}
+
+	private function getLinkWithParams() {
+		$link = $this->getLink();
+		
+		$params = array();
+		// First, get the list of all parameters to be propagated
+		if (is_array($this->propagatedUrlParameters)) {
+			foreach ($this->propagatedUrlParameters as $parameter) {
+				if (isset($_REQUEST[$parameter])) {
+					$params[$parameter] = get($parameter);
+				}
+			}
+		}
+		
+		if (!empty($params)) {
+			if (strpos($link, "?") === FALSE) {
+				$link .= "?";
+			} else {
+				$link .= "&";
+			}
+			$paramsAsStrArray = array();
+			foreach ($params as $key=>$value) {
+				$paramsAsStrArray[] = urlencode($key).'='.urlencode($value);
+			}
+			$link .= implode("&", $paramsAsStrArray);
+		}
+		
+		return $link;
 	}
 	
 	private function getLink() {
