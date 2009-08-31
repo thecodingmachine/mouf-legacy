@@ -1,0 +1,260 @@
+/************************** Main CSS **************************/
+div.calendar_main table {
+	padding: 0px;
+	border-spacing: 0px;
+	border-collapse: collapse;
+}
+
+div.calendar_main table tr, div.calendar_main table td, div.calendar_main table th {
+	padding: 0px;
+}
+
+div.calendar_main table.calendar_main_table {
+}
+
+div.calendar_main tr.calendar_main_table_header {
+	height: 7%;
+}
+
+div.calendar_main td.calendar_main_table_link {
+	text-align: right;
+	width : 40%;
+}
+
+div.calendar_main td.calendar_main_table_arrow_left {
+	text-align: left;
+}
+
+div.calendar_main td.calendar_main_table_arrow_right {
+	text-align: right;
+}
+
+div.calendar_main td.calendar_main_table_title {
+	text-align: center;
+	text-transform: capitalize;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+
+/************************** By Year **************************/
+div.calendar_main a.calendar_year_table_month_title {
+	color: black;
+}
+
+div.calendar_main table.calendar_year_table_month {
+}
+
+div.calendar_main th.calendar_year_table_month_mon {
+}
+div.calendar_main th.calendar_year_table_month_tue {
+}
+div.calendar_main th.calendar_year_table_month_wed {
+}
+div.calendar_main th.calendar_year_table_month_thu {
+}
+div.calendar_main th.calendar_year_table_month_fri {
+}
+div.calendar_main th.calendar_year_table_month_sat {
+}
+div.calendar_main th.calendar_year_table_month_sun {
+}
+
+div.calendar_main td.calendar_year_table_week {
+	vertical-align: middle;
+	font-style: italic;
+}
+
+div.calendar_main td.calendar_year_table_week a {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+div.calendar_main td.calendar_year_table_week a:hover {
+	text-decoration: underline;
+}
+
+div.calendar_main td.calendar_year_table_day {
+	vertical-align: top;
+	text-align: center;
+	padding: 0px;
+	vertical-align: middle;
+}
+
+div.calendar_main td.calendar_year_table_day_event {
+	background-color: #BBBBBB;
+}
+
+div.calendar_main td.calendar_year_table_today {
+	border: 1px solid orange;
+}
+
+div.calendar_main div.calendar_year_event_category {
+	font-size: 9px;
+	text-align: right;
+}
+
+/*---- Tooltip ----*/
+div.calendar_tooltip_year_date {
+	font-size: 9px;
+	text-align: right;
+}
+div.calendar_tooltip_pos_year {
+	background-color: #BBBBBB;
+	position: relative;
+}
+div.calendar_tooltip_pos_year:hover span {
+	top: -150px;
+	left: 0px;
+	height: 300px;
+	overflow: auto;
+}
+div.calendar_tooltip_pos_year_left:hover span {
+	left: 0px;
+}
+
+div.calendar_tooltip_pos_year_right:hover span {
+	left: -180px;
+}
+
+div.calendar_tooltip_pos_year_bottom:hover span {
+	top: -280px;
+}
+
+div.calendar_tooltip_pos_year_top:hover span {
+	top: 0px;
+}
+
+/*** Month ***/
+div.calendar_month_day_event_start {
+	margin-left: 3px;
+}
+div.calendar_month_day_event_end {
+	margin-right: 3px;
+}
+
+/*--- Tooltip ---*/
+/*
+div.calendar_tooltip_pos_month span {
+	top: 0px;
+	left: -30px;
+	z-index: 10;
+}
+div.calendar_tooltip_pos_month_left span {
+	left: 0px;
+}
+div.calendar_tooltip_pos_month_right span {
+	left: -170px;
+}
+div.calendar_tooltip_pos_month_bottom span {
+	top: -80px;
+}
+div.calendar_tooltip_pos_month_top span {
+	top: 0px;
+}*/
+div.calendar_tooltip_pos_month_bottom span {
+	bottom: 0px;
+}
+div.calendar_tooltip_pos_month_right span {
+	right: -170px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+div.calendar_event {
+	background: #DDDDDD;
+	color: black;
+}
+
+div.calendar_week_event {
+	/behavior: url(hover.htc);
+}
+
+
+div.calendar_week_event span {
+	color: #333333;
+	border: 2px solid #444444;
+	padding: 5px;
+	background: #eae7d7;
+	width: 170%;
+	position: absolute;
+	left: -60%;
+	text-align: justify;
+	font-style: normal;
+	z-index: 200000;
+}
+
+div.calendar_week_event:hover {
+	z-index: 2;
+}
+
+div.calendar_week_event span {
+	display: none;
+}
+
+div.calendar_week_event_all_day {
+	/*overflow: hidden;*/
+}
+div.calendar_week_event:hover span{
+	overflow: visible;
+	display: block;
+}
+
+div.calendar_tooltip {
+	color: black;
+}
+div.calendar_tooltip span {
+	display:none;
+}
+
+div.calendar_tooltip:hover {
+	border: 0;
+	text-decoration:none;
+	z-index: 2;
+}
+
+
+/****** Tooltip ******/
+div.calendar_tooltip:hover span {
+	font-style: normal;
+	display: block;
+	position: absolute;
+	padding: 5px;
+	color: #333333;
+	border: 2px solid #444444;
+	background: #eae7d7;
+	width: 190px;
+	text-align: justify;
+}
+
+
+
+
+
+
+
+
+
+a.calendar_month_by_year {
+	color: black;
+	text-decoration: none;
+}
+
+a.calendar_month_by_year:hover {
+	text-decoration: underline;
+}
+
+sup.count {
+	float: left;
+	font-size: 9px;
+}
