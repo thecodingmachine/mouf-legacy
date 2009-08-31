@@ -1,3 +1,23 @@
+<?php 
+if (!extension_loaded("curl")) {
+?>
+<html>
+	<head>
+		<title>Welcome to Mouf</title>
+	</head>
+	<body>
+		<h1>Missing dependencies</h1>
+		<p>In order to run Mouf, you will first need to enable the "php_curl" extension on your server.</p>
+		<p>Please enable this extension and refresh this page.</p>
+	</body>
+</html>
+<?php 
+	exit();
+}
+?>
+
+
+
 <html>
 	<head>
 		<title>Welcome to Mouf</title>
