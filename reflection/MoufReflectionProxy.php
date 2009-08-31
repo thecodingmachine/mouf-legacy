@@ -35,7 +35,13 @@ class MoufReflectionProxy {
 		
 		$response = self::performRequest($url);
 
-		return unserialize($response);
+		$obj = unserialize($response);
+		
+		if ($obj === false) {
+			throw new Exception($response);
+		}
+		
+		return $obj;
 	}
 	
 	public static function getComponentsList($selfEdit) {
@@ -43,7 +49,13 @@ class MoufReflectionProxy {
 
 		$response = self::performRequest($url);
 
-		return unserialize($response);
+		$obj = unserialize($response);
+		
+		if ($obj === false) {
+			throw new Exception($response);
+		}
+		
+		return $obj;
 		
 	}
 	
