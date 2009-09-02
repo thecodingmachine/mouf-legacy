@@ -43,7 +43,7 @@ jQuery(document).ready( function() {
 	jQuery('#fileTreeContainer').fileTree({ 
 		//root: '<?php echo str_replace("\\", "/", realpath(dirname(__FILE__)."/../../")) ?>', 
 		root: '',
-		script: '<?php ROOT_URL ?>/mouf/plugins/javascript/jquery/jqueryFileTree/1.01/connectors/jqueryFileTree.php'
+		script: '<?php echo ROOT_URL ?>/plugins/javascript/jquery/jqueryFileTree/1.01/connectors/jqueryFileTree.php'
 		}, addFile);
 
 	
