@@ -14,6 +14,7 @@ MoufManager::getMoufManager()->registerComponent('../plugins/javascript/prototyp
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jit/1.1.2/HtmlJSJit.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php');
+MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/html/template/SplashTemplate/1.0/SplashMenu.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/models/Splash.php');
@@ -22,6 +23,7 @@ MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/them
 MoufManager::getMoufManager()->registerComponent('../plugins/utils/log/errorlog_logger/ErrorLogLogger.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufRootController.php');
+MoufManager::getMoufManager()->registerComponent('controllers/ComponentsController.php');
 
 MoufManager::getMoufManager()->declareComponent('splash', 'Splash');
 MoufManager::getMoufManager()->declareComponent('splashTemplate', 'SplashTemplate');
@@ -38,6 +40,9 @@ MoufManager::getMoufManager()->declareComponent('jqueryui', 'HtmlJSJQueryUI');
 MoufManager::getMoufManager()->declareComponent('componentsLabelMenuItem', 'SplashMenuItem');
 MoufManager::getMoufManager()->declareComponent('packagesLabelMenuItem', 'SplashMenuItem');
 MoufManager::getMoufManager()->declareComponent('managePackagesMenuItem', 'SplashMenuItem');
+MoufManager::getMoufManager()->declareComponent('loadComponentsMenuItem', 'SplashMenuItem');
+MoufManager::getMoufManager()->declareComponent('components', 'ComponentsController');
+MoufManager::getMoufManager()->declareComponent('jqueryFileTree', 'HtmlJSJQueryFileTree');
 
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'title', 'Mouf - Build your website');
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'logoImg', 'mouf/views/images/MoufLogo.png');
@@ -73,6 +78,12 @@ MoufManager::getMoufManager()->setParameter('managePackagesMenuItem', 'menuCssCl
 MoufManager::getMoufManager()->setParameter('managePackagesMenuItem', 'propagatedUrlParameters', array (
   0 => 'selfedit',
 ));
+MoufManager::getMoufManager()->setParameter('loadComponentsMenuItem', 'menuText', 'Load components');
+MoufManager::getMoufManager()->setParameter('loadComponentsMenuItem', 'menuLink', 'mouf/components/');
+MoufManager::getMoufManager()->setParameter('loadComponentsMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('loadComponentsMenuItem', 'propagatedUrlParameters', array (
+  0 => 'selfedit',
+));
 
 MoufManager::getMoufManager()->bindComponents('splash', 'log', 'errorLogger');
 MoufManager::getMoufManager()->bindComponents('splash', 'defaultTemplate', 'splashTemplate');
@@ -81,6 +92,7 @@ MoufManager::getMoufManager()->bindComponent('moufTemplate', 'head', array (
   0 => 'prototype',
   1 => 'jQuery',
   2 => 'jqueryui',
+  3 => 'jqueryFileTree',
 ));
 MoufManager::getMoufManager()->bindComponent('moufTemplate', 'left', array (
   0 => 'actionMenu',
@@ -89,12 +101,14 @@ MoufManager::getMoufManager()->bindComponent('actionMenu', 'menuItems', array (
   0 => 'packagesLabelMenuItem',
   1 => 'managePackagesMenuItem',
   2 => 'componentsLabelMenuItem',
-  3 => 'viewInstancesMenuItem',
-  4 => 'newInstanceMenuItem',
+  3 => 'loadComponentsMenuItem',
+  4 => 'viewInstancesMenuItem',
+  5 => 'newInstanceMenuItem',
 ));
 MoufManager::getMoufManager()->bindComponent('splashTemplate', 'head', array (
   0 => 'prototype',
 ));
+MoufManager::getMoufManager()->bindComponents('components', 'template', 'moufTemplate');
 
 /**
  * This is the base class of the Manage Object User Friendly or Modular object user framework (MOUF) framework.
@@ -205,6 +219,27 @@ class MoufAdmin {
 	 */
 	 public function getManagePackagesMenuItem() {
 	 	return MoufManager::getMoufManager()->getInstance('managePackagesMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getLoadComponentsMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('loadComponentsMenuItem');
+	 }
+
+	/**
+	 * @return ComponentsController
+	 */
+	 public function getComponents() {
+	 	return MoufManager::getMoufManager()->getInstance('components');
+	 }
+
+	/**
+	 * @return HtmlJSJQueryFileTree
+	 */
+	 public function getJqueryFileTree() {
+	 	return MoufManager::getMoufManager()->getInstance('jqueryFileTree');
 	 }
 
 }

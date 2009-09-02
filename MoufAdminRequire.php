@@ -12,6 +12,7 @@ require_once dirname(__FILE__).'/../plugins/javascript/prototype/1.6.0.1/HtmlJSP
 require_once dirname(__FILE__).'/../plugins/javascript/jit/1.1.2/HtmlJSJit.php';
 require_once dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
 require_once dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php';
+require_once dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/Splash.php';
@@ -20,5 +21,6 @@ require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/themes/Splash/SplashT
 require_once dirname(__FILE__).'/../plugins/utils/log/errorlog_logger/ErrorLogLogger.php';
 require_once dirname(__FILE__).'/controllers/MoufController.php';
 require_once dirname(__FILE__).'/controllers/MoufRootController.php';
+require_once dirname(__FILE__).'/controllers/ComponentsController.php';
 
 ?>

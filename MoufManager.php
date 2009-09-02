@@ -577,5 +577,80 @@ class ".$this->mainClassName." {
 		}
 		return $instancesList;
 	}
+	
+	/**
+	 * Returns the list of files that will be included by Mouf, relative to the root of the project
+	 *
+	 * @return array<string>
+	 */
+	public function getRegisteredComponentFiles() {
+		
+		$fileArray = array();
+		$dirMoufFile = dirname($this->requireFileName);
+		$fulldir = realpath(dirname(__FILE__)."/..");
+		foreach ($this->registeredComponents as $file) {
+			$realpathFile = realpath($dirMoufFile."/".$file);
+			$relativeFile = substr($realpathFile, strlen($fulldir)+1);
+			$relativeFile = str_replace("\\", "/", $relativeFile);
+			$fileArray[] = $relativeFile;
+		}
+		
+		return $fileArray;
+	}
+	
+	/**
+	 * Sets a list of files that will be included by Mouf, relative to the root of the project.
+	 *
+	 * @param array<string> $files
+	 */
+	public function setRegisteredComponentFiles($files) {
+		
+		$dirMoufFile = dirname(dirname(__FILE__)."/".$this->requireFileName);
+		$fulldir = realpath(dirname(__FILE__)."/../");
+
+		$registeredComponentsFile = array();
+		foreach ($files as $file) {
+			$fileFull = $fulldir.$file;
+			$registeredComponentsFile[] = $this->createRelativePath($dirMoufFile, $fileFull);
+		}
+		
+		$this->registeredComponents = $registeredComponentsFile;
+	}
+	
+	/**
+	 * Creates a relative path from the directory $fromDirectory (current dir) to the file $toFile.
+	 *
+	 * @param unknown_type $fromDirectory
+	 * @param unknown_type $toFile
+	 */
+	private function createRelativePath($fromDirectory, $toFile) {
+		$realPathFromDir = str_replace("\\", "/", realpath($fromDirectory)) ;
+		$realPathToFile = str_replace("\\", "/", realpath($toFile));
+		
+		// Let's find the common root by going through each directory.
+		
+		$realPathFromDirArray = explode("/", $realPathFromDir);
+		$realPathToFileArray = explode("/", $realPathToFile);
+
+		while ($realPathFromDirArray[0] == $realPathToFileArray[0]) {
+			array_shift($realPathFromDirArray);
+			array_shift($realPathToFileArray);
+		}
+		
+		
+		/*
+		
+		for ($i=0; $i<count($realPathFromDirArray); $i++) {
+			// Let's stop when there is nothing in common anymore.
+			if ($realPathFromDirArray[$i] != $realPathToFileArray[$i]) {
+				break; 
+			}
+		}*/
+		$nbDirsRemaining = count($realPathFromDirArray);
+		
+		
+		$path = str_repeat("../", $nbDirsRemaining).implode("/", $realPathToFileArray);
+		return $path;
+	}
 }
 ?>

@@ -1,7 +1,24 @@
 
+div.file {
+	width: 500px;
+	height: 20px;
+	border: 1px solid #cccccc;
+	background-color: #eeeeee;
+	clear:both	
+}
+
 div.moveable {
 	width: 15px;
 	height: 15px;
 	background-image:url(images/updown.png);
-	float:left
+	float:left;
+	cursor:pointer;
+}
+
+div.trash {
+	width: 15px;
+	height: 15px;
+	background-image:url(images/trash.png);
+	float:right;
+	cursor:pointer;
 }
