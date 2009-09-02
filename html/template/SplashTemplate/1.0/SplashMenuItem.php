@@ -20,7 +20,6 @@ class SplashMenuItem implements HtmlElementInterface {
 	 * The link for the menu (relative to the root url), unless it starts with / or http:// or https://.
 	 *
 	 * @Property
-	 * @Compulsory
 	 * @var string
 	 */
 	public $menuLink;
@@ -29,7 +28,6 @@ class SplashMenuItem implements HtmlElementInterface {
 	 * The CSS class for the menu, if any (applied to the &lt;li&gt; element.
 	 *
 	 * @Property
-	 * @Compulsory
 	 * @var string
 	 */
 	public $menuCssClass;
