@@ -629,9 +629,9 @@ class ".$this->mainClassName." {
 	 * @param unknown_type $toFile
 	 */
 	private function createRelativePath($fromDirectory, $toFile) {
+		
 		$realPathFromDir = str_replace("\\", "/", realpath($fromDirectory)) ;
 		$realPathToFile = str_replace("\\", "/", realpath($toFile));
-		
 		// Let's find the common root by going through each directory.
 		
 		$realPathFromDirArray = explode("/", $realPathFromDir);
