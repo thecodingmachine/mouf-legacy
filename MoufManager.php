@@ -607,10 +607,17 @@ class ".$this->mainClassName." {
 		
 		$dirMoufFile = dirname(dirname(__FILE__)."/".$this->requireFileName);
 		$fulldir = realpath(dirname(__FILE__)."/../");
+		$fulldir = str_replace("\\", "/", $fulldir);
+		// Depending on the version of PHP, we might or might not have a trailing /. Let's add it.
+		if (substr($fulldir, -1) != "/" ) {
+			$fulldir .= "/";
+		}
 
 		$registeredComponentsFile = array();
 		foreach ($files as $file) {
 			$fileFull = $fulldir.$file;
+			var_dump($fulldir);
+			var_dump($file);
 			$registeredComponentsFile[] = $this->createRelativePath($dirMoufFile, $fileFull);
 		}
 		
