@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component>
+<package>
 	<displayName>Splash</displayName>
 	<shortDescription>An MVC framework deeply integrated with Mouf</shortDescription>
-	<docUrl></docUrl>
+	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
 	<dependencies>
 		<dependency>
 			<group>utils/log</group>
 			<name>log_interface</name>
 			<version>1.0</version>
 		</dependency>
+		
 	</dependencies>
 	<requires>
-		<require>load.php</require>
+		<require>models/Splash.php</require>
 	</requires>
 	<adminRequires>
 		<require>SplashAdmin.php</require>
 	</adminRequires>	
-</component>
+</package>

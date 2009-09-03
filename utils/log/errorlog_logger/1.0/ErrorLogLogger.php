@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__)."/../log_interface/LogInterface.php");
+require_once(dirname(__FILE__)."/../../log_interface/1.0/LogInterface.php");
 
 define("TRACKING_TRACE", 1);
 define("TRACKING_DEBUG", 2);
