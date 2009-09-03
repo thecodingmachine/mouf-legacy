@@ -616,8 +616,6 @@ class ".$this->mainClassName." {
 		$registeredComponentsFile = array();
 		foreach ($files as $file) {
 			$fileFull = $fulldir.$file;
-			var_dump($fulldir);
-			var_dump($file);
 			$registeredComponentsFile[] = $this->createRelativePath($dirMoufFile, $fileFull);
 		}
 		
