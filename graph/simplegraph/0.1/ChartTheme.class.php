@@ -341,7 +341,7 @@ class ChartTheme {
          * @Compulsory
          * @var string
          */
-        public $titleFontSize;
+        public $pieTitleFontSize;
         
         /**
          * Chart title horizontal position.<br />
@@ -438,6 +438,7 @@ class ChartTheme {
 			$this->piePaddingTitleY = 2;
 			$this->piePosTitleY = -40; 
 			$this->piePosTitleX = 0;
+			$this->pieTitleFontSize = 14;
 			
 			$this->backgroundColorOne = "CCCCFF";
 			$this->backgroundColorTwo = "FFFF88";
@@ -451,7 +452,6 @@ class ChartTheme {
 			$this->posChartX = .4;
 			$this->sizeChartY = .65; 
 			$this->sizeChartX = .65;
-			$this->titleFontSize = 14;
 			$this->thickness = 10;
 			$this->shadow = 4;
 			$this->antiAliasing = TRUE;

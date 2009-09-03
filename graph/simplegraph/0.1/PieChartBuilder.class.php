@@ -86,13 +86,13 @@ class PieChartBuilder {
 		$pie->title->set(utf8_decode($this->theme->pieTitle));
 		
 		// ... repositionnement...
-		$pie->title->move($this->theme->piepiePosTitleX, $this->theme->piePosTitleY);
+		$pie->title->move($this->theme->piePosTitleX, $this->theme->piePosTitleY);
 		
 		// ... et embellissement.
 		$colorBgTitle = $this->theme->colorHtmlToDecimal($this->theme->pieTitleBackgroundColor);
 		$colorFrameTitle = $this->theme->colorHtmlToDecimal($this->theme->pieTitleFrameColor);
 		$pie->title->setFont(new TuffyBold($this->theme->pieTitleFontSize));
-		$pie->title->setBackgroundColor(new Color($colorBgTitle[0], $colorBgTitle[1], $colorBgTitle[2], $this->theme->$pieTitleBackgroundTransparency));
+		$pie->title->setBackgroundColor(new Color($colorBgTitle[0], $colorBgTitle[1], $colorBgTitle[2], $this->theme->pieTitleBackgroundTransparency));
 		$pie->title->setPadding($this->theme->piePaddingTitleX, $this->theme->piePaddingTitleX, $this->theme->piePaddingTitleY, $this->theme->piePaddingTitleY);
 		$pie->title->border->setColor(new Color($colorFrameTitle[0], $colorFrameTitle[1], $colorFrameTitle[2], 0));
 		
