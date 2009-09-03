@@ -18,9 +18,10 @@ require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/Spl
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/Splash.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/TemplateInterface.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/themes/Splash/SplashTemplate.php';
-require_once dirname(__FILE__).'/../plugins/utils/log/errorlog_logger/ErrorLogLogger.php';
+require_once dirname(__FILE__).'/../plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php';
 require_once dirname(__FILE__).'/controllers/MoufController.php';
 require_once dirname(__FILE__).'/controllers/MoufRootController.php';
 require_once dirname(__FILE__).'/controllers/ComponentsController.php';
+require_once dirname(__FILE__).'/controllers/PackageController.php';
 
 ?>
