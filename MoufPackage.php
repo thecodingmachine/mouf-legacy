@@ -142,6 +142,15 @@ class MoufPackage {
 	}
 	
 	/**
+	 * Returns the short description
+	 *
+	 * @return string
+	 */
+	public function getShortDescription() {
+		return $this->shortDescription;
+	}
+	
+	/**
 	 * Returns the documentation url
 	 *
 	 * @return string
@@ -157,6 +166,15 @@ class MoufPackage {
 	 */
 	public function getPackageDirectory() {
 		return $this->packageDir;
+	}
+	
+	/**
+	 * Returns an array of MoufPackageDescriptor.
+	 *
+	 * @return array<MoufPackageDescriptor>
+	 */
+	public function getDependenciesAsDescriptors() {
+		return $this->dependencies;
 	}
 }
 ?>

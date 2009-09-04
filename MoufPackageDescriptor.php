@@ -46,7 +46,12 @@ class MoufPackageDescriptor {
 		$version = basename($packageDir);
 		$tmpDir = dirname($packageDir);
 		$name = basename($tmpDir);
-		$group = substr(dirname($tmpDir), 2);
+		$tmpGroup = dirname($tmpDir);
+		if (strpos($tmpGroup, "./") === 0) {
+			$group = substr($tmpGroup, 2);
+		} else {
+			$group = $tmpGroup;
+		}
 		
 		return new MoufPackageDescriptor($group, $name, $version);
 	}
@@ -76,6 +81,15 @@ class MoufPackageDescriptor {
 	 */
 	public function getGroup() {
 		return $this->group;
+	}
+	
+	/**
+	 * Returns the path to the package.xml file from the root "plugins" directory.
+	 *
+	 * @return string
+	 */
+	public function getPackageXmlPath() {
+		return $this->group."/".$this->name."/".$this->version."/package.xml";
 	}
 }
 ?>

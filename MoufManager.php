@@ -132,6 +132,15 @@ class MoufManager {
 	private $externalComponents = array();
 	
 	/**
+	 * The list of packages that are enabled.
+	 * The list contains the path to the package.xml file from the plugins directory.
+	 * The list is ordered per dependencies.
+	 *
+	 * @var array<string>
+	 */
+	private $packagesList = array();
+	
+	/**
 	 * The name of the file that contains the components declarations
 	 *
 	 * @var string
@@ -419,6 +428,11 @@ class MoufManager {
 		fwrite($fp, "MoufManager::initMoufManager();\n");
 		fwrite($fp, "\n");
 		
+		foreach ($this->packagesList as $fileName) {
+			fwrite($fp, "MoufManager::getMoufManager()->addPackageByXmlFile(".var_export($fileName, true).");\n");
+		}
+		fwrite($fp, "\n");
+		
 		foreach ($this->registeredComponents as $registeredComponent) {
 			//fwrite($fp, "require_once dirname(__FILE__).'/$registeredComponent';\n");
 			fwrite($fp, "MoufManager::getMoufManager()->registerComponent('$registeredComponent');\n");
@@ -656,6 +670,30 @@ class ".$this->mainClassName." {
 		
 		$path = str_repeat("../", $nbDirsRemaining).implode("/", $realPathToFileArray);
 		return $path;
+	}
+	
+	/**
+	 * Adds a package by providing the path to the package.xml file.
+	 * The path is relative to the "plugins" directory. 
+	 *
+	 * @param string $fileName
+	 */
+	public function addPackageByXmlFile($fileName) {
+		$this->packagesList[] = $fileName;
+	}
+	
+	/**
+	 * Returns true if the package is enabled.
+	 * The path provided should by related to "plugins" directory. 
+	 *
+	 * @param string $fileName
+	 */
+	public function isPackageEnabled($fileName) {
+		if (array_search($fileName, $this->packagesList)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ?>
