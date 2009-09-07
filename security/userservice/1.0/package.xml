@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>UserService</displayName>
+	<shortDescription>A set of class to manage log-in and log-out of web applications.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>UserDaoException.php</require>
+		<require>UserServiceException.php</require>
+		<require>UserInterface.php</require>
+		<require>UserDaoInterface.php</require>
+		<require>UserServiceInterface.php</require>
+		<require>MoufUserService.php</require>
+	</requires>
+</package>

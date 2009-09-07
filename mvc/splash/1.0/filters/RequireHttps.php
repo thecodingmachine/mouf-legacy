@@ -32,7 +32,8 @@ class RequireHttps extends AbstractFilter
 	 * Function to be called before the action.
 	 */
 	public function beforeAction() {
-		if (USE_HTTPS) {
+		$use_https = MoufManager::getMoufManager()->getInstance('splash')->supportsHttps;
+		if ($use_https) {
 			if ($this->value == "yes") {
 				if (!$_SERVER['HTTPS']) {
 					throw new ApplicationException("annotation.requirehttps.requiresssl.title", "annotation.requirehttps.requiresssl.text");

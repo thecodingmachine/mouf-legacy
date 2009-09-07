@@ -41,6 +41,14 @@ class Splash {
 	public $defaultTemplate;
 	
 	/**
+	 * Set to "true" if the server supports HTTPS.
+	 * This can be used by various plugins (especially the RequiresHttps annotation).
+	 *
+	 * @var boolean
+	 */
+	public $supportsHttps;
+	
+	/**
 	 * The controller in the Url (this should be the first "directory" of the URL after the webapp.
 	 *
 	 * @var string
