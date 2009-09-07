@@ -176,5 +176,24 @@ class MoufPackage {
 	public function getDependenciesAsDescriptors() {
 		return $this->dependencies;
 	}
+	
+	/**
+	 * Returns the list of required files, relative to the root of the package.
+	 *
+	 * @array<string>
+	 */
+	public function getRequiredFiles() {
+		return $this->requires;
+	}
+
+	/**
+	 * Returns the list of required files for the admin, relative to the root of the package.
+	 *
+	 * @array<string>
+	 */
+	public function getAdminRequiredFiles() {
+		return $this->adminRequires;
+	}
+	
 }
 ?>
