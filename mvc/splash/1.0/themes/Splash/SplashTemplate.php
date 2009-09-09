@@ -60,11 +60,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @var string
 	 */	
 	public $logoImg;
-	
-	/**
-	 * The array of parameters passed to the functions called in the template.
-	 */
-	//protected $params;
 
 	/**
 	 * The title of the HTML page
@@ -114,7 +109,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		$this->right = array();
 		$this->header = array();
 		$this->head = array();
-		//$this->params = array();
 		$this->javascript = array();
 		$this->javascript_files = array();
 		$this->private_css_files = array(TEMPLATE_ROOT_URL."css/reset.css", TEMPLATE_ROOT_URL."css/splash.css", TEMPLATE_ROOT_URL."css/styles.css");
@@ -169,9 +163,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		$content->parameters = $arguments;
 		$this->content[] = $content;
 		return $this;
-		
-		//$this->content[] = array("type"=>"function", "name"=>$function, "arguments"=>$arguments);
-		//return $this;
 	}
 
 	/**
@@ -182,7 +173,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		$content = new HtmlString();
 		$content->htmlString = $text;
 		$this->content[] = $content;
-		//$this->content[] = array("type"=>"text", "text"=>$text);
 		return $this;
 	}
 	
@@ -236,7 +226,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		$content = new HtmlString();
 		$content->htmlString = $text;
 		$this->header[] = $content;
-		//$this->content[] = array("type"=>"text", "text"=>$text);
 		return $this;
 	}
 
@@ -395,7 +384,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		$content = new HtmlString();
 		$content->htmlString = $text;
 		$this->head[] = $content;
-		//$this->content[] = array("type"=>"text", "text"=>$text);
 		return $this;
 	}
 
@@ -507,15 +495,6 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 */
 	protected function drawArray($array) {
 		foreach ($array as $element) {
-			/*if ($element["type"] == "function") {
-				call_user_func_array($element["name"], $element["arguments"]);
-			} else if ($element["type"] == "text") {
-				echo $element["text"];
-			} else if ($element["type"] == "file") {
-				$element["scope"]->loadFile($element["name"]);
-			} else {
-				trigger_error("Unexpected type in template: ".$element["type"]);
-			}*/
 			$element->toHtml();
 		}
 	}
