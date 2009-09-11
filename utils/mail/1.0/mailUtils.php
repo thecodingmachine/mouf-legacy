@@ -13,7 +13,7 @@ class MailUtils{
 	 *
 	 * @return true on success, false on failure.
 	 */
-	public static function buildAndSendMail($to,$from, $subject, $fromAlias=null, $toAlias=null){
+	public static function buildAndSendMail($to,$from, $subject, $fromAlias=null, $toAlias=null, $html, $text){
 		require_once 'class.mail5.php';
 		
 		$mail = new mailMain();
