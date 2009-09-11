@@ -15,6 +15,15 @@ class varAnnotation
 
     public function __construct($value)
     {
+    	$this->analyzeType($value);
+    }
+    
+    /**
+     * Analyzes the type and fills the type (and keytype and subtype if necessary).
+     *
+     * @param string $value
+     */
+    protected function analyzeType($value) {
     	ereg("^([a-zA-Z_][a-zA-Z0-9_]*)", $value, $values);
     	
         $this->type = $values[1];    

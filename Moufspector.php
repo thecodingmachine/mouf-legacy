@@ -43,6 +43,9 @@ class Moufspector {
 			}
 		}
 		
+		// TODO: transform Property into a MoufProperty object (name + source (getter or public property) + type variable).
+		
+		
 		return $propertiesList;
 	}
 	

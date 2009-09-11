@@ -78,6 +78,7 @@ class PackageController extends Controller {
 	 */
 	public function enablePackage($name, $selfedit = "false", $confirm="false") {
 		// First, let's find the list of depending packages.
+		$this->selfedit = $selfedit;
 		
 		$packageManager = new MoufPackageManager();
 		$this->package = $packageManager->getPackage($name);

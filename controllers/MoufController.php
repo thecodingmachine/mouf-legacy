@@ -182,6 +182,9 @@ class MoufController extends Controller {
 				}
 				
 				
+			} else {
+				// No @var annotation
+				throw new Exception("Error while saving, no @var annotation for property ".$property->getName());
 			}
 		}
 		

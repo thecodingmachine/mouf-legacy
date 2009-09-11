@@ -5,21 +5,19 @@
 require_once 'MoufManager.php';
 MoufManager::initMoufManager();
 
+MoufManager::getMoufManager()->addPackageByXmlFile('utils/log/log_interface/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('html/htmlelement/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('html/template/BaseTemplate/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('mvc/splash/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('html/template/SplashTemplate/1.0/package.xml');
+
 MoufManager::getMoufManager()->registerComponent('../plugins/utils/common/getvars/1.0/tcm_utils.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/html/htmlelement/1.0/Scopable.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/html/htmlelement/1.0/HtmlFromFile.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/html/htmlelement/1.0/HtmlFromFunction.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/html/htmlelement/1.0/HtmlString.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jit/1.1.2/HtmlJSJit.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/html/template/SplashTemplate/1.0/SplashMenu.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/models/Splash.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/models/TemplateInterface.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/themes/Splash/SplashTemplate.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufRootController.php');
