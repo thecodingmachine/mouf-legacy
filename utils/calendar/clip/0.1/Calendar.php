@@ -32,12 +32,12 @@ class Calendar {
 							"#FFAAAA", "#AAFFAA", "#AAAAFF",
 							"#FFFFAA", "#AAFFFF", "#FFAAFF");
 	private $months = array("", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
-	private $daysSmall = array("", "mon", "tue", "wed", "thu", "fri", "sat", "sun");
 	private $days = array("", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
 	private $colorUse = 0;
 	private $url;
 	private $functionTranslate = null;
 	private $language = "en";
+	private $calendarLanguage = array();
 	private $width;
 	private $height;
 	
@@ -149,7 +149,7 @@ class Calendar {
 	* @param function string function name
 	*/
 	public function setFormatDateFunction($function) {
-		$this->functionformatDate = $function;
+		$this->functionFormatDate = $function;
 	}
 
 	/**
@@ -157,7 +157,7 @@ class Calendar {
 	* @param function string function name
 	*/
 	public function setFormatDateTimeFunction($function) {
-		$this->functionformatDateTime = $function;
+		$this->functionFormatDateTime = $function;
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Calendar {
 	* @param function string function name
 	*/
 	public function setFormatHalfDateFunction($function) {
-		$this->functionformatHalfDate = $function;
+		$this->functionFormatHalfDate = $function;
 	}
 
 	/**
@@ -194,6 +194,7 @@ class Calendar {
 	}
 	
 	public function setCalendarDataSource($dataSource) {
+		$this->categories = $dataSource->getCategories();
 //		foreach ($dataSource->getCategories() as $category)
 //			$this->addCategory($category);
 		foreach ($dataSource->getEvents() as $event)
@@ -212,6 +213,34 @@ class Calendar {
 
 	public function getHeight() {
 		return $this->height."px";
+	}
+	
+	public function getStartDate($date = false) {
+		if($this->type == "year")
+			$timestamp = mktime(0, 0, 0, 1, 1, $this->year);
+		elseif($this->type == "month")
+			$timestamp = mktime(0, 0, 0, $this->month, 1, $this->year);
+		else
+			$timestamp = mktime(0, 0, 0, $this->monthWeek, $this->dayWeek, $this->yearWeek);
+		
+		if($date)
+			return date("Y-m-d H:i:s", $timestamp);
+		else
+			return $timestamp;
+	}
+
+	public function getEndDate($date = false) {
+		if($this->type == "year")
+			$timestamp = mktime(23, 59, 59, 12, 31, $this->year);
+		elseif($this->type == "month")
+			$timestamp = mktime(23, 59, 59, $this->month + 1, 0, $this->year);
+		else
+			$timestamp = mktime(23, 59, 59, $this->monthWeek, $this->dayWeek + 7, $this->yearWeek);
+		
+		if($date)
+			return date("Y-m-d H:i:s", $timestamp);
+		else
+			return $timestamp;
 	}
 	
 	/**
@@ -249,6 +278,19 @@ class Calendar {
 		}
 	}
 
+	public function displayLegend() {
+		ksort($this->categories);
+		$return = "<table>";
+		foreach ($this->categories as $category) {
+			$return .= '<tr>
+							<td style="width: 30px;'.$category->getStyleCategory().'">&nbsp;</td>
+							<td>'.$category->getName().'</td>
+						</tr>';
+		}
+		$return .= '</table>';
+		return $return;
+	}
+	
 	private function fillEventOnPeriod($date_start, $time_start, $date_end, $time_end, $position, $event) {
 		$date = $this->addOneDay($date_start);
 		while($date <= $date_end) {
@@ -293,8 +335,8 @@ class Calendar {
 									$return .= '<a href="'.$this->url.'?type=year&year='.($this->year + 1).'" >=&gt;</a>';
 									$return .= '</td>
 									<td class="calendar_main_table_link">
-										<a href="'.$this->url.'?type=month&year='.$this->year.'">'.$this->translate("link.month").'</a><br />
-										<a href="'.$this->url.'?type=week&year='.$this->year.'">'.$this->translate("link.week").'</a>
+										<a href="'.$this->url.'?type=week&year='.$this->year.'">'.$this->translate("link.week").'</a><br />
+										<a href="'.$this->url.'?type=month&year='.$this->year.'">'.$this->translate("link.month").'</a>
 									</td>
 								</tr>
 							</table>
@@ -332,13 +374,13 @@ class Calendar {
 					</tr>
 					<tr style="height: 3%">
 						<th style="width: 4%;"></th>
-						<th style="width: 12%;" class="calendar_year_table_month_mon">'.$this->daysSmall[1].'</th>
-						<th style="width: 12%;" class="calendar_year_table_month_tue">'.$this->daysSmall[2].'</th>
-						<th style="width: 12%;" class="calendar_year_table_month_wed">'.$this->daysSmall[3].'</th>
-						<th style="width: 12%;" class="calendar_year_table_month_thu">'.$this->daysSmall[4].'</th>
-						<th style="width: 12%;" class="calendar_year_table_month_fri">'.$this->daysSmall[5].'</th>
-						<th style="width: 12%;" class="calendar_year_table_month_sat">'.$this->daysSmall[6].'</th>
-						<th style="width: 12%;" class="calendar_year_table_month_sun">'.$this->daysSmall[7].'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_mon">'.ucfirst(substr($this->translate($this->days[1]), 0, 3)).'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_tue">'.ucfirst(substr($this->translate($this->days[2]), 0, 3)).'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_wed">'.ucfirst(substr($this->translate($this->days[3]), 0, 3)).'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_thu">'.ucfirst(substr($this->translate($this->days[4]), 0, 3)).'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_fri">'.ucfirst(substr($this->translate($this->days[5]), 0, 3)).'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_sat">'.ucfirst(substr($this->translate($this->days[6]), 0, 3)).'</th>
+						<th style="width: 12%;" class="calendar_year_table_month_sun">'.ucfirst(substr($this->translate($this->days[7]), 0, 3)).'</th>
 					</tr>';
 		$pos = "";
 		foreach ($positions as $position) {
@@ -410,7 +452,7 @@ class Calendar {
 			$return .= '
 							<div class="calendar_tooltip calendar_tooltip_pos_year'.$positions.'">
 									<sup class="count">'.$count.'</sup>'.date("j", $date)
-								.'<span>
+								.'<span class="calendar_tooltip_year">
 									<div class="calendar_tooltip_year_date">'.$this->formatHalfDate($date).'</div>
 									'.$return_temp.'
 								</span>
@@ -435,13 +477,13 @@ class Calendar {
 		if(!is_null($event->getStyleEvent()))
 			$style .= $event->getStyleEvent();
 		if($event->getLink())
-			$link = '<a href="'.$event->getLink().'">';
+			$link = '<a href="'.$event->getLink().'" style="'.$style_cat.$style.'">';
 		else
 			$link = "";
 			
-		$return .= '<div style="'.$style_cat.$style.'">'.$link.$event->getTitle().($link?'</a>':'').'</div>';
+		$return .= '<div style="'.$style_cat.$style.'">'.$link.$event->getTitle().($link?'</a>':'');
 		
-		$return .= $this->eventDateText($event);
+		$return .= '<br />'.$this->eventDateText($event).'</div>';
 		
 		$return .= "</div>";
 		return $return;
@@ -464,7 +506,7 @@ class Calendar {
 									else
 										$return .= '<a href="'.$this->url.'?type=month&month='.($this->month - 1).'&year='.$this->year.'" >&lt;=</a>';
 									$return .= '</td>
-									<th style="text-transform: capitalize; font-size: 18px">'.$this->months[$this->month].'</th>
+									<th style="text-transform: capitalize; font-size: 18px">'.$this->translate($this->months[$this->month]).'</th>
 									<td style="text-align: right">';
 									if($this->month == 12)
 										$return .= '<a href="'.$this->url.'?type=month&month=1&year='.($this->year + 1).'" >=&gt;</a>';
@@ -472,7 +514,7 @@ class Calendar {
 										$return .= '<a href="'.$this->url.'?type=month&month='.($this->month + 1).'&year='.$this->year.'" >=&gt;</a>';
 									
 									$return .= '</td>
-									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=week&week='.$week.'">Lien par semaine</a></td>
+									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=week">'.$this->translate('link.week').'</a></td>
 								</tr>
 								<tr>
 									<td></td>
@@ -483,20 +525,20 @@ class Calendar {
 									<td style="text-align: right">';
 									$return .= '<a href="'.$this->url.'?type=month&month='.$this->month.'&year='.($this->year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$this->year.'">Lien par annee</a></td>
+									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$this->year.'">'.$this->translate('link.year').'</a></td>
 								</tr>
 							</table>
 						</td>
 					</tr>
 					<tr style="height: '.($this->height*5/100).'px">
 						<th style="width: 4%;"></th>
-						<th style="width: 12%;">'.$this->days[1].'</th>
-						<th style="width: 12%;">'.$this->days[2].'</th>
-						<th style="width: 12%;">'.$this->days[3].'</th>
-						<th style="width: 12%;">'.$this->days[4].'</th>
-						<th style="width: 12%;">'.$this->days[5].'</th>
-						<th style="width: 12%;">'.$this->days[6].'</th>
-						<th style="width: 12%;">'.$this->days[7].'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[1])).'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[2])).'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[3])).'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[4])).'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[5])).'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[6])).'</th>
+						<th style="width: 12%;">'.ucfirst($this->translate($this->days[7])).'</th>
 					</tr>';
 		$k = 1;
 		for($i = 1; $i <= ceil(($first+$day_nbr-1)/7); $i ++) {
@@ -514,7 +556,8 @@ class Calendar {
 					$style = "";
 					if($this->getDateNow() == $this->getDateOf(null, null, $k))
 						$style = "background-color: orange;";
-					$return .= '<td style="'.$style.'border: 1px solid black; vertical-align: top; padding: 0px;">'.$k;
+					$return .= '<td style="'.$style.'border: 1px solid black; vertical-align: top; padding: 0px;">
+								<span class="calendar_month_day_num">'.$k.'</span>';
 					$positions = array();
 					if($i == 1)
 						$positions[] = "top";
@@ -543,7 +586,7 @@ class Calendar {
 		$return = "";
 		if(isset($this->events[$date])) {
 			$return .= '<div>
-						<div style="height: '.(($this->height*14/100) - 12).'px; overflow: auto;">';
+						<div style="height: '.(($this->height*14/100) - 17).'px; overflow: auto;">';
 			ksort($this->events[$date]);
 			foreach ($this->events[$date] as $key_time => $event_time) {
 				if(isset($this->events[$date][$key_time]["parent"])) {
@@ -590,7 +633,7 @@ class Calendar {
 			$link = $linkTemp;
 		else
 			$link = "#";
-		$return .= '<div style="'.$style.'" class="calendar_event '.$class.'">';
+		$return .= '<div class="calendar_event '.$class.'" style="'.$style.'">';
 		if($element == "start")
 			$return .= '<span style="font-size: 9px; float: left"><=&nbsp;&nbsp;</span>';
 		if($element == "end")
@@ -598,12 +641,14 @@ class Calendar {
 		$class = "";
 		foreach($positions as $position)
 			$class .= " calendar_tooltip_pos_month_$position";
-		$return .= '<div class="calendar_tooltip calendar_tooltip_pos_month'.$class.'" style="'.$style.'">'.$event->getTitle();
+		if($link = $event->getLink())
+			$alink = '<a href="'.$link.'">';
+		$return .= '<div class="calendar_tooltip calendar_tooltip_pos_month calendar_tooltip_month'.$class.'">'.$event->getTitle();
 		$return .= '<span style="z-index: 2; '.$style_tooltip.'">';
 		if($category) {
 			$return .= '<div style="font-size: 9px; text-align: right">'.$category->getName()."</div>";
 		}
-		$return .= $event->getTitle();
+		$return .= $alink.$event->getTitle().($alink?"</a>":"");
 		
 		$return .= "<br />".$this->eventDateText($event);
 		
@@ -616,7 +661,6 @@ class Calendar {
 	
 	/***** By Week *****/
 	private function drawWeek() {
-		$days = array("", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun");
 		$return = '<table style="width: 100%; height: '.$this->getHeight().'">
 					<tr style="height: 42px">
 						<td colspan="8">
@@ -641,7 +685,7 @@ class Calendar {
 									else
 										$return .= '<a href="'.$this->url.'?type=week&week='.($week - 1).'&year='.$year.'" >&lt;=</a>';
 									$return .= '</td>
-									<th style="text-transform: capitalize; font-size: 18px">Semaine '.$week.'</th>
+									<th style="text-transform: capitalize; font-size: 18px">'.$this->translate('week').' '.$week.'</th>
 									<td style="text-align: right">';
 									$week_temp =date("W", $this->getDateForWeek(null, 12, 31));
 									if($week_temp == 1)
@@ -653,7 +697,7 @@ class Calendar {
 										$return .= '<a href="'.$this->url.'?type=week&week='.($week + 1).'&year='.$year.'" >=&gt;</a>';
 									
 									$return .= '</td>
-									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=month&month='.$this->monthWeek.'">Lien par mois</a></td>
+									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=month&month='.$this->monthWeek.'">'.$this->translate('link.month').'</a></td>
 								</tr>
 								<tr>
 									<td></td>
@@ -676,7 +720,7 @@ class Calendar {
 									<td style="text-align: right">';
 									$return .= '<a href="'.$this->url.'?type=week&week='.$week_add.'&year='.($year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$year.'">Lien par annee</a></td>
+									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$year.'">'.$this->translate('link.year').'</a></td>
 								</tr>
 							</table>
 						</td>
@@ -691,13 +735,13 @@ class Calendar {
 										<td style="width: 4%;">&nbsp;</td>
 									</tr>';
 		for($i = 0; $i <= 23; $i ++) {
-				$return .= '<tr style="height: 19px">
-							<td style="width: 4%; vertical-align: top; text-align: center; border-top: 1px solid #DDDDDD;">'.$i.':00</td>
+				$return .= '<tr>
+							<td style="width: 4%; vertical-align: top; text-align: center; border-top: 1px solid #DDDDDD; height: 19px">'.$i.':00</td>
 							<td style="border-top: 1px solid #DDDDDD;">&nbsp;</td>
 							<td style="width: 4%; vertical-align: top; text-align: center; border-top: 1px solid #DDDDDD;">'.$i.':00</td>
 						</tr>
-						<tr style="height: 19px">
-							<td style="border-top: 1px dotted #DDDDDD; border-bottom: 1px solid #DDDDDD;"></td>
+						<tr>
+							<td style="height: 19px; border-top: 1px dotted #DDDDDD; border-bottom: 1px solid #DDDDDD;"></td>
 							<td style="border-top: 1px dotted #DDDDDD; border-bottom: 1px solid #DDDDDD;"></td>
 							<td style="border-top: 1px dotted #DDDDDD; border-bottom: 1px solid #DDDDDD;"></td>
 						</tr>';
@@ -715,8 +759,9 @@ class Calendar {
 			$style = "";
 			if($day == $this->getDateNow())
 				$style = "border: 1px solid orange;";
-			$return .= "<th style='width: 13%; height: 30px; $style'>".$this->translate($days[date("N", $day)])." ".$this->formatHalfDate($day)."</th>";
-			$return_temp .= '<td style="height: 960px; position: relative; padding: 0px 4px 0px 2px; border-left: 1px dashed #DDDDDD; border-right: 1px dashed #DDDDDD;"><div style="position: relative; height: 960px; ">'.$this->displayDayForWeek($day)."</div></td>";
+			$return .= "<th style='width: 13%; height: 30px; $style'>".ucfirst(substr($this->translate($this->days[date("N", $day)]), 0, 3))." ".$this->formatHalfDate($day)."</th>";
+			$return_temp .= '<td style="height: 960px; position: relative; padding: 0px 4px 0px 2px; border-left: 1px dashed #DDDDDD; border-right: 1px dashed #DDDDDD;">
+								<div style="position: relative; height: 960px; ">'.$this->displayDayForWeek($day)."</div></td>";
 		}
 		$return_temp .= '<td style="width: 4%;"></td>
 						</tr>';
@@ -763,7 +808,7 @@ class Calendar {
 				$i = 0;
 				$added = false;
 				while($i <= count($eventPosition) && !$added) {
-					if($eventPosition[$i]) {
+					if(isset($eventPosition[$i])) {
 						$j = 0;
 						$continue = true;
 						while($j < count($eventPosition[$i]) && $continue) {
@@ -847,25 +892,40 @@ class Calendar {
 		$tooltip = "";
 		$class = "";
 		if(!$start) {
-			$arrow_top .= '<div style="float: left;">&#8648;</div>';
+			$arrow_top = '<div style="float: left;">&uarr;</div>';
+		}
+		else {
+			$arrow_top = "";
+			$class .= " calendar_event_week_start";
+		}
+		if(!$end) {
+			$arrow_bottom = '<div style="position: absolute; bottom: 0px; left: 0px">&darr;</div>';
+		}
+		else {
+			$arrow_bottom = "";
+			$class .= " calendar_event_week_end";
 		}
 		
-		
+		if($link = $event->getLink())
+			$alink = '<a href="'.$link.'" style="'.$style.$style_tooltip.'">';
+		else
+			$alink = '';
+			
 		if($height < 20) {
-			$tooltip .= '<span style="'.$style_tooltip.'">'.$arrow_top.$event->getTitle()."<br />".$this->eventDateText($event, true).'<br /><br />'.$event->getContent().'</span>';
+			$tooltip .= '<span style="'.$style_tooltip.'">'.$arrow_top.$alink.$event->getTitle().($alink?"</a>":"")."<br />".$this->eventDateText($event, true).'<br /><br />'.$event->getContent().'</span>';
 			$return_content .= "<br />";
-			$class = "calendar_event_week_tooltip";
+			$class .= " calendar_event_week_tooltip";
 		}
 		elseif($height < 40) {
-			$tooltip .= '<span style="'.$style_tooltip.';">'.$event->getTitle()."<br />".$this->eventDateText($event, true).'<br /><br />'.$event->getContent().'</span>';
+			$tooltip .= '<span style="'.$style_tooltip.';">'.$alink.$event->getTitle().($alink?"</a>":"")."<br />".$this->eventDateText($event, true).'<br /><br />'.$event->getContent().'</span>';
 			$return_content .= ''.$arrow_top.$event->getTitle();
 //			$return_content .= '<a style="background-color: rgb(255, 0, 0); margin-left: 3px; margin-right: 3px;" class="calendar_tooltip tooltip_pos_month" href="#">Info matin<span style="background-color: red;"><div style="font-size: 9px; text-align: right;">Cat 1</div>Info matin<br/>from_h 01:00 to_h 01:15</span></a>';
-			$class = "calendar_event_week_tooltip";
+			$class .= " calendar_event_week_tooltip";
 		}
 		else {
 			$tooltip .= "";
 			$return_content .= '<div style="overflow: hidden; width: 100%; height: 100%">';
-			$return_content .= $arrow_top.$event->getTitle();
+			$return_content .= $arrow_top.$alink.$event->getTitle().($alink?"</a>":"");
 			$return_content .= '<div style="height: 3px; font-size: 3px">&nbsp;</div>';
 			$return_content .= $this->eventDateText($event, true);
 			$return_content .= "<br />";
@@ -874,9 +934,9 @@ class Calendar {
 //			$class = "calendar_week_event_all_day";
 		}
 		//class="calendar_week_event '.$class.' cal_test"
-		$return = '<div class="calendar_week_event '.$class.' cal_test" style="position: absolute; left: '.$left.'%; top: '.$top.'px; width: '.$width.'%; height: '.$height.'px; border: 1px solid black; background-color: yellow; word-wrap: break-word;'.$style.'">';
+		$return = '<div class="calendar_week_event'.$class.' cal_test" style="position: absolute; left: '.$left.'%; top: '.$top.'px; width: '.$width.'%; height: '.$height.'px; border: 1px solid black; background-color: yellow; word-wrap: break-word;'.$style.'">';
 		if(!$end) {
-			$return .= '<div style="position: absolute; bottom: 0px; left: 0px">&#8650;</div>';
+			$return .= '<div style="position: absolute; bottom: 0px; left: 0px">&darr;</div>';
 		}
 		$return .= '<div style="overflow: hidden; width: 100%; height: 100%">';
 		$return .= $return_content;
@@ -885,14 +945,6 @@ class Calendar {
 		$return .= '</div>';
 		return $return;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	private function eventDateText($event, $all = true) {
 		$return = "";
@@ -916,18 +968,6 @@ class Calendar {
 	}
 	
 	
-	public function displayLegend() {
-		ksort($this->categories);
-		$return = "<table>";
-		foreach ($this->categories as $category) {
-			$return .= '<tr>
-							<td style="width: 30px;'.$category["style"]["event"].'">&nbsp;</td>
-							<td>'.$category["name"].'</td>
-						</tr>';
-		}
-		$return .= '</table>';
-		return $return;
-	}
 	
 	
 	private function addOneDay($date) {
@@ -1008,28 +1048,29 @@ class Calendar {
 	}
 	
 	private function formatDate($date) {
-		if($this->formatDate)
-			return call_user_func($this->formatDate, $date);
+		if($this->functionFormatDate)
+			return call_user_func($this->functionFormatDate, $date);
 		else
 			return date("Y-m-d", $date);
 	}
 
 	private function formatHalfDate($date) {
-		if($this->formatHalfDate)
-			return call_user_func($this->formatHalfDate, $date);
+		if(isset($this->functionFormatHalfDate))
+			return call_user_func($this->functionFormatHalfDate, $date);
 		else
 			return date("m/d", $date);
 	}
 	
 	private function formatDateTime($date) {
-		if($this->formatDateTime)
-			return call_user_func($this->formatDateTime, $date);
+		if($this->functionFormatDateTime)
+			return call_user_func($this->functionFormatDateTime, $date);
 		else
 			return date("Y/m:d H:i", $date);
 	}
 	
 	private function translate($message) {
-		if($this->translateFunction)
+//		echo $message;
+		if(isset($this->translateFunction))
 			return call_user_func($this->translateFunction, $message);
 		elseif($this->language)
 			if(isset($this->calendarLanguage[$message]))
