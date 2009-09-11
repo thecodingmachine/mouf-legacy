@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Base Template</displayName>
+	<shortDescription>This package contains the definition of an HTML template (the TemplateInterface interface) and an
+	helper class to build HTML templates easily (the BaseTemplate class). Any package using the Splash template 
+	mechanism should use this package. See the <a href="http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php">Splash template doc</a> for more details</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php</docUrl>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>TemplateInterface.php</require>
+		<require>BaseTemplate.php</require>
+	</requires>
+</package>

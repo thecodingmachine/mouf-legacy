@@ -43,7 +43,7 @@ require_once 'models/Splash.php';
 //require_once 'models/AdminBag.php';
 //require_once 'models/SplashUrlAnalyzer.php';
 require_once 'models/ApplicationException.php';
-require_once 'models/TemplateInterface.php';
+//require_once 'models/TemplateInterface.php';
 
 // Validators
 require_once 'validators/ValidatorInterface.php';

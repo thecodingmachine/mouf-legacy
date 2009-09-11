@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>HtmlElement</displayName>
+	<shortDescription>The base objects that can be used to build a web-page.</shortDescription>
+	<docUrl></docUrl>
+	<requires>
+		<require>Scopable.php</require>
+		<require>HtmlElementInterface.php</require>
+		<require>HtmlFromFile.php</require>
+		<require>HtmlFromFunction.php</require>
+		<require>HtmlString.php</require>
+	</requires>
+</package>

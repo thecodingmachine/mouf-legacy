@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Spash Template</displayName>
+	<shortDescription>This package contains the default template used by Splash and Mouf to render their User Interface.
+	You can use this template in your own application if you want, but it is likely you will want to develop your
+	own template. Anyway, you can use this component as a model if you like.</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php</docUrl>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>template/BaseTemplate</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>SplashTemplate.php</require>
+		<require>SplashMenu.php</require>
+		<require>SplashMenuItem.php</require>
+	</requires>
+</package>

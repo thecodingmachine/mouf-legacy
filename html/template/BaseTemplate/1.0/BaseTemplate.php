@@ -1,32 +1,73 @@
 <?php
 
-define("TEMPLATE_ROOT_URL", PLUGINS_URL."mvc/splash/1.0/themes/Splash/");
-
 /**
- * Template class for Splash.
- * This class relies on /views/template/splash.php for the design
+ * Base class that can be used by any Splash template.
+ * A template only needs to implement the TemplateInterface interface, but this class provides
+ * sensible default behaviours for most methods.
+ * Classes extending the BaseTemplate only need to implement the "draw" method.
+ * 
+ * @Component
  */
-class SplashTemplate implements TemplateInterface, Scopable {
-
-	protected $left;
-	protected $content;
-	protected $right;
-	protected $header;
+abstract class BaseTemplate implements TemplateInterface, Scopable {
 
 	/**
-	 * Elements to write in the <head> tag
+	 * The HTML elements that will be displayed on the left of the screen.
+	 *
+	 * @Property
+	 * @var array<HtmlElementInterface>
 	 */
-	protected $head;
+	public $left;
+	
+	/**
+	 * The HTML elements that will be displayed on the center of the screen.
+	 *
+	 * @Property
+	 * @var array<HtmlElementInterface>
+	 */
+	public $content;
 
 	/**
-	 * The array of parameters passed to the functions called in the template.
+	 * The HTML elements that will be displayed on the right of the screen.
+	 *
+	 * @Property
+	 * @var array<HtmlElementInterface>
 	 */
-	//protected $params;
+	public $right;
+	
+	/**
+	 * The HTML elements that will be displayed in the header.
+	 *
+	 * @Property
+	 * @var array<HtmlElementInterface>
+	 */
+	public $header;
+
+	/**
+	 * The HTML elements that will be written in the <head> tag.
+	 *
+	 * @Property
+	 * @var array<HtmlElementInterface>
+	 */	
+	public $head;
+
+	/**
+	 * The web path to the logo image that will be displayed at the top of the page.
+	 * The image height should be 79 px.
+	 * The path is relative to the root of the web application.
+	 * By default, the "Splash" logo is used.
+	 *
+	 * @Property
+	 * @var string
+	 */	
+	public $logoImg;
 
 	/**
 	 * The title of the HTML page
+	 * 
+	 * @Property
+	 * @var string
 	 */
-	protected $title = "Splash - Your website";
+	public $title = "Splash - Your website";
 
 	/**
 	 * TODO
@@ -39,9 +80,17 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	private $javascript_files;
 
 	/**
-	 * A list of css files to be loaded.
+	 * A list of css files that are used by the template and that msut be included.
 	 */
-	private $css_files;
+	protected $private_css_files;
+	
+	/**
+	 * A list of css files to be loaded.
+	 * 
+	 * @Property
+	 * @var array<string>
+	 */
+	public $css_files;
 
 	/**
 	 * The default scope for the files that will be executed using addXxxFile.
@@ -60,10 +109,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		$this->right = array();
 		$this->header = array();
 		$this->head = array();
-		//$this->params = array();
 		$this->javascript = array();
 		$this->javascript_files = array();
-		$this->css_files = array(TEMPLATE_ROOT_URL."css/reset.css", TEMPLATE_ROOT_URL."css/splash.css", TEMPLATE_ROOT_URL."css/styles.css");
+		$this->private_css_files = array();
+		$this->logoImg = null;
 	}
 	
 	/**
@@ -109,7 +158,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		// Remove the first argument
 		array_shift($arguments);
 
-		$this->content[] = array("type"=>"function", "name"=>$function, "arguments"=>$arguments);
+		$content = new HtmlFromFunction();
+		$content->functionPointer = $function;
+		$content->parameters = $arguments;
+		$this->content[] = $content;
 		return $this;
 	}
 
@@ -118,7 +170,9 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addContentText($text) {
-		$this->content[] = array("type"=>"text", "text"=>$text);
+		$content = new HtmlString();
+		$content->htmlString = $text;
+		$this->content[] = $content;
 		return $this;
 	}
 	
@@ -128,7 +182,23 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addContentFile($fileName, Scopable $scope = null) {
-		$this->content[] = array("type"=>"file", "name"=>$fileName, "scope"=>$this->getScope($scope));
+		//$this->content[] = array("type"=>"file", "name"=>$fileName, "scope"=>$this->getScope($scope));
+		$content = new HtmlFromFile();
+		$content->fileName = $fileName;
+		$content->scope = $scope;
+		$this->content[] = $content;
+		
+		return $this;
+	}
+	
+	/**
+	 * Adds an object extending the HtmlElementInterface interface to the content of the template.
+	 *
+	 * @param HtmlElementInterface $element
+	 * @return SplashTemplate
+	 */
+	public function addContentHtmlElement(HtmlElementInterface $element) {
+		$this->content[] = $element;
 		return $this;
 	}
 	
@@ -141,7 +211,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		// Remove the first argument
 		array_shift($arguments);
 
-		$this->header[] = array("type"=>"function", "name"=>$function, "arguments"=>$arguments);
+		$content = new HtmlFromFunction();
+		$content->functionPointer = $function;
+		$content->parameters = $arguments;
+		$this->header[] = $content;
 		return $this;
 	}
 
@@ -150,7 +223,9 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addHeaderText($text) {
-		$this->header[] = array("type"=>"text", "text"=>$text);
+		$content = new HtmlString();
+		$content->htmlString = $text;
+		$this->header[] = $content;
 		return $this;
 	}
 
@@ -160,7 +235,22 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addHeaderFile($fileName, Scopable $scope = null) {
-		$this->header[] = array("type"=>"file", "name"=>$fileName, "scope"=>$this->getScope($scope));
+		$content = new HtmlFromFile();
+		$content->fileName = $fileName;
+		$content->scope = $scope;
+		$this->header[] = $content;
+		
+		return $this;
+	}
+	
+	/**
+	 * Adds an object extending the HtmlElementInterface interface to the header of the template.
+	 *
+	 * @param HtmlElementInterface $element
+	 * @return SplashTemplate
+	 */
+	public function addHeaderHtmlElement(HtmlElementInterface $element) {
+		$this->header[] = $element;
 		return $this;
 	}
 	
@@ -173,7 +263,11 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		// Remove the first argument
 		array_shift($arguments);
 
-		$this->left[] = array("type"=>"function", "name"=>$function, "arguments"=>$arguments);
+		$content = new HtmlFromFunction();
+		$content->functionPointer = $function;
+		$content->parameters = $arguments;
+		$this->left[] = $content;
+		return $this;
 	}
 
 	/**
@@ -181,7 +275,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addLeftText($text) {
-		$this->left[] = array("type"=>"text", "text"=>$text);
+		$content = new HtmlString();
+		$content->htmlString = $text;
+		$this->left[] = $content;
+		//$this->content[] = array("type"=>"text", "text"=>$text);
 		return $this;
 	}
 	
@@ -191,7 +288,22 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addLeftFile($fileName, Scopable $scope = null) {
-		$this->left[] = array("type"=>"file", "name"=>$fileName, "scope"=>$this->getScope($scope));
+		$content = new HtmlFromFile();
+		$content->fileName = $fileName;
+		$content->scope = $scope;
+		$this->left[] = $content;
+		
+		return $this;
+	}
+	
+	/**
+	 * Adds an object extending the HtmlElementInterface interface to the left of the template.
+	 *
+	 * @param HtmlElementInterface $element
+	 * @return SplashTemplate
+	 */
+	public function addLeftHtmlElement(HtmlElementInterface $element) {
+		$this->left[] = $element;
 		return $this;
 	}
 	
@@ -204,7 +316,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		// Remove the first argument
 		array_shift($arguments);
 
-		$this->right[] = array("type"=>"function", "name"=>$function, "arguments"=>$arguments);
+		$content = new HtmlFromFunction();
+		$content->functionPointer = $function;
+		$content->parameters = $arguments;
+		$this->right[] = $content;
 		return $this;
 	}
 
@@ -213,7 +328,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addRightText($text) {
-		$this->right[] = array("type"=>"text", "text"=>$text);
+		$content = new HtmlString();
+		$content->htmlString = $text;
+		$this->right[] = $content;
+		//$this->content[] = array("type"=>"text", "text"=>$text);
 		return $this;
 	}
 
@@ -223,10 +341,25 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addRightFile($fileName, Scopable $scope = null) {
-		$this->right[] = array("type"=>"file", "name"=>$fileName, "scope"=>$this->getScope($scope));
+		$content = new HtmlFromFile();
+		$content->fileName = $fileName;
+		$content->scope = $scope;
+		$this->right[] = $content;
+		
 		return $this;
 	}
-
+	
+	/**
+	 * Adds an object extending the HtmlElementInterface interface to the rgiht of the template.
+	 *
+	 * @param HtmlElementInterface $element
+	 * @return SplashTemplate
+	 */
+	public function addRightHtmlElement(HtmlElementInterface $element) {
+		$this->right[] = $element;
+		return $this;
+	}
+	
 	/**
 	 * Adds some content to the <head> tag by calling the function passed in parameter.
 	 * @return SplashTemplate
@@ -236,7 +369,10 @@ class SplashTemplate implements TemplateInterface, Scopable {
 		// Remove the first argument
 		array_shift($arguments);
 
-		$this->head[] = array("type"=>"function", "name"=>$function, "arguments"=>$arguments);
+		$content = new HtmlFromFunction();
+		$content->functionPointer = $function;
+		$content->parameters = $arguments;
+		$this->head[] = $content;
 		return $this;
 	}
 
@@ -245,7 +381,9 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addHeadText($text) {
-		$this->head[] = array("type"=>"text", "text"=>$text);
+		$content = new HtmlString();
+		$content->htmlString = $text;
+		$this->head[] = $content;
 		return $this;
 	}
 
@@ -255,7 +393,22 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addHeadFile($fileName, Scopable $scope = null) {
-		$this->head[] = array("type"=>"file", "name"=>$fileName, "scope"=>$this->getScope($scope));
+		$content = new HtmlFromFile();
+		$content->fileName = $fileName;
+		$content->scope = $scope;
+		$this->head[] = $content;
+		
+		return $this;
+	}
+	
+	/**
+	 * Adds an object extending the HtmlElementInterface interface to the head of the template.
+	 *
+	 * @param HtmlElementInterface $element
+	 * @return SplashTemplate
+	 */
+	public function addHeadHtmlElement(HtmlElementInterface $element) {
+		$this->head[] = $element;
 		return $this;
 	}
 	
@@ -302,9 +455,15 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 */
 	protected function getCssFiles() {
 		$html = '';
-		foreach ($this->css_files as $file) {
+		foreach ($this->private_css_files as $file) {
 			$html .= "<link href='$file' rel='stylesheet' type='text/css' />\n";
 
+		}
+		if (is_array($this->css_files)) {
+			foreach ($this->css_files as $file) {
+				$html .= "<link href='".ROOT_URL."$file' rel='stylesheet' type='text/css' />\n";
+	
+			}
 		}
 		return $html;
 	}
@@ -336,26 +495,13 @@ class SplashTemplate implements TemplateInterface, Scopable {
 	 */
 	protected function drawArray($array) {
 		foreach ($array as $element) {
-			if ($element["type"] == "function") {
-				call_user_func_array($element["name"], $element["arguments"]);
-			} else if ($element["type"] == "text") {
-				echo $element["text"];
-			} else if ($element["type"] == "file") {
-				$element["scope"]->loadFile($element["name"]);
-			} else {
-				trigger_error("Unexpected type in template: ".$element["type"]);
-			}
+			$element->toHtml();
 		}
 	}
 
 	/**
 	 * Draws the Splash page by calling the template in /views/template/splash.php
 	 */
-	public function draw(){
-		header('Content-Type: text/html; charset=utf-8');
-
-		include "views/splash.php";
-	}
-	
+	//public abstract function draw();	
 }
 ?>
