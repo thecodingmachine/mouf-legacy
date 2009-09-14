@@ -126,6 +126,7 @@ function deleteInstance() {
 foreach ($this->properties as $property) {
 	echo "<div onmouseover='if (lastPropDisplayed!=\"\") {document.getElementById(lastPropDisplayed).style.display=\"none\";}; lastPropDisplayed=\"".$property->getName()."_doc_div_mouf\";     document.getElementById(\"".$property->getName()."_doc_div_mouf\").style.display=\"block\";'>\n";
 	
+	$compulsory = "";
 	if ($property->hasAnnotation("Compulsory")) {
 		$compulsory = "*";
 	}
