@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Artichow</displayName>
+	<shortDescription>This package contains the Artichow library that can be used to create graphs.
+	This package does not contain any component. For a (simple) component wrapper around Artichow,
+	please see the simplegraph component.</shortDescription>
+	<docUrl>http://www.artichow.org/</docUrl>
+</package>

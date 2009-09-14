@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Simple Graph</displayName>
+	<shortDescription>This package is a simple component wrapper around the Artichow graph library. It can
+	be used to create Pie chart, Bar charts and plots, and configure those graphs using the Mouf IOC mechanism.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>graph</group>
+			<name>artichow</name>
+			<version>1.1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>PieChartBuilder.php</require>
+		<require>LineChartBuilder.php</require>
+		<require>ColumnChartBuilder.php</require>
+		<require>ChartTheme.php</require>
+		<require>ChartDataSerie.php</require>
+	</requires>
+</package>
