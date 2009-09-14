@@ -69,7 +69,7 @@ require_once 'filters/stubXajaAnnotation.php';
 
 
 // DB CONNECTION
-Log::trace("DB _init");
+//Log::trace("DB _init");
 //require_once TDBM_PATH."tdbm.php";
 //include_once SPLASH_PATH.'db_config.php';
 //DBM_Object::setDefaultAutoSaveMode(false);
