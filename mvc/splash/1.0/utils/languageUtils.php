@@ -65,7 +65,7 @@ class LanguageUtils {
 	 */
 	public static function parseHttpAcceptLanguage($str=NULL) {
 		// getting http instruction if not provided
-		$str=$str?$str:$_SERVER['HTTP_ACCEPT_LANGUAGE'];
+		$str=$str?$str:(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])?$_SERVER['HTTP_ACCEPT_LANGUAGE']:"");
 		// exploding accepted languages
 		$langs=explode(',',$str);
 		// creating output list
@@ -73,15 +73,16 @@ class LanguageUtils {
 		foreach ($langs as $lang) {
 			// parsing language preference instructions
 			// 2_digit_code[-longer_code][;q=coefficient]
-			ereg('([a-z]{1,2})(-([a-z0-9]+))?(;q=([0-9\.]+))?',$lang,$found);
+			preg_match('/([a-z]{1,2})(-([a-z0-9]+))?(;q=([0-9\.]+))?/',$lang,$found);
+			//ereg('([a-z]{1,2})(-([a-z0-9]+))?(;q=([0-9\.]+))?',$lang,$found);
 			// 2 digit lang code
-			$code=$found[1];
+			$code=isset($found[1])?$found[1]:null;
 			// lang code complement
-			$morecode=$found[3];
+			$morecode=isset($found[3])?$found[3]:null;
 			// full lang code
 			$fullcode=$morecode?$code.'-'.$morecode:$code;
 			// coefficient
-			$coef=sprintf('%3.1f',$found[5]?$found[5]:'1');
+			$coef=sprintf('%3.1f',isset($found[5])?$found[5]:'1');
 			// for sorting by coefficient
 			// adding
 			$accepted[]=array('code'=>$code,'coef'=>$coef,'morecode'=>$morecode,'fullcode'=>$fullcode);

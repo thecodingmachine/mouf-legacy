@@ -1,13 +1,6 @@
 <?php
 require_once(dirname(__FILE__)."/../../log_interface/1.0/LogInterface.php");
 
-define("TRACKING_TRACE", 1);
-define("TRACKING_DEBUG", 2);
-define("TRACKING_INFO", 3);
-define("TRACKING_WARN", 4);
-define("TRACKING_ERROR", 5);
-define("TRACKING_FATAL", 6);
-
 /**
  * A logger class that writes messages into the php error_log.
  *
@@ -35,32 +28,32 @@ class ErrorLogLogger implements LogInterface {
 	public $level;
 	
 	public function trace($string, Exception $e=null) {
-		if($level<=self::$TRACE) {
+		if($this->level<=self::$TRACE) {
 			self::logMessage("TRACE", $string, $e);
 		}
 	}
 	public function debug($string, Exception $e=null) {
-		if($level<=self::$DEBUG) {
+		if($this->level<=self::$DEBUG) {
 			self::logMessage("DEBUG", $string, $e);
 		}
 	}
 	public function info($string, Exception $e=null) {
-		if($level<=self::$INFO) {
+		if($this->level<=self::$INFO) {
 			self::logMessage("INFO", $string, $e);
 		}
 	}
 	public function warn($string, Exception $e=null) {
-		if($level<=self::$WARN) {
+		if($this->level<=self::$WARN) {
 			self::logMessage("WARN", $string, $e);
 		}
 	}
 	public function error($string, Exception $e=null) {
-		if($level<=self::$ERROR) {
+		if($this->level<=self::$ERROR) {
 			self::logMessage("ERROR", $string, $e);
 		}
 	}
 	public function fatal($string, Exception $e=null) {
-		if($level<=self::$FATAL) {
+		if($this->level<=self::$FATAL) {
 			self::logMessage("FATAL", $string, $e);
 		}
 	}

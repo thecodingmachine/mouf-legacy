@@ -49,7 +49,7 @@ class Log {
 		if ($e == null) {
 			if (!$string instanceof Exception) {
 				$trace = debug_backtrace();
-				error_log($level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string);
+				error_log($level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".((isset($trace[2]['class']))?$trace[2]['class']:"").((isset($trace[2]['type']))?$trace[2]['type']:"").$trace[2]['function']." -> ".$string);
 			} else {
 				error_log($level.': '.ExceptionUtils::getTextForException($string));
 			}

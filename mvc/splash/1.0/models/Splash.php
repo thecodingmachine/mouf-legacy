@@ -98,7 +98,7 @@ class Splash {
 		
 		$action = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
 
-		$array = split("/", $action);
+		$array = explode("/", $action);
 		
 		$this->controller = $array[0];
 		$this->action = $array[1];

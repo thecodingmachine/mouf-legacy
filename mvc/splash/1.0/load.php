@@ -10,6 +10,7 @@ define("SPLASH_VIEWS_PATHS",SPLASH_PATH.'views/');
 define("SPLASH_RESOURCES_PATHS",SPLASH_PATH.'resources/');
 define("SPLASH_VALIDATORS_PATH",SPLASH_PATH.'validators/');
 define("SPLASH_FILTERS_PATH",SPLASH_PATH.'filters/');
+define("TRACKING", true);
 
 // Loads the config file at the root of the website.
 require_once 'models/CommonUtils.php';
@@ -25,7 +26,7 @@ require_once 'include/stubbles/projects/dist/config/php/config.php';
 require_once 'include/stubbles/src/main/php/net/stubbles/stubClassLoader.php';
 require_once 'include/stubbles/src/main/php/net/stubbles/reflection/reflection.php';
 
-if (!USE_ANNOTATION_CACHE) {
+if (!defined("USE_ANNOTATION_CACHE") || !USE_ANNOTATION_CACHE) {
 	stubAnnotationCache::flush();
 }
 

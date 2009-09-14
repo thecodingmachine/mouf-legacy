@@ -3,7 +3,6 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php print $this->title ?></title>
-		<?php print $head ?>
 		<?php print $this->getCssFiles() ?>
 		<?php print $this->getJsFiles() ?>
 		<?php $this->drawArray($this->head); ?>
@@ -47,9 +46,7 @@
 							</div>
 					    </td><?php } ?>
 					    <td valign="top">
-							<?php if ($mission) { ?><div id="mission"><?php print $mission ?></div><?php } ?>
 							<div id="main">
-							    <?php print $top_content; ?>
 								<div id="main_left<?php echo $columnNumber; ?>"></div>
 								<div id="main_right<?php echo $columnNumber; ?>"></div>
 								<div id="main_middle<?php echo $columnNumber; ?>">
@@ -61,7 +58,6 @@
 										</div>
 									</div>
 									<div id="main_bottom<?php echo $columnNumber; ?>"></div>
-									<?php print $bottom_content; ?>
 						        </div>
 							</div>
 					    </td>
@@ -85,9 +81,9 @@
 				</table>
 				<div id="footer">
 					<!-- &copy; Copyright 2008 Apideo (TM) -->
-					  <?php print $footer_message ?>
-					  <?php print $footer ?>
-				</div><?php print $closure ?>
+					  <?php //print $footer_message ?>
+					  <?php //print $footer ?>
+				</div><?php //print $closure ?>
 			</div>
 			<div id="headpiece_bottom"></div></div>
 	</body>
