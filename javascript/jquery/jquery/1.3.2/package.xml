@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery</displayName>
+	<shortDescription>This package contains the JQuery library, along a PHP wrapper class
+	to include JQuery easily in your web pages.</shortDescription>
+	<docUrl>http://jquery.com/</docUrl>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQuery.php</require>
+	</requires>
+</package>

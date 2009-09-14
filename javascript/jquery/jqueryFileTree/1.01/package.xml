@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery FileTree</displayName>
+	<shortDescription>This package contains the JQuery FileTree component, along a PHP wrapper class
+	to include JQuery FileTree easily in your web pages.</shortDescription>
+	<docUrl>http://abeautifulsite.net/notebook/58</docUrl>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>1.3.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryFileTree.php</require>
+	</requires>
+</package>
