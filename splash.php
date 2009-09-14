@@ -8,7 +8,7 @@ require_once dirname(__FILE__).'/../MoufUniversalParameters.php';
 
 MoufManager::switchToHidden();
 require_once 'MoufAdmin.php';
-if ($_REQUEST['selfedit']=="true") {
+if (isset($_REQUEST['selfedit']) && $_REQUEST['selfedit']=="true") {
 	require_once 'MoufAdminUI.php';
 } else {
 	// Check file existence just to be sure.

@@ -54,7 +54,8 @@ class MoufPhpDocComment {
 		
 		// Is the line an annotation? Let's test this with a regexp.
 		foreach ($lines as $line) {
-			if (ereg("^[@][a-zA-Z]", $line) === false) {
+			if (preg_match("/^[@][a-zA-Z]/", $line) === false) {
+			//if (ereg("^[@][a-zA-Z]", $line) === false) {
 				if ($oneAnnotationFound == false) {
 					$this->comment .= $line."\n";
 				}
@@ -72,10 +73,11 @@ class MoufPhpDocComment {
 	 */
 	private function parseAnnotation($line) {
 		// Let's get the annotation text
-		ereg("^[@]([a-zA-Z][a-zA-Z0-9]*)(.*)", $line, $values);
+		//ereg("^[@]([a-zA-Z][a-zA-Z0-9]*)(.*)", $line, $values);
+		preg_match("/^[@]([a-zA-Z][a-zA-Z0-9]*)(.*)/", $line, $values);
 		
-		$annotationClass = $values[1];
-		$annotationParams = trim($values[2]);
+		$annotationClass = isset($values[1])?$values[1]:null;
+		$annotationParams = trim(isset($values[2])?$values[2]:null);
 		
 		$this->annotationsArrayAsString[$annotationClass][] = $annotationParams;		
 	}
@@ -115,7 +117,7 @@ class MoufPhpDocComment {
 		if ($commentLinesWithoutStars[count($commentLinesWithoutStars)-1] == "")
 			array_pop($commentLinesWithoutStars);
 			
-		if ($commentLinesWithoutStars[0] == "") {
+		if (isset($commentLinesWithoutStars[0]) && $commentLinesWithoutStars[0] == "") {
 			$commentLinesWithoutStars = array_slice($commentLinesWithoutStars, 1);
 		}
 		
@@ -170,7 +172,10 @@ class MoufPhpDocComment {
 	 * @return int
 	 */
 	public function getAnnotationsCount($annotationName) {
-		return count($this->annotationsArrayAsString[$annotationName]);
+		if (isset($this->annotationsArrayAsString[$annotationName]))
+			return count($this->annotationsArrayAsString[$annotationName]);
+		else
+			return 0;
 	}
 	
 	/**

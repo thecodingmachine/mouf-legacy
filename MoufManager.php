@@ -184,7 +184,7 @@ class MoufManager {
 	 * @param string $instanceName
 	 */
 	public function getInstance($instanceName) {
-		if ($this->objectInstances[$instanceName] == null) {
+		if (!isset($this->objectInstances[$instanceName]) || $this->objectInstances[$instanceName] == null) {
 			$this->objectInstances[$instanceName] = $this->instantiateComponent($instanceName);
 			
 		}
@@ -326,14 +326,14 @@ class MoufManager {
 		}*/
 		
 		$object = new $className();
-		if (is_array($this->declaredProperties[$instanceName])) {
+		if (isset($this->declaredProperties[$instanceName]) && is_array($this->declaredProperties[$instanceName])) {
 			foreach ($this->declaredProperties[$instanceName] as $key=>$value) {
 				$object->$key = $value;
 				// TODO: add support for setters
 			}
 		}
 		
-		if (is_array($this->declaredBinds[$instanceName])) {
+		if (isset($this->declaredBinds[$instanceName]) && is_array($this->declaredBinds[$instanceName])) {
 			foreach ($this->declaredBinds[$instanceName] as $key=>$value) {
 				if (is_array($value)) {
 					$tmpArray = array();

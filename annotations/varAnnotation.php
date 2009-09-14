@@ -24,11 +24,11 @@ class varAnnotation
      * @param string $value
      */
     protected function analyzeType($value) {
-    	ereg("^([a-zA-Z_][a-zA-Z0-9_]*)", $value, $values);
+    	preg_match("/^([a-zA-Z_][a-zA-Z0-9_]*)/", $value, $values);
     	
         $this->type = $values[1];    
         if ($this->type == "array") {
-        	ereg("^([a-zA-Z_][a-zA-Z0-9_]*)[<](.*)[>]", $value, $stvalues);
+        	preg_match("/^([a-zA-Z_][a-zA-Z0-9_]*)[<](.*)[>]/", $value, $stvalues);
         	$tmpType = trim($stvalues[2]);
         	if (strpos($tmpType,",") === false) {
         		$this->subtype = $tmpType;
