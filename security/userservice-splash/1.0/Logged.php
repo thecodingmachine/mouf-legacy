@@ -45,9 +45,8 @@ class Logged extends AbstractFilter
 		
 		$is_logged = $userService->isLogged();
 		if(!$is_logged){
-			// TODO: change this for parameters.
-			// TODO: no redirect if this is a post. only redirect on GET
-			header("Location:".ROOT_URL."login/?redirect=".urlencode($_SERVER['REQUEST_URI']));
+			$loginUrl = $userService->loginPageUrl;
+			header("Location:".ROOT_URL.$loginUrl."/?redirect=".urlencode($_SERVER['REQUEST_URI']));
 			exit;
 		}
 	}
