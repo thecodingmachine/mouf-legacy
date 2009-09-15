@@ -12,10 +12,10 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>PieChartBuilder.php</require>
-		<require>LineChartBuilder.php</require>
-		<require>ColumnChartBuilder.php</require>
-		<require>ChartTheme.php</require>
-		<require>ChartDataSerie.php</require>
+		<require>PieChartBuilder.class.php</require>
+		<require>LineChartBuilder.class.php</require>
+		<require>ColumnChartBuilder.class.php</require>
+		<require>ChartTheme.class.php</require>
+		<require>ChartDataSerie.class.php</require>
 	</requires>
 </package>
