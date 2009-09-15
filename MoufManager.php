@@ -1,6 +1,7 @@
 <?php
 
 require_once 'MoufException.php';
+require_once 'MoufInstanceNotFoundException.php';
 
 /**
  * The class managing object instanciation in the Mouf framework.
@@ -315,10 +316,10 @@ class MoufManager {
 	 *
 	 */
 	private function instantiateComponent($instanceName) {
-		$className = $this->declaredComponents[$instanceName];
-		
-		if ($className == null) {
-			throw new MoufException("The object instance ".$instanceName." is not defined.");
+		if (isset($this->declaredComponents[$instanceName])) {
+			$className = $this->declaredComponents[$instanceName];
+		} else {
+			throw new MoufInstanceNotFoundException("The object instance ".$instanceName." is not defined.");
 		}
 		
 		/*if (!class_exists($className)) {
@@ -736,11 +737,12 @@ class ".$this->mainClassName." {
 	 * @param string $fileName
 	 */
 	public function isPackageEnabled($fileName) {
-		if (array_search($fileName, $this->packagesList)) {
+		if (array_search($fileName, $this->packagesList) !== false) {
 			return true;
 		} else {
 			return false;
 		}
 	}
+	
 }
 ?>

@@ -79,21 +79,30 @@ class PackageController extends Controller {
 	public function enablePackage($name, $selfedit = "false", $confirm="false") {
 		// First, let's find the list of depending packages.
 		$this->selfedit = $selfedit;
-		
+		if ($selfedit == "true") {
+			$this->moufManager = MoufManager::getMoufManager();
+		} else {
+			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
+		}
+	
 		$packageManager = new MoufPackageManager();
 		$this->package = $packageManager->getPackage($name);
-		$this->moufDependencies = $packageManager->getDependencies($this->package);
+		//$this->moufDependencies = $packageManager->getDependencies($this->package);
+		$dependencies = $packageManager->getDependencies($this->package);
+		$this->moufDependencies = array();
+		// Let's only keep the packages that are not already installed from this list:
+		foreach ($dependencies as $moufDependency) {
+			$enabled = $this->moufManager->isPackageEnabled($moufDependency->getDescriptor()->getPackageXmlPath());
+			if (!$enabled) {
+				$this->moufDependencies[] = $moufDependency;
+			}
+		}
 		
 		
 		if (!empty($this->moufDependencies) && $confirm=="false") {
 			$this->template->addContentFile("views/packages/displayConfirmPackagesEnable.php", $this);
 			$this->template->draw();	
 		} else {
-			if ($selfedit == "true") {
-				$this->moufManager = MoufManager::getMoufManager();
-			} else {
-				$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
-			}
 			
 			if (!array_search($this->package, $this->moufDependencies)) {
 				$this->moufDependencies[] = $this->package;
