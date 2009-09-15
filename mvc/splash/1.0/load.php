@@ -61,7 +61,7 @@ require_once 'utils/annotations/ValidatorException.php';
 // Filters
 require_once 'models/FilterUtils.php';
 require_once 'filters/AbstractFilter.php';
-require_once 'filters/Logged.php';
+//require_once 'filters/Logged.php';
 require_once 'filters/RequireHttps.php';
 require_once 'filters/Admin.php';
 require_once 'filters/RedirectToHttp.php';

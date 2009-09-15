@@ -31,7 +31,7 @@ function iMsg(){
 	$args = func_get_args();
 	$key = $args[0];
 
-	if ($msg[$key]){
+	if (isset($msg[$key])){
 		$value = $msg[$key];
 		for ($i=1;$i<count($args);$i++){
 			$value = str_replace('{'.($i-1).'}', plainstring_to_htmlprotected($args[$i]), $value);

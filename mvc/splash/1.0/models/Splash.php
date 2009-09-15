@@ -101,7 +101,9 @@ class Splash {
 		$array = explode("/", $action);
 		
 		$this->controller = $array[0];
-		$this->action = $array[1];
+		if (isset($array[1])) {
+			$this->action = $array[1];
+		}
 		$this->args = array();
 
 		array_shift($array);

@@ -45,7 +45,7 @@ class MoufUserService implements UserServiceInterface {
 	public function login($login, $password) {
 		$user = $this->userDao->getUserByCredentials($login, $password);
 		if ($user != null) {
-			$this->log->trace("User '".$user."' logs in.");
+			$this->log->trace("User '".$user->getLogin()."' logs in.");
 			$_SESSION['MoufUserId'] = $user->getId();
 			$_SESSION['MoufUserLogin'] = $user->getLogin();
 			return true;
@@ -62,7 +62,7 @@ class MoufUserService implements UserServiceInterface {
 	 * @param string $token
 	 */
 	public function loginViaToken($token) {
-		
+		// TODO
 	}
 	
 	/**
