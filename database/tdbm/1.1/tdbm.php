@@ -303,7 +303,7 @@ class DB_Connection {
 	 * @param unknown_type $table_name
 	 */
 	public function findRootSequenceTableWithCache($table_name){
-		if (!isset($_SESSION['__TDBM_CACHE__']['inherits'][$table_name]))
+		if (!isset($_SESSION['__TDBM_CACHE__']) || !isset($_SESSION['__TDBM_CACHE__']['inherits']) ||!isset($_SESSION['__TDBM_CACHE__']['inherits'][$table_name]))
 		{
 			$_SESSION['__TDBM_CACHE__']['inherits'][$table_name] = $this->findRootSequenceTable($table_name);
 		}
@@ -368,7 +368,7 @@ class DB_Connection {
 		throw new DB_Exception('Unable to retrieve Primary Key for database type '.$this->dsn['phptype'].'<br />\nCurrently, only MySQL 5+ and PostGreSQL 7+ are supported.');
 	}
 	public function getPrimaryKeyWithCache($table_name) {
-		if (!isset($_SESSION['__TDBM_CACHE__']['pk'][$table_name]))
+		if (!isset($_SESSION['__TDBM_CACHE__']) || !isset($_SESSION['__TDBM_CACHE__']['pk']) || !isset($_SESSION['__TDBM_CACHE__']['pk'][$table_name]))
 		{
 			$_SESSION['__TDBM_CACHE__']['pk'][$table_name] = $this->getPrimaryKey($table_name);
 		}
@@ -506,7 +506,7 @@ class DB_Connection {
 			}
 			return DBM_Object::$constraints_one_star[$table];*/
 
-		if (!isset($_SESSION['__TDBM_CACHE__']['constraints_one_star'][$table]))
+		if (!isset($_SESSION['__TDBM_CACHE__']) || !isset($_SESSION['__TDBM_CACHE__']['constraints_one_star']) || !isset($_SESSION['__TDBM_CACHE__']['constraints_one_star'][$table]))
 		{
 			$_SESSION['__TDBM_CACHE__']['constraints_one_star'][$table] = $this->getConstraintsFromTable($table);
 		}
@@ -521,7 +521,7 @@ class DB_Connection {
 			}
 			return DBM_Object::$constraints_one_star[$table];*/
 
-		if (!isset($_SESSION['__TDBM_CACHE__']['constraints_star_one'][$table]))
+		if (!isset($_SESSION['__TDBM_CACHE__']) || !isset($_SESSION['__TDBM_CACHE__']['constraints_star_one']) || !isset($_SESSION['__TDBM_CACHE__']['constraints_star_one'][$table]))
 		{
 			$_SESSION['__TDBM_CACHE__']['constraints_star_one'][$table] = $this->getConstraintsOnTable($table);
 		}
@@ -610,7 +610,7 @@ class DB_Connection {
 	 */
 	public function getTableInfoWithCache($table) {
 
-		if (!isset($_SESSION['__TDBM_CACHE__']['table_info'][$table]))
+		if (!isset($_SESSION['__TDBM_CACHE__']) || !isset($_SESSION['__TDBM_CACHE__']['table_info']) || !isset($_SESSION['__TDBM_CACHE__']['table_info'][$table]))
 		{
 			$data = $this->db->tableInfo($table);
 			
@@ -745,7 +745,10 @@ class DB_Connection {
 	 *
 	 */
 	function toStandardcase($string) {
-		$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
+		if (isset($_SESSION['__TDBM_CACHE__']) && isset($_SESSION['__TDBM_CACHE__']['case_sensitive']))
+			$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
+		else
+			$case_sensitive = null;
 		if ($case_sensitive === null) {
 
 			if ($this->dsn["phptype"]=='pgsql') {
@@ -2208,7 +2211,8 @@ class DBM_Object {
 		// Let's fill the $tables_paths that will contain the name of the tables needed (and the paths soon).
 		// Also, let's use this moment to check if the tables we are looking for are not in cache.
 		foreach ($tables as $tablename) {
-			if (isset($_SESSION['__TDBM_CACHE__']['paths'][$table][$tablename]))
+			if (isset($_SESSION['__TDBM_CACHE__']) && isset($_SESSION['__TDBM_CACHE__']['paths']) && 
+					isset($_SESSION['__TDBM_CACHE__']['paths'][$table]) && isset($_SESSION['__TDBM_CACHE__']['paths'][$table][$tablename]))
 			{
 				$cached_path = array();
 				$cached_path['name'] = $tablename;
@@ -2216,7 +2220,8 @@ class DBM_Object {
 				$cached_path['paths'][] = $_SESSION['__TDBM_CACHE__']['paths'][$table][$tablename];
 				$cached_tables_paths[] = $cached_path;
 			}
-			elseif (isset($_SESSION['__TDBM_CACHE__']['paths'][$tablename][$table]))
+			elseif (isset($_SESSION['__TDBM_CACHE__']) && isset($_SESSION['__TDBM_CACHE__']['paths']) && 
+					isset($_SESSION['__TDBM_CACHE__']['paths'][$tablename]) && isset($_SESSION['__TDBM_CACHE__']['paths'][$tablename][$table]))
 			{
 				$cached_path = array();
 				$cached_path['name'] = $tablename;
