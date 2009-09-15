@@ -449,14 +449,14 @@ class MoufManager {
 		fwrite($fp, "\n");
 		
 		foreach ($this->declaredComponents as $name=>$className) {
-			if ($this->externalComponents[$name] != true) {
+			if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
 				fwrite($fp, "MoufManager::getMoufManager()->declareComponent(".var_export($name, true).", ".var_export($className, true).");\n");
 			}
 		}
 		fwrite($fp, "\n");
 
 		foreach ($this->declaredProperties as $instanceName=>$propArray) {
-			if ($this->externalComponents[$instanceName] != true) {
+			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
 				if (is_array($propArray)) {
 					foreach ($propArray as $propName=>$propValue) {
 						fwrite($fp, "MoufManager::getMoufManager()->setParameter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
@@ -467,7 +467,7 @@ class MoufManager {
 		fwrite($fp, "\n");
 		
 		foreach ($this->declaredBinds as $instanceName=>$propArray) {
-			if ($this->externalComponents[$instanceName] != true) {
+			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
 				if (is_array($propArray)) {
 					foreach ($propArray as $propName=>$propValue) {
 						if (is_array($propValue)) {
@@ -490,7 +490,7 @@ class ".$this->mainClassName." {
 ");
 		
 		foreach ($this->declaredComponents as $name=>$className) {
-			if ($this->externalComponents[$name] != true) {
+			if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
 				fwrite($fp, "	/**\n");
 				fwrite($fp, "	 * @return $className\n");
 				fwrite($fp, "	 */\n");
@@ -597,7 +597,10 @@ class ".$this->mainClassName." {
 	 * @return string or array<string> if there are many components.
 	 */
 	public function getBoundComponentsOnProperty($instanceName, $propertyName) {
-		return $this->declaredBinds[$instanceName][$propertyName];
+		if (isset($this->declaredBinds[$instanceName]) && isset($this->declaredBinds[$instanceName][$propertyName]))
+			return $this->declaredBinds[$instanceName][$propertyName];
+		else
+			return null;
 	}
 	
 	/**
