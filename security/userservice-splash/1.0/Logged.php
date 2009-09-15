@@ -45,9 +45,7 @@ class Logged extends AbstractFilter
 		
 		$is_logged = $userService->isLogged();
 		if(!$is_logged){
-			$loginUrl = $userService->loginPageUrl;
-			header("Location:".ROOT_URL.$loginUrl."/?redirect=".urlencode($_SERVER['REQUEST_URI']));
-			exit;
+			$userService->redirectNotLogged();
 		}
 	}
 

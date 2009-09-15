@@ -9,6 +9,8 @@ class MoufUserService implements UserServiceInterface {
 	
 	/**
 	 * The path to the login page, relative to the root of the application.
+	 * The path is relative to the ROOT of the web application.
+	 * It should not start with a "/" and should not end with a "/".
 	 *
 	 * @Property
 	 * @Compulsory
@@ -80,11 +82,13 @@ class MoufUserService implements UserServiceInterface {
 
 	/**
 	 * Redirects the user to the login page if he is not logged.
-	 *
-	 * @return boolean
+	 * The URL will be added a "redirect" GET parameter that can be used to return to the current page.
+	 * The function will exit the program, so do not expect any return value :)
 	 */
 	public function redirectNotLogged() {
-		// TODO
+		// TODO: only if GET request!
+		header("Location:".ROOT_URL.$this->loginPageUrl."/?redirect=".urlencode($_SERVER['REQUEST_URI']));
+		exit;
 	}
 	
 	/**
