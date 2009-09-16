@@ -186,7 +186,7 @@ class MoufManager {
 	 */
 	public function getInstance($instanceName) {
 		if (!isset($this->objectInstances[$instanceName]) || $this->objectInstances[$instanceName] == null) {
-			$this->objectInstances[$instanceName] = $this->instantiateComponent($instanceName);
+			$this->instantiateComponent($instanceName);
 			
 		}
 		return $this->objectInstances[$instanceName];
@@ -241,12 +241,12 @@ class MoufManager {
 								foreach ($keys_matching as $key) {
 									unset($properties[$key]); 
 								}
-								self::bindComponents($instanceName, $paramName, $properties);
+								$this->bindComponents($instanceName, $paramName, $properties);
 							}
 						} else {
 							// If this is a simple property
 							if ($properties == $instanceName) {
-								self::bindComponent($instanceName, $paramName, null);
+								$this->bindComponent($instanceName, $paramName, null);
 							}
 						}
 					}
@@ -287,12 +287,12 @@ class MoufManager {
 								foreach ($keys_matching as $key) {
 									$properties[$key] = $newInstanceName; 
 								}
-								self::bindComponents($instanceName, $paramName, $properties);
+								$this->bindComponents($instanceName, $paramName, $properties);
 							}
 						} else {
 							// If this is a simple property
 							if ($properties == $instanceName) {
-								self::bindComponent($instanceName, $paramName, $newInstanceName);
+								$this->bindComponent($instanceName, $paramName, $newInstanceName);
 							}
 						}
 					}
@@ -327,6 +327,7 @@ class MoufManager {
 		}*/
 		
 		$object = new $className();
+		$this->objectInstances[$instanceName] = $object;
 		if (isset($this->declaredProperties[$instanceName]) && is_array($this->declaredProperties[$instanceName])) {
 			foreach ($this->declaredProperties[$instanceName] as $key=>$value) {
 				$object->$key = $value;
@@ -339,11 +340,11 @@ class MoufManager {
 				if (is_array($value)) {
 					$tmpArray = array();
 					foreach ($value as $keyInstanceName=>$valueInstanceName) {
-						$tmpArray[$keyInstanceName] = self::getInstance($valueInstanceName);	
+						$tmpArray[$keyInstanceName] = $this->getInstance($valueInstanceName);	
 					}
 					$object->$key = $tmpArray;
 				} else {
-					$object->$key = self::getInstance($value);
+					$object->$key = $this->getInstance($value);
 				}
 			}
 		}
@@ -613,7 +614,11 @@ class ".$this->mainClassName." {
 	public function getBoundComponents($instanceName) {
 		//error_log("fdsf".$instanceName);
 		//error_log("toto ".var_export($this->declaredBinds, true));
-		return $this->declaredBinds[$instanceName];
+		if (isset($this->declaredBinds[$instanceName])) {
+			return $this->declaredBinds[$instanceName];
+		} else {
+			return null;
+		}
 	}
 	
 	/**
