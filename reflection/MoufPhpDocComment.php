@@ -52,9 +52,10 @@ class MoufPhpDocComment {
 		// Anything before is the pure comment.
 		$annotationLines = array();
 		
+		$oneAnnotationFound = false;
 		// Is the line an annotation? Let's test this with a regexp.
 		foreach ($lines as $line) {
-			if (preg_match("/^[@][a-zA-Z]/", $line) === false) {
+			if (preg_match("/^[@][a-zA-Z]/", $line) === 0) {
 			//if (ereg("^[@][a-zA-Z]", $line) === false) {
 				if ($oneAnnotationFound == false) {
 					$this->comment .= $line."\n";
