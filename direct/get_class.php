@@ -1,6 +1,6 @@
 <?php
 
-if ($_REQUEST["selfedit"]!="true") {
+if (isset($_REQUEST["selfedit"]) && $_REQUEST["selfedit"]!="true") {
 	//echo "mouf";
 	require_once '../../Mouf.php';
 } else {
