@@ -152,7 +152,7 @@ foreach ($this->properties as $property) {
 		
 		//$defaultValue = MoufDefaultValueGetter::getDefaultValue($this->className, $this->propertyName);
 //var_dump($defaultValue);	
-		echo '<select id="'.$property->getName().'" name="'.$property->getName().'" >';
+		echo '<select id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" >';
 		echo '<option value=""></option>';
 		for ($i=0; $i<count($oneOfValues); $i++) {
 			if ($oneOfValues[$i] == $defaultValue) {
@@ -173,9 +173,9 @@ foreach ($this->properties as $property) {
 			$defaultValue = $this->getValueForProperty($propertyName);
 		
 			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
-				echo '<input type="checkbox" id="'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='chacked'":"").'"/>';
+				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='chacked'":"").'"/>';
 			} else {
-				echo '<input type="text" id="'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
+				echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
 			}
 		} else if ($lowerVarType == "array") {
 			$recursiveType = $varTypeAnnot->getSubType();
@@ -275,12 +275,12 @@ foreach ($this->properties as $property) {
 			if ($defaultValue != null) {
 				echo '<span id="'.$property->getName().'_mouf_link" >';
 				echo '<a href="displayComponent?name='.plainstring_to_htmlprotected($defaultValue).'&amp;selfedit='.$this->selfedit.'">'.$defaultValue.'</a>';
-				echo '<a onclick="document.getElementById(\''.$property->getName().'_mouf_link\').style.display=\'none\';document.getElementById(\''.$property->getName().'\').style.display=\'inline\';" ><img src="'.ROOT_URL.'/mouf/views/images/pencil.png" alt="edit" /></a>';
+				echo '<a onclick="document.getElementById(\''.$property->getName().'_mouf_link\').style.display=\'none\';document.getElementById(\'moufproperty_'.$property->getName().'\').style.display=\'inline\';" ><img src="'.ROOT_URL.'/mouf/views/images/pencil.png" alt="edit" /></a>';
 				echo "</span>\n";
 				$defaultDisplaySelect = 'style="display:none"';
 			}
 			
-			echo '<select id="'.$property->getName().'" name="'.$property->getName().'" '.$defaultDisplaySelect.' >';
+			echo '<select id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" '.$defaultDisplaySelect.' >';
 			echo '<option value=""></option>';
 			foreach ($instances as $instanceName) {
 				if ($instanceName == $defaultValue) {
@@ -299,7 +299,7 @@ foreach ($this->properties as $property) {
 		//$defaultValue = $this->reflectionClass->getProperty($propertyName)->getDefault();
 		$defaultValue = $this->getValueForProperty($propertyName);
 		
-		echo '<input type="text" id="'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
+		echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
 	}
 	echo "</div>\n";
 	
