@@ -56,7 +56,6 @@ class MoufPhpDocComment {
 		// Is the line an annotation? Let's test this with a regexp.
 		foreach ($lines as $line) {
 			if (preg_match("/^[@][a-zA-Z]/", $line) === 0) {
-			//if (ereg("^[@][a-zA-Z]", $line) === false) {
 				if ($oneAnnotationFound == false) {
 					$this->comment .= $line."\n";
 				}
@@ -74,7 +73,6 @@ class MoufPhpDocComment {
 	 */
 	private function parseAnnotation($line) {
 		// Let's get the annotation text
-		//ereg("^[@]([a-zA-Z][a-zA-Z0-9]*)(.*)", $line, $values);
 		preg_match("/^[@]([a-zA-Z][a-zA-Z0-9]*)(.*)/", $line, $values);
 		
 		$annotationClass = isset($values[1])?$values[1]:null;
