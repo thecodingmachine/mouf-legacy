@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__)."/../../log_interface/1.0/LogInterface.php");
+//require_once(dirname(__FILE__)."/../../log_interface/1.0/LogInterface.php");
 
 /**
  * A logger class that writes messages into the php error_log.

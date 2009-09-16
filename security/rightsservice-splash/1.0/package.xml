@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package>
-	<displayName>UserService-Splash integration</displayName>
+	<displayName>RightsService-Splash integration</displayName>
 	<shortDescription>This package contains a set of class to bind the Splash MVC framework
-	with the UserService component. It features: a @Logged annotation to restrict access to
+	with the RightsService component. It features: a @RequiresRight annotation to restrict access to
 	logged users only.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/splash_annotations.html</docUrl>
 	<dependencies>
 		<dependency>
 			<group>security</group>
-			<name>userservice</name>
+			<name>rightsservice</name>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -18,6 +18,6 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>Logged.php</require>
+		<require>RequiresRight.php</require>
 	</requires>
 </package>

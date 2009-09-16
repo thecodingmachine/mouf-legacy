@@ -2,6 +2,7 @@
 
 /**
  * This class can be used to login or logoff users, and get their object.
+ * Please see documentation at: <a href="http://www.thecodingmachine.com/ext/mouf/doc/manage_users/userservice_package.html">http://www.thecodingmachine.com/ext/mouf/doc/manage_users/userservice_package.html</a>
  *
  * @Component
  */
@@ -37,6 +38,20 @@ class MoufUserService implements UserServiceInterface {
 	public $log;
 	
 	/**
+	 * This is an array containing all components that should be notified
+	 * when a user logs in or logs out.
+	 * All components in this array should implement the AuthenticationListenerInterface
+	 * interface.
+	 * For instance, the MoufRightsService, that manages the rights of users is
+	 * one of those. 
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @var array<AuthenticationListenerInterface>
+	 */
+	public $authenticationListeners;
+	
+	/**
 	 * Logs the user using the provided login and password.
 	 * Returns true on success, false if the user or password is incorrect.
 	 * 
@@ -50,6 +65,12 @@ class MoufUserService implements UserServiceInterface {
 			$this->log->trace("User '".$user->getLogin()."' logs in.");
 			$_SESSION['MoufUserId'] = $user->getId();
 			$_SESSION['MoufUserLogin'] = $user->getLogin();
+			
+			if (is_array($this->authenticationListeners)) {
+				foreach ($this->authenticationListeners as $listener) {
+					$listener->afterLogIn($this);
+				}
+			}
 			return true;
 		} else {
 			$this->log->trace("Identication failed for login '".$user."'");
@@ -96,6 +117,11 @@ class MoufUserService implements UserServiceInterface {
 	 *
 	 */
 	public function logoff() {
+		if (is_array($this->authenticationListeners)) {
+			foreach ($this->authenticationListeners as $listener) {
+				$listener->beforeLogOut($this);
+			}
+		}
 		$this->log->trace("User ".$_SESSION['MoufUserLogin']." logs out.");
 		unset($_SESSION['MoufUserId']);
 		unset($_SESSION['MoufUserLogin']);

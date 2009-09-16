@@ -105,9 +105,12 @@ class ExceptionUtils {
 		foreach ($backtrace as $step) {
 			if ($step['function']!='getTextBackTrace' && $step['function']!='handle_error')
 			{
-				$str .= "In ".$step['file'] . " at line ".$step['line'].": ";
-
-				$str .= $step['class'].$step['type'].$step['function'].'(';
+				if (isset($step['file']) && isset($step['line'])) {
+					$str .= "In ".$step['file'] . " at line ".$step['line'].": ";
+				}
+				if (isset($step['class']) && isset($step['type']) && isset($step['function'])) {			
+					$str .= $step['class'].$step['type'].$step['function'].'(';
+				}
 
 				if (is_array($step['args'])) {
 					$drawn = false;

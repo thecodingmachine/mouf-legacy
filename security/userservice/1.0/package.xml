@@ -2,7 +2,7 @@
 <package>
 	<displayName>UserService</displayName>
 	<shortDescription>A set of class to manage log-in and log-out of web applications.</shortDescription>
-	<docUrl></docUrl>
+	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/userservice_package.html</docUrl>
 	<dependencies>
 		<dependency>
 			<group>utils/log</group>
@@ -13,6 +13,7 @@
 	<requires>
 		<require>UserDaoException.php</require>
 		<require>UserServiceException.php</require>
+		<require>AuthenticationListenerInterface.php</require>
 		<require>UserInterface.php</require>
 		<require>UserDaoInterface.php</require>
 		<require>UserServiceInterface.php</require>

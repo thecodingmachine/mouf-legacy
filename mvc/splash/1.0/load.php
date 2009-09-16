@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 define("SPLASH_PATH", dirname(__FILE__)."/");
 //define("ROOT_PATH", realpath(SPLASH_PATH."..")."/");
