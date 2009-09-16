@@ -151,7 +151,7 @@ class MoufReflectionProperty extends ReflectionProperty
     	$propertyNode->addAttribute("name", $this->getName());
     	$propertyNode->addChild("comment", $this->getDocComment());
 
-    	if ($this->isPublic()) {
+    	if ($this->isPublic() && !$this->isStatic()) {
 	    	// Default value
 	    	$className = $this->refClass->getName();
 	    	$instance = new $className();
