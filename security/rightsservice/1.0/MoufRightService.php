@@ -87,7 +87,6 @@ class MoufRightService implements RightsServiceInterface, AuthenticationListener
 		$rights = $_SESSION[self::$RIGHTS_SESSION_NAME];
 		
 		if (isset($rights[$right])) {
-			
 			if ($rights[$right]->hasScope($scope)) {
 				return true;
 			}

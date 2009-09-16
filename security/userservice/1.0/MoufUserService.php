@@ -60,6 +60,11 @@ class MoufUserService implements UserServiceInterface {
 	 * @return boolean.
 	 */
 	public function login($login, $password) {
+		// First, if we are logged, let's unlog the user.
+		if ($this->isLogged()) {
+			$this->logoff();
+		}
+		
 		$user = $this->userDao->getUserByCredentials($login, $password);
 		if ($user != null) {
 			$this->log->trace("User '".$user->getLogin()."' logs in.");
