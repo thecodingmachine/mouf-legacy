@@ -3,7 +3,7 @@
  * Returns a serialized string representing the array for all components declares (classes with the @Component annotation)
  */
 
-if (isset($_REQUEST["selfedit"]) && $_REQUEST["selfedit"]!="true") {
+if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	//echo "mouf";
 	require_once '../../Mouf.php';
 } else {
