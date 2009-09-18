@@ -16,6 +16,8 @@ require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/Splash.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashTemplate.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php';
+require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/MessageFile.php';
+require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/LanguageUtils.php';
 
 // User dependencies
 require_once dirname(__FILE__).'/../plugins/utils/common/getvars/1.0/tcm_utils.php';
@@ -30,5 +32,6 @@ require_once dirname(__FILE__).'/controllers/MoufController.php';
 require_once dirname(__FILE__).'/controllers/MoufRootController.php';
 require_once dirname(__FILE__).'/controllers/ComponentsController.php';
 require_once dirname(__FILE__).'/controllers/PackageController.php';
+require_once dirname(__FILE__).'/load.php';
 
 ?>

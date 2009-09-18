@@ -439,11 +439,23 @@ class MoufManager {
 		fwrite($fp, "MoufManager::initMoufManager();\n");
 		fwrite($fp, "\n");
 		
+		// Declare packages
 		foreach ($this->packagesList as $fileName) {
 			fwrite($fp, "MoufManager::getMoufManager()->addPackageByXmlFile(".var_export($fileName, true).");\n");
 		}
 		fwrite($fp, "\n");
 		
+		// Import external components
+		$packageManager = new MoufPackageManager(dirname(__FILE__).'/../plugins');
+		foreach ($this->packagesList as $fileName) {
+			$package = $packageManager->getPackage($fileName);
+			foreach ($package->getExternalComponentsRequiredFiles() as $requiredFile) {
+				fwrite($fp, "require_once dirname(__FILE__).'/".$this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile."';\n");
+			}
+		}
+		fwrite($fp, "\n");
+		
+		// Declare local components
 		foreach ($this->registeredComponents as $registeredComponent) {
 			//fwrite($fp, "require_once dirname(__FILE__).'/$registeredComponent';\n");
 			fwrite($fp, "MoufManager::getMoufManager()->registerComponent('$registeredComponent');\n");
@@ -517,7 +529,6 @@ class ".$this->mainClassName." {
 
 		// Let's add the require_once from the packages first!
 		fwrite($fp2, "// Packages dependencies\n");
-		$packageManager = new MoufPackageManager(dirname(__FILE__).'/../plugins');
 		foreach ($this->packagesList as $fileName) {
 			$package = $packageManager->getPackage($fileName);
 			foreach ($package->getRequiredFiles() as $requiredFile) {

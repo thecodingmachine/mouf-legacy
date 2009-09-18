@@ -65,6 +65,13 @@ class MoufPackage {
 	 * @var array<string>
 	 */
 	private $requires;
+	
+	/**
+	 * The list of files that contains external declarations of components, relative to the package directory.
+	 *
+	 * @var array<string>
+	 */
+	private $externalComponentRequires;
 
 	/**
 	 * The list of files to be required by Mouf in its UI, relative to the package directory.
@@ -109,6 +116,16 @@ class MoufPackage {
 		}
 		$this->requires = $requiresList;
 		
+		$externalList = array();
+		$requires = $this->packageSimpleXml->externalComponentRequires;
+		if ($requires) {
+			foreach ($requires->require as $require) {
+				$externalList[] = (string)$require;
+			}
+		}
+		$this->externalComponentRequires = $externalList;
+		
+		
 		$adminRequiresList = array();
 		$adminRequires = $this->packageSimpleXml->adminRequires;
 		if ($adminRequires) {
@@ -117,9 +134,7 @@ class MoufPackage {
 			}
 		}
 		$this->adminRequires = $adminRequiresList;
-		
-		// TODO: develop getters for everything except the packageSimpleXml property.
-		
+				
 	}
 	
 	/**
@@ -184,6 +199,15 @@ class MoufPackage {
 	 */
 	public function getRequiredFiles() {
 		return $this->requires;
+	}
+	
+	/**
+	 * Returns the list of required files that contain declaration of external components, relative to the root of the package.
+	 *
+	 * @array<string>
+	 */
+	public function getExternalComponentsRequiredFiles() {
+		return $this->externalComponentRequires;
 	}
 
 	/**

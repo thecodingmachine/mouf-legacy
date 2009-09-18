@@ -7,6 +7,7 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	//echo "moufadmin";
 	require_once '../MoufManager.php';
 	MoufManager::initMoufManager();
+	require_once '../../MoufUniversalParameters.php';
 	require_once '../MoufAdmin.php';
 }
 require_once '../Moufspector.php';

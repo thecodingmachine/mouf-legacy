@@ -129,8 +129,8 @@ class MoufPackageManager {
 				continue;
 			}
 			
-			$packageDependencies[] = $additionalPackage;
 			$packageDependencies = $this->getRecursiveDependencies($additionalPackage, $packageDependencies);
+			$packageDependencies[] = $additionalPackage;
 		}
 		return $packageDependencies;
 	}

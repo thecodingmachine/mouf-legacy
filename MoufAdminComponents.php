@@ -8,8 +8,11 @@ MoufManager::initMoufManager();
 MoufManager::getMoufManager()->addPackageByXmlFile('utils/log/log_interface/1.0/package.xml');
 MoufManager::getMoufManager()->addPackageByXmlFile('html/htmlelement/1.0/package.xml');
 MoufManager::getMoufManager()->addPackageByXmlFile('html/template/BaseTemplate/1.0/package.xml');
-MoufManager::getMoufManager()->addPackageByXmlFile('mvc/splash/1.0/package.xml');
 MoufManager::getMoufManager()->addPackageByXmlFile('html/template/SplashTemplate/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('utils/i18n/fine/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('mvc/splash/1.0/package.xml');
+
+require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
 
 MoufManager::getMoufManager()->registerComponent('../plugins/utils/common/getvars/1.0/tcm_utils.php');
 MoufManager::getMoufManager()->registerComponent('../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php');
@@ -23,6 +26,7 @@ MoufManager::getMoufManager()->registerComponent('controllers/MoufController.php
 MoufManager::getMoufManager()->registerComponent('controllers/MoufRootController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/ComponentsController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/PackageController.php');
+MoufManager::getMoufManager()->registerComponent('load.php');
 
 MoufManager::getMoufManager()->declareComponent('splash', 'Splash');
 MoufManager::getMoufManager()->declareComponent('splashTemplate', 'SplashTemplate');

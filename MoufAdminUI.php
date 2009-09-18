@@ -4,5 +4,4 @@
  */
 
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashAdmin.php';
-
 ?>
