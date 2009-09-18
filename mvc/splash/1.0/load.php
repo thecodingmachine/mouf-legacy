@@ -74,5 +74,5 @@ require_once 'filters/stubXajaAnnotation.php';
 //DBM_Object::setDefaultAutoSaveMode(false);
 
 //Internationalization
-require_once 'utils/languageUtils.php';
+//require_once 'utils/languageUtils.php';
 ?>

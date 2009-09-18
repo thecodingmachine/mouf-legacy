@@ -14,10 +14,18 @@
 			<name>SplashTemplate</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>models/Splash.php</require>
 	</requires>
+	<externalComponentRequires>
+		<require>SplashExternalComponent.php</require>
+	</externalComponentRequires>	
 	<adminRequires>
 		<require>SplashAdmin.php</require>
 	</adminRequires>	

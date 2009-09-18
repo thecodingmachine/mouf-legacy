@@ -6,4 +6,11 @@
 	<requires>
 		<require>NullLogger.php</require>
 	</requires>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 </package>

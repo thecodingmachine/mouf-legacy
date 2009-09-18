@@ -3,7 +3,7 @@
 require_once dirname(__FILE__)."/../load.php";
 
 /**
- * The Splash component is the root of the Splash framework.
+ * The Splash component is the root of the Splash framework.<br/>
  * It is in charge of binding an Url to a Controller.
  * There is one and only one instance of Splash per web application.
  * The name of the instance MUST be "splash".
