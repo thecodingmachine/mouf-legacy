@@ -4,18 +4,20 @@ require_once dirname(__FILE__)."/../load.php";
 
 /**
  * The Splash component is the root of the Splash framework.<br/>
- * It is in charge of binding an Url to a Controller.
- * There is one and only one instance of Splash per web application.
- * The name of the instance MUST be "splash".
- * 
- * The Splash component has several ways to bind an URL to a Controller.
- * It can do so:
- * - using the instance name of a controller that has been instanciated with Mouf.
+ * It is in charge of binding an Url to a Controller.<br/>
+ * There is one and only one instance of Splash per web application.<br/>
+ * The name of the instance MUST be "splash".<br/>
+ * <br/>
+ * The Splash component has several ways to bind an URL to a Controller.<br/>
+ * It can do so:<br/>
+ * <ul><li>using the instance name of a controller that has been instanciated with Mouf.<br/>
  * For instance, if a controller has an instance name that is "myController", then
  * the http://[myserver]/[mywebapp]/myController URL will lead to the default action
- * of that controller.
+ * of that controller.<br/>
  * The http://[myserver]/[mywebapp]/myController/myAction URL will lead to the myAction action
- * of that controller. 
+ * of that controller.</br>
+ * </li></ul>
+ * Others methods are remaining to be done.
  * 
  * @Component
  * @RequiredInstance "splash"
