@@ -27,13 +27,13 @@ if (file_exists(RESOURCES_PATHS.'message_'.$i18n_lg.'.php')){
 function iMsg(){
 	global $msg, $msg_edition_mode;
 	if ($msg_edition_mode === null) {
-		$msg_edition_mode = SplashSessionUtils::isMessageEditionMode();
+		$msg_edition_mode = isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])?$_SESSION["FINE_MESSAGE_EDITION_MODE"]:false;
 	}
 
 	$args = func_get_args();
 	$key = $args[0];
 
-	if ($msg[$key]){
+	if (isset($msg[$key])) {
 		$value = $msg[$key];
 		for ($i=1;$i<count($args);$i++){
 			$value = str_replace('{'.($i-1).'}', plainstring_to_htmlprotected($args[$i]), $value);
@@ -47,7 +47,7 @@ function iMsg(){
 	}
 
 	if ($msg_edition_mode) {
-		$value = $value.' <a href="'.ROOT_URL.'EditLabel/editLabel?key='.$key.'">edit</a>';
+		$value = $value.' <a href="'.ROOT_URL.'mouf/editLabels/editLabel?key='.$key.'&backto='.$_SERVER['REQUEST_URI'].'">edit</a>';
 	}
 
 	return $value;
