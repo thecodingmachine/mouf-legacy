@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Smart Dump</displayName>
+	<shortDescription>Displays a variable with a smart layout in HTML (using the smart_dump function).</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+	</dependencies>
+	<requires>
+		<require>smart_dump.php</require>
+	</requires>
+</package>
