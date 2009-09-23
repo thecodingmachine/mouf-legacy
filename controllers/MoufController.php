@@ -5,6 +5,7 @@ require_once(dirname(__FILE__)."/../Moufspector.php");
 require_once(dirname(__FILE__)."/../annotations/OneOfAnnotation.php");
 require_once(dirname(__FILE__)."/../annotations/OneOfTextAnnotation.php");
 require_once(dirname(__FILE__)."/../annotations/varAnnotation.php");
+require_once(dirname(__FILE__)."/../annotations/paramAnnotation.php");
 require_once(dirname(__FILE__)."/../CanvasWriter.php");
 
 /**
@@ -126,10 +127,11 @@ class MoufController extends Controller {
 		//$this->properties = Moufspector::getPropertiesForClass($this->className);
 		
 		foreach ($this->properties as $property) {
-			if ($property->hasAnnotation("var")) {
-				$varTypes = $property->getAnnotations("var");
-				$varTypeAnnot = $varTypes[0];
-				$varType = $varTypeAnnot->getType();
+			if ($property->hasType()) {
+				//$varTypes = $property->getAnnotations("var");
+				//$varTypeAnnot = $varTypes[0];
+				//$varType = $varTypeAnnot->getType();
+				$varType = $property->getType();
 				$lowerVarType = strtolower($varType);
 				
 				$propertyType = "";
@@ -141,44 +143,64 @@ class MoufController extends Controller {
 							$value = true;
 						}
 					}
-					$this->moufManager->setParameter($instanceName, $property->getName(), $value);
+					if ($property->isPublicFieldProperty()) {
+						$this->moufManager->setParameter($instanceName, $property->getName(), $value);
+					} else {
+						$this->moufManager->setParameterViaSetter($instanceName, $property->getMethodName(), $value);
+					}
 				} else if ($lowerVarType == "array") {
-					$recursiveType = $varTypeAnnot->getSubType();
-					$isAssociative = $varTypeAnnot->isAssociativeArray();
+					$recursiveType = $property->getSubType();
+					$isAssociative = $property->isAssociativeArray();
 					if ($recursiveType == "string" || $recursiveType == "bool" || $recursiveType == "boolean" || $recursiveType == "int" || $recursiveType == "integer" || $recursiveType == "double" || $recursiveType == "float" || $recursiveType == "real" || $recursiveType == "mixed") {
 						if ($isAssociative) {
 							$keys = get("moufKeyFor".$property->getName());
 							$tmpValues = get($property->getName());
 							
 							$values = array();
-							for ($i=0; $i<count($tmpValues); $i++) {
-								$values[$keys[$i]] = $tmpValues[$i];
+							if (is_array($tmpValues)) {
+								for ($i=0; $i<count($tmpValues); $i++) {
+									$values[$keys[$i]] = $tmpValues[$i];
+								}
 							}
 						} else {
 							$values = get($property->getName());
 						}
-						$this->moufManager->setParameter($instanceName, $property->getName(), $values);
+						if ($property->isPublicFieldProperty()) {
+							$this->moufManager->setParameter($instanceName, $property->getName(), $values);
+						} else {
+							$this->moufManager->setParameterViaSetter($instanceName, $property->getMethodName(), $values);
+						}
 					} else {
 						if ($isAssociative) {
 							$keys = get("moufKeyFor".$property->getName());
 							$tmpValues = get($property->getName());
 							
 							$values = array();
-							for ($i=0; $i<count($tmpValues); $i++) {
-								$values[$keys[$i]] = $tmpValues[$i];
+							if (is_array($tmpValues)) {
+								for ($i=0; $i<count($tmpValues); $i++) {
+									$values[$keys[$i]] = $tmpValues[$i];
+								}
 							}
 						} else {
 							$values = get($property->getName());
 						}
 						
-						$this->moufManager->bindComponents($instanceName, $property->getName(), $values);
+						if ($property->isPublicFieldProperty()) {
+							$this->moufManager->bindComponents($instanceName, $property->getName(), $values);
+						} else {
+							$this->moufManager->bindComponentsViaSetter($instanceName, $property->getMethodName(), $values);
+						}
 					}
 				} else {
 					$value = get($property->getName());
 					if ($value == "")
 						$value = null;
 						
-					$this->moufManager->bindComponent($instanceName, $property->getName(), $value);
+					if ($property->isPublicFieldProperty()) {
+						$this->moufManager->bindComponent($instanceName, $property->getName(), $value);
+					} else {
+						$this->moufManager->bindComponentViaSetter($instanceName, $property->getMethodName(), $value);
+					}
 				}
 				
 				
@@ -252,14 +274,28 @@ class MoufController extends Controller {
 	/**
 	 * Returns the value set for the instance passed in parameter... or the default value if the value is not set.
 	 *
-	 * @param string $propertyName
+	 * @param MoufPropertyDescription $property
 	 * @return mixed
 	 */
-	private function getValueForProperty($propertyName) {
-		if ($this->moufManager->hasParameter($this->instanceName, $propertyName)) {
-			$defaultValue = $this->moufManager->getParameter($this->instanceName, $propertyName);
+	private function getValueForProperty(MoufPropertyDescriptor $property) {
+		if ($property->isPublicFieldProperty()) {
+			$propertyName =  $property->getName();
+			if ($this->moufManager->hasParameter($this->instanceName, $propertyName)) {
+				$defaultValue = $this->moufManager->getParameter($this->instanceName, $propertyName);
+			} else {
+				$defaultValue = $this->reflectionClass->getProperty($propertyName)->getDefault();
+			}
 		} else {
-			$defaultValue = $this->reflectionClass->getProperty($propertyName)->getDefault();
+			// This is a setter.
+			$propertyName =  $property->getName();
+			if ($this->moufManager->hasParameterForSetter($this->instanceName, $property->getMethodName())) {
+				$defaultValue = $this->moufManager->getParameterForSetter($this->instanceName, $property->getMethodName());
+			} else {
+				// TODO: return a default value. We could try to find it using a getter maybe...
+				// Or a default value for the setter? 
+				return null;
+			}
+			
 		}
 		return $defaultValue;
 	}

@@ -12,12 +12,12 @@ require_once dirname(__FILE__).'/../plugins/html/htmlelement/1.0/HtmlFromFunctio
 require_once dirname(__FILE__).'/../plugins/html/htmlelement/1.0/HtmlString.php';
 require_once dirname(__FILE__).'/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php';
 require_once dirname(__FILE__).'/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php';
-require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/Splash.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashTemplate.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php';
 require_once dirname(__FILE__).'/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php';
 require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/MessageFile.php';
 require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/LanguageUtils.php';
+require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/models/Splash.php';
 
 // User dependencies
 require_once dirname(__FILE__).'/../plugins/utils/common/getvars/1.0/tcm_utils.php';

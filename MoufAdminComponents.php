@@ -67,6 +67,7 @@ MoufManager::getMoufManager()->setParameter('viewInstancesMenuItem', 'propagated
 ));
 MoufManager::getMoufManager()->setParameter('splashTemplate', 'logoImg', '');
 MoufManager::getMoufManager()->setParameter('splashTemplate', 'title', 'Mouf - Your website');
+MoufManager::getMoufManager()->setParameter('splashTemplate', 'css_files', false);
 MoufManager::getMoufManager()->setParameter('jQuery', 'noConflictMode', true);
 MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuText', '<b>Components</b>');
 MoufManager::getMoufManager()->setParameter('componentsLabelMenuItem', 'menuLink', '');

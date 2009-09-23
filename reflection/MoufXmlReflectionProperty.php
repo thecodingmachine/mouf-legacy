@@ -168,7 +168,7 @@ class MoufXmlReflectionProperty
      *
      * @return  MoufReflectionClass
      */
-    public function getDeclaringClass()
+    /*public function getDeclaringClass()
     {
         $refClass = parent::getDeclaringClass();
         if ($refClass->getName() === $this->className) {
@@ -181,7 +181,7 @@ class MoufXmlReflectionProperty
         
         $moufRefClass = new MoufReflectionClass($refClass->getName());
         return $moufRefClass;
-    }
+    }*/
     
 }
 ?>

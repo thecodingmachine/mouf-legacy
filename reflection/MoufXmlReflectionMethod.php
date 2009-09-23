@@ -1,4 +1,6 @@
 <?php
+require_once 'MoufXmlReflectionParameter.php';
+
 /**
  * This class behaves like MoufReflectionMethod, except it is completely based on a Xml message.
  * It does not try to access the real class.
@@ -36,6 +38,13 @@ class MoufXmlReflectionMethod
     protected $methodName;
     
     /**
+     * Modifier
+     *
+     * @var string
+     */
+    protected $modifier;
+    
+    /**
 	 * The phpDocComment we will use to access annotations.
 	 *
 	 * @var MoufPhpDocComment
@@ -58,12 +67,46 @@ class MoufXmlReflectionMethod
         }
         
         $this->xmlElem = $xmlElem;
-        $this->methodName = $xmlElem['name'];
+        $this->methodName = (string)$xmlElem['name'];
+        $this->modifier = (string)$xmlElem['modifier'];
         //$this->methodName = $methodName;
         //parent::__construct($this->className, $methodName);
     }
     
-	/**
+    public function getName() {
+    	return $this->methodName;
+    }
+    
+    public function isPublic() {
+    	return $this->modifier == "public";
+    }
+    
+    public function isPrivate() {
+    	return $this->modifier == "private";
+    }
+    
+    public function isProtected() {
+    	return $this->modifier == "protected";
+    }
+
+    public function isStatic() {
+    	return ((string)$this->xmlElem['static']) == "true";
+    }
+    
+    public function isFinal() {
+    	return ((string)$this->xmlElem['final']) == "true";
+    }
+    
+    public function isConstructor() {
+    	return ((string)$this->xmlElem['constructor']) == "true";
+    }
+    
+    public function isAbstract() {
+    	return ((string)$this->xmlElem['abstract']) == "true";
+    }
+    
+    
+    /**
 	 * Analyzes and parses the comment (if it was not previously done).
 	 *
 	 */
@@ -168,21 +211,38 @@ class MoufXmlReflectionMethod
         return $moufRefClass;
     }*/
 
+    
+	/**
+     * returns the specified parameter or null if it does not exist
+     *
+     * @param   string                $name  name of parameter to return
+     * @return  MoufXmlParameterMethod
+     */
+    public function getParameter($name)
+    {
+        foreach ($this->xmlRoot->parameter as $parameter) {
+    		if ($method['name'] == $name) {
+		        $moufRefParameter = new MoufXmlReflectionParameter($this, $parameter);
+		        return $moufRefParameter;
+    		}
+    	}
+    	return null;
+    }
+
     /**
      * returns a list of all parameters
      *
-     * @return  array<MoufReflectionParameter>
+     * @return  array<MoufXmlReflectionParameter>
      */
-    /*public function getParameters()
+    public function getParameters()
     {
-        $parameters     = parent::getParameters();
         $moufParameters = array();
-        foreach ($parameters as $parameter) {
-            $moufParameters[] = new MoufReflectionParameter($this, $parameter->getName());
+        foreach ($this->xmlElem->parameter as $parameter) {
+            $moufParameters[] = new MoufXmlReflectionParameter($this, $parameter);
         }
         
         return $moufParameters;
-    }*/
+    }
 
 }
 ?>

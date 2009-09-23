@@ -1,6 +1,7 @@
 <?php
 
 require_once 'reflection/MoufReflectionClass.php';
+require_once 'MoufPropertyDescriptor.php';
 
 /**
  * This class is used internally by Mouf and is specialized in analysing classes to find properties, etc... depending on the annotations. 
@@ -29,9 +30,9 @@ class Moufspector {
 	 * Returns the list of properties the class $className does contain. 
 	 *
 	 * @param MoufXmlReflectionClass $class
-	 * @return array An array containing stubReflectionProperty objects.
+	 * @return array An array containing MoufXmlReflectionProperty objects.
 	 */
-	public static function getPropertiesForClass($refClass) {
+	public static function getPropertiesForClass(MoufXmlReflectionClass $refClass) {
 		//$refClass = new MoufReflectionClass($className);
 		
 		$propertiesList = array();
@@ -39,7 +40,18 @@ class Moufspector {
 		foreach($refClass->getProperties() as $attribute) {
 			//$t = new stubReflectionProperty();
 			if ($attribute->hasAnnotation("Property")) {
-				$propertiesList[] = $attribute;
+				$propertyDescriptor = new MoufPropertyDescriptor($attribute);
+				//$propertiesList[] = $attribute;
+				$propertiesList[] = $propertyDescriptor;
+			}
+		}
+		
+		foreach($refClass->getMethods() as $method) {
+			//$t = new stubReflectionProperty();
+			if ($method->hasAnnotation("Property")) {
+				$propertyDescriptor = new MoufPropertyDescriptor($method);
+				//$propertiesList[] = $attribute;
+				$propertiesList[] = $propertyDescriptor;
 			}
 		}
 		

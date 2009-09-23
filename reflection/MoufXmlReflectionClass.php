@@ -48,8 +48,6 @@ class MoufXmlReflectionClass {
 		return $this->xmlRoot['name'];
 	}
 	
-	
-	
 	/**
 	 * Returns the comment for the class.
 	 *
@@ -57,6 +55,34 @@ class MoufXmlReflectionClass {
 	 */
 	public function getDocComment() {
 		return (string)($this->xmlRoot->comment);
+	}
+	
+	public function isPublic() {
+		return $this->xmlRoot['modifier']=="public";
+	}
+
+	public function isProtected() {
+		return $this->xmlRoot['modifier']=="protected";
+	}
+	
+	public function isPrivate() {
+		return $this->xmlRoot['modifier']=="private";
+	}
+	
+	public function isStatic() {
+		return $this->xmlRoot['static']=="true";
+	}
+	
+	public function isAbstract() {
+		return $this->xmlRoot['abstract']=="true";
+	}
+	
+	public function isFinal() {
+		return $this->xmlRoot['final']=="true";
+	}
+	
+	public function isConstructor() {
+		return $this->xmlRoot['constructor']=="true";
 	}
 	
 	/**
@@ -122,33 +148,33 @@ class MoufXmlReflectionClass {
      * returns the specified method or null if it does not exist
      *
      * @param   string                $name  name of method to return
-     * @return  MoufReflectionMethod
+     * @return  MoufXmlReflectionMethod
      */
-    /*public function getMethod($name)
+    public function getMethod($name)
     {
-        if (parent::hasMethod($name) == false) {
-            return null;
-        }
-        
-        $moufRefMethod = new MoufReflectionMethod($this, $name);
-        return $moufRefMethod;
-    }*/
+        foreach ($this->xmlRoot->method as $method) {
+    		if ($method['name'] == $name) {
+		        $moufRefMethod = new MoufXmlReflectionMethod($this, $method);
+		        return $moufRefMethod;
+    		}
+    	}
+    	return null;
+    }
 
     /**
      * returns a list of all methods
      *
-     * @return  array<MoufReflectionMethod>
+     * @return  array<MoufXmlReflectionMethod>
      */
-    /*public function getMethods()
+    public function getMethods()
     {
-        $methods    = parent::getMethods();
         $moufMethods = array();
-        foreach ($methods as $method) {
-            $moufMethods[] = new MoufReflectionMethod($this, $method->getName());
+        foreach ($this->xmlRoot->method as $method) {
+            $moufMethods[] = new MoufXmlReflectionMethod($this, $method);
         }
         
         return $moufMethods;
-    }*/
+    }
 
     /**
      * returns the specified property or null if it does not exist
@@ -176,7 +202,7 @@ class MoufXmlReflectionClass {
     /**
      * returns a list of all properties
      *
-     * @return  array<MoufReflectionProperty>
+     * @return  array<MoufXmlReflectionProperty>
      */
     public function getProperties()
     {

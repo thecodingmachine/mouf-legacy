@@ -148,7 +148,7 @@ foreach ($this->properties as $property) {
 		
 		//$defaultValue = $this->instance->$propertyName;
 
-		$defaultValue = $this->getValueForProperty($propertyName);
+		$defaultValue = $this->getValueForProperty($property);
 		
 		//$defaultValue = MoufDefaultValueGetter::getDefaultValue($this->className, $this->propertyName);
 //var_dump($defaultValue);	
@@ -164,13 +164,13 @@ foreach ($this->properties as $property) {
 		}
 		echo '</select>';
 		
-	} else if ($property->hasAnnotation("var")) {
-		$varTypes = $property->getAnnotations("var");
-		$varTypeAnnot = $varTypes[0];
-		$varType = $varTypeAnnot->getType();
+	} else if ($property->hasType()) {
+		//$varTypes = $property->getAnnotations("var");
+		//$varTypeAnnot = $varTypes[0];
+		$varType = $property->getType();
 		$lowerVarType = strtolower($varType);
 		if ($lowerVarType == "string" || $lowerVarType == "bool" || $lowerVarType == "boolean" || $lowerVarType == "int" || $lowerVarType == "integer" || $lowerVarType == "double" || $lowerVarType == "float" || $lowerVarType == "real" || $lowerVarType == "mixed" || $lowerVarType == "callback") {
-			$defaultValue = $this->getValueForProperty($propertyName);
+			$defaultValue = $this->getValueForProperty($property);
 		
 			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
 				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='chacked'":"").'"/>';
@@ -178,7 +178,8 @@ foreach ($this->properties as $property) {
 				echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
 			}
 		} else if ($lowerVarType == "array") {
-			$recursiveType = $varTypeAnnot->getSubType();
+			//$recursiveType = $varTypeAnnot->getSubType();
+			$recursiveType = $property->getSubType();
 			
 			if ($recursiveType == "string" || $recursiveType == "bool" || $recursiveType == "boolean" || $recursiveType == "int" || $recursiveType == "integer" || $recursiveType == "double" || $recursiveType == "float" || $recursiveType == "real" || $recursiveType == "mixed" || $recursiveType == "callback") {
 				
@@ -192,8 +193,9 @@ foreach ($this->properties as $property) {
 				echo "Event.observe(window, 'load', function() {\n";
 				//$defaultValues = $this->instance->$propertyName;
 				//$defaultValues = $this->reflectionClass->getDefault();
-				$defaultValues = $this->getValueForProperty($propertyName);
-				$isAssociative = $varTypeAnnot->isAssociativeArray();
+				$defaultValues = $this->getValueForProperty($property);
+				//$isAssociative = $varTypeAnnot->isAssociativeArray();
+				$isAssociative = $property->isAssociativeArray();
 				
 				if (is_array($defaultValues)) {
 					foreach ($defaultValues as $defaultKey=>$defaultValue) {
@@ -235,8 +237,14 @@ foreach ($this->properties as $property) {
 				
 				echo "<script>";
 				echo "Event.observe(window, 'load', function() {\n";
-				$defaultValues = $this->moufManager->getBoundComponentsOnProperty($this->instanceName, $property->getName());
-				$isAssociative = $varTypeAnnot->isAssociativeArray();
+
+				if ($property->isPublicFieldProperty()) {
+					$defaultValues = $this->moufManager->getBoundComponentsOnProperty($this->instanceName, $property->getName());
+				} else {
+					$defaultValues = $this->moufManager->getBoundComponentsOnSetter($this->instanceName, $property->getMethodName());
+				}
+				//$isAssociative = $varTypeAnnot->isAssociativeArray();
+				$isAssociative = $property->isAssociativeArray();
 				
 								
 				if (is_array($defaultValues)) {
@@ -269,8 +277,12 @@ foreach ($this->properties as $property) {
 			// Let's try to find any instances that could match this type.
 			$instances = $this->findInstances($varType);
 			
-			$defaultValue = $this->moufManager->getBoundComponentsOnProperty($this->instanceName, $property->getName());
-
+			if ($property->isPublicFieldProperty()) {
+				$defaultValue = $this->moufManager->getBoundComponentsOnProperty($this->instanceName, $property->getName());
+			} else {
+				$defaultValue = $this->moufManager->getBoundComponentsOnSetter($this->instanceName, $property->getMethodName());
+			}
+			
 			$defaultDisplaySelect = "";
 			if ($defaultValue != null) {
 				echo '<span id="'.$property->getName().'_mouf_link" >';
@@ -295,9 +307,10 @@ foreach ($this->properties as $property) {
 		
 		
 	} else {
+		//var_dump($property);
 		//$defaultValue = $this->instance->$propertyName;
 		//$defaultValue = $this->reflectionClass->getProperty($propertyName)->getDefault();
-		$defaultValue = $this->getValueForProperty($propertyName);
+		$defaultValue = $this->getValueForProperty($property);
 		
 		echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
 	}

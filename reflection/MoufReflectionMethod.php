@@ -1,4 +1,6 @@
 <?php
+require_once 'MoufReflectionParameter.php';
+
 /**
  * Extended Reflection class for class methods that allows usage of annotations.
  * 
@@ -151,7 +153,7 @@ class MoufReflectionMethod extends ReflectionMethod
      *
      * @return  array<MoufReflectionParameter>
      */
-    /*public function getParameters()
+    public function getParameters()
     {
         $parameters     = parent::getParameters();
         $moufParameters = array();
@@ -160,7 +162,7 @@ class MoufReflectionMethod extends ReflectionMethod
         }
         
         return $moufParameters;
-    }*/
+    }
 
    	/**
    	 * Appends this method to the XML node passed in parameter.
@@ -170,8 +172,24 @@ class MoufReflectionMethod extends ReflectionMethod
     public function toXml(SimpleXmlElement $root) {
     	$methodNode = $root->addChild("method");
     	$methodNode->addAttribute("name", $this->getName());
+    	$modifier = "";
+    	if ($this->isPublic()) {
+    		$modifier = "public";
+    	} elseif ($this->isProtected()) {
+    		$modifier = "protected";
+    	} elseif ($this->isPrivate()) {
+    		$modifier = "private";
+    	}
+    	$methodNode->addAttribute("modifier", $modifier);
+    	$methodNode->addAttribute("static", $this->isStatic()?"true":"false");
+    	$methodNode->addAttribute("abstract", $this->isAbstract()?"true":"false");
+    	$methodNode->addAttribute("constructor", $this->isConstructor()?"true":"false");
+    	$methodNode->addAttribute("final", $this->isFinal()?"true":"false");
     	$methodNode->addChild("comment", $this->getDocComment());
     	
+    	foreach ($this->getParameters() as $parameter) {
+    		$parameter->toXml($methodNode);
+    	}
     }
     
 }

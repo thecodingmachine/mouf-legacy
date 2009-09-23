@@ -107,9 +107,16 @@ class MoufManager {
 	/**
 	 * An array binding the components to their properties
 	 *
-	 * @var array
+	 * @var array<array<string>>
 	 */
 	private $declaredProperties = array();
+	
+	/**
+	 * An array binding the components to their properties
+	 *
+	 * @var array
+	 */
+	private $declaredSetterProperties = array();
 	
 	/**
 	 * An array binding the components to their properties related to other components
@@ -117,6 +124,13 @@ class MoufManager {
 	 * @var array<string, array<string, string>> ou array<string, array<string, array<string>>> si il y a plusieurs composants.
 	 */
 	private $declaredBinds = array();
+	
+	/**
+	 * An array binding the components to their properties related to other components, using a setter
+	 *
+	 * @var array<string, array<string, string>> ou array<string, array<string, array<string>>> si il y a plusieurs composants.
+	 */
+	private $declaredSetterBinds = array();
 	
 	/**
 	 * A list of files to be required (relative to the directory of Mouf.php)
@@ -227,7 +241,9 @@ class MoufManager {
 		unset($this->declaredComponents[$instanceName]);
 		unset($this->objectInstances[$instanceName]);
 		unset($this->declaredProperties[$instanceName]);
+		unset($this->declaredSetterProperties[$instanceName]);
 		unset($this->declaredBinds[$instanceName]);
+		unset($this->declaredSetterBinds[$instanceName]);
 		unset($this->externalComponents[$instanceName]);
 		
 		if (is_array($this->declaredBinds)) {
@@ -253,6 +269,30 @@ class MoufManager {
 				}
 			}
 		}
+		
+		if (is_array($this->declaredSetterBinds)) {
+			foreach ($this->declaredSetterBinds as $instanceName=>$bindedProperties) {
+				if (is_array($bindedProperties)) {
+					foreach ($bindedProperties as $setterName=>$properties) {
+						if (is_array($properties)) {
+							// If this is an array of properties
+							$keys_matching == array_keys($properties, $instanceName);
+							if (!empty($keys_matching)) {
+								foreach ($keys_matching as $key) {
+									unset($properties[$key]); 
+								}
+								$this->bindComponentsViaSetter($instanceName, $setterName, $properties);
+							}
+						} else {
+							// If this is a simple property
+							if ($properties == $instanceName) {
+								$this->bindComponentViaSetter($instanceName, $setterName, null);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -270,11 +310,15 @@ class MoufManager {
 		$this->declaredComponents[$newInstanceName] = $this->declaredComponents[$instanceName];
 		$this->objectInstances[$newInstanceName] = $this->objectInstances[$instanceName];
 		$this->declaredProperties[$newInstanceName] = $this->declaredProperties[$instanceName];
+		$this->declaredSetterProperties[$newInstanceName] = $this->declaredSetterProperties[$instanceName];
 		$this->declaredBinds[$newInstanceName] = $this->declaredBinds[$instanceName];
+		$this->declaredSetterBinds[$newInstanceName] = $this->declaredSetterBinds[$instanceName];
 		unset($this->declaredComponents[$instanceName]);
 		unset($this->objectInstances[$instanceName]);
 		unset($this->declaredProperties[$instanceName]);
+		unset($this->declaredSetterProperties[$instanceName]);
 		unset($this->declaredBinds[$instanceName]);
+		unset($this->declaredSetterBinds[$instanceName]);
 		
 		if (is_array($this->declaredBinds)) {
 			foreach ($this->declaredBinds as $instanceName=>$bindedProperties) {
@@ -293,6 +337,30 @@ class MoufManager {
 							// If this is a simple property
 							if ($properties == $instanceName) {
 								$this->bindComponent($instanceName, $paramName, $newInstanceName);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (is_array($this->declaredSetterBinds)) {
+			foreach ($this->declaredSetterBinds as $instanceName=>$bindedProperties) {
+				if (is_array($bindedProperties)) {
+					foreach ($bindedProperties as $setterName=>$properties) {
+						if (is_array($properties)) {
+							// If this is an array of properties
+							$keys_matching == array_keys($properties, $instanceName);
+							if (!empty($keys_matching)) {
+								foreach ($keys_matching as $key) {
+									$properties[$key] = $newInstanceName; 
+								}
+								$this->bindComponentsViaSetter($instanceName, $setterName, $properties);
+							}
+						} else {
+							// If this is a simple property
+							if ($properties == $instanceName) {
+								$this->bindComponentsViaSetter($instanceName, $setterName, $newInstanceName);
 							}
 						}
 					}
@@ -331,7 +399,12 @@ class MoufManager {
 		if (isset($this->declaredProperties[$instanceName]) && is_array($this->declaredProperties[$instanceName])) {
 			foreach ($this->declaredProperties[$instanceName] as $key=>$value) {
 				$object->$key = $value;
-				// TODO: add support for setters
+			}
+		}
+		
+		if (isset($this->declaredSetterProperties[$instanceName]) && is_array($this->declaredSetterProperties[$instanceName])) {
+			foreach ($this->declaredSetterProperties[$instanceName] as $key=>$value) {
+				$object->$key($value);
 			}
 		}
 		
@@ -345,6 +418,20 @@ class MoufManager {
 					$object->$key = $tmpArray;
 				} else {
 					$object->$key = $this->getInstance($value);
+				}
+			}
+		}
+		
+		if (isset($this->declaredSetterBinds[$instanceName]) && is_array($this->declaredSetterBinds[$instanceName])) {
+			foreach ($this->declaredSetterBinds[$instanceName] as $key=>$value) {
+				if (is_array($value)) {
+					$tmpArray = array();
+					foreach ($value as $keyInstanceName=>$valueInstanceName) {
+						$tmpArray[$keyInstanceName] = $this->getInstance($valueInstanceName);	
+					}
+					$object->$key($tmpArray);
+				} else {
+					$object->$key($this->getInstance($value));
 				}
 			}
 		}
@@ -364,6 +451,17 @@ class MoufManager {
 	}
 	
 	/**
+	 * Binds a parameter to the instance using a setter.
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @param string $paramValue
+	 */
+	public function setParameterViaSetter($instanceName, $setterName, $paramValue) {
+		$this->declaredSetterProperties[$instanceName][$setterName] = $paramValue;
+	}
+	
+	/**
 	 * Returns the value for the given parameter.
 	 *
 	 * @param string $instanceName
@@ -375,6 +473,17 @@ class MoufManager {
 	}
 	
 	/**
+	 * Returns the value for the given parameter that has been set using a setter.
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @return mixed
+	 */
+	public function getParameterForSetter($instanceName, $setterName) {
+		return $this->declaredSetterProperties[$instanceName][$setterName];
+	}
+	
+	/**
 	 * Returns true if the param is set for the given instance.
 	 *
 	 * @param string $instanceName
@@ -383,6 +492,17 @@ class MoufManager {
 	 */
 	public function hasParameter($instanceName, $paramName) {
 		return isset($this->declaredProperties[$instanceName][$paramName]);
+	}
+	
+	/**
+	 * Returns true if the param is set for the given instance using a setter.
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @return boolean
+	 */
+	public function hasParameterForSetter($instanceName, $setterName) {
+		return isset($this->declaredSetterProperties[$instanceName][$setterName]);
 	}
 	
 	/**
@@ -401,6 +521,21 @@ class MoufManager {
 	}
 	
 	/**
+	 * Binds another instance to the instance via a setter.
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @param string $paramValue the name of the instance to bind to.
+	 */
+	public function bindComponentViaSetter($instanceName, $setterName, $paramValue) {
+		if ($paramValue == null) {
+			unset($this->declaredSetterBinds[$instanceName][$setterName]);
+		} else {
+			$this->declaredSetterBinds[$instanceName][$setterName] = $paramValue;
+		}
+	}
+	
+	/**
 	 * Binds an array of instance to the instance.
 	 *
 	 * @param string $instanceName
@@ -414,7 +549,22 @@ class MoufManager {
 			$this->declaredBinds[$instanceName][$paramName] = $paramValue;
 		}
 	}
-	
+
+	/**
+	 * Binds an array of instance to the instance via a setter.
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @param array $paramValue an array of names of instance to bind to.
+	 */
+	public function bindComponentsViaSetter($instanceName, $setterName, $paramValue) {
+		if ($paramValue == null) {
+			unset($this->declaredSetterBinds[$instanceName][$setterName]);
+		} else {
+			$this->declaredSetterBinds[$instanceName][$setterName] = $paramValue;
+		}
+	}	
+
 	/**
 	 * This simply adds the passed file to the list of "registered components".
 	 * The list will be required by mouf.php when it is generated using "rewriteMouf" function.
@@ -480,6 +630,17 @@ class MoufManager {
 		}
 		fwrite($fp, "\n");
 		
+		foreach ($this->declaredSetterProperties as $instanceName=>$propArray) {
+			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
+				if (is_array($propArray)) {
+					foreach ($propArray as $propName=>$propValue) {
+						fwrite($fp, "MoufManager::getMoufManager()->setParameterViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+					}
+				}
+			}
+		}
+		fwrite($fp, "\n");
+		
 		foreach ($this->declaredBinds as $instanceName=>$propArray) {
 			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
 				if (is_array($propArray)) {
@@ -488,6 +649,21 @@ class MoufManager {
 							fwrite($fp, "MoufManager::getMoufManager()->bindComponent(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 						} else {
 							fwrite($fp, "MoufManager::getMoufManager()->bindComponents(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+						}
+					}
+				}
+			}
+		}
+		fwrite($fp, "\n");
+		
+		foreach ($this->declaredSetterBinds as $instanceName=>$propArray) {
+			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
+				if (is_array($propArray)) {
+					foreach ($propArray as $propName=>$propValue) {
+						if (is_array($propValue)) {
+							fwrite($fp, "MoufManager::getMoufManager()->bindComponentViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+						} else {
+							fwrite($fp, "MoufManager::getMoufManager()->bindComponentsViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 						}
 					}
 				}
@@ -617,6 +793,20 @@ class ".$this->mainClassName." {
 	}
 	
 	/**
+	 * Returns the name(s) of the component bound to instance $instanceName on setter $setterName.
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @return string or array<string> if there are many components.
+	 */
+	public function getBoundComponentsOnSetter($instanceName, $setterName) {
+		if (isset($this->declaredSetterBinds[$instanceName]) && isset($this->declaredSetterBinds[$instanceName][$setterName]))
+			return $this->declaredSetterBinds[$instanceName][$setterName];
+		else
+			return null;
+	}
+	
+	/**
 	 * Returns the list of all components bound to that component. 
 	 *
 	 * @param string $instanceName
@@ -625,11 +815,16 @@ class ".$this->mainClassName." {
 	public function getBoundComponents($instanceName) {
 		//error_log("fdsf".$instanceName);
 		//error_log("toto ".var_export($this->declaredBinds, true));
+		$binds = array();
 		if (isset($this->declaredBinds[$instanceName])) {
-			return $this->declaredBinds[$instanceName];
-		} else {
-			return null;
+			$binds = $this->declaredBinds[$instanceName];
 		}
+		if (isset($this->declaredSetterBinds[$instanceName])) {
+			foreach ($this->declaredSetterBinds[$instanceName] as $setter=>$bind) {
+				$binds[MoufPropertyDescriptor::getPropertyNameFromSetterName($setter)] = $bind;
+			}
+		}
+		return $binds;
 	}
 	
 	/**
@@ -642,6 +837,18 @@ class ".$this->mainClassName." {
 		$instancesList = array();
 		
 		foreach ($this->declaredBinds as $scannedInstance=>$declaredBind) {
+			foreach ($declaredBind as $declaredBindProperty) {
+				if (is_array($declaredBindProperty)) {
+					if (array_search($instanceName, $declaredBindProperty) !== false) {
+						$instancesList[$scannedInstance] = $scannedInstance;
+						break;
+					}
+				} elseif ($declaredBindProperty == $instanceName) {
+					$instancesList[$scannedInstance] = $scannedInstance;
+				}
+			}	
+		}
+		foreach ($this->declaredSetterBinds as $scannedInstance=>$declaredBind) {
 			foreach ($declaredBind as $declaredBindProperty) {
 				if (is_array($declaredBindProperty)) {
 					if (array_search($instanceName, $declaredBindProperty) !== false) {
