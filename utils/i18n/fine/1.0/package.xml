@@ -5,7 +5,7 @@
 	support several languages. FINE means: Fine is not english :). Translation is performed using PHP
 	mapping files, but you will have a nice graphical interface in the Mouf framework to write your own
 	translated messages.</shortDescription>
-	<docUrl>TODO</docUrl>
+	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/i18n/using_fine.html</docUrl>
 	<dependencies>
 		<dependency>
 			<group>utils/common</group>
