@@ -88,6 +88,9 @@ class MoufPackage {
 	public function initFromFile($fileName) {
 		$this->packageFileName = $fileName;
 		
+		if (!file_exists($fileName)) {
+			throw new MoufException("Unable to load file ".$fileName);
+		}
 		$this->packageSimpleXml = simplexml_load_file($fileName);
 		
 		$this->displayName = (string)$this->packageSimpleXml->displayName;
@@ -134,7 +137,6 @@ class MoufPackage {
 			}
 		}
 		$this->adminRequires = $adminRequiresList;
-				
 	}
 	
 	/**
