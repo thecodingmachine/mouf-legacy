@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Datasource Interface</displayName>
+	<shortDescription>This package only contains basic interfaces for implementing Data sources. Those data sources can be used by
+	a range of objects, including the ExtDataGrid wrapper in Xaja, or other grids...</shortDescription>
+	<docUrl></docUrl>
+	<requires>
+		<require>XajaDataSourceInterface.php</require>
+	</requires>
+</package>

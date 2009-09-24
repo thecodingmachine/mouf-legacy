@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Static DataSource</displayName>
+	<shortDescription>The static datasource package contains a simple datasource. This datasource is loaded statically from the PHP script.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>database/datasource</group>
+			<name>datasourceinterface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>StaticDataSource.php</require>
+	</requires>
+</package>

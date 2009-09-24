@@ -14,4 +14,7 @@
 	<requires>
 		<require>HtmlJSJQueryFileTree.php</require>
 	</requires>
+	<externalComponentRequires>
+		<require>JQueryFileTreeExternalComponent.php</require>
+	</externalComponentRequires>
 </package>

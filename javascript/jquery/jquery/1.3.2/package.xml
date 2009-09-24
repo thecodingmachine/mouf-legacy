@@ -14,4 +14,7 @@
 	<requires>
 		<require>HtmlJSJQuery.php</require>
 	</requires>
+	<externalComponentRequires>
+		<require>JQueryExternalComponent.php</require>
+	</externalComponentRequires>
 </package>

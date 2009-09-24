@@ -178,13 +178,35 @@ class DB_Connection {
 		return $res;
 	}
 
-	public function getAll($query, $params=array(), $mode = DB_FETCHMODE_ASSOC) {
+	public function getAll($query, $params=array(), $mode = DB_FETCHMODE_ASSOC, $from = null, $limit = null) {
+		if ($from != null || $limit != null) {
+			$sqlOffsetLimit = $this->getLimitOffsetSqlString($from, $limit);
+			$query .= $sqlOffsetLimit;
+		}
+		
 		$res =& $this->db->getAll($query, $params, $mode);
 
 		// Always check that result is not an error
 		$this->checkError($res, $query);
 
 		return $res;
+	}
+	
+	/**
+	 * Returns the SQL part of the request that performs LIMIT and OFFSET, according to the DB.
+	 *
+	 * @param int $from the offset
+	 * @param int $limit the limit
+	 */
+	public function getLimitOffsetSqlString($from, $limit) {
+		$sql = "";
+		if ($limit != null) {
+			$sql .= " LIMIT ".$limit;
+		}
+		if ($from != null) {
+			$sql .= " OFFSET ".$from;
+		}
+		return $sql;
 	}
 
 	public function getOne($query, $params=array()) {
@@ -2004,15 +2026,35 @@ class DBM_Object {
 	 * TODO: make the result a DBM_ObjectArray instead of an array.
 	 *
 	 * @param string $sql
+	 * @param int $from The offset
+	 * @param int $limit The maximum number of results returned
 	 * @return array the result of your query
 	 */
-	static public function getTransientObjectsFromSQL($sql) {
+	static public function getTransientObjectsFromSQL($sql, $from = null, $limit = null) {
 		if (DB_Connection::$main_db == null) {
 			throw new DB_Exception("Error while calling DBM_Object::getObject(): No connection has been established on the database!");
 		}
-		return DB_Connection::$main_db->getAll($sql, null, DB_FETCHMODE_OBJECT);
+		return DB_Connection::$main_db->getAll($sql, null, DB_FETCHMODE_OBJECT, $from, $limit);
 	}
 
+	/**
+	 * Returns a single value from SQL string.
+	 * getValueFromSQL executes the SQL request passed, and returns a single value (the first column of the first row).
+	 * This can be very useful to run queries like: SELECT COUNT(*) FROM users
+	 * where you know there will be only one row and one column.
+	 *
+	 * $count = getTransientObjectsFromSQL("SELECT COUNT(*) FROM users");
+	 *
+	 * @param string $sql
+	 * @return mixed the result of the first row, first column
+	 */
+	static public function getValueFromSQL($sql) {
+		if (DB_Connection::$main_db == null) {
+			throw new DB_Exception("Error while calling DBM_Object::getObject(): No connection has been established on the database!");
+		}
+		return DB_Connection::$main_db->getOne($sql);
+	}
+	
 	/**
 	 * Used to implent the get_XXX functions where XXX is a table name.
 	 *
@@ -3283,12 +3325,50 @@ abstract class DBM_AbstractFilter {
 	public abstract function getUsedTables();
 }
 
+/**
+ * Filter on = (or IS NULL if value passed is null).
+ *
+ * @Component
+ */
 class DBM_EqualFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
+	
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
 
-	public function DBM_EqualFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+
+	public function DBM_EqualFilter($table_name=null, $column_name=null, $data=null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3310,12 +3390,50 @@ class DBM_EqualFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Filter on <> (or IS NOT NULL if value passed is null).
+ *
+ * @Component
+ */
 class DBM_DifferentFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
 
-	public function DBM_DifferentFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
+	public function DBM_DifferentFilter($table_name = null, $column_name = null, $data = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3337,12 +3455,61 @@ class DBM_DifferentFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a BETWEEN filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_BetweenFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data1, $data2;
 
-	public function DBM_BetweenFilter($table_name, $column_name, $data1, $data2, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The lower bound.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setLowerBound($data) {
+		$this->data1 = $data;
+	}
+	
+	/**
+	 * The higher bound.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setHigherBound($data) {
+		$this->data2 = $data;
+	}
+	
+	public function DBM_BetweenFilter($table_name = null, $column_name = null, $data1 = null, $data2 = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3363,12 +3530,50 @@ class DBM_BetweenFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a IN filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_InFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data_array;
 
-	public function DBM_InFilter($table_name, $column_name, $data_array, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The array of data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setDataArray($data) {
+		$this->data_array = $data;
+	}
+	
+	public function DBM_InFilter($table_name = null, $column_name = null, $data_array = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3398,12 +3603,50 @@ class DBM_InFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a &lt; filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_LessFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
 
-	public function DBM_LessFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
+	public function DBM_LessFilter($table_name = null, $column_name = null, $data = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3423,12 +3666,50 @@ class DBM_LessFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a &lt;= filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_LessOrEqualFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
 
-	public function DBM_LessOrEqualFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
+	public function DBM_LessOrEqualFilter($table_name = null, $column_name = null, $data = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3448,12 +3729,50 @@ class DBM_LessOrEqualFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a &gt; filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_GreaterFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
 
-	public function DBM_GreaterFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
+	public function DBM_GreaterFilter($table_name = null, $column_name = null, $data = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3473,12 +3792,50 @@ class DBM_GreaterFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a &gt;= filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_GreaterOrEqualFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
 
-	public function DBM_GreaterOrEqualFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
+	public function DBM_GreaterOrEqualFilter($table_name = null, $column_name = null, $data = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3498,12 +3855,50 @@ class DBM_GreaterOrEqualFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a LIKE filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_LikeFilter extends DBM_AbstractFilter {
 	private $table_name;
 	private $column_name;
 	private $data;
 
-	public function DBM_LikeFilter($table_name, $column_name, $data, $db_connection=null) {
+	/**
+	 * The table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->table_name = $tableName;
+	}
+
+	/**
+	 * The column of the table the filter applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->column_name = $columnName;
+	}
+	
+	/**
+	 * The data to filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $data
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+	
+	public function DBM_LikeFilter($table_name = null, $column_name = null, $data = null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->table_name = $table_name;
 		$this->column_name = $column_name;
@@ -3523,10 +3918,25 @@ class DBM_LikeFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a NOT filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_NotFilter extends DBM_AbstractFilter {
 	private $filter;
 
-	public function DBM_NotFilter(DBM_AbstractFilter $filter, $db_connection=null) {
+	/**
+	 * The filter to negate.
+	 *
+	 * @Property
+	 * @param DBM_AbstractFilter $filter
+	 */
+	public function setFilter($filter) {
+		$this->filter = $filter;
+	}
+	
+	public function DBM_NotFilter(DBM_AbstractFilter $filter=null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->filter = $filter;
 	}
@@ -3540,10 +3950,25 @@ class DBM_NotFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a AND filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_AndFilter extends DBM_AbstractFilter {
 	private $filters_array;
 
-	public function DBM_AndFilter($filters_array, $db_connection=null) {
+	/**
+	 * The filters to "AND".
+	 *
+	 * @Property
+	 * @param array<DBM_AbstractFilter> $filters
+	 */
+	public function setAndFilters($filters) {
+		$this->filters_array = $filters;
+	}
+	
+	public function DBM_AndFilter($filters_array=null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->filters_array = $filters_array;
 	}
@@ -3580,10 +4005,25 @@ class DBM_AndFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Generates a OR filter in the SQL WHERE clause.
+ *
+ * @Component
+ */
 class DBM_OrFilter extends DBM_AbstractFilter {
 	private $filters_array;
 
-	public function DBM_OrFilter($filters_array, $db_connection=null) {
+	/**
+	 * The filters to "OR".
+	 *
+	 * @Property
+	 * @param array<DBM_AbstractFilter> $filters
+	 */
+	public function setOrFilters($filters) {
+		$this->filters_array = $filters;
+	}
+	
+	public function DBM_OrFilter($filters_array=null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->filters_array = $filters_array;
 	}
@@ -3620,10 +4060,27 @@ class DBM_OrFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Directly writes some SQL text in the WHERE clause.
+ *
+ * @Component
+ */
 class DBM_SQLStringFilter extends DBM_AbstractFilter {
 	private $sql_string;
 
-	public function DBM_SQLStringFilter($sql_string, $db_connection=null) {
+
+	/**
+	 * The SQL string to put in the filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $sqlString
+	 */
+	public function setSqlString($sqlString) {
+		$this->sql_string = $sqlString;
+	}
+
+	public function DBM_SQLStringFilter($sql_string=null, $db_connection=null) {
 		$this->DBM_AbstractFilter($db_connection);
 		$this->sql_string = $sql_string;
 	}
@@ -3673,12 +4130,53 @@ class DBM_SQLStringFilter extends DBM_AbstractFilter {
 	}
 }
 
+/**
+ * Directly writes some SQL text in the WHERE clause.
+ *
+ * @Component
+ */
 class DBM_OrderByColumn {
 	private $order_table;
 	private $order_column;
 	private $order;
 
-	public function DBM_OrderByColumn($order_table, $order_column, $order='ASC') {
+
+	/**
+	 * The table the ORDER BY applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $tableName
+	 */
+	public function setTableName($tableName) {
+		$this->order_table = $tableName;
+	}
+
+	/**
+	 * The column of the table the ORDER BY applies to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $columnName
+	 */
+	public function setColumnName($columnName) {
+		$this->order_column = $columnName;
+	}
+	
+	/**
+	 * The order the sort should be performed.
+	 * 
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @OneOf("ASC","DESC")
+	 * @param string $order
+	 */
+	public function setOrder($order) {
+		$this->order = $order;
+	}
+	
+	public function DBM_OrderByColumn($order_table=null, $order_column=null, $order='ASC') {
 		$this->order_table = $order_table;
 		$this->order_column = $order_column;
 		$this->order = $order;
@@ -3703,10 +4201,26 @@ class DBM_OrderByColumn {
 	}
 }
 
+/**
+ * Directly writes some SQL text in the ORDER BY clause.
+ *
+ * @Component
+ */
 class DBM_OrderBySQLString {
 	private $sql_string;
 
-	public function DBM_OrderBySQLString($sql_string, $db_connection=null) {
+	/**
+	 * The SQL string to put in the filter.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $sqlString
+	 */
+	public function setSqlString($sqlString) {
+		$this->sql_string = $sqlString;
+	}
+	
+	public function DBM_OrderBySQLString($sql_string=null, $db_connection=null) {
 		$this->sql_string = $sql_string;
 	}
 
