@@ -1,3 +1,46 @@
+function propertySelectChange(dropdown, propertyName, type, position) {
+	if (dropdown.value == 'newInstance') {
+		// new instance was selected, let's display a dialog box to create the instance.
+		dropdown.selectedIndex=0;
+		displayCreateInstanceDialog(dropdown, propertyName, type, position);
+	}
+}
+
+function displayCreateInstanceDialog(dropdown, propertyName, type, selectBox) {
+	jQuery.getJSON("../direct/get_components_list.php",{type: type, encode:"json", selfedit:jQuery('#selfedit').val(), ajax: 'true'}, function(j){
+		
+	      var options = '';
+	      for (var i = 0; i < j.length; i++) {
+	        options += '<option value="' + j[i] + '">' + j[i] + '</option>';
+	      }
+	      jQuery("select#instanceClassDialog").html(options);
+	});
+
+	lastSelectBox = selectBox;
+	
+	jQuery("#newInstanceName").val("");
+	jQuery("#bindToProperty").val(propertyName);
+	
+	jQuery("#dialog").dialog("open");
+}
+
+/**
+ * Called when the user clicks the 'create new instance' button.
+ * @return
+ */
+function onCreateNewInstance() {
+	
+	// Let's modify the select box to have it contain the new instance that will be created.
+	// TODO protect against script injection.
+	jQuery(lastSelectBox).html("<option value='"+jQuery("#newInstanceNameDialog").val()+"'>"+jQuery("#newInstanceNameDialog").val()+"</option>")
+	
+	jQuery("#createNewInstance").val("true");
+	jQuery("#newInstanceName").val(jQuery("#newInstanceNameDialog").val());
+	jQuery("#instanceClass").val(jQuery("#instanceClassDialog").val());
+	
+	jQuery("#componentForm").submit();
+}
+
 var Log = {
     elem: false,
     write: function(text){

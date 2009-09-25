@@ -10,17 +10,41 @@ require_once 'MoufPropertyDescriptor.php';
 class Moufspector {
 	
 	/**
-	 * Returns a list of all the classes that have the @Component attribute.
+	 * Returns a list of all the classes that have the @Component attribute, or only classes extending the @Component attribute ANT inheriting the passed
+	 * class or interface.
 	 *
+	 * @type string the class or interface the @component must inherit to be part of the list. If not passed, all @component classes are returned. 
 	 */
-	public static function getComponentsList() {
+	public static function getComponentsList($type = null) {
 		$classesList = get_declared_classes();
 		$componentsList = array();
 		
 		foreach ($classesList as $className) {
 			$refClass = new MoufReflectionClass($className);
 			if ($refClass->hasAnnotation("Component")) {
-				$componentsList[] = $className;
+				if ($type == null) {
+					$componentsList[] = $className;
+				} else {
+					try {
+						if ($refClass->implementsInterface($type)) {
+							$componentsList[] = $className;
+							continue;
+						}
+					} catch (ReflectionException $e) {
+						// The interface might not exist, that's not a problem
+					}
+					try {
+						if ($refClass->isSubclassOf($type)) {
+							$componentsList[] = $className;
+							continue;
+						}
+					} catch (ReflectionException $e) {
+						// The interface might not exist, that's not a problem
+					}
+					if ($refClass->getName() == $type) {
+						$componentsList[] = $className;
+					}
+				}
 			}
 		}
 		return $componentsList;

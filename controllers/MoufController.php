@@ -97,8 +97,17 @@ class MoufController extends Controller {
 	 * Action that saves the component.
 	 *
 	 * @Action
+	 * @param string $originalInstanceName The name of the instance
+	 * @param string $instanceName The new name of the instance (if it was renamed)
+	 * @param string $delete Whether the instance should be deleted or not
+	 * @param string $selfedit Self edit mode
+	 * @param string $createNewInstance If "true", a new instance should be created and attached to the saved component instance.
+	 * @param string $bindToProperty The name of the property the new instance will be bound to.
+	 * @param string $newInstanceName The name of new instance to create and attach to the saved object
+	 * @param string $instanceClass The type of the new instance to create and attach to the saved object
+	 * @param string $newInstanceKey The key of the new instance (if it is part of an associative array)
 	 */
-	public function saveComponent($originalInstanceName, $instanceName, $delete, $selfedit) {
+	public function saveComponent($originalInstanceName, $instanceName, $delete, $selfedit, $newInstanceName=null, $createNewInstance=null, $bindToProperty=null, $instanceClass=null, $newInstanceKey=null) {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -107,7 +116,7 @@ class MoufController extends Controller {
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
 		
-		// Should we delete the component instaed of save it?
+		// Should we delete the component instead of save it?
 		if ($delete) {
 			$this->moufManager->removeComponent($originalInstanceName);
 			$this->moufManager->rewriteMouf();
@@ -209,16 +218,40 @@ class MoufController extends Controller {
 				throw new Exception("Error while saving, no @var annotation for property ".$property->getName());
 			}
 		}
+				
+		// Ok, component was saved. Now, were we requested to create a new instance?
+		if ($createNewInstance == "true") {
+			// TODO: check $newInstanceName not empty (or accept anonymous objects).
+			$this->moufManager->declareComponent($newInstanceName, $instanceClass);
+			
+			// Now, let's bind that new instance to the old one.
+			/*foreach ($this->properties as $property) {
+				// Find the right property
+				if ($bindToProperty == $property->getName()) {
+					// Ok, we bind to property "property".
+					// Is it an array or not?
+					if ($property->getType() == "array") {
+						// TODO
+						// Insert depending on position and associative array! (first, position must be passed!)
+					} else {
+						// This is not an array. Hooray!
+						if ($property->isPublicFieldProperty()) {
+							$this->moufManager->bindComponent($instanceName, $property->getName(), $newInstanceName);
+						} else {
+							$this->moufManager->bindComponentViaSetter($instanceName, $property->getMethodName(), $newInstanceName);
+						}
+					}
+				}
+			}*/
+			
+			$this->moufManager->rewriteMouf();
+			
+			$this->displayComponent($newInstanceName, $selfedit);
+			return;
+		}
 		
 		$this->moufManager->rewriteMouf();
 		
-		/*$this->instance = $this->moufManager->getInstance($instanceName);
-		$this->reflectionClass = new MoufReflectionClass($this->className);
-		
-		$template = new AdmindeoTemplate();
-		$template->addJsFile(ROOT_URL."include/script/prototype.js");
-		$template->addContentFunction(array($this, "displayComponentView"));
-		$template->draw();*/
 		$this->displayComponent($instanceName, $selfedit);	
 	}
 	

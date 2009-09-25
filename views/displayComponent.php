@@ -19,7 +19,7 @@ dropDownCnt = 0;
  * jsonList is the content of the list to add:
  * jsonList = [{id:0, text:"Mr"}, {id:1, text:"Mrs"}]
  */
-function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKey) {
+function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKey, type) {
 	var str = "";
 	str += "<div id='"+name+"_mouf_dropdown_"+dropDownCnt+"'>";
 	str += "<div class='moveable'></div>";
@@ -38,7 +38,7 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
 		str += "=&gt;";
 	}
-	str += "<select name='"+name+"[]'>";
+	str += "<select name='"+name+"[]'  onchange='propertySelectChange(this, \""+name+"\", \""+type+"\", this)'>";
 	jsonList.each(function(option) {
 		var selected = "";
 		if (option.id == defaultValue) {
@@ -46,6 +46,7 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 		}
 		str += "<option value='"+option.id+"' "+selected+">"+option.text+"</option>";
 	});
+	str += "<option value='newInstance'>Create New Instance</option>";
 	str += "</select>";
 	str += "<a onclick='$(\""+name+"_mouf_dropdown_"+dropDownCnt+"\").remove()'><img src=\"<?php echo ROOT_URL ?>mouf/views/images/cross.png\"></a>";
 	if (defaultValue != "") {
@@ -250,9 +251,9 @@ foreach ($this->properties as $property) {
 				if (is_array($defaultValues)) {
 					foreach ($defaultValues as $defaultKey=>$defaultValue) {
 						if ($isAssociative) {
-							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"$defaultValue\", true, \"$defaultKey\");\n";
+							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"$defaultValue\", true, \"$defaultKey\", \"".$property->getSubType()."\");\n";
 						} else {
-							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"$defaultValue\", false, \"\");\n";
+							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"$defaultValue\", false, \"\", \"".$property->getSubType()."\");\n";
 						}
 					}
 				}
@@ -266,7 +267,7 @@ foreach ($this->properties as $property) {
 				
 				//$jsonArray = addslashes($jsonArray);
 				//[{id:0, text:\"toto\"}, {id:1, text:\"tata\"}]
-				echo "<a onclick='addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"\", ".(($isAssociative)?"true":"false").", \"\");'>Add a component</a>";
+				echo "<a onclick='addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"\", ".(($isAssociative)?"true":"false").", \"\", \"".$property->getSubType()."\");'>Add a component</a>";
 				
 				echo "</div>";
 				echo "<div style='clear:both'></div>";
@@ -292,8 +293,9 @@ foreach ($this->properties as $property) {
 				$defaultDisplaySelect = 'style="display:none"';
 			}
 			
-			echo '<select id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" '.$defaultDisplaySelect.' >';
+			echo '<select id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" '.$defaultDisplaySelect.' onchange="propertySelectChange(this, \''.$property->getName().'\', \''.$property->getType().'\', this)">';
 			echo '<option value=""></option>';
+			echo '<option value="newInstance">Create New Instance</option>';
 			foreach ($instances as $instanceName) {
 				if ($instanceName == $defaultValue) {
 					$selected = 'selected="true"';
@@ -335,6 +337,39 @@ foreach ($this->properties as $property) {
 <div style="clear:both">
 <input type="submit" value="Save" />
 </div>
+
+<?php // The DIV dialog will not stay into the form (it will be moved by jQuery). Therefore, we must duplicate all fields of the dialog ui into the main ui ?>
+<input type="hidden" name="createNewInstance" id="createNewInstance" />
+<input type="hidden" name="bindToProperty" id="bindToProperty" />
+<input type="hidden" name="newInstanceName" id="newInstanceName" />
+<input type="hidden" name="instanceClass" id="instanceClass" />
+
+<div id="dialog" title="Create a new instance">	
+	
+	
+	<div>
+	<label for="instanceNameDialog">Instance name:</label><input type="text" name="newInstanceNameDialog" id="newInstanceNameDialog" />
+	</div>
+	
+	<div>
+	<label for="instanceClass">Class:</label>
+	<select name="instanceClassDialog" id="instanceClassDialog">
+	</select>
+	</div>
+	
+	<input type="button" value="Create" onclick="onCreateNewInstance(); return false;" />
+	
+
+</div>
+<script type="text/javascript">
+jQuery(document).ready( function() {
+
+	jQuery(function() {
+		jQuery("#dialog").dialog({ autoOpen: false });
+	});
+ 	
+});
+</script>
 
 </form>
 
