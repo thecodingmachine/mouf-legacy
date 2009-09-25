@@ -6,7 +6,6 @@
  * sensible default behaviours for most methods.
  * Classes extending the BaseTemplate only need to implement the "draw" method.
  * 
- * @Component
  */
 abstract class BaseTemplate implements TemplateInterface, Scopable {
 
