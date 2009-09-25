@@ -92,7 +92,7 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 jQuery(document).ready(function(){';
 		echo "
 		jQuery('#".$tableId."').jqGrid({
-    url:'".ROOT_URL."admin/publishersList',
+    url:'".ROOT_URL.$this->dataUrl."',
     datatype: 'xml',
     mtype: 'GET',
     ".$this->getColumnsDefinition()."
