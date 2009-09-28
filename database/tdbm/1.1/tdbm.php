@@ -2313,14 +2313,14 @@ class DBM_Object {
 		$msg = '';
 		foreach ($tables_paths as $table_path) {
 			// If any table has not been found, throw an exception
-			if ($table_path['founddepth']==null) {
+			if (!isset($table_path['founddepth']) || $table_path['founddepth']==null) {
 				// First, check if the tables do exist.
 				DBM_Object::checkTablesExist(array($table, $table_path['name']));
 				// Else, throw an error.
 				throw new DB_Exception("Unable to find a path between table ".$table." and table ".$table_path['name'].".\nIt is likely that a constraint is missing.");
 			}
 			// If any table has more than 1 way to be reached, throw an exception.
-			if (count($table_path['paths'])>1) {
+			if (isset($table_path['paths']) && count($table_path['paths'])>1) {
 				// If this is the first ambiguity
 				if (!$ambiguity)
 				$msg .= 'An ambiguity has been found during the search. Please catch this exception and execute the $exception->explainAmbiguity() to get a nice graphical view of what you should do to solve this ambiguity.';
