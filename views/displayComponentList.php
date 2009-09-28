@@ -63,6 +63,7 @@ counter = 0;
 function addFile(fileName) {
 	var html = "<div id='file"+counter+"' class='file'>";
 	html += "<div class='moveable'></div>";
+	html += "<div class='phpfileicon'></div>";
 	html += "<div class='trash' onclick='deleteFile(\"file"+counter+"\")'></div>";
 	html += fileName;
 	// Todo: protect the value of the hidden tag.

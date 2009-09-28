@@ -178,9 +178,10 @@ foreach ($this->properties as $property) {
 			$defaultValue = $this->getValueForProperty($property);
 		
 			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
-				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='chacked'":"").'"/>';
+				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='checked'":"").'"/>';
 			} else {
 				echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
+				echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 			}
 		} else if ($lowerVarType == "array") {
 			//$recursiveType = $varTypeAnnot->getSubType();
@@ -319,6 +320,7 @@ foreach ($this->properties as $property) {
 		$defaultValue = $this->getValueForProperty($property);
 		
 		echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
+		echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 	}
 	echo "</div>\n";
 	
@@ -365,15 +367,51 @@ foreach ($this->properties as $property) {
 	
 
 </div>
+<div id="dialogPropertyOptions" title="Property source">	
+
+	<div>
+	<label for="propertySource">Source:</label>
+	<select name="propertySource" id="propertySource" onchange="onSourceChange(this)"> 
+		<option value="string">String</option>
+		<option value="request">Request</option>
+		<option value="session">Session</option>
+		<option value="config">Config</option>
+	</select>
+	</div>
+	
+	<div id="propertySourceDiv">
+	<label for="propertyValue">Property value:</label><input type="text" name="propertyValue" id="propertyValue" />
+	</div>
+
+	<div id="requestSourceDiv">
+	<label for="requestValue">Request value:</label><input type="text" name="requestValue" id="requestValue" />
+	</div>
+
+	<div id="sessionSourceDiv">
+	<label for="sessionValue">Session value:</label><input type="text" name="sessionValue" id="sessionValue" />
+	</div>
+
+	<div id="configSourceDiv">
+	<label for="configValue">Config value:</label><select type="text" name="configValue" id="configValue" ></select>
+	</div>
+		
+	<input type="button" value="Set property" onclick="onSetProperty(); return false;" />
+	
+
+</div>
+
 <script type="text/javascript">
 jQuery(document).ready( function() {
 
 	jQuery(function() {
 		jQuery("#dialog").dialog({ autoOpen: false });
+		jQuery("#dialogPropertyOptions").dialog({ autoOpen: false });
 	});
  	
 });
 </script>
+
+
 
 </form>
 

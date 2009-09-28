@@ -10,7 +10,14 @@ foreach ($this->moufPackageList as $package) {
 		$oldGroup = $package->getDescriptor()->getGroup();
 	}
 	echo "<div class='outerpackage'>";
-	echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
+	echo "<div class='package'>";
+	echo "<div class='packageicon'>";
+	if ($package->getLogoPath() != null) {
+		echo "<img alt='' style='float:left' src='".ROOT_URL."plugins/".$package->getPackageDirectory()."/".$package->getLogoPath()."'>";
+	}
+	echo "</div>";
+	echo "<div class='packagetext'>";
+	echo "<span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
 	if ($package->getShortDescription() || $package->getDocUrl()) {
 		echo "<div class='packagedescription'>";
 		echo $package->getShortDescription();
@@ -36,7 +43,7 @@ foreach ($this->moufPackageList as $package) {
 		echo "<button>Disable</button>";
 		echo "</form>";
 	}
-	echo "</div></div>";
+	echo "</div></div></div>";
 }
 ?>
 

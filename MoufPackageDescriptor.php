@@ -84,6 +84,15 @@ class MoufPackageDescriptor {
 	}
 	
 	/**
+	 * Returns the package directory (without a trailing slash), relative to the plugins directory.
+	 *
+	 * @return string
+	 */
+	public function getPackageDirectory() {
+		return $this->group."/".$this->name."/".$this->version;
+	}
+	
+	/**
 	 * Returns the path to the package.xml file from the root "plugins" directory.
 	 *
 	 * @return string

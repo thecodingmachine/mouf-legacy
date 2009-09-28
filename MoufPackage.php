@@ -44,6 +44,14 @@ class MoufPackage {
 	 * @var string
 	 */
 	private $docUrl;
+
+	/**
+	 * An Url to access the logo, relative to the package root element.
+	 *
+	 * @var string
+	 */
+	private $logoPath;
+	
 	
 	/**
 	 * The package descriptor for this package (group, name and version number)
@@ -96,6 +104,7 @@ class MoufPackage {
 		$this->displayName = (string)$this->packageSimpleXml->displayName;
 		$this->shortDescription = (string)$this->packageSimpleXml->shortDescription;
 		$this->docUrl = (string)$this->packageSimpleXml->docUrl;
+		$this->logoPath = (string)$this->packageSimpleXml->logo;
 		
 		$this->packageDir = dirname($fileName);
 		
@@ -174,6 +183,15 @@ class MoufPackage {
 	 */
 	public function getDocUrl() {
 		return $this->docUrl;
+	}
+	
+	/**
+	 * Returns the path to the logo, relative to the root URL.
+	 *
+	 * @return string
+	 */
+	public function getLogoPath() {
+		return $this->logoPath;
 	}
 	
 	/**

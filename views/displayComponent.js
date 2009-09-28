@@ -41,6 +41,46 @@ function onCreateNewInstance() {
 	jQuery("#componentForm").submit();
 }
 
+/**
+ * Called when the select dropdown for the source of the property is modified.
+ * 
+ * @param selectBox
+ * @return
+ */
+function onSourceChange(selectDropDown) {
+	if (selectDropDown.value == "string") {
+		jQuery("#propertySourceDiv").show();
+		jQuery("#requestSourceDiv").hide();
+		jQuery("#sessionSourceDiv").hide();
+		jQuery("#configSourceDiv").hide();
+	} else if (selectDropDown.value == "request") {
+		jQuery("#propertySourceDiv").hide();
+		jQuery("#requestSourceDiv").show();
+		jQuery("#sessionSourceDiv").hide();
+		jQuery("#configSourceDiv").hide();
+	} else if (selectDropDown.value == "session") {
+		jQuery("#propertySourceDiv").hide();
+		jQuery("#requestSourceDiv").hide();
+		jQuery("#sessionSourceDiv").show();
+		jQuery("#configSourceDiv").hide();
+	} else if (selectDropDown.value == "config") {
+		jQuery("#propertySourceDiv").hide();
+		jQuery("#requestSourceDiv").hide();
+		jQuery("#sessionSourceDiv").hide();
+		jQuery("#configSourceDiv").show();
+	}
+}
+
+/**
+ * Called when the user clicks on the toolbox to edit a "string" property (and bind it to a config option/request parameter/...)
+ * 
+ * @param propertyName
+ * @return
+ */
+function onPropertyOptionsClick(propertyName) {
+	jQuery("#dialogPropertyOptions").dialog("open");	
+}
+
 var Log = {
     elem: false,
     write: function(text){

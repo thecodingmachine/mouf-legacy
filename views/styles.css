@@ -15,6 +15,15 @@ div.moveable {
 	cursor:pointer;
 }
 
+div.phpfileicon {
+	width: 24px;
+	height: 16px;
+	background-position:center;
+	background-repeat:no-repeat;
+	background-image:url(images/page_white_php.png);
+	float:left;
+}
+
 div.trash {
 	width: 15px;
 	height: 15px;
@@ -60,4 +69,12 @@ span.packageversion {
 
 div.packagedescription {
 	padding-left: 20px;
+}
+
+div.packageicon {
+	float:left;
+}
+
+div.packagetext {
+	padding-left: 70px;
 }

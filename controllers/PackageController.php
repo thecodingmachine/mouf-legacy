@@ -64,8 +64,29 @@ class PackageController extends Controller {
 				
 		$packageManager = new MoufPackageManager();
 		$this->moufPackageList = $packageManager->getPackagesList();
+		// Packages are almost sorted correctly.
+		// However, we should make a bit of sorting to transform this:
+		// javascript/jit
+		// javascript/jquery/jquery
+		// javascript/prototype
+		// into this:
+		// javascript/jit
+		// javascript/prototype
+		// javascript/jquery/jquery
+		// So we will sort by group:
+		uasort($this->moufPackageList, array($this, "comparePackageGroup"));
 		$this->template->addContentFile("views/packages/displayPackagesList.php", $this);
 		$this->template->draw();	
+	}
+	
+	public function comparePackageGroup(MoufPackage $package1, MoufPackage $package2) {
+		$group1 = $package1->getDescriptor()->getGroup();
+		$group2 = $package2->getDescriptor()->getGroup();
+		$cmp = strcmp($group1, $group2);
+		if ($cmp == 0) {
+			return strcmp($package1->getDescriptor()->getName(), $package2->getDescriptor()->getName());
+		} else 
+			return $cmp;
 	}
 	
 	/**
