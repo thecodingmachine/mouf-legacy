@@ -5,4 +5,5 @@
 	This package does not contain any component. For a (simple) component wrapper around Artichow,
 	please see the simplegraph component.</shortDescription>
 	<docUrl>http://www.artichow.org/</docUrl>
+	<logo>logo.png</logo>
 </package>

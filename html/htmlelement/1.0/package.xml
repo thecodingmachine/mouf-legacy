@@ -3,6 +3,7 @@
 	<displayName>HtmlElement</displayName>
 	<shortDescription>The base objects that can be used to build a web-page.</shortDescription>
 	<docUrl></docUrl>
+	<logo>logo.png</logo>
 	<requires>
 		<require>Scopable.php</require>
 		<require>HtmlElementInterface.php</require>

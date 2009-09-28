@@ -5,6 +5,7 @@
 	as a base class for your custom datagrids. If you are looking to display a datagrid in an HTML page, you should not use this package directly.
 	This package is used as a dependency by other packages (like jqGridDataGrid for instance).</shortDescription>
 	<docUrl></docUrl>
+	<logo>database.png</logo>
 	<dependencies>
 		<dependency>
 			<group>database/datasource</group>

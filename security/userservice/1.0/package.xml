@@ -3,6 +3,7 @@
 	<displayName>UserService</displayName>
 	<shortDescription>A set of class to manage log-in and log-out of web applications.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/userservice_package.html</docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>utils/log</group>

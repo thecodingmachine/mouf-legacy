@@ -3,6 +3,7 @@
 	<displayName>Null Logger</displayName>
 	<shortDescription>This package contains a logger that DOES NOT log anything. Can be useful when you want to completely disable logging.</shortDescription>
 	<docUrl></docUrl>
+	<logo>logo.png</logo>
 	<requires>
 		<require>NullLogger.php</require>
 	</requires>

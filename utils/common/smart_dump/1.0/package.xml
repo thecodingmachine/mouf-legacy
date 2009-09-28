@@ -3,6 +3,7 @@
 	<displayName>Smart Dump</displayName>
 	<shortDescription>Displays a variable with a smart layout in HTML (using the smart_dump function).</shortDescription>
 	<docUrl></docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 	</dependencies>
 	<requires>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Zend Framework</displayName>
+	<shortDescription>This package contains the complete Zend Framework. It does not contain any Mouf wrapper.</shortDescription>
+	<docUrl>http://www.zend.com</docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>inclde.php</require>
+	</requires>
+</package>

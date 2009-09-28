@@ -4,6 +4,7 @@
 	<shortDescription>This package contains the PrototypeJS library, along a PHP wrapper class
 	to include Prototype easily in your web pages.</shortDescription>
 	<docUrl>http://www.prototypejs.org/</docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>html</group>

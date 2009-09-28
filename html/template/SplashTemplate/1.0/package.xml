@@ -5,6 +5,7 @@
 	You can use this template in your own application if you want, but it is likely you will want to develop your
 	own template. Anyway, you can use this component as a model if you like.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php</docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>html</group>

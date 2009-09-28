@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JIT</displayName>
+	<shortDescription>This package contains the JIT javascript library that can be used to draw graphs.</shortDescription>
+	<docUrl>http://www.thejit.org/</docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>HtmlJSJit.php</require>
+	</requires>
+</package>

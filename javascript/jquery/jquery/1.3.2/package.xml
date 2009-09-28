@@ -4,6 +4,7 @@
 	<shortDescription>This package contains the JQuery library, along a PHP wrapper class
 	to include JQuery easily in your web pages.</shortDescription>
 	<docUrl>http://jquery.com/</docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>html</group>

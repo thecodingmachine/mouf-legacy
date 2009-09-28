@@ -4,6 +4,7 @@
 	<shortDescription>This package is a simple component wrapper around the Artichow graph library. It can
 	be used to create Pie chart, Bar charts and plots, and configure those graphs using the Mouf IOC mechanism.</shortDescription>
 	<docUrl></docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>graph</group>

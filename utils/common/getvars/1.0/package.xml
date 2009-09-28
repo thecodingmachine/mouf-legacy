@@ -5,6 +5,7 @@
 	The varaiables can be rerieved in a way that is independent of the php.ini configuration file. Especially, it can
 	cancel the effect of the dreadful "magic_quotes" parameter.</shortDescription>
 	<docUrl></docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 	</dependencies>
 	<requires>

@@ -5,6 +5,7 @@
 	if you want to restrict access to some parts of your web-application to some users only (for instance
 	if you want to make an "admin" section that is only accessible to the adminsitrator).</shortDescription>
 	<docUrl></docUrl>
+	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>security</group>

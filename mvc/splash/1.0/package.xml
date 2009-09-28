@@ -3,6 +3,7 @@
 	<displayName>Splash</displayName>
 	<shortDescription>An MVC framework deeply integrated with Mouf</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
+	<logo>icons/logo.png</logo>
 	<dependencies>
 		<dependency>
 			<group>utils/log</group>

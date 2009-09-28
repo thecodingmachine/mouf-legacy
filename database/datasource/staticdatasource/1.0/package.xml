@@ -3,6 +3,7 @@
 	<displayName>Static DataSource</displayName>
 	<shortDescription>The static datasource package contains a simple datasource. This datasource is loaded statically from the PHP script.</shortDescription>
 	<docUrl></docUrl>
+	<logo>database.png</logo>
 	<dependencies>
 		<dependency>
 			<group>database/datasource</group>
