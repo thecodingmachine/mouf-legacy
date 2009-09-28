@@ -181,7 +181,8 @@ foreach ($this->properties as $property) {
 				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='checked'":"").'"/>';
 			} else {
 				echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
-				echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+				// TODO: put back to enable
+				//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 			}
 		} else if ($lowerVarType == "array") {
 			//$recursiveType = $varTypeAnnot->getSubType();
@@ -320,7 +321,8 @@ foreach ($this->properties as $property) {
 		$defaultValue = $this->getValueForProperty($property);
 		
 		echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
-		echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+		// TODO: uncomment to enable
+		//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 	}
 	echo "</div>\n";
 	
