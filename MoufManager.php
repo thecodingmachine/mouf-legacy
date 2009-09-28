@@ -758,6 +758,7 @@ class ".$this->mainClassName." {
 		$modInstance = str_replace(" ", "", $instanceName);
 		$modInstance = str_replace("\n", "", $modInstance);
 		$modInstance = str_replace("-", "", $modInstance);
+		$modInstance = str_replace(".", "_", $modInstance);
 		return "get".strtoupper(substr($modInstance,0,1)).substr($modInstance,1);
 	}
 	
