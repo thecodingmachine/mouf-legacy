@@ -146,6 +146,8 @@ jQuery(document).ready(function(){';
 						$formatStr .= ", idName: '".plainstring_to_htmloutput($this->idName)."'";
 					}
 					$formatStr .= "}";
+				} elseif ($formatter instanceof CheckboxFormatter) {
+					$formatStr = ", formatter:'checkbox', formatoptions:{disabled:".($formatter->disabled?"true":"false")."}";
 				} else {
 					throw new Exception("Unsupported formatter for jqGrid: ".get_class($formatter));
 				}

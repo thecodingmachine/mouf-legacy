@@ -21,5 +21,6 @@
 		<require>GetterDataColumn.php</require>
 		<require>formatters/DataColumnFormatterInterface.php</require>
 		<require>formatters/LinkFormatter.php</require>
+		<require>formatters/CheckboxFormatter.php</require>
 	</requires>
 </package>
