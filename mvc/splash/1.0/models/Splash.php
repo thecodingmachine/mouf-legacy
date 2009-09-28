@@ -128,7 +128,7 @@ class Splash {
 		try {
 			return MoufManager::getMoufManager()->getInstance($this->controller);
 		} catch (MoufException $e) {
-	throw $e;
+	//throw $e;
 			return null;
 		}
 	}
