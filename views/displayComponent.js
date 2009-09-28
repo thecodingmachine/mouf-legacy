@@ -1,12 +1,12 @@
-function propertySelectChange(dropdown, propertyName, type, position) {
+function propertySelectChange(dropdown, propertyName, type) {
 	if (dropdown.value == 'newInstance') {
 		// new instance was selected, let's display a dialog box to create the instance.
 		dropdown.selectedIndex=0;
-		displayCreateInstanceDialog(dropdown, propertyName, type, position);
+		displayCreateInstanceDialog(dropdown, propertyName, type);
 	}
 }
 
-function displayCreateInstanceDialog(dropdown, propertyName, type, selectBox) {
+function displayCreateInstanceDialog(dropdown, propertyName, type) {
 	jQuery.getJSON("../direct/get_components_list.php",{type: type, encode:"json", selfedit:jQuery('#selfedit').val(), ajax: 'true'}, function(j){
 		
 	      var options = '';
@@ -16,7 +16,7 @@ function displayCreateInstanceDialog(dropdown, propertyName, type, selectBox) {
 	      jQuery("select#instanceClassDialog").html(options);
 	});
 
-	lastSelectBox = selectBox;
+	lastSelectBox = dropdown;
 	
 	jQuery("#newInstanceName").val("");
 	jQuery("#bindToProperty").val(propertyName);

@@ -38,7 +38,7 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
 		str += "=&gt;";
 	}
-	str += "<select name='"+name+"[]'  onchange='propertySelectChange(this, \""+name+"\", \""+type+"\", this)'>";
+	str += "<select id='"+name+"_mouf_dropdown_select_"+dropDownCnt+"' name='"+name+"[]'  onchange='propertySelectChange(this, \""+name+"\", \""+type+"\")'>";
 	jsonList.each(function(option) {
 		var selected = "";
 		if (option.id == defaultValue) {
@@ -54,7 +54,11 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 	}
 	str += "</div>";
 	element.insert(str);
+	if (jsonList.length == 0) {
+		propertySelectChange(document.getElementById(name+"_mouf_dropdown_select_"+dropDownCnt), name, type);
+	}
 	dropDownCnt++;
+	
 }
 
 /*
@@ -293,7 +297,7 @@ foreach ($this->properties as $property) {
 				$defaultDisplaySelect = 'style="display:none"';
 			}
 			
-			echo '<select id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" '.$defaultDisplaySelect.' onchange="propertySelectChange(this, \''.$property->getName().'\', \''.$property->getType().'\', this)">';
+			echo '<select id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" '.$defaultDisplaySelect.' onchange="propertySelectChange(this, \''.$property->getName().'\', \''.$property->getType().'\')">';
 			echo '<option value=""></option>';
 			echo '<option value="newInstance">Create New Instance</option>';
 			foreach ($instances as $instanceName) {
