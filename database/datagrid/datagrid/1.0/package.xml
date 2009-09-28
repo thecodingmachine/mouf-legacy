@@ -19,5 +19,7 @@
 		<require>DataGrid.php</require>
 		<require>FieldDataColumn.php</require>
 		<require>GetterDataColumn.php</require>
+		<require>formatters/DataColumnFormatterInterface.php</require>
+		<require>formatters/LinkFormatter.php</require>
 	</requires>
 </package>

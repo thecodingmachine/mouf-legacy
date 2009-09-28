@@ -9,11 +9,13 @@ abstract class AbstractDataColumnInterface implements DataColumnInterface {
 	private $title;
 	private $sortColumn;
 	private $width;
+	private $formatter;
 	
-	public function __construct($title=null, $sortColumn=null, $width=null) {
+	public function __construct($title=null, $sortColumn=null, $width=null, $formatter=null) {
 		$this->title = $title;
 		$this->sortColumn = $sortColumn;
 		$this->width = $width;
+		$this->formatter = $formatter;
 	}
 	
 	/**
@@ -84,6 +86,25 @@ abstract class AbstractDataColumnInterface implements DataColumnInterface {
 	 */
 	public function setWidth($width) {
 		$this->width = $width;
+	}
+	
+	/**
+	 * Sets the formatter used to display that column.
+	 * If no formatter is specified, content is displayed as text.
+	 *
+	 * @param DataColumnFormatterInterface $formatter
+	 */
+	public function setFormatter(DataColumnFormatterInterface $formatter) {
+		$this->formatter = $formatter;
+	}
+	
+	/**
+	 * Returns the formatter for this column.
+	 *
+	 * @return DataColumnFormatterInterface
+	 */
+	public function getFormatter() {
+		return $this->formatter;
 	}
 
 }

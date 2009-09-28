@@ -64,6 +64,8 @@ class DataGrid {
 	/**
 	 * The datasource to use by the grid.
 	 *
+	 * @Property
+	 * @Compulsory 
 	 * @param XajaDataSourceInterface $ds
 	 */
 	public function setDataSource(XajaDataSourceInterface $ds) {

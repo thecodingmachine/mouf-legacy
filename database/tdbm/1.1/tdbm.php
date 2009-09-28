@@ -2400,7 +2400,7 @@ class DBM_Object {
 		//echo '-'.$current_table.'-';
 		//echo '.';
 		foreach ($target_tables as $id=>$target_table) {
-			if ($target_table['name'] == $current_table && ($target_table['founddepth']==null || $target_table['founddepth']==count($path))) {
+			if ($target_table['name'] == $current_table && ((!isset($target_table['founddepth']) || $target_table['founddepth']==null) || (isset($target_table['founddepth']) && $target_table['founddepth']==count($path)))) {
 				// When a path is found to a table, we mark the table as found with its depth.
 				$target_tables[$id]['founddepth']=count($path);
 

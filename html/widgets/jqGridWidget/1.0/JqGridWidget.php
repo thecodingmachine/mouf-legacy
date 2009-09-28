@@ -131,7 +131,28 @@ jQuery(document).ready(function(){';
 		$columnsDesc = array();
 		foreach ($this->columns as $column) {
 			$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
-			$columnsDesc[] = '{name:"'.htmlentities($column->getSortColumn()).'", index:"'.htmlentities($column->getSortColumn()).'", width:"'.htmlentities($column->getWidth()).'"}';
+			$formatter = $column->getFormatter();
+			$formatStr = "";
+			if ($formatter != null) {
+				if ($formatter instanceof LinkFormatter) {
+					$formatStr = ", formatter:'showlink', formatoptions:{baseLinkUrl:'".ROOT_URL.plainstring_to_htmloutput($formatter->baseLinkUrl)."'";
+					if ($formatter->addParam != null) {
+						$formatStr .= ", addParam: '".plainstring_to_htmloutput($this->addParam)."'";
+					}
+					if ($formatter->addParam != null) {
+						$formatStr .= ", addParam: '".plainstring_to_htmloutput($this->addParam)."'";
+					}
+					if ($formatter->idName != null) {
+						$formatStr .= ", idName: '".plainstring_to_htmloutput($this->idName)."'";
+					}
+					$formatStr .= "}";
+				} else {
+					throw new Exception("Unsupported formatter for jqGrid: ".get_class($formatter));
+				}
+				
+			}
+			$columnsDesc[] = '{name:"'.htmlentities($column->getSortColumn()).'", index:"'.htmlentities($column->getSortColumn()).'", width:"'.htmlentities($column->getWidth()).'"'.$formatStr.'}';
+			
 		}
 		$str .= implode(", ", $columnsTitles);
 		

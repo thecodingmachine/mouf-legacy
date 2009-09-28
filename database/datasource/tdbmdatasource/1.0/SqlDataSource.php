@@ -80,6 +80,7 @@ class SqlDataSource extends ArrayObject implements XajaDataSourceInterface, Xaja
 	 * Sets the order that will be used for this datasource (can be ASC or DESC).
 	 *
 	 * @Property
+	 * @OneOf("ASC","DESC")
 	 * @param string $order
 	 */
 	public function setOrder($order) { 

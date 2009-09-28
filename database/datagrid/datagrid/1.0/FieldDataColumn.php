@@ -10,8 +10,8 @@ class FieldDataColumn extends AbstractDataColumnInterface {
 	
 	private $fieldName;
 	
-	public function __construct($fieldName=null, $title=null, $sortColumn=null, $width=null) {
-		parent::__construct($title, $sortColumn, $width);
+	public function __construct($fieldName=null, $title=null, $sortColumn=null, $width=null, $formatter=null) {
+		parent::__construct($title, $sortColumn, $width, $formatter);
 		$this->fieldName = $fieldName;
 	}
 	
