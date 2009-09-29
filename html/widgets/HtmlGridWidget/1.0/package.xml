@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>HtmlGrid Widget</displayName>
+	<shortDescription>This package contains the HtmlGrid widget. This is an HTML datagrid that can be used to display data.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>database/datagrid</group>
+			<name>datagrid</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlGridWidget.php</require>
+	</requires>
+</package>
