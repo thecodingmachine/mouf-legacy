@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery Corner</displayName>
+	<shortDescription>This package contains the JQuery Corner library. It can be used to add
+	rounded corners declaratively and in a cross-browser fashion to any element on the webpage.</shortDescription>
+	<docUrl>http://www.malsup.com/jquery/corner/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>1.3.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryCorner.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>JQueryCornerExternalComponent.php</require>
+	</externalComponentRequires>
+</package>
