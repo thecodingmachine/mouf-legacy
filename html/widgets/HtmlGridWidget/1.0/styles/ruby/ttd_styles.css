@@ -1,0 +1,115 @@
+@CHARSET "ISO-8859-1";
+
+table.ttd tr.even:hover{
+	background-color: #D8B2B2;
+}
+
+table.ttd tr.even{
+	background-color: rgb(200, 63, 60);
+	color: #F2F2F2;
+}
+
+table.ttd tr.odd:hover{
+	background-color: #D8B2B2;
+}
+
+table.ttd tr.odd{
+	background-color: rgb(165, 49, 46);
+	color: #F2F2F2;
+}
+
+/***********************
+Sorting cols styles
+***********************/
+table.ttd tr th{
+	background-color: #D8B2B2;
+}
+
+table.ttd tr th table tr td{
+	height: 20px;
+	color: rgb(200, 63, 60);
+	font-weight: bold;
+}
+table.ttd tr th.sortable table tr td{
+	height: 20px;
+	color: rgb(200, 63, 60);
+	cursor: pointer;
+	font-weight: bold;
+}
+table.ttd tr th div.label{
+}
+table.ttd tr th.sortable div.sort{
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 12px;
+}
+table.ttd tr th.sortable div.asc{
+	background-image: url('images/asc.png');
+}
+table.ttd tr th.sortable div.desc{
+	background-image: url('images/desc.png');
+}
+
+/***********************
+Pager Plugin Styles
+************************/
+table.ttd tr td.pager_cell{
+	
+}
+table.ttd table.pager {
+	height:16px;
+	float: right
+}
+table.ttd table.pager tr td{
+	width: 16px;
+	background-repeat: no-repeat;
+	background-position: center;
+	text-align: center;
+	color: gray;
+}
+table.ttd table.pager tr td {
+	cursor: pointer;
+	color: rgb(200, 63, 60);
+}
+table.ttd table.pager tr td a:visited{
+	color: rgb(200, 63, 60);
+}
+table.ttd table.pager tr td.first_page {
+	background-image: url('images/first.png');
+}
+table.ttd table.pager tr td.previous_page {
+	background-image: url('images/previous.png');	
+}
+table.ttd table.pager tr td.current_page {
+	font-weight: bold;
+}
+table.ttd table.pager tr td.other_page a{
+	text-decoration: none;
+}
+table.ttd table.pager tr td.next_page {
+	background-image: url('images/next.png');
+}
+table.ttd table.pager tr td.last_page {
+	background-image: url('images/last.png');
+}
+
+/**********************
+Expander Plugin Styles
+**********************/
+table.ttd tr td.expander{
+	background-color: #FFFFFF;	
+	cursor: pointer;
+}
+
+table.ttd tr td.rollup{
+	background-color: #000000;	
+	cursor: pointer;
+}
+
+table.ttd tr.expandRow{
+	background-color: #F8D8D8;
+}
+
+table.ttd tr td.expandLeftCell{
+	background-color: #FFFFFF;
+}

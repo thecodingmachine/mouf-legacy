@@ -1,0 +1,148 @@
+@CHARSET "ISO-8859-1";
+table.ttd{
+	font-family:Lucida Grande,Lucida Sans,Arial,sans-serif;
+}
+
+table.ttd tr td,th {
+	border-style: solid;
+	border-color: rgb(166, 201, 226);
+	border-width: 1px;
+	padding: 3px;
+	font-size: 13px;
+}
+
+table.ttd tr.even:hover{
+	background: url(images/header_bg_hover.png) center repeat-x ;
+}
+
+table.ttd tr.even{
+
+}
+
+table.ttd tr.odd:hover{
+	background: url(images/header_bg_hover.png) center repeat-x ;
+}
+
+table.ttd tr.odd{
+
+}
+
+/***********************
+Sorting cols styles
+***********************/
+table.ttd tr th{
+	height: 20px;
+	background: url(images/header_bg.png) center repeat-x ;
+}
+table.ttd tr th:hover{
+	background: url(images/header_bg_hover.png) center repeat-x ;
+}
+
+table.ttd tr th table tr td{
+	padding: 0px;
+	color: #2E6E9E;
+	font-weight: bold;
+	border: none;
+}
+table.ttd tr th.sortable table tr td{
+	padding: 0px;
+	color: #2E6E9E;
+	cursor: pointer;
+	font-weight: bold;
+}
+table.ttd tr th div.label{
+}
+table.ttd tr th.sortable div.sort{
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 12px;
+}
+table.ttd tr th.sortable div.asc{
+	background-image: url('images/icons.png');
+	background-position: 0 -16px;
+}
+table.ttd tr th.sortable div.desc{
+	background-image: url('images/icons.png');
+	background-position: -64px -16px;
+}
+
+/***********************
+Pager Plugin Styles
+************************/
+table.ttd tr td.pager_cell{
+	background: url(images/header_bg.png) center repeat-x ;
+}
+table.ttd table.pager {
+	height:16px;
+	float: right
+}
+
+table.ttd table.pager tr td {
+	padding: 0px;
+	width: 16px;
+	background-repeat: no-repeat;
+	background-position: center;
+	text-align: center;
+	border: none;
+	cursor: pointer;
+	color: #2E6E9E;
+}
+table.ttd table.pager tr td a:visited{
+	color: #2E6E9E;
+}
+table.ttd table.pager tr td.first_page {
+	background-image: url('images/icons.png');
+	background-position: -80px -158px;
+}
+table.ttd table.pager tr td.first_page:hover {
+	background-image: url('images/icons-active.png');
+}
+table.ttd table.pager tr td.previous_page {
+	background-image: url('images/icons.png');
+	background-position: -48px -158px;
+}
+table.ttd table.pager tr td.previous_page:hover {
+	background-image: url('images/icons-active.png');
+}
+table.ttd table.pager tr td.current_page {
+	font-weight: bold;
+}
+table.ttd table.pager tr td.other_page a{
+	color: #2E6E9E;
+	text-decoration: none;
+}
+table.ttd table.pager tr td.next_page {
+	background-image: url('images/icons.png');
+	background-position: -32px -158px;
+}
+table.ttd table.pager tr td.next_page:hover {
+	background-image: url('images/icons-active.png');
+}
+table.ttd table.pager tr td.last_page {
+	background-image: url('images/icons.png');
+	background-position: -64px -158px;
+}
+table.ttd table.pager tr td.last_page:hover {
+	background-image: url('images/icons-active.png');
+}
+
+/**********************
+Expander Plugin Styles
+**********************/
+table.ttd tr td.expander{
+	background-color: #FFFFFF;	
+	cursor: pointer;
+}
+
+table.ttd tr td.rollup{
+	background-color: #000000;	
+	cursor: pointer;
+}
+
+table.ttd tr.expandRow{
+	background-color: #F8D8D8;
+}
+
+table.ttd tr td.expandLeftCell{
+	background-color: #FFFFFF;
+}

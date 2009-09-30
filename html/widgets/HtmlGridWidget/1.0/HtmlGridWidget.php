@@ -145,7 +145,8 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 				}else $sortUrl =  $this->getSortUrl($column, "ASC");
 			?>
 				<th style="width: <?php echo $column->getWidth()?$column->getWidth()."px":"auto" ?>" <?php if ($column->isSortable()) echo "class='sortable' onclick=\"window.location='$sortUrl'\"" ?>>
-					<table><tr>
+					<table cellpadding="0" cellspacing="0">
+					<tr>
 					<td>
 						<?php echo $column->getTitle();
 						?>
@@ -208,7 +209,7 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 			<?php	
 			}?>
 			<tr>
-				<td class="pager_cell" colspan="<?php echo (count($this->dataModel->dataColumns)+count($this->dataModel->actionColums)) ?>">
+				<td class="pager_cell" colspan="<?php echo (count($this->columns)) ?>">
 					<?php $this->getPaginateHTML($total_pages); ?>
 				</td>
 			</tr>
@@ -228,7 +229,7 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 	
 	public function getPaginateHTML($total_pages){
 	?>
-		<table class="pager">
+		<table class="pager" cellpadding="0" cellspacing="0">
 			<tr>
 				<td class="first_page" onclick="window.location='<?php echo $this->getPaginateUrl(1); ?>'"></td>
 			<?php if ($this->currentPage!=1){ ?>

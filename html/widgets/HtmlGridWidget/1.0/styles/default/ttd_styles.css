@@ -1,0 +1,105 @@
+@CHARSET "ISO-8859-1";
+
+table.ttd tr.even:hover{
+	background-color: #D8D8D8;
+}
+
+table.ttd tr.even{
+	background-color: #F8F8F8;
+}
+
+table.ttd tr.odd:hover{
+	background-color: #D8D8D8;
+}
+
+table.ttd tr.odd{
+	background-color: #A8A8A8;
+}
+table.ttd tr th{
+	color: #444444;
+}
+/***********************
+Sorting cols styles
+***********************/
+table.ttd tr th{
+	height: 20px;
+}
+table.ttd tr th.sortable{
+	color: #111111;
+	cursor: pointer;
+}
+table.ttd tr th div.label{
+}
+table.ttd tr th.sortable div.sort{
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 12px;
+}
+table.ttd tr th.sortable div.asc{
+	background-image: url('images/asc.png');
+}
+table.ttd tr th.sortable div.desc{
+	background-image: url('images/desc.png');
+}
+
+/***********************
+Pager Plugin Styles
+************************/
+table.ttd tr td.pager_cell{
+	
+}
+table.ttd table.pager {
+	height:16px;
+	float: right
+}
+table.ttd table.pager tr td{
+	width: 16px;
+	background-repeat: no-repeat;
+	background-position: center;
+	text-align: center;
+	color: gray;
+}
+table.ttd table.pager tr td {
+	cursor: pointer;
+}
+table.ttd table.pager tr td.first_page {
+	background-image: url('images/first.png');
+}
+table.ttd table.pager tr td.previous_page {
+	background-image: url('images/previous.png');	
+}
+table.ttd table.pager tr td.current_page {
+	color: black;
+	font-weight: bold;
+}
+table.ttd table.pager tr td.other_page a{
+	color: gray;
+	text-decoration: none;
+}
+table.ttd table.pager tr td.next_page {
+	background-image: url('images/next.png');
+}
+table.ttd table.pager tr td.last_page {
+	background-image: url('images/last.png');
+}
+
+/**********************
+Expander Plugin Styles
+**********************/
+table.ttd tr td.expander{
+	background-color: #FFFFFF;	
+	cursor: pointer;
+}
+
+table.ttd tr td.rollup{
+	background-color: #000000;	
+	cursor: pointer;
+}
+
+table.ttd tr.expandRow{
+	background-color: #F8D8D8;
+}
+
+table.ttd tr td.expandLeftCell{
+	background-color: #FFFFFF;
+}
