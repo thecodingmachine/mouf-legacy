@@ -92,7 +92,7 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 			$manager = MoufManager::getMoufManager();
 			$instanceName = $manager->findInstanceName($this);
 			if ($instanceName != false) {
-				echo "<div><a href='".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName)."'>Edit table</a></div>\n";
+				echo "<div><a href='".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName).BaseWidgetUtils::getBackToParameter()."'>Edit table</a></div>\n";
 			}
 		}
 		echo '<script type="text/javascript">
@@ -148,7 +148,7 @@ jQuery(document).ready(function(){';
 				if ($instanceName == false) {
 					$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
 				} else {
-					$columnsTitles[] = '"'.htmlentities($column->getTitle()).addslashes(" <a onclick='window.location=\"".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName)."\"; return false;'>edit</a>").'"';
+					$columnsTitles[] = '"'.htmlentities($column->getTitle()).addslashes(" <a onclick='window.location=\"".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName).BaseWidgetUtils::getBackToParameter()."\"; return false;'>edit</a>").'"';
 				}
 			}
 			$formatter = $column->getFormatter();

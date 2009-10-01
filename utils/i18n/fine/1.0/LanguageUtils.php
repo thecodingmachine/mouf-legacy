@@ -47,7 +47,7 @@ function iMsg(){
 	}
 
 	if ($msg_edition_mode) {
-		$value = $value.' <a href="'.ROOT_URL.'mouf/editLabels/editLabel?key='.$key.'&backto='.$_SERVER['REQUEST_URI'].'">edit</a>';
+		$value = $value.' <a href="'.ROOT_URL.'mouf/editLabels/editLabel?key='.$key.'&backto='.urlencode($_SERVER['REQUEST_URI']).'">edit</a>';
 	}
 
 	return $value;

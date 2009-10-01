@@ -33,6 +33,20 @@ class BaseWidgetUtils {
 			return false;
 		else 
 			return $_SESSION["WIDGET_EDITION_MODE"];
-	}	
+	}
+	
+	/**
+	 * Returns the parameter to append to the "edit" link in order to be able to go back directly to the page.
+	 * The parameter is available only if the request is a "GET" request.
+	 *
+	 * @return string
+	 */
+	public static function getBackToParameter() {
+		if ($_SERVER["REQUEST_METHOD"] != "GET") {
+			return null;
+		} else {
+			return '&backto='.urlencode($_SERVER['REQUEST_URI']);
+		}
+	}
 }
 ?>
