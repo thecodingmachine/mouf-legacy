@@ -92,6 +92,7 @@ abstract class AbstractDataColumnInterface implements DataColumnInterface {
 	 * Sets the formatter used to display that column.
 	 * If no formatter is specified, content is displayed as text.
 	 *
+	 * @Property
 	 * @param DataColumnFormatterInterface $formatter
 	 */
 	public function setFormatter(DataColumnFormatterInterface $formatter) {

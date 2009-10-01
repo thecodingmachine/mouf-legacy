@@ -16,6 +16,15 @@ class SplashMenu implements HtmlElementInterface {
 	 */
 	public $menuItems;
 	
+	/**
+	 * Initialize the object, optionnally with the array of menu items to be displayed.
+	 *
+	 * @param array<SplashMenuItem> $menuItems
+	 */
+	public function __construct($menuItems = null) {
+		$this->menuItems = $menuItems;
+	}
+	
 	public function toHtml() {
 		echo '<div class="content"><ul class="menu">';
 		

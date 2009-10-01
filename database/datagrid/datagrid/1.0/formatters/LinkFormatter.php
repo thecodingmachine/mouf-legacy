@@ -19,8 +19,8 @@ class LinkFormatter implements DataColumnFormatterInterface {
 	
 	/**
 	 * If passed, this string is added after the link.
-	 * For instance, if you pass "&action=edit", your link will be:
-	 *  http://server/baseLinkUrl?id=[id]&action=edit
+	 * For instance, if you pass "&amp;action=edit", your link will be:
+	 *  http://server/baseLinkUrl?id=[id]&amp;action=edit
 	 * 
 	 * @Property
 	 * @var string

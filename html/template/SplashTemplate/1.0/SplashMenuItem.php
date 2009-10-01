@@ -42,6 +42,21 @@ class SplashMenuItem implements HtmlElementInterface {
 	 */
 	public $propagatedUrlParameters;
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param string $menuText
+	 * @param string $menuLink
+	 * @param string $menuCssClass
+	 * @param array<string> $propagatedUrlParameters
+	 */
+	public function __construct($menuText=null, $menuLink=null, $menuCssClass=null, $propagatedUrlParameters=null) {
+		$this->menuText = $menuText;
+		$this->menuLink = $menuLink;
+		$this->menuCssClass = $menuCssClass;
+		$this->propagatedUrlParameters = $propagatedUrlParameters;
+	}
+	
 	public function toHtml() {
 		echo '<li ';
 		if (!empty($this->menuCssClass)) {
