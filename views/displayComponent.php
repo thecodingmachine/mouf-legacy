@@ -334,6 +334,9 @@ foreach ($this->properties as $property) {
 
 <div style="clear:both">
 <input type="submit" value="Save" />
+<?php if (get("backto")!=null) {
+	echo '<input type="button" value="Back" onclick="window.location=\''.urlencode(get('backto')).'\';return false;" />';
+} ?>
 </div>
 
 <?php // The DIV dialog will not stay into the form (it will be moved by jQuery). Therefore, we must duplicate all fields of the dialog ui into the main ui ?>
