@@ -88,6 +88,13 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 		
 		echo "<table id=\"".$tableId."\"></table>\n"; 
 		echo "<div id=\"".$pagerId."\"></div>\n";
+		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
+			$manager = MoufManager::getMoufManager();
+			$instanceName = $manager->findInstanceName($this);
+			if ($instanceName != false) {
+				echo "<div><a href='".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName)."'>Edit table</a></div>\n";
+			}
+		}
 		echo '<script type="text/javascript">
 jQuery(document).ready(function(){';
 		echo "
@@ -126,11 +133,24 @@ jQuery(document).ready(function(){';
 	 * @return string
 	 */
 	public function getColumnsDefinition() {
+		$isEditionMode = BaseWidgetUtils::isWidgetEditionEnabled();
+		
 		$str = "colNames:[";
 		$columnsTitles = array();
 		$columnsDesc = array();
 		foreach ($this->columns as $column) {
-			$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
+			if (!$isEditionMode) {
+				$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
+			} else {
+				// Let's try to find the object in Mouf.
+				$manager = MoufManager::getMoufManager();
+				$instanceName = $manager->findInstanceName($column);
+				if ($instanceName == false) {
+					$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
+				} else {
+					$columnsTitles[] = '"'.htmlentities($column->getTitle()).addslashes(" <a onclick='window.location=\"".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName)."\"; return false;'>edit</a>").'"';
+				}
+			}
 			$formatter = $column->getFormatter();
 			$formatStr = "";
 			if ($formatter != null) {

@@ -19,6 +19,11 @@
 			<name>htmlelement</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>html/widgets</group>
+			<name>basewidget</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>JqGridWidget.php</require>
