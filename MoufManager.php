@@ -968,5 +968,16 @@ class ".$this->mainClassName." {
 		}
 	}
 	
+	/**
+	 * Returns the name of a Mouf instance from the object.
+	 * Note: this quite be pretty slow as all instances are searched.
+	 * FALSE is returned if nothing is found.
+	 * 
+	 * @param object $instance
+	 * @return string The name of the instance.
+	 */
+	public function findInstanceName($instance) {
+		return array_search($instance, $this->objectInstances);
+	}
 }
 ?>
