@@ -63,6 +63,11 @@ class MoufController extends Controller {
 		$template = $this->template;
 		$this->template->addHeadHtmlElement(new HtmlJSJit());
 		$this->template->addJsFile(ROOT_URL."mouf/views/displayComponent.js");
+		$this->template->addRightHtmlElement(new SplashMenu(
+			array(
+			//new SplashMenuItem("View properties", "mouf/mouf/displayComponent?name=".$name, null, array("selfedit")),
+			new SplashMenuItem("View dependency graph", "mouf/mouf/displayGraph?name=".$name, null, array("selfedit")))));
+		$template->addRightFunction(array($this, "displayComponentParents"));
 		$template->addContentFunction(array($this, "displayComponentView"));
 		$template->draw();	
 	}
@@ -73,6 +78,53 @@ class MoufController extends Controller {
 	 */
 	public function displayComponentView() {
 		include(dirname(__FILE__)."/../../mouf/views/displayComponent.php");
+	}
+	
+	/**
+	 * Displays the dependency graph around the component passed in parameter.
+	 * 
+	 * @Action
+	 *
+	 * @param string $name
+	 * @param string $selfedit
+	 */
+	public function displayGraph($name, $selfedit = false) {
+		$this->instanceName = $name;
+		$this->selfedit = $selfedit;
+		/*$this->instance = MoufManager::getMoufManager()->getInstance($name);
+		$this->className = MoufManager::getMoufManager()->getInstanceType($this->instanceName);*/
+		
+		if ($selfedit == "true") {
+			$this->moufManager = MoufManager::getMoufManager();
+		} else {
+			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
+		}
+		
+		$template = $this->template;
+		$this->template->addHeadHtmlElement(new HtmlJSJit());
+		$this->template->addJsFile(ROOT_URL."mouf/views/displayGraph.js");
+		$this->template->addRightHtmlElement(new SplashMenu(
+			array(
+			new SplashMenuItem("View properties", "mouf/mouf/displayComponent?name=".$name, null, array("selfedit")),
+			/*new SplashMenuItem("View dependency graph", "mouf/mouf/displayGraph?name=".$name, null, array("selfedit"))*/)));
+		$template->addContentFile(dirname(__FILE__)."/../views/displayGraph.php", $this);
+		$template->draw();
+	}
+	
+	/**
+	 * Displays the list of components directly referencing this component.
+	 *
+	 */
+	function displayComponentParents() {
+		$componentsList = $this->moufManager->getOwnerComponents($this->instanceName);
+		
+		if (!empty($componentsList)) {
+			echo '<ul class="menu"><li><b>Referred by components:</b></li>';
+			foreach ($componentsList as $component) {
+				echo '<li><a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component).'&selfedit=false">'.plainstring_to_htmlprotected($component).'</a></li>';
+			}
+			echo '</ul>';
+		}
 	}
 	
 	/**
@@ -359,7 +411,7 @@ class MoufController extends Controller {
 	 * @param string $rootNode
 	 * @return array JSON message as a PHP array
 	 */
-	private function getJitJson($rootNode) {
+	protected function getJitJson($rootNode) {
 		return $this->getJitJsonRecursive($rootNode, array());
 	}
 
