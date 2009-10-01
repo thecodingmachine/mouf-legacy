@@ -6,21 +6,7 @@
 		<?php print $this->getCssFiles() ?>
 		<?php print $this->getJsFiles() ?>
 		<?php $this->drawArray($this->head); ?>
-		
-		<link rel="stylesheet" href="http://static.jquery.com/ui/css/base2.css" type="text/css" media="all" /> 
-			<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" /> 
-			<link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" /> 
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script> 
-			<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script> 
-			<script src="http://jquery-ui.googlecode.com/svn/tags/latest/external/bgiframe/jquery.bgiframe.min.js" type="text/javascript"></script> 
-			<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/minified/i18n/jquery-ui-i18n.min.js" type="text/javascript"></script>
-			
-			
-<script type="text/javascript">
-	$(function() {
-		$("#datepicker").datepicker();
-	});
-	</script> 
+
 	</head>
 	<?php
 		if((count($this->right) != 0) && (count($this->left) != 0))
