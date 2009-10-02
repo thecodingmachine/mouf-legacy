@@ -59,6 +59,21 @@ class MoufReflectionProxy {
 		
 	}
 	
+	public static function getEnhancedComponentsList($selfEdit) {
+		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/get_enhanced_components_list.php?selfedit=".(($selfEdit)?"true":"false");
+
+		$response = self::performRequest($url);
+
+		$obj = unserialize($response);
+		
+		if ($obj === false) {
+			throw new Exception($response);
+		}
+		
+		return $obj;
+		
+	}
+	
 	/**
 	 * Returns the default value for the property of the class, through a call to the "get_default.php" page. 
 	 * 

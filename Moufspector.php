@@ -13,7 +13,8 @@ class Moufspector {
 	 * Returns a list of all the classes that have the @Component attribute, or only classes extending the @Component attribute ANT inheriting the passed
 	 * class or interface.
 	 *
-	 * @type string the class or interface the @component must inherit to be part of the list. If not passed, all @component classes are returned. 
+	 * @type string the class or interface the @component must inherit to be part of the list. If not passed, all @component classes are returned.
+	 * @return array<string>
 	 */
 	public static function getComponentsList($type = null) {
 		$classesList = get_declared_classes();
@@ -49,6 +50,58 @@ class Moufspector {
 		}
 		return $componentsList;
 	}
+
+	/**
+	 * Returns a list of all the classes that have the @Component attribute, or only classes extending the @Component attribute AND inheriting the passed
+	 * class or interface.
+	 * The list is passed as an associative arrray:
+	 * array<className, array<string, string>>
+	 * The inner array has those properties:
+	 * 	"filename" => the path to the PHP file declaring the class.
+	 *
+	 * @type string the class or interface the @component must inherit to be part of the list. If not passed, all @component classes are returned.
+	 * @return array<string>
+	 */
+	public static function getEnhancedComponentsList($type = null) {
+		$classesList = get_declared_classes();
+		$componentsList = array();
+		
+		foreach ($classesList as $className) {
+			$refClass = new MoufReflectionClass($className);
+			if ($refClass->hasAnnotation("Component")) {
+				$found = false;
+				if ($type == null) {
+					$found = true;
+				} else {					
+					try {
+						if ($refClass->implementsInterface($type)) {
+							$found = true;
+						}
+					} catch (ReflectionException $e) {
+						// The interface might not exist, that's not a problem
+						try {
+							if ($refClass->isSubclassOf($type)) {
+								$found = true;
+							}
+						} catch (ReflectionException $e) {
+							// The interface might not exist, that's not a problem
+							if ($refClass->getName() == $type) {
+								$found = true;
+							}
+						}
+					}
+				}
+				if ($found) {
+					$arr = array();
+					$arr["filename"] = $refClass->getFileName();
+					$componentsList[$className] = $arr;
+					continue;
+				}
+			}
+		}
+		return $componentsList;
+	}
+	
 	
 	/**
 	 * Returns the list of properties the class $className does contain. 

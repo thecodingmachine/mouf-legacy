@@ -39,6 +39,13 @@ class MoufController extends Controller {
 	public $template;
 	
 	/**
+	 * Array of all instances sorted by package and by class.
+	 *
+	 * @var array<string, array<string, string>>
+	 */
+	public $instancesByPackage;
+	
+	/**
 	 * @Action
 	 *
 	 * @param string $name the name of the component to display
@@ -128,11 +135,93 @@ class MoufController extends Controller {
 	}
 	
 	/**
-	 * Lists all the components available in order to edit them.
+	 * Lists all the components available, sorted by "package" (directory of the class).
 	 * 
 	 * @Action
 	 */
 	public function defaultAction($selfedit = "false") {
+		$this->selfedit = $selfedit;
+
+		if ($selfedit == "true") {
+			$this->moufManager = MoufManager::getMoufManager();
+		} else {
+			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
+		}
+		
+		$enhancedComponentsList = MoufReflectionProxy::getEnhancedComponentsList($selfedit=="true");
+		// Let's create a list by declaration file:
+		$componentsByFile = array();
+		foreach ($enhancedComponentsList as $name=>$componentDetails) {
+			$componentsByFile[$componentDetails["filename"]][] = $name;
+		}
+		// Now, let's remove the part of the file that is common to every file.
+		// The aim is to remove the C:/Program Files/.... or /var/www/...
+		$first = true;
+		$common = "";
+		foreach ($componentsByFile as $key=>$name) {
+			if ($first) {
+				$common = $key;
+				$first = false;
+				continue;
+			} else {
+				if (strpos($key, $common) === 0) {
+					continue;
+				} else {
+					// Let's find what part of the $common string is common to the key.
+					while (strlen($common)!=0) {
+						$common = substr($common, 0, -1);
+						if (strpos($key, $common) === 0) {
+							break;
+						}
+					}
+				}
+			}
+		}
+		// Now that we have the common part, let's remove it, and let's get only the directory name (remove the file part)
+		$componentsByShortFile = array();
+		foreach ($componentsByFile as $key=>$names) {
+			$packageName = dirname(substr($key, strlen($common)));
+			if (!isset($componentsByShortFile[$packageName])) {
+				$componentsByShortFile[$packageName] = $names;
+			} else {
+				$componentsByShortFile[$packageName] = array_merge($componentsByShortFile[$packageName], $names);
+			}
+		}
+		
+		// Now, let's sort all this by key.
+		ksort($componentsByShortFile);
+		
+		// We have a sorted components list.
+		// Now, for each of these, let's find the instance that match...
+		$instanceList = $this->moufManager->getInstancesList();
+		// Let's revert the instance list.
+		$instanceListByClass = array();
+		foreach ($instanceList as $instanceName=>$className) {
+			$instanceListByClass[$className][] = $instanceName;
+		}
+		
+		// type: array<package, array<class, instance>>
+		$instancesByPackage = array();
+		foreach ($componentsByShortFile as $package=>$classes) {
+			foreach ($classes as $class) {
+				if (isset($instanceListByClass[$class])) {
+					$instancesByPackage[$package][$class] = $instanceListByClass[$class];
+				}
+			}
+		}
+		
+		$this->instancesByPackage = $instancesByPackage;
+		
+		$this->template->addContentFile(dirname(__FILE__)."/../views/listComponentsByDirectory.php", $this);
+		$this->template->draw();
+	}
+	
+	/**
+	 * Lists all the components available, ordered by creation date, in order to edit them.
+	 * 
+	 * @Action
+	 */
+	public function instancesByDate($selfedit = "false") {
 		$this->selfedit = $selfedit;
 
 		if ($selfedit == "true") {
