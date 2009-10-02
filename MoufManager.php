@@ -308,35 +308,47 @@ class MoufManager {
 		}
 		
 		$this->declaredComponents[$newInstanceName] = $this->declaredComponents[$instanceName];
-		$this->objectInstances[$newInstanceName] = $this->objectInstances[$instanceName];
-		$this->declaredProperties[$newInstanceName] = $this->declaredProperties[$instanceName];
-		$this->declaredSetterProperties[$newInstanceName] = $this->declaredSetterProperties[$instanceName];
-		$this->declaredBinds[$newInstanceName] = $this->declaredBinds[$instanceName];
-		$this->declaredSetterBinds[$newInstanceName] = $this->declaredSetterBinds[$instanceName];
 		unset($this->declaredComponents[$instanceName]);
-		unset($this->objectInstances[$instanceName]);
-		unset($this->declaredProperties[$instanceName]);
-		unset($this->declaredSetterProperties[$instanceName]);
-		unset($this->declaredBinds[$instanceName]);
-		unset($this->declaredSetterBinds[$instanceName]);
+		
+		if (isset($this->objectInstances[$instanceName])) {
+			$this->objectInstances[$newInstanceName] = $this->objectInstances[$instanceName];
+			unset($this->objectInstances[$instanceName]);
+		}
+		if (isset($this->declaredProperties[$instanceName])) {
+			$this->declaredProperties[$newInstanceName] = $this->declaredProperties[$instanceName];
+			unset($this->declaredProperties[$instanceName]);
+		}
+		if (isset($this->declaredSetterProperties[$instanceName])) {
+			$this->declaredSetterProperties[$newInstanceName] = $this->declaredSetterProperties[$instanceName];
+			unset($this->declaredSetterProperties[$instanceName]);
+		}
+		if (isset($this->declaredBinds[$instanceName])) {
+			$this->declaredBinds[$newInstanceName] = $this->declaredBinds[$instanceName];
+			unset($this->declaredBinds[$instanceName]);
+		}
+		if (isset($this->declaredSetterBinds[$instanceName])) {
+			$this->declaredSetterBinds[$newInstanceName] = $this->declaredSetterBinds[$instanceName];
+			unset($this->declaredSetterBinds[$instanceName]);
+		}
 		
 		if (is_array($this->declaredBinds)) {
-			foreach ($this->declaredBinds as $instanceName=>$bindedProperties) {
+			foreach ($this->declaredBinds as $compInstanceName=>$bindedProperties) {
 				if (is_array($bindedProperties)) {
 					foreach ($bindedProperties as $paramName=>$properties) {
 						if (is_array($properties)) {
 							// If this is an array of properties
-							$keys_matching == array_keys($properties, $instanceName);
+							$keys_matching = array_keys($properties, $instanceName);
+							
 							if (!empty($keys_matching)) {
 								foreach ($keys_matching as $key) {
 									$properties[$key] = $newInstanceName; 
 								}
-								$this->bindComponents($instanceName, $paramName, $properties);
+								$this->bindComponents($compInstanceName, $paramName, $properties);
 							}
 						} else {
 							// If this is a simple property
 							if ($properties == $instanceName) {
-								$this->bindComponent($instanceName, $paramName, $newInstanceName);
+								$this->bindComponent($compInstanceName, $paramName, $newInstanceName);
 							}
 						}
 					}
@@ -345,22 +357,22 @@ class MoufManager {
 		}
 		
 		if (is_array($this->declaredSetterBinds)) {
-			foreach ($this->declaredSetterBinds as $instanceName=>$bindedProperties) {
+			foreach ($this->declaredSetterBinds as $compInstanceName=>$bindedProperties) {
 				if (is_array($bindedProperties)) {
 					foreach ($bindedProperties as $setterName=>$properties) {
 						if (is_array($properties)) {
 							// If this is an array of properties
-							$keys_matching == array_keys($properties, $instanceName);
+							$keys_matching = array_keys($properties, $instanceName);
 							if (!empty($keys_matching)) {
 								foreach ($keys_matching as $key) {
 									$properties[$key] = $newInstanceName; 
 								}
-								$this->bindComponentsViaSetter($instanceName, $setterName, $properties);
+								$this->bindComponentsViaSetter($compInstanceName, $setterName, $properties);
 							}
 						} else {
 							// If this is a simple property
 							if ($properties == $instanceName) {
-								$this->bindComponentsViaSetter($instanceName, $setterName, $newInstanceName);
+								$this->bindComponentsViaSetter($compInstanceName, $setterName, $newInstanceName);
 							}
 						}
 					}
