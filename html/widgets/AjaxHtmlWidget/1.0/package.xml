@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>AjaxHtmlGrid Widget</displayName>
+	<shortDescription>This package contains the HtmlGrid widget. This is an Ajax driven HTML datagrid that can be used to display data.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>database/datagrid</group>
+			<name>datagrid</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-jquery</name>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<group>html/widgets</group>
+			<name>basewidget</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>AjaxHtmlGridWidget.php</require>
+	</requires>
+</package>
