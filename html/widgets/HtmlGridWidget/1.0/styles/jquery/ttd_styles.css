@@ -12,29 +12,23 @@ table.ttd tr td,th {
 }
 
 table.ttd tr.even:hover{
-	background: url(images/header_bg_hover.png) center repeat-x ;
+	background: url(images/header_bg.png) center repeat-x ;
 }
-
-table.ttd tr.even{
-
-}
-
 table.ttd tr.odd:hover{
-	background: url(images/header_bg_hover.png) center repeat-x ;
+	background: url(images/header_bg.png) center repeat-x ;
 }
-
-table.ttd tr.odd{
-
-}
-
-/***********************
-Sorting cols styles
-***********************/
 table.ttd tr th{
 	height: 20px;
 	background: url(images/header_bg.png) center repeat-x ;
 }
 table.ttd tr th:hover{
+	background: url(images/header_bg_hover.png) center repeat-x ;
+}
+
+/***********************
+Sorting cols styles
+***********************/
+table.ttd tr th.activeSort{
 	background: url(images/header_bg_hover.png) center repeat-x ;
 }
 
@@ -92,14 +86,14 @@ table.ttd table.pager tr td a:visited{
 }
 table.ttd table.pager tr td.first_page {
 	background-image: url('images/icons.png');
-	background-position: -80px -158px;
+	background-position: -80px -160px;
 }
 table.ttd table.pager tr td.first_page:hover {
 	background-image: url('images/icons-active.png');
 }
 table.ttd table.pager tr td.previous_page {
 	background-image: url('images/icons.png');
-	background-position: -48px -158px;
+	background-position: -48px -160px;
 }
 table.ttd table.pager tr td.previous_page:hover {
 	background-image: url('images/icons-active.png');
@@ -113,14 +107,14 @@ table.ttd table.pager tr td.other_page a{
 }
 table.ttd table.pager tr td.next_page {
 	background-image: url('images/icons.png');
-	background-position: -32px -158px;
+	background-position: -32px -160px;
 }
 table.ttd table.pager tr td.next_page:hover {
 	background-image: url('images/icons-active.png');
 }
 table.ttd table.pager tr td.last_page {
 	background-image: url('images/icons.png');
-	background-position: -64px -158px;
+	background-position: -64px -160px;
 }
 table.ttd table.pager tr td.last_page:hover {
 	background-image: url('images/icons-active.png');
