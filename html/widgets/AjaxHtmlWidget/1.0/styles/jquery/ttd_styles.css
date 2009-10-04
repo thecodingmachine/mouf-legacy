@@ -24,7 +24,28 @@ table.ttd tr th{
 table.ttd tr th:hover{
 	background: url(images/header_bg_hover.png) center repeat-x ;
 }
-
+/***********************
+Ajax loader div
+***********************/
+#ttd_loader {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent url(images/header_bg.png) repeat-x scroll center center;
+	border:2px solid #79B7E7;
+	color:#DF700A;
+	display:block;
+	font-family:sans-serif;
+	font-size:13px;
+	font-weight:bold;
+	left:40%;
+	padding:4px;
+	position:absolute;
+	text-align:center;
+	top:40%;
+	width:75px;
+	visibility: hidden;
+}
 /***********************
 Sorting cols styles
 ***********************/

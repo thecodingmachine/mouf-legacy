@@ -17,7 +17,30 @@ table.ttd tr.odd{
 	background-color: rgb(165, 49, 46);
 	color: #F2F2F2;
 }
-
+/***********************
+Ajax loader div
+***********************/
+/***********************
+Ajax loader div
+***********************/
+#ttd_loader {
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	background:transparent url(images/header_bg.png) repeat-x scroll center center;
+	color: #B40404;
+	background-color: white;
+	font-family:sans-serif;
+	font-size:13px;
+	font-weight:bold;
+	left:40%;
+	padding:4px;
+	position:absolute;
+	text-align:center;
+	top:40%;
+	width:75px;
+	display: none;
+}
 /***********************
 Sorting cols styles
 ***********************/

@@ -19,6 +19,14 @@ class AjaxHtmlGridWidget extends DataGrid implements HtmlElementInterface {
 	public $containerId;
 	
 	/**
+	 * The width of the table
+	 * @Compulsory
+	 * @Property 
+	 * @var int
+	 */
+	public $tableWidth;
+	
+	/**
 	 * The URL that will be used to retrieve the data to be displayed.
 	 * Path is relative to the ROOT_URL and should not start with a /.
 	 * @Property
@@ -82,28 +90,34 @@ class AjaxHtmlGridWidget extends DataGrid implements HtmlElementInterface {
 	<script type="text/javascript">
 	<!--
 	function paginate(page, sort, order){
+		$("#ttd_loader").show();
 		$.ajax({
 			type: "GET",
 			url: "<?php echo $this->dataUrl ?>",
 			data: "page="+page+"&sort="+sort+"&order="+order,
 			success: function(response){
 				$("#<?php echo $this->containerId ?>").html(response);
+				$("#ttd_loader").hide();
 			},
 			error: function(xhr, opt, error){
+				$("#ttd_loader").hide();
 				alert("Ajax error\nStatus : "+xhr.status);
 			}
 		});
 	}
 	
 	function sort(sort, order){
+		$("#ttd_loader").show();
 		$.ajax({
 			type: "GET",
 			url: "<?php echo $this->dataUrl ?>",
 			data: "sort="+sort+"&order="+order,
 			success: function(response){
 				$("#<?php echo $this->containerId ?>").html(response);
+				$("#ttd_loader").hide();
 			},
 			error: function(xhr, opt, error){
+				$("#ttd_loader").hide();
 				alert("Ajax error\nStatus : "+xhr.status);
 			}
 		});
@@ -138,9 +152,12 @@ class AjaxHtmlGridWidget extends DataGrid implements HtmlElementInterface {
 			$this->currentSortColumn = $this->defaultSortColumn;
 			$this->datasource->setOrderColumn($this->defaultSortColumn);
 		}
+		
+		
+			
 	?>
-	<div id="<?php echo $this->containerId ?>">
-	<table class="ttd" cellpadding="0" cellspacing="0">
+	<div id="<?php echo $this->containerId ?>" style="position: relative; width: <?php echo $this->tableWidth; ?>px">
+	<table class="ttd" cellpadding="0" cellspacing="0" style="width: <?php echo $this->tableWidth; ?>px">
 	<tbody>
 		<tr>
 		<?php 
@@ -258,6 +275,7 @@ class AjaxHtmlGridWidget extends DataGrid implements HtmlElementInterface {
 		?>
 	</tbody>
 	</table>
+	<div id="ttd_loader">Loading...</div>
 	</div>
 	<?php
 	}
