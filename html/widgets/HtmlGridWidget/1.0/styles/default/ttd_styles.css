@@ -87,13 +87,19 @@ table.ttd table.pager tr td.last_page {
 Expander Plugin Styles
 **********************/
 table.ttd tr td.expander{
-	background-color: #FFFFFF;	
+	background-color: #D8D8D8;
+	background-image: url('images/expand.png');
+	background-position: center;
 	cursor: pointer;
+	width: 15px;
 }
 
 table.ttd tr td.rollup{
-	background-color: #000000;	
+	background-color: #D8D8D8;
+	background-image: url('images/rollup.png');
+	background-position: center;
 	cursor: pointer;
+	width: 15px;
 }
 
 table.ttd tr.expandRow{
@@ -101,5 +107,5 @@ table.ttd tr.expandRow{
 }
 
 table.ttd tr td.expandLeftCell{
-	background-color: #FFFFFF;
+	background-color: #D8D8D8;
 }

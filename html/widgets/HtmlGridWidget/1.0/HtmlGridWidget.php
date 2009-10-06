@@ -60,6 +60,14 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 	public $maxDisplay;
 	
 	/**
+	 * The Expander of the data grid
+	 * If set, the grid will be added a "expander" under each row, displaying expander's data
+	 * @Property
+	 * @var GridExpanderInterface
+	 */
+	public $expander;
+	
+	/**
 	 * The current page
 	 *  @var int
 	 */
@@ -103,11 +111,16 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 			$this->currentSortColumn = $this->defaultSortColumn;
 			$this->datasource->setOrderColumn($this->defaultSortColumn);
 		}
+		
+		$fullColspan = count($this->columns);
+		if ($this->expander) $fullColspan++;
+		
 ?>
 		<table class="ttd" cellpadding="0" cellspacing="0">
 		<tbody>
 			<tr>
 			<?php 
+			if ($this->expander) echo "<th></th>";
 			foreach ($this->columns as $column) {
 				if ($this->currentSortColumn==$column->getSortColumn() && $this->currentSortOrder=="ASC"){
 					$sortUrl = $this->getSortUrl($column, "DESC");
@@ -191,6 +204,7 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 			?>
 				<tr class="<?php echo $class ?>">
 			<?php 
+				if ($this->expander) echo "<td class=\"expander\" onclick=\"appendRow(".$this->idColumn->getValue($row).", this)\">&nbsp;</td>";
 				foreach ($this->columns as $column) {
 			?>
 					<td><?php echo $column->getValue($row) ?></td>
@@ -201,7 +215,7 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 			<?php	
 			}?>
 			<tr>
-				<td class="pager_cell" colspan="<?php echo (count($this->columns)) ?>">
+				<td class="pager_cell" colspan="<?php echo $fullColspan ?>">
 					<?php $this->getPaginateHTML($total_pages); ?>
 				</td>
 			</tr>
@@ -211,7 +225,7 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 				if ($instanceName != false) {
 				?>
 				<tr>
-				<td colspan="<?php echo (count($this->columns)) ?>">
+				<td colspan="<?php echo $fullColspan ?>">
 					<?php echo "<a href='".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName).BaseWidgetUtils::getBackToParameter()."'>Edit table</a>"; ?>
 				</td>
 				</tr>
@@ -221,7 +235,61 @@ class HtmlGridWidget extends DataGrid implements HtmlElementInterface {
 			?>
 		</tbody>
 		</table>
-		
+<?php 
+if ($this->expander){
+?>
+	<script type="text/javascript">
+	<!--
+		var tab = new Array();
+
+		<?php if ($this->expander->singleExpand){?>
+		function collapseAll(curCell){
+			var currentRowIndex = curCell.parentNode.rowIndex;
+			var table = curCell.parentNode.parentNode.parentNode;
+			var rows = curCell.parentNode.parentNode.rows;
+			for (i=0;i<rows.length;i++){
+				var row = rows[i];
+				if (row.cells[0].className=='rollup' && row.rowIndex!=currentRowIndex) row.cells[0].className='expander';
+				if (row.className=='expandRow' && row.rowIndex!=(currentRowIndex+1)){
+					table.deleteRow(row.rowIndex);
+					i--;
+					currentRowIndex--;
+				}
+			}
+			
+		}
+		<?php }?>
+	
+		function appendRow(id, curCell){
+			var currentRowIndex = curCell.parentNode.rowIndex;
+			var table = curCell.parentNode.parentNode.parentNode;
+			
+			var className = curCell.className;
+			if (className=='expander'){
+				curCell.className='rollup';
+				var newRow = table.insertRow(currentRowIndex+1);
+				newRow.className = 'expandRow';
+				var expanderCell = newRow.insertCell(0);
+				expanderCell.className='expandLeftCell';
+				var expanderContent = newRow.insertCell(1);
+				expanderContent.setAttribute('colspan', '<?php echo ($fullColspan-1);?>');
+				expanderContent.innerHTML=tab[id];
+			}else if (className=='rollup'){
+				curCell.className='expander';
+				table.deleteRow(currentRowIndex+1);
+			}
+			<?php if ($this->expander->singleExpand) echo "collapseAll(curCell);";?>
+		}
+<?php 
+	foreach ($this->datasource as $row){
+		$id = $this->idColumn->getValue($row);
+		echo "tab[$id]='".$this->expander->getExpandData($id)."';\n";
+	}
+?>
+	//-->
+	</script>
+	<?php
+}?>
 <?php
 	}
 	
