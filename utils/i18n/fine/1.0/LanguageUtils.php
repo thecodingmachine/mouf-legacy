@@ -13,6 +13,7 @@ else{
 
 
 if (file_exists(I18N_MESSAGE_PATH.'message_'.$i18n_lg.'.php')){
+	@include_once I18N_MESSAGE_PATH.'message.php';
 	require_once I18N_MESSAGE_PATH.'message_'.$i18n_lg.'.php';
 }
 else{
