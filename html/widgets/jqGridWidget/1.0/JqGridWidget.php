@@ -175,6 +175,11 @@ jQuery(document).ready(function(){';
 						$srcFormat = "Y-m-d H:i:s";
 					}
 					$formatStr = ", formatter:'date', formatoptions:{srcformat:'".addslashes($formatter->sourceFormat)."', destformat:'".addslashes($formatter->getDestFormat())."'}";
+				} elseif ($formatter instanceof NumberFormatter) {
+					$formatStr = ", formatter:'number', formatoptions:{thousandsSeparator:'".addslashes($formatter->thousandsSeparator)."',
+											decimalSeparator:'".addslashes($formatter->decimalSeparator)."',
+											decimalPlaces:'".addslashes($formatter->decimalPlaces)."',
+											defaultValue:'".addslashes($formatter->defaultValue)."'}";
 				} else {
 					throw new Exception("Unsupported formatter for jqGrid: ".get_class($formatter));
 				}
