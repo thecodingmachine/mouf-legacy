@@ -168,6 +168,13 @@ jQuery(document).ready(function(){';
 					$formatStr .= "}";
 				} elseif ($formatter instanceof CheckboxFormatter) {
 					$formatStr = ", formatter:'checkbox', formatoptions:{disabled:".($formatter->disabled?"true":"false")."}";
+				} elseif ($formatter instanceof DateFormatter) {
+					$srcFormat = $formatter->sourceFormat;
+					if ($srcFormat == "timestamp") {
+						// jqGrid does not support timestamps. We will convert those on the server side.
+						$srcFormat = "Y-m-d H:i:s";
+					}
+					$formatStr = ", formatter:'date', formatoptions:{srcformat:'".addslashes($formatter->sourceFormat)."', destformat:'".addslashes($formatter->getDestFormat())."'}";
 				} else {
 					throw new Exception("Unsupported formatter for jqGrid: ".get_class($formatter));
 				}
@@ -261,7 +268,11 @@ jQuery(document).ready(function(){';
 			$id = $this->idColumn->getValue($row);			
 		    $s .= "<row id='". htmlentities($id)."'>";
 		    foreach ($this->columns as $column) {
-		    	  $s .= "<cell>". htmlentities($column->getValue($row))."</cell>";
+		    	if ($column->getFormatter() instanceof DateFormatter && $column->getFormatter()->sourceFormat == "timestamp") {
+		    		$s .= "<cell>". date("Y-m-d H:i:s",$column->getValue($row))."</cell>";
+		    	} else {
+		    		$s .= "<cell>". htmlentities($column->getValue($row))."</cell>";
+		    	}
 		    }
 		    $s .= "</row>";
 		}

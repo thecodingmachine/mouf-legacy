@@ -22,6 +22,7 @@
 		<require>formatters/DataColumnFormatterInterface.php</require>
 		<require>formatters/LinkFormatter.php</require>
 		<require>formatters/CheckboxFormatter.php</require>
+		<require>formatters/DateFormatter.php</require>
 		<require>expander/GridExpanderInterface.php</require>
 	</requires>
 </package>

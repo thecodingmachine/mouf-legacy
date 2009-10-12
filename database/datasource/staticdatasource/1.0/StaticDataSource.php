@@ -100,7 +100,7 @@ class StaticDataSource extends ArrayObject implements XajaDataSourceInterface, O
 		$this->exchangeArray($array);
 	}
 	
-	public function compareXajaRecords(XajaRecord $x1, XajaRecord $x2) {
+	public function compareXajaRecords($x1, $x2) {
 		$order = strtoupper($this->order);
 		if ($order == null)
 			$order = "ASC";
