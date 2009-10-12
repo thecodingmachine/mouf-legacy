@@ -24,9 +24,13 @@ require_once('XajaRecord.php');
 /**
  * A StaticDataSource behaves like a standard array.
  *
+ * @Component
  */
-class StaticDataSource extends ArrayObject implements XajaDataSourceInterface {
-		
+class StaticDataSource extends ArrayObject implements XajaDataSourceInterface, OrderableDataSourceInterface {
+
+	private $orderColumn;
+	private $order;
+	
 	public function __construct($array = null) {
 		if ($array == null) {
 			$array = array();
@@ -42,16 +46,18 @@ class StaticDataSource extends ArrayObject implements XajaDataSourceInterface {
 		}
 		
 		parent::__construct($records);
+		$this->sort();
 	}
 	
 	/**
 	 * Adds a new record to the datasource.
 	 * The record is taken as an array and transformed in a XajaRecord object.
 	 *
-	 * @param unknown_type $array
+	 * @param array $array
 	 */
-	public function addRecordFromArray($array) {
+	public function addRecordFromArray(array $array) {
 		$this[] = new XajaRecord($array);
+		$this->sort();
 	}
 	
 	public function toJSON() {
@@ -60,6 +66,59 @@ class StaticDataSource extends ArrayObject implements XajaDataSourceInterface {
 			$array[] = $record->toArray();
 		}
 		return json_encode($array);
+	}
+	
+	/**
+	 * Sets the order column that will be used for this datasource.
+	 *
+	 * @Property
+	 * @param string $order_column
+	 */
+	public function setOrderColumn($order_column) {
+		$this->orderColumn = $order_column;
+		$this->sort();
+	}
+	
+	/**
+	 * Sets the order that will be used for this datasource (can be ASC or DESC).
+	 *
+	 * @Property
+	 * @OneOf("ASC","DESC")
+	 * @param string $order
+	 */
+	public function setOrder($order) {
+		$this->order = $order;
+		$this->sort();
+	}
+	
+	private function sort() {
+		if ($this->orderColumn == null)
+			return;
+			
+		$array = $this->getArrayCopy();
+		usort($array, array($this,"compareXajaRecords"));
+		$this->exchangeArray($array);
+	}
+	
+	public function compareXajaRecords(XajaRecord $x1, XajaRecord $x2) {
+		$order = strtoupper($this->order);
+		if ($order == null)
+			$order = "ASC";
+
+		$orderColumn = $this->orderColumn;
+		if (is_numeric($x1->$orderColumn) && is_numeric($x2->$orderColumn)) {
+			if ($order == "ASC") {
+				return $x2->$orderColumn - $x1->$orderColumn;
+			} else {
+				return $x1->$orderColumn - $x2->$orderColumn;
+			}
+		} else {
+			if ($order == "ASC") {
+				return strcmp($x1->$orderColumn, $x2->$orderColumn);
+			} else {
+				return strcmp($x2->$orderColumn, $x1->$orderColumn);
+			}
+		}
 	}
 }
 

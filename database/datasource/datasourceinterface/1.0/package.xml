@@ -7,5 +7,6 @@
 	<logo>database.png</logo>
 	<requires>
 		<require>XajaDataSourceInterface.php</require>
+		<require>OrderableDataSourceInterface.php</require>
 	</requires>
 </package>

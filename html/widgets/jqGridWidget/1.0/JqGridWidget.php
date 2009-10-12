@@ -216,7 +216,11 @@ jQuery(document).ready(function(){';
 		// if we not pass at first time index use the first column for the index or what you want
 		if(!$sidx) $sidx =1; 
 		
-		$count = $this->datasource->getGlobalCount();
+		if ($this->datasource instanceof XajaUpdatableDataSourceInterface) {
+			$count = $this->datasource->getGlobalCount();
+		} else {
+			$count = count($this->datasource);
+		}
 		// calculate the total pages for the query 
 		if( $count > 0 ) { 
 			$total_pages = ceil($count/$rows); 
@@ -234,7 +238,10 @@ jQuery(document).ready(function(){';
 		// if for some reasons start position is negative set it to 0 
 		// typical case is that the user type 0 for the requested page 
 		if($start <0) $start = 0; 
-		$this->datasource->load(array(), $start, $rows);
+		
+		if ($this->datasource instanceof XajaUpdatableDataSourceInterface) {
+			$this->datasource->load(array(), $start, $rows);
+		}
 		
 		
 		
@@ -248,7 +255,9 @@ jQuery(document).ready(function(){';
 		$s .= "<records>".$count."</records>";
 		
 		// be sure to put text data in CDATA
-		foreach ($this->datasource as $row) {
+		//foreach ($this->datasource as $row) {
+		for ($i=$start; $i<min($start+$rows, $count); $i++) {
+			$row = $this->datasource[$i];
 			$id = $this->idColumn->getValue($row);			
 		    $s .= "<row id='". htmlentities($id)."'>";
 		    foreach ($this->columns as $column) {
