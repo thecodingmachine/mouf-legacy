@@ -31,7 +31,7 @@ class GetterDataColumn extends AbstractDataColumnInterface {
 	 */
 	public function getValue($row) {
 		$getterName = $this->getterName;
-		return $row->$getterName();
+		return $this->getTranslatedValue($row->$getterName());
 	}
 }
 ?>

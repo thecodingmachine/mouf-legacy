@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Famfamfam Silk Icon set</displayName>
+	<shortDescription>This package contains the famfamfam silk icon set.
+	This is a set of icons that can be used in any web application.</shortDescription>
+	<docUrl>http://www.famfamfam.com/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+</package>

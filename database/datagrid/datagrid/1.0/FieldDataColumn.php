@@ -36,7 +36,7 @@ class FieldDataColumn extends AbstractDataColumnInterface {
 	 */
 	public function getValue($row) {
 		$fieldName = $this->fieldName;
-		return $row->$fieldName;
+		return $this->getTranslatedValue($row->$fieldName);
 	}
 }
 ?>
