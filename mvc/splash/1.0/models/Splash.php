@@ -23,7 +23,7 @@ require_once dirname(__FILE__)."/../load.php";
  * @RequiredInstance "splash"
  */
 class Splash {
-
+	
 	/**
 	 * The logger used by Splash
 	 *
@@ -41,6 +41,15 @@ class Splash {
 	 * @var TemplateInterface
 	 */
 	public $defaultTemplate;
+	
+	
+	/**
+	 * If Splash debug mode is enabled, stack traces on error messages will be displayed.
+	 *
+	 * @Property
+	 * @var bool
+	 */
+	public $debugMode;
 	
 	/**
 	 * Set to "true" if the server supports HTTPS.
@@ -117,7 +126,7 @@ class Splash {
 	}
 	
 	/**
-	 * Returns the instance of the destination controller, or null if the controller was not found.
+	 * Returns the instance of the destination controller, or throw a MoufException if the controller was not found.
 	 *
 	 * @return Controller
 	 */
@@ -125,12 +134,7 @@ class Splash {
 		if (!$this->analyzeDone) {
 			$this->analyze();
 		}
-		try {
-			return MoufManager::getMoufManager()->getInstance($this->controller);
-		} catch (MoufException $e) {
-	//throw $e;
-			return null;
-		}
+		return MoufManager::getMoufManager()->getInstance($this->controller);
 	}
 	
 	/**
@@ -193,11 +197,14 @@ class Splash {
 				exit();
 			}
 		} else {
-			$controller = $this->getControllerInstance();
-			if ($controller == null) {
-				Controller::FourOFour("controller.404.no.such.controller");
+			try {
+				$controller = $this->getControllerInstance();
+			} catch (MoufException $e) {
+				Controller::FourOFour("controller.404.no.such.controller"."XXX ".$e->getMessage());
 				exit;
-			}			
+			}
+					
+				
 		}
 		
 		

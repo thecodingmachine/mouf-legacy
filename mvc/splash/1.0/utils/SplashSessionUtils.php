@@ -13,9 +13,9 @@ class SplashSessionUtils {
 		if(isset($_SESSION['splash']['debug_mode'])){
 			$debug_mode = $_SESSION['splash']['debug_mode'];
 		}else {
-			$debug_mode = DEBUG_MODE;
+			$debug_mode = MoufManager::getMoufManager()->getInstance("splash");
 		}
-		return $debug_mode;
+		return MoufManager::getMoufManager()->getInstance("splash");
 	}
 
 	/**

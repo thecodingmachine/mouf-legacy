@@ -140,7 +140,7 @@ jQuery(document).ready(function(){';
 		$columnsDesc = array();
 		foreach ($this->columns as $column) {
 			if (!$isEditionMode) {
-				$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
+				$columnsTitles[] = '"'.addslashes($column->getTitle()).'"';
 			} else {
 				// Let's try to find the object in Mouf.
 				$manager = MoufManager::getMoufManager();
@@ -157,13 +157,10 @@ jQuery(document).ready(function(){';
 				if ($formatter instanceof LinkFormatter) {
 					$formatStr = ", formatter:'showlink', formatoptions:{baseLinkUrl:'".ROOT_URL.plainstring_to_htmloutput($formatter->baseLinkUrl)."'";
 					if ($formatter->addParam != null) {
-						$formatStr .= ", addParam: '".plainstring_to_htmloutput($this->addParam)."'";
-					}
-					if ($formatter->addParam != null) {
-						$formatStr .= ", addParam: '".plainstring_to_htmloutput($this->addParam)."'";
+						$formatStr .= ", addParam: '".plainstring_to_htmloutput($formatter->addParam)."'";
 					}
 					if ($formatter->idName != null) {
-						$formatStr .= ", idName: '".plainstring_to_htmloutput($this->idName)."'";
+						$formatStr .= ", idName: '".plainstring_to_htmloutput($formatter->idName)."'";
 					}
 					$formatStr .= "}";
 				} elseif ($formatter instanceof CheckboxFormatter) {
@@ -175,10 +172,17 @@ jQuery(document).ready(function(){';
 						$srcFormat = "Y-m-d H:i:s";
 					}
 					$formatStr = ", formatter:'date', formatoptions:{srcformat:'".addslashes($formatter->sourceFormat)."', destformat:'".addslashes($formatter->getDestFormat())."'}";
+				} elseif ($formatter instanceof CurrencyFormatter) {
+					$formatStr = ", formatter:'currency', formatoptions:{thousandsSeparator:'".addslashes($formatter->thousandsSeparator)."',
+											decimalSeparator:'".addslashes($formatter->decimalSeparator)."',
+											decimalPlaces:".$formatter->decimalPlaces.",
+											prefix:'".addslashes($formatter->prefix)."',
+											suffix:'".addslashes($formatter->suffix)."',
+											defaultValue:'".addslashes($formatter->defaultValue)."'}";
 				} elseif ($formatter instanceof NumberFormatter) {
 					$formatStr = ", formatter:'number', formatoptions:{thousandsSeparator:'".addslashes($formatter->thousandsSeparator)."',
 											decimalSeparator:'".addslashes($formatter->decimalSeparator)."',
-											decimalPlaces:'".addslashes($formatter->decimalPlaces)."',
+											decimalPlaces:".$formatter->decimalPlaces.",
 											defaultValue:'".addslashes($formatter->defaultValue)."'}";
 				} else {
 					throw new Exception("Unsupported formatter for jqGrid: ".get_class($formatter));
@@ -208,7 +212,11 @@ jQuery(document).ready(function(){';
 	public function printXmlData($page, $rows, $sidx, $sord) {
 		// TODO: check rights
 		
-		// TODO: setOrderColumn and setOrder should be part of XajaDataSourceInterface
+		// Preliminary checks:
+		if ($this->idColumn == null) {
+			throw new Exception('Error while displaying a datagrid: the property "idColumn" must be set.');
+		}
+		
 		$this->datasource->setOrderColumn($sidx);
 		$this->datasource->setOrder($sord);
 		
@@ -229,7 +237,7 @@ jQuery(document).ready(function(){';
 		if(!$sidx) $sidx =1; 
 		
 		if ($this->datasource instanceof XajaUpdatableDataSourceInterface) {
-			$count = $this->datasource->getGlobalCount();
+			$count = $this->datasource->getGlobalCount($this->dsParams);
 		} else {
 			$count = count($this->datasource);
 		}
@@ -252,7 +260,7 @@ jQuery(document).ready(function(){';
 		if($start <0) $start = 0; 
 		
 		if ($this->datasource instanceof XajaUpdatableDataSourceInterface) {
-			$this->datasource->load(array(), $start, $rows);
+			$this->datasource->load($this->dsParams, $start, $rows);
 		}
 		
 		
@@ -269,6 +277,10 @@ jQuery(document).ready(function(){';
 		// be sure to put text data in CDATA
 		//foreach ($this->datasource as $row) {
 		for ($i=$start; $i<min($start+$rows, $count); $i++) {
+			if (!isset($this->datasource[$i])) {
+				throw new Exception("Unable to find the record number ".$i." in the datasource. It should exist according to the number of records returned by the datasource.
+				This suggest there might be a problem in the datasource.");
+			}
 			$row = $this->datasource[$i];
 			$id = $this->idColumn->getValue($row);			
 		    $s .= "<row id='". htmlentities($id)."'>";

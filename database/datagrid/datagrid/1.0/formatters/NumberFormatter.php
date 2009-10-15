@@ -11,7 +11,6 @@ class NumberFormatter implements DataColumnFormatterInterface {
 	 * Determines the separator for the decimals.
 	 * 
 	 * @Property
-	 * @Compulsory
 	 * @var string
 	 */
 	public $decimalSeparator;
@@ -20,7 +19,6 @@ class NumberFormatter implements DataColumnFormatterInterface {
 	 * Determines the separator for the thousands.
 	 * 
 	 * @Property
-	 * @Compulsory
 	 * @var string
 	 */
 	public $thousandsSeparator;
@@ -29,7 +27,6 @@ class NumberFormatter implements DataColumnFormatterInterface {
 	 * Determines how many decimal places we should have for the number
 	 * 
 	 * @Property
-	 * @Compulsory
 	 * @var string
 	 */
 	public $decimalPlaces;
@@ -38,7 +35,6 @@ class NumberFormatter implements DataColumnFormatterInterface {
 	 * Sets the default value if nothing in the data
 	 * 
 	 * @Property
-	 * @Compulsory
 	 * @var string
 	 */
 	public $defaultValue;

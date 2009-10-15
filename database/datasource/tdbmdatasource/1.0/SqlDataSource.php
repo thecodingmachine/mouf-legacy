@@ -141,7 +141,7 @@ class SqlDataSource extends ArrayObject implements XajaDataSourceInterface, Xaja
 		$keys = array_keys($params);
 		$values = array_values($params);
 		$keys2 = array_map (create_function( '$a'  , 'return "{".$a."}";' ), $keys);
-		$values2 = array_map (create_function( '$a'  , ' return x_plainstring_to_dbprotected($a);' ), $values);
+		$values2 = array_map (create_function( '$a'  , ' return plainstring_to_dbprotected($a);' ), $values);
 		// Now that we have the filter string, let's locate the parameters (in the form {toto})
 		$sql = str_replace($keys2, $values2, $this->sql);
 		$countSql = str_replace($keys2, $values2, $this->countSql);

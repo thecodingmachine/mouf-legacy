@@ -18,6 +18,13 @@ class DataGrid {
 	 */
 	protected $datasource;
 	
+	/**
+	 * Params to be passed to the datasource.
+	 *
+	 * @var array<string,string>
+	 */
+	protected $dsParams;
+	
 	protected $restrictedRight;
 	protected $restrictedRightScope;
 	
@@ -25,9 +32,14 @@ class DataGrid {
 	 * Constructor for DataGrid
 	 *
 	 * @param XajaDataSourceInterface $datasource The datasource that will be used by the datagrid.
+	 * @param array<string,string> $dsParams The list of parameters that will be passed to the datasource.
 	 */
-	public function __construct($datasource = null) {
+	public function __construct($datasource = null, $dsParams = null) {
 		$this->datasource = $datasource;
+		if ($dsParams != null)
+			$this->dsParams = $dsParams;
+		else
+			$this->dsParams = array();
 	}
 	
 	/**
@@ -93,6 +105,26 @@ class DataGrid {
 	 */
 	public function setRestrictedRightScope($rightScope) {
 		$this->restrictedRightScope = $rightScope;
+	}
+	
+	/**
+	 * Sets the params to be passed to the datasource.
+	 *
+	 * @Property
+	 * @param array<string, string> $params
+	 */
+	public function setDatasourceParams(array $params) {
+		$this->dsParams = $params;
+	}
+	
+	/**
+	 * Adds the params to be passed to the datasource.
+	 * 
+	 * @param string $key
+	 * @param string $value
+	 */
+	public function addDatasourceParam($key, $value) {
+		$this->dsParams[$key] = $value;
 	}
 }
 ?>
