@@ -97,9 +97,16 @@ function deleteInstance() {
         document.getElementById("componentForm").submit();
     }
 }
+
+// Apply style to autogrow:
+jQuery(document).ready (function() {
+	
+	jQuery('textarea.string').autogrow();							
+});
+	
 </script>
 
-<form action="saveComponent" method="post" id="componentForm">
+<form action="saveComponent" method="post" id="componentForm" accept-charset="UTF-8">
 
 <h1>Component 
 	<span id="instanceNameText"><?php echo $this->instanceName ?></span>
@@ -170,7 +177,8 @@ foreach ($this->properties as $property) {
 			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
 				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='checked'":"").'"/>';
 			} else {
-				echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
+				echo '<textarea class="string" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'">'.plainstring_to_htmlprotected($defaultValue).'</textarea>';
+				//echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
 				// TODO: put back to enable
 				//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 			}
@@ -311,6 +319,7 @@ foreach ($this->properties as $property) {
 		$defaultValue = $this->getValueForProperty($property);
 		
 		echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
+		
 		// TODO: uncomment to enable
 		//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 	}

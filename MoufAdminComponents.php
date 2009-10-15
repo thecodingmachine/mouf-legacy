@@ -11,17 +11,21 @@ MoufManager::getMoufManager()->addPackageByXmlFile('html/template/BaseTemplate/1
 MoufManager::getMoufManager()->addPackageByXmlFile('html/template/SplashTemplate/1.0/package.xml');
 MoufManager::getMoufManager()->addPackageByXmlFile('utils/i18n/fine/1.0/package.xml');
 MoufManager::getMoufManager()->addPackageByXmlFile('mvc/splash/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('javascript/jquery/jquery/1.3.2/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('javascript/jquery/jquery-autogrow/1.2.2/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('javascript/jquery/jquery-ui/1.7.2/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('javascript/jquery/jqueryFileTree/1.01/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('utils/common/getvars/1.0/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('javascript/jit/1.1.2/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('javascript/prototype/1.6.0.1/package.xml');
+MoufManager::getMoufManager()->addPackageByXmlFile('utils/log/errorlog_logger/1.0/package.xml');
 
-require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
+require dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/JQueryAutoGrowExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/JQueryUIExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
 
-MoufManager::getMoufManager()->registerComponent('../plugins/utils/common/getvars/1.0/tcm_utils.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jit/1.1.2/HtmlJSJit.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/mvc/splash/1.0/models/Splash.php');
-MoufManager::getMoufManager()->registerComponent('../plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/MoufRootController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/ComponentsController.php');
@@ -90,6 +94,7 @@ MoufManager::getMoufManager()->setParameter('loadComponentsMenuItem', 'propagate
   0 => 'selfedit',
 ));
 
+
 MoufManager::getMoufManager()->bindComponents('splash', 'log', 'errorLogger');
 MoufManager::getMoufManager()->bindComponents('splash', 'defaultTemplate', 'splashTemplate');
 MoufManager::getMoufManager()->bindComponents('mouf', 'template', 'moufTemplate');
@@ -98,6 +103,7 @@ MoufManager::getMoufManager()->bindComponent('moufTemplate', 'head', array (
   1 => 'jQuery',
   2 => 'jqueryui',
   3 => 'jqueryFileTree',
+  4 => 'jquery-autogrow-1.2.2',
 ));
 MoufManager::getMoufManager()->bindComponent('moufTemplate', 'left', array (
   0 => 'actionMenu',
@@ -115,6 +121,7 @@ MoufManager::getMoufManager()->bindComponent('splashTemplate', 'head', array (
 ));
 MoufManager::getMoufManager()->bindComponents('components', 'template', 'moufTemplate');
 MoufManager::getMoufManager()->bindComponents('packages', 'template', 'moufTemplate');
+
 
 /**
  * This is the base class of the Manage Object User Friendly or Modular object user framework (MOUF) framework.

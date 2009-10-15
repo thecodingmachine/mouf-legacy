@@ -201,7 +201,6 @@ class MoufManager {
 	public function getInstance($instanceName) {
 		if (!isset($this->objectInstances[$instanceName]) || $this->objectInstances[$instanceName] == null) {
 			$this->instantiateComponent($instanceName);
-			
 		}
 		return $this->objectInstances[$instanceName];
 	}
@@ -612,7 +611,10 @@ class MoufManager {
 		foreach ($this->packagesList as $fileName) {
 			$package = $packageManager->getPackage($fileName);
 			foreach ($package->getExternalComponentsRequiredFiles() as $requiredFile) {
-				fwrite($fp, "require_once dirname(__FILE__).'/".$this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile."';\n");
+				// Please notice that this is a require and not a require_once.
+				// This is because the file could be required twice: one for Mouf and one for the admin.
+				// Therefore, the file should not declare functions or classes.
+				fwrite($fp, "require dirname(__FILE__).'/".$this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile."';\n");
 			}
 		}
 		fwrite($fp, "\n");

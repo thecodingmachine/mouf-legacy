@@ -92,3 +92,11 @@ div.directorycontent {
 	padding-left: 20px;
 	margin-bottom: 10px;
 }
+
+textarea.string {
+	width: 270px;
+	max-height: 100px;
+	min-height: 16px;
+	line-height: 16px;
+	height: 16px
+}
