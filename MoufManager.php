@@ -704,14 +704,14 @@ class ".$this->mainClassName." {
 ");
 		
 		foreach ($this->declaredComponents as $name=>$className) {
-			if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
+			//if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
 				fwrite($fp, "	/**\n");
 				fwrite($fp, "	 * @return $className\n");
 				fwrite($fp, "	 */\n");
 				fwrite($fp, "	 public function ".self::generateGetterString($name)."() {\n");
 				fwrite($fp, "	 	return MoufManager::getMoufManager()->getInstance(".var_export($name,true).");\n");
 				fwrite($fp, "	 }\n\n");
-			}
+			//}
 		}
 		fwrite($fp, "}\n");
 		
@@ -979,6 +979,17 @@ class ".$this->mainClassName." {
 	}
 	
 	/**
+	 * Removes a package by providing the path to the package.xml file.
+	 * The path is relative to the "plugins" directory. 
+	 *
+	 * @param string $fileName
+	 */
+	public function removePackageByXmlFile($fileName) {
+		$key = array_search($fileName, $this->packagesList);
+		unset($this->packagesList[$key]);
+	}
+	
+	/**
 	 * Returns true if the package is enabled.
 	 * The path provided should by related to "plugins" directory. 
 	 *
@@ -1002,6 +1013,15 @@ class ".$this->mainClassName." {
 	 */
 	public function findInstanceName($instance) {
 		return array_search($instance, $this->objectInstances);
+	}
+	
+	/**
+	 * Returns the full path to the plugins directory.
+	 *
+	 * @return string
+	 */
+	public function getFullPathToPluginsDirectory() {
+		return dirname(__FILE__)."/../".$this->pathToMouf."../plugins";
 	}
 }
 ?>

@@ -60,7 +60,7 @@ class Moufspector {
 	 * 	"filename" => the path to the PHP file declaring the class.
 	 *
 	 * @type string the class or interface the @component must inherit to be part of the list. If not passed, all @component classes are returned.
-	 * @return array<string>
+	 * @return array<string, array<string, string>>
 	 */
 	public static function getEnhancedComponentsList($type = null) {
 		$classesList = get_declared_classes();
@@ -72,7 +72,7 @@ class Moufspector {
 				$found = false;
 				if ($type == null) {
 					$found = true;
-				} else {					
+				} else {
 					try {
 						if ($refClass->implementsInterface($type)) {
 							$found = true;
