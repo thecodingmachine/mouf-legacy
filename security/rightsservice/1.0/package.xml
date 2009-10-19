@@ -12,6 +12,11 @@
 			<name>userservice</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>conditioninterface</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>RightInterface.php</require>
@@ -19,5 +24,6 @@
 		<require>MoufRight.php</require>
 		<require>RightsServiceInterface.php</require>
 		<require>MoufRightService.php</require>
+		<require>SimpleRightCondition.php</require>
 	</requires>
 </package>

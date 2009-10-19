@@ -25,8 +25,15 @@ class DataGrid {
 	 */
 	protected $dsParams;
 	
-	protected $restrictedRight;
-	protected $restrictedRightScope;
+	/**
+	 * This condition must be matched to display the menu.
+	 * Otherwise, the menu is not displayed.
+	 * The displayCondition is optional. If no condition is set, the menu will always be displayed. 
+	 *
+	 * @Property
+	 * @var ConditionInterface
+	 */
+	public $displayCondition;
 	
 	/**
 	 * Constructor for DataGrid
@@ -82,29 +89,6 @@ class DataGrid {
 	 */
 	public function setDataSource(XajaDataSourceInterface $ds) {
 		$this->datasource = $ds;
-	}
-	
-	/**
-	 * The datagrid can be restricted to some persons only.
-	 * In this case, the right required to view the data grid should be passed in this property.
-	 *
-	 * @Property
-	 * @param string $right
-	 */
-	public function setRestrictedRight($right) {
-		$this->restrictedRight = $right;
-	}
-	
-	/**
-	 * The datagrid can be restricted to some persons only.
-	 * This is the scope of the right used to restrict the datagrid.
-	 * The scope is optional.
-	 *
-	 * @Property 
-	 * @param string $rightScope
-	 */
-	public function setRestrictedRightScope($rightScope) {
-		$this->restrictedRightScope = $rightScope;
 	}
 	
 	/**

@@ -43,6 +43,16 @@ class SplashMenuItem implements HtmlElementInterface {
 	public $propagatedUrlParameters;
 	
 	/**
+	 * This condition must be matched to display the menu.
+	 * Otherwise, the menu is not displayed.
+	 * The displayCondition is optional. If no condition is set, the menu will always be displayed. 
+	 *
+	 * @Property
+	 * @var ConditionInterface
+	 */
+	public $displayCondition;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param string $menuText
@@ -58,20 +68,21 @@ class SplashMenuItem implements HtmlElementInterface {
 	}
 	
 	public function toHtml() {
-		echo '<li ';
-		if (!empty($this->menuCssClass)) {
-			echo 'class="'.$this->menuCssClass.'"';
+		if ($this->displayCondition == null || $this->displayCondition->isOk($this)) {
+			echo '<li ';
+			if (!empty($this->menuCssClass)) {
+				echo 'class="'.$this->menuCssClass.'"';
+			}
+			echo '>';
+			if (!empty($this->menuLink)) {
+				echo '<a href="'.$this->getLinkWithParams().'" >';
+			}
+			echo $this->menuText;
+			if (!empty($this->menuLink)) {
+				echo '</a>';
+			}
+			echo '</li>';
 		}
-		echo '>';
-		if (!empty($this->menuLink)) {
-			echo '<a href="'.$this->getLinkWithParams().'" >';
-		}
-		echo $this->menuText;
-		if (!empty($this->menuLink)) {
-			echo '</a>';
-		}
-		echo '</li>';
-		
 	}
 
 	private function getLinkWithParams() {

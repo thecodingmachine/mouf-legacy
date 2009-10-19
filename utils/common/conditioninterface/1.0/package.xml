@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Condition Interface</displayName>
+	<shortDescription>This package contains one interface for condition, and 2 classes that implement it: AndCondition that 
+	require all conditions to be met, and OrCondition that require at least one condition to be met.
+	A condition is a class that possesses an "isOk" method. The condition returns true if the condition is met,
+	and false otherwise.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+	<requires>
+		<require>ConditionInterface.php</require>
+		<require>AndCondition.php</require>
+		<require>OrCondition.php</require>
+		<require>NotCondition.php</require>
+	</requires>
+</package>

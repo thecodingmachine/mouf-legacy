@@ -17,6 +17,16 @@ class SplashMenu implements HtmlElementInterface {
 	public $menuItems;
 	
 	/**
+	 * This condition must be matched to display the menu.
+	 * Otherwise, the menu is not displayed.
+	 * The displayCondition is optional. If no condition is set, the menu will always be displayed. 
+	 *
+	 * @Property
+	 * @var ConditionInterface
+	 */
+	public $displayCondition;
+	
+	/**
 	 * Initialize the object, optionnally with the array of menu items to be displayed.
 	 *
 	 * @param array<SplashMenuItem> $menuItems
@@ -26,15 +36,17 @@ class SplashMenu implements HtmlElementInterface {
 	}
 	
 	public function toHtml() {
-		echo '<div class="content"><ul class="menu">';
-		
-		if (is_array($this->menuItems)) {
-			foreach ($this->menuItems as $item) {
-				$item->toHtml();
-			}
-		}
+		if ($this->displayCondition == null || $this->displayCondition->isOk($this)) {
+			echo '<div class="content"><ul class="menu">';
 			
-		echo '</ul></div>';
+			if (is_array($this->menuItems)) {
+				foreach ($this->menuItems as $item) {
+					$item->toHtml();
+				}
+			}
+				
+			echo '</ul></div>';
+		}
 	}
 	
 }

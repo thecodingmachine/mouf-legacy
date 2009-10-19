@@ -71,6 +71,9 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	 *
 	 */
 	function toHtml() {
+		if ($this->displayCondition != null && $this->displayCondition->isOk($this) == false) {
+			return;
+		}
 		
 		self::$number++; 
 		
@@ -210,7 +213,10 @@ jQuery(document).ready(function(){';
 	 * @param int $sord
 	 */
 	public function printXmlData($page, $rows, $sidx, $sord) {
-		// TODO: check rights
+		// First, check rights.
+		if ($this->displayCondition != null && $this->displayCondition->isOk($this) == false) {
+			return;
+		}
 		
 		// Preliminary checks:
 		if ($this->idColumn == null) {
