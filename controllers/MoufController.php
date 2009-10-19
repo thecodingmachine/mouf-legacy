@@ -276,6 +276,8 @@ class MoufController extends Controller {
 		$this->properties = Moufspector::getPropertiesForClass($this->reflectionClass);
 		//$this->properties = Moufspector::getPropertiesForClass($this->className);
 		
+		$this->moufManager->unsetAllParameters($instanceName);
+		
 		foreach ($this->properties as $property) {
 			if ($property->hasType()) {
 				//$varTypes = $property->getAnnotations("var");

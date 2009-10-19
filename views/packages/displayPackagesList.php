@@ -1,5 +1,25 @@
 <h1>Packages List</h1>
-<h1>DO NOT USE THIS INTERFACE, THIS IS NOT READY YET!</h1>
+
+<?php 
+if ($this->validationMsg != null) {
+	echo '<div class="success">';
+	if ($this->validationMsg == "enable") {
+		echo "Packages successfully enabled: ";
+	} else {
+		echo "Packages successfully disabled: ";
+	}
+	echo implode(", ", $this->validationPackageList);
+	echo '</div>';
+?>
+	<script type="text/javascript">
+	setTimeout(function() {
+		jQuery('.success').fadeOut(3000);
+	}, 7000);
+	</script>
+<?php 
+}
+?>
+
 
 <div id="packageList">
 <?php 

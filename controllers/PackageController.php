@@ -47,13 +47,19 @@ class PackageController extends Controller {
 	 */
 	public $moufDependencies;
 	
+	public $validationMsg;
+	public $validationPackageList;
+	
+	
 	/**
 	 * Displays the list of component files
 	 * 
 	 * @Action
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
+	 * @param string $validation The validation message to display (either null, or enable or disable).
+	 * @param array<string> $packageList The array of packages enabled or disabled.
 	 */
-	public function defaultAction($selfedit = "false") {
+	public function defaultAction($selfedit = "false", $validation = null, $packageList = null) {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -61,6 +67,9 @@ class PackageController extends Controller {
 		} else {
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
+		
+		$this->validationMsg = $validation;
+		$this->validationPackageList = $packageList;
 				
 		$packageManager = new MoufPackageManager();
 		$this->moufPackageList = $packageManager->getPackagesList();
@@ -134,6 +143,12 @@ class PackageController extends Controller {
 			}
 			$this->moufManager->rewriteMouf();
 		}
+		
+		$url = "Location: ".ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";
+		foreach ($this->moufDependencies as $moufDependency) {
+			$url.= "&packageList[]=".$this->moufDependency->getDescriptor()->getPackageDirectory();
+		}
+		header($url);
 	}
 	
 }

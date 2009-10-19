@@ -473,6 +473,16 @@ class MoufManager {
 	}
 	
 	/**
+	 * Unsets all the parameters (using a property or a setter) for the given instance.
+	 *
+	 * @param string $instanceName The instance to consider
+	 */
+	public function unsetAllParameters($instanceName) {
+		unset($this->declaredProperties[$instanceName]);
+		unset($this->declaredSetterProperties[$instanceName]);
+	}
+	
+	/**
 	 * Returns the value for the given parameter.
 	 *
 	 * @param string $instanceName
