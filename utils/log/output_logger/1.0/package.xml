@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Output Logger</displayName>
+	<shortDescription>This package contains a logger that should be used to log messages directly to the output (using the "echo" PHP function).
+	Therefore, the output is displayed in the HTML if we are in a webpage, in the output if we are on the command line.
+	This is very useful in development. For production servers, please prefer a logger that writes in a file (like the ErrorLogLogger).</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>OutputLogger.php</require>
+	</requires>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+</package>
