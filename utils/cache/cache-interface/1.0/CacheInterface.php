@@ -24,12 +24,12 @@ interface CacheInterface {
 	 *
 	 * @param string $key The key of the object
 	 */
-	public function purge($key);
+	function purge($key);
 	
 	/**
 	 * Removes all the objects from the cache.
 	 *
 	 */
-	public function purgeAll();
+	function purgeAll();
 }
 ?>

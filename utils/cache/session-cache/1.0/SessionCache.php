@@ -39,7 +39,7 @@ class SessionCache implements CacheInterface {
 	 * @param string $key
 	 * @return mixed
 	 */
-	function get($key) {
+	public function get($key) {
 		if (isset($_SESSION[self::$CACHE_KEY]) && isset($_SESSION[self::$CACHE_KEY][$key])) {
 			$arr = $_SESSION[self::$CACHE_KEY][$key];
 			if ($arr[1] == null || $arr[1] > time()) {
@@ -64,7 +64,7 @@ class SessionCache implements CacheInterface {
 	 * @param mixed $value The value to store
 	 * @param float $timeToLive The time to live of the cache, in seconds.
 	 */
-	function set($key, $value, $timeToLive = null) {
+	public function set($key, $value, $timeToLive = null) {
 		$this->log->trace("Storing value in cache: key '$key', value '".var_export($value, true)."'");
 		if ($timeToLive == null) {
 			if (empty($this->defaultTimeToLive)) {
