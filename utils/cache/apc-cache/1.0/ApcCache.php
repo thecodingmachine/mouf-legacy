@@ -1,9 +1,7 @@
 <?php
 
 /**
- * This package contains a cache mechanism that relies on temporary files.
- *
- * TODO: make a global garbage collector that passes sometimes (like sessions in PHP)
+ * This package contains a cache mechanism that relies on APC.
  * 
  * @Component
  */
@@ -37,7 +35,7 @@ class ApcCache implements CacheInterface {
 	public function get($key) {
 		
 		$success = false;
-		$value = apc_fetch($key, &$success);
+		$value = apc_fetch($key, $success);
 		
 		if ($success) {
 			$this->log->trace("Retrieving key '$key' from file cache: value returned:".var_export($value, true));

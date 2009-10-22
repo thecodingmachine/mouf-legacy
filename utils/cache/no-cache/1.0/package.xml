@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>No Cache</displayName>
+	<shortDescription>This package contains a cache mechanism that... does not cache anything.
+	This is useful if another component requires a cache mechanism and if you don't want to provide any (for development purpose...).</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/cache</group>
+			<name>cache-interface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>NoCache.php</require>
+	</requires>
+</package>
