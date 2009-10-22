@@ -49,7 +49,7 @@ class LineChartBuilder {
 		// On inclue le fichier qui nous permettra de dessiner des courbes
 		require_once(dirname(__FILE__).'/../../artichow/1.1.0/LinePlot.class.php');
 	
-		// Il est toujours nécessaire de donner une taille à la création de votre graphique.
+		// Il est toujours nÃ©cessaire de donner une taille Ã  la crÃ©ation de votre graphique.
 		// Ici, le graphique mesurera 400 x 400 pixels.
 		$graph = new Graph($this->theme->completeWidth, $this->theme->completeHeight);
 	   
@@ -57,19 +57,19 @@ class LineChartBuilder {
 		// mais cette option consomme beaucoup de ressources sur le serveur.
 		$graph->setAntiAliasing($this->theme->antiAliasing);
 
-		// On créé la courbe
+		// On crÃ©Ã© la courbe
 		$plot = new LinePlot($this->dataSet->values);
 		
-		// Ajoute un dégradé de fond
+		// Ajoute un dÃ©gradÃ© de fond
 		$colorOne = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorOne);
 		$colorTwo = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorTwo);
 		$plot->setBackgroundGradient(
 			new LinearGradient(
-				// On donne deux couleurs pour le dégradé
+				// On donne deux couleurs pour le dÃ©gradÃ©
 				new Color($colorOne[0], $colorOne[1], $colorOne[2], 0),
 				new Color($colorTwo[0], $colorTwo[1], $colorTwo[2], 0),
-				// On spécifie l'angle du dégradé linéaire
-				// 0° pour aller du haut vers le bas
+				// On spï¿½cifie l'angle du dÃ©gradÃ© linÃ©aire
+				// 0 pour aller du haut vers le bas
 				$this->theme->backgroundAngle
 			)
 		);
@@ -77,19 +77,19 @@ class LineChartBuilder {
 		
   		// On cache la ligne qui relie les valeurs...
 		$plot->hideLine($this->theme->lineHideLine);
-		// ... Mais on spécifie une couleur de fond pour la ligne,
-		// ce qui permet tout de même de mettre en valeur la courbe.
-		// On donne une forte transparence à cette couleur,
-		// cela permet de laisser transparaître la grille du graphique.
+		// ... Mais on spÃ©cifie une couleur de fond pour la ligne,
+		// ce qui permet tout de mÃªme de mettre en valeur la courbe.
+		// On donne une forte transparence Ã  cette couleur,
+		// cela permet de laisser transparaÃ®tre la grille du graphique.
 		$colorArea = $this->theme->colorHtmlToDecimal($this->theme->graphAreaColor);
 		$plot->setFillColor(new Color($colorArea[0], $colorArea[1], $colorArea[2], $this->theme->graphAreaTransparency));
   		
   		
-		// On change la précision des étiquettes de l'axe des ordonnées
-		// La précision est désormais de 1 chiffre après la virgule
+		// On change la prÃ©cision des Ã©tiquettes de l'axe des ordonnï¿½es
+		// La prÃ©cision est dÃ©sormais de 1 chiffre aprÃ¨s la virgule
 		$plot->yAxis->setLabelPrecision($this->theme->accuracyY);
 		
-		// On ajoute 5 % d'espace à gauche et à droite de la courbe.
+		// On ajoute 5 % d'espace Ã  gauche et Ã  droite de la courbe.
 		// On ne change pas l'espace du haut et du bas de la courbe.
 		$plot->setSpace(
 			$this->theme->spaceAxesLeft, /* Gauche */
@@ -97,6 +97,12 @@ class LineChartBuilder {
 			$this->theme->spaceAxesTop, /* Haut */
 			$this->theme->spaceAxesBottom /* Bas */
 		);
+		
+		$paddingLeft = empty($this->theme->paddingLeft)?null:$this->theme->paddingLeft;
+		$paddingRight = empty($this->theme->paddingRight)?null:$this->theme->paddingRight;
+		$paddingTop = empty($this->theme->paddingTop)?null:$this->theme->paddingTop;
+		$paddingBottom = empty($this->theme->paddingBottom)?null:$this->theme->paddingBottom;
+		$plot->setPadding($paddingLeft, $paddingRight, $paddingTop, $paddingBottom);
 		
 		for ($i=0;$i<count($this->dataSet->legend);$i++) {
 			$xAxisLabel[$i]= utf8_decode($this->dataSet->legend[$i]);

@@ -90,7 +90,51 @@ class ChartTheme {
          * @var bool
          */
         public $columnSmooth;
+
+        /**
+         * Padding from the left of the image, in pixels.
+         * If null, this defaults to a sensible value.
+         *
+         * 
+         * @Property
+         * @Compulsory
+         * @var int
+         */
+        public $paddingLeft;
+    
+        /**
+         * Padding from the top of the image, in pixels.
+         * If null, this defaults to a sensible value.
+         *
+         * 
+         * @Property
+         * @Compulsory
+         * @var int
+         */
+        public $paddingTop;
+    
+        /**
+         * Padding from the right of the image, in pixels.
+         * If null, this defaults to a sensible value.
+         *
+         * 
+         * @Property
+         * @Compulsory
+         * @var int
+         */
+        public $paddingRight;
         
+        /**
+         * Padding from the bottom of the image, in pixels.
+         * If null, this defaults to a sensible value.
+         *
+         * 
+         * @Property
+         * @Compulsory
+         * @var int
+         */
+        public $paddingBottom;
+
         /**
          * Chart decimal values accuracy.<br />
          * How many decimals do you need ?<br />
