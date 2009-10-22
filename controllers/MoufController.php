@@ -247,8 +247,9 @@ class MoufController extends Controller {
 	 * @param string $newInstanceName The name of new instance to create and attach to the saved object
 	 * @param string $instanceClass The type of the new instance to create and attach to the saved object
 	 * @param string $newInstanceKey The key of the new instance (if it is part of an associative array)
+	 * @param string $duplicateInstance If "true", a copy of the instance will be created. This copy will be named after the $newInstanceName param.
 	 */
-	public function saveComponent($originalInstanceName, $instanceName, $delete, $selfedit, $newInstanceName=null, $createNewInstance=null, $bindToProperty=null, $instanceClass=null, $newInstanceKey=null) {
+	public function saveComponent($originalInstanceName, $instanceName, $delete, $selfedit, $newInstanceName=null, $createNewInstance=null, $bindToProperty=null, $instanceClass=null, $newInstanceKey=null, $duplicateInstance=null) {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -387,6 +388,15 @@ class MoufController extends Controller {
 				}
 			}*/
 			
+			$this->moufManager->rewriteMouf();
+			
+			$this->displayComponent($newInstanceName, $selfedit);
+			return;
+		}
+		
+		// Let's duplicate the component.
+		if ($duplicateInstance == "true") {
+			$this->moufManager->duplicateInstance($instanceName, $newInstanceName);
 			$this->moufManager->rewriteMouf();
 			
 			$this->displayComponent($newInstanceName, $selfedit);

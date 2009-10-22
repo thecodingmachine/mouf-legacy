@@ -25,18 +25,23 @@ function displayCreateInstanceDialog(dropdown, propertyName, type) {
 }
 
 /**
- * Called when the user clicks the 'create new instance' button.
+ * Called when the user clicks the 'duplicate instance' button.
  * @return
  */
-function onCreateNewInstance() {
+function displayDuplicateInstanceDialog() {
+	jQuery("#duplicateInstanceNameDialog").val("");
 	
-	// Let's modify the select box to have it contain the new instance that will be created.
-	// TODO protect against script injection.
-	jQuery(lastSelectBox).html("<option value='"+jQuery("#newInstanceNameDialog").val()+"'>"+jQuery("#newInstanceNameDialog").val()+"</option>")
-	
-	jQuery("#createNewInstance").val("true");
-	jQuery("#newInstanceName").val(jQuery("#newInstanceNameDialog").val());
-	jQuery("#instanceClass").val(jQuery("#instanceClassDialog").val());
+	jQuery("#duplicateDialog").dialog("open");
+}
+
+/**
+ * Called when the user selects the 'create new instance' option.
+ * @return
+ */
+function onDuplicateInstance() {
+		
+	jQuery("#duplicateInstance").val("true");
+	jQuery("#newInstanceName").val(jQuery("#duplicateInstanceNameDialog").val());
 	
 	jQuery("#componentForm").submit();
 }

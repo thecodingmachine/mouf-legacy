@@ -1023,5 +1023,31 @@ class ".$this->mainClassName." {
 	public function getFullPathToPluginsDirectory() {
 		return dirname(__FILE__)."/../".$this->pathToMouf."../plugins";
 	}
+	
+	/**
+	 * Duplicates an instance.
+	 *
+	 * @param string $srcInstanceName The name of the source instance.
+	 * @param string $destInstanceName The name of the new instance.
+	 */
+	public function duplicateInstance($srcInstanceName, $destInstanceName) {
+		if (!isset($this->declaredComponents[$srcInstanceName])) {
+			throw new MoufException("Error while duplicating instance: unable to find source instance ".$srcInstanceName);
+		}
+		if (isset($this->declaredComponents[$destInstanceName])) {
+			throw new MoufException("Error while duplicating instance: the dest instance already exists: ".$destInstanceName);
+		}
+		$this->declaredComponents[$destInstanceName] = $this->declaredComponents[$srcInstanceName];
+		
+		if (isset($this->declaredProperties[$srcInstanceName]))
+			$this->declaredProperties[$destInstanceName] = $this->declaredProperties[$srcInstanceName];
+		if (isset($this->declaredSetterProperties[$srcInstanceName]))
+			$this->declaredSetterProperties[$destInstanceName] = $this->declaredSetterProperties[$srcInstanceName];
+		if (isset($this->declaredBinds[$srcInstanceName]))
+			$this->declaredBinds[$destInstanceName] = $this->declaredBinds[$srcInstanceName];
+		if (isset($this->declaredSetterBinds[$srcInstanceName]))
+			$this->declaredSetterBinds[$destInstanceName] = $this->declaredSetterBinds[$srcInstanceName];
+	}
+	
 }
 ?>

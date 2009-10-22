@@ -115,8 +115,9 @@ jQuery(document).ready (function() {
 <input type="hidden" name="originalInstanceName" value="<?php echo plainstring_to_htmlprotected($this->instanceName) ?>" />
 <input type="hidden" name="delete" id="delete" value="0" />
 <input type="hidden" name="selfedit" id="selfedit" value="<?php echo $this->selfedit; ?>" />
-<a id="modifyInstanceLink" onclick="document.getElementById('modifyInstanceLink').style.visibility='hidden';document.getElementById('instanceNameText').style.display='none';document.getElementById('instanceNameTextbox').style.display='inline';">Modify component name</a>
-<a onclick="deleteInstance()">Delete this instance</a>
+<a id="modifyInstanceLink" href="javascript:void(0)" onclick="document.getElementById('modifyInstanceLink').style.visibility='hidden';document.getElementById('instanceNameText').style.display='none';document.getElementById('instanceNameTextbox').style.display='inline';">Modify component name</a>
+<a href="javascript:void(0)" onclick="deleteInstance()">Delete this instance</a>
+<a href="javascript:void(0)" onclick="displayDuplicateInstanceDialog()">Duplicate this instance</a>
 
 <h2>Class <?php echo $this->className ?></h2>
 
@@ -350,6 +351,7 @@ foreach ($this->properties as $property) {
 
 <?php // The DIV dialog will not stay into the form (it will be moved by jQuery). Therefore, we must duplicate all fields of the dialog ui into the main ui ?>
 <input type="hidden" name="createNewInstance" id="createNewInstance" />
+<input type="hidden" name="duplicateInstance" id="duplicateInstance" />
 <input type="hidden" name="bindToProperty" id="bindToProperty" />
 <input type="hidden" name="newInstanceName" id="newInstanceName" />
 <input type="hidden" name="instanceClass" id="instanceClass" />
@@ -370,6 +372,15 @@ foreach ($this->properties as $property) {
 	<input type="button" value="Create" onclick="onCreateNewInstance(); return false;" />
 	
 
+</div>
+<div id="duplicateDialog" title="Duplicate instance">	
+	
+	<div>
+	<label for="instanceNameDialog">Instance name:</label><input type="text" name="duplicateInstanceNameDialog" id="duplicateInstanceNameDialog" />
+	</div>
+		
+	<input type="button" value="Create" onclick="onDuplicateInstance(); return false;" />
+	
 </div>
 <div id="dialogPropertyOptions" title="Property source">	
 
@@ -410,6 +421,7 @@ jQuery(document).ready( function() {
 	jQuery(function() {
 		jQuery("#dialog").dialog({ autoOpen: false });
 		jQuery("#dialogPropertyOptions").dialog({ autoOpen: false });
+		jQuery("#duplicateDialog").dialog({ autoOpen: false });
 	});
  	
 });
