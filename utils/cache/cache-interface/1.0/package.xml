@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Cache Interface</displayName>
+	<shortDescription>This package only contains the interface that must be implemented by caching
+	classes. Unless you want to implement your own caching method, you should import a cache
+	package that will use this interface. For instance, common/utils/session-cache, or common/utils/file-cache.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+	<requires>
+		<require>CacheInterface.php</require>
+	</requires>
+</package>
