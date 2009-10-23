@@ -1,4 +1,6 @@
 <?php
+require_once 'UbuntuHack.php';
+
 /**
  * This class helps drawing a Pie chart
  *
@@ -34,14 +36,15 @@ class PieChartBuilder {
  	}
  
 	public function draw() {  
+		ArtichowUbuntuHack::hack();
 		
-		// La classe Pie est celle utilisée pour dessiner les camemberts.
+		// La classe Pie est celle utilisï¿½e pour dessiner les camemberts.
 		require_once(dirname(__FILE__).'/../../artichow/1.1.0/Pie.class.php');
 		$graph = new Graph($this->theme->completeWidth, $this->theme->completeHeight);
 		
-		// ... ajout d'une ombre portée...
+		// ... ajout d'une ombre portï¿½e...
 		// Si vous utilisez Artichow pour PHP 4 & 5,
-		// utilisez SHADOW_RIGHT_BOTTOM à la place de Shadow::RIGHT_BOTTOM
+		// utilisez SHADOW_RIGHT_BOTTOM ï¿½ la place de Shadow::RIGHT_BOTTOM
 		$graph->shadow->setPosition(Shadow::RIGHT_BOTTOM);
 		$graph->shadow->setSize($this->theme->shadow);
 		// ... et d'un joli fond.
@@ -60,26 +63,26 @@ class PieChartBuilder {
 			$values[utf8_decode($this->dataSet->legend[$i])] = $this->dataSet->values[$i];
 		}
 			
-		// Seules les valeurs numériques sont utilisées pour l'instant,
-		// avec le thème de couleur par défaut.
+		// Seules les valeurs numï¿½riques sont utilisï¿½es pour l'instant,
+		// avec le thï¿½me de couleur par dï¿½faut.
 		$pie = new Pie(array_values($values));
 		
-		// Précision des valeurs.
+		// Prï¿½cision des valeurs.
 		$pie->setLabelPrecision($this->theme->accuracy);
 		
-		// Ajout de la légende
+		// Ajout de la lï¿½gende
 		$pie->setLegend(array_keys($values));
 		
-		// Repositionnement de la légende
+		// Repositionnement de la lï¿½gende
 		$pie->legend->setPosition($this->theme->posLegendX, $this->theme->posLegendY);
 		
-		// Décalage du camembert sur la gauche et vers le bas
+		// Dï¿½calage du camembert sur la gauche et vers le bas
 		$pie->setCenter($this->theme->posChartX, $this->theme->posChartY);
 		
-		// Redimensionnement du camembert, taille relative à l'objet Graph le contenant.
+		// Redimensionnement du camembert, taille relative ï¿½ l'objet Graph le contenant.
 		$pie->setSize($this->theme->sizeChartX, $this->theme->sizeChartX);
 		
-		// Ajout d'un petit effet 3D; la valeur est donnée en pixel.
+		// Ajout d'un petit effet 3D; la valeur est donnï¿½e en pixel.
 		$pie->set3D($this->theme->thickness);
 		
 		// Ajout d'un titre...

@@ -1,4 +1,6 @@
 <?php
+require_once 'UbuntuHack.php';
+
 /**
  * This class helps drawing a line chart
  *
@@ -45,7 +47,8 @@ class LineChartBuilder {
  	}
  
 	public function draw() {       
-
+		ArtichowUbuntuHack::hack();
+		
 		// On inclue le fichier qui nous permettra de dessiner des courbes
 		require_once(dirname(__FILE__).'/../../artichow/1.1.0/LinePlot.class.php');
 	
