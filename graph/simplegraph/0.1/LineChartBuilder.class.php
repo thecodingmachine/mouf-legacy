@@ -71,7 +71,7 @@ class LineChartBuilder {
 				// On donne deux couleurs pour le dégradé
 				new Color($colorOne[0], $colorOne[1], $colorOne[2], 0),
 				new Color($colorTwo[0], $colorTwo[1], $colorTwo[2], 0),
-				// On sp�cifie l'angle du dégradé linéaire
+				// On spécifie l'angle du dégradé linéaire
 				// 0 pour aller du haut vers le bas
 				$this->theme->backgroundAngle
 			)

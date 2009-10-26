@@ -58,13 +58,14 @@ class PieChartBuilder {
 			)
 		);
 		
+		$values = array();
 		// Tableau des valeurs
 		for ($i=0;$i<count($this->dataSet->values);$i++) {
 			$values[utf8_decode($this->dataSet->legend[$i])] = $this->dataSet->values[$i];
 		}
 			
-		// Seules les valeurs num�riques sont utilis�es pour l'instant,
-		// avec le th�me de couleur par d�faut.
+		// Seules les valeurs numériques sont utilisées pour l'instant,
+		// avec le thême de couleur par défaut.
 		$pie = new Pie(array_values($values));
 		
 		// Pr�cision des valeurs.
