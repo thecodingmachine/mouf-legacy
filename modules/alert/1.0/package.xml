@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Alert Module</displayName>
+	<shortDescription>The Alert Module is a full module dedicated to managing alerts. It includes 
+	a service to create alerts, a web interface to list alerts, and to view alerts.</shortDescription>
+	<docUrl></docUrl>
+	<logo>alert.png</logo>
+	<dependencies>
+		<dependency>
+			<group>security</group>
+			<name>rightservice</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>conditioninterface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>dao/AlertDao.php</require>
+		<require>dao/AlertRecipientDao.php</require>
+		<require>Alert.php</require>
+		<require>AlertInterface.php</require>
+		<require>AlertService.php</require>
+	</requires>
+</package>
