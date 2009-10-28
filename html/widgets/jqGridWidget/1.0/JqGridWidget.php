@@ -187,6 +187,8 @@ jQuery(document).ready(function(){';
 											decimalSeparator:'".addslashes($formatter->decimalSeparator)."',
 											decimalPlaces:".$formatter->decimalPlaces.",
 											defaultValue:'".addslashes($formatter->defaultValue)."'}";
+				} elseif ($formatter instanceof CustomFunctionFormatter) {
+					// Do nothing
 				} else {
 					throw new Exception("Unsupported formatter for jqGrid: ".get_class($formatter));
 				}
@@ -293,6 +295,15 @@ jQuery(document).ready(function(){';
 		    foreach ($this->columns as $column) {
 		    	if ($column->getFormatter() instanceof DateFormatter && $column->getFormatter()->sourceFormat == "timestamp") {
 		    		$s .= "<cell>". date("Y-m-d H:i:s",$column->getValue($row))."</cell>";
+		    	} else if ($column->getFormatter() instanceof CustomFunctionFormatter) {
+		    		$className = $column->getFormatter()->className;
+		    		$functionName = $column->getFormatter()->functionName;
+		    		if (!empty($className)) {
+		    			$result = call_user_func(array($className, $functionName), $row);
+		    		} else {
+		    			$result = call_user_func($functionName, $row);
+		    		}
+		    		$s .= "<cell>". htmlentities($result)."</cell>";
 		    	} else {
 		    		$s .= "<cell>". htmlentities($column->getValue($row))."</cell>";
 		    	}

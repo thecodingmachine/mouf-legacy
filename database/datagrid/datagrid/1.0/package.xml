@@ -25,6 +25,7 @@
 		<require>formatters/DateFormatter.php</require>
 		<require>formatters/NumberFormatter.php</require>
 		<require>formatters/CurrencyFormatter.php</require>
+		<require>formatters/CustomFunctionFormatter.php</require>
 		<require>expander/GridExpanderInterface.php</require>
 	</requires>
 </package>

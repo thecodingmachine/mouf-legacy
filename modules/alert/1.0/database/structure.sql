@@ -8,12 +8,12 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   `id` int(11) NOT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `message` text COLLATE utf8_unicode_ci,
-  `url` varchar(2048) COLLATE utf8_unicode_ci NOT NULL,
-  `category` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `url` varchar(2048) COLLATE utf8_unicode_ci NULL,
+  `category` varchar(255) COLLATE utf8_unicode_ci NULL,
   `date` datetime NOT NULL,
   `level` int(11) NOT NULL,
-  `validated` tinyint(1) NOT NULL,
-  `validation_date` datetime NOT NULL,
+  `validated` tinyint(1) NOT NULL DEFAULT 0,
+  `validation_date` datetime NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

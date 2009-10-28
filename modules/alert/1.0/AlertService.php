@@ -39,10 +39,10 @@ class AlertService {
 		$alertBean->setMessage($alert->getMessage());
 		$alertBean->setUrl($alert->getUrl());
 		$alertBean->setCategory($alert->getCategory());
-		$alertBean->setDate($alert->getDate());
+		$alertBean->setDateAsTimeStamp($alert->getDate());
 		$alertBean->setLevel($alert->getLevel());
 		$alertBean->setValidated($alert->getValidated());
-		$alertBean->setValidationDate($alert->getValidationDate());
+		$alertBean->setValidationDateAsTimeStamp($alert->getValidationDate());
 		$alertBean->save();
 		
 		foreach ($alert->getRecipients() as $recipient) {
@@ -53,7 +53,11 @@ class AlertService {
 		}
 		
 		// Send the alert via mail.
+		foreach ($alert->getRecipients() as $recipient) {
+			
+		}
 	}
+
 }
 
 ?>

@@ -112,6 +112,7 @@ abstract class Controller implements Scopable {
 			if ($refMethod->hasAnnotation('Action') == false) {
 				// This is not an action. Let's go in error.
 				self::FourOFour("controller.404.no.action");
+				exit;
 			}
 
 			try {
@@ -132,6 +133,7 @@ abstract class Controller implements Scopable {
 		}else {
 			// "Method Not Found";
 			self::FourOFour("404.wrong.method");
+			exit;
 		}
 		
 	}

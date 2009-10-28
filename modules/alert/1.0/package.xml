@@ -8,7 +8,7 @@
 	<dependencies>
 		<dependency>
 			<group>security</group>
-			<name>rightservice</name>
+			<name>rightsservice</name>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -18,10 +18,13 @@
 		</dependency>
 	</dependencies>
 	<requires>
+		<require>dao/AlertDaoInterface.php</require>
 		<require>dao/AlertDao.php</require>
 		<require>dao/AlertRecipientDao.php</require>
+		<require>AlertInterface.php</require>
 		<require>Alert.php</require>
 		<require>AlertInterface.php</require>
 		<require>AlertService.php</require>
+		<require>AlertController.php</require>
 	</requires>
 </package>

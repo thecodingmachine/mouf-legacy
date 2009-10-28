@@ -16,6 +16,7 @@
 		<require>UserServiceException.php</require>
 		<require>AuthenticationListenerInterface.php</require>
 		<require>UserInterface.php</require>
+		<require>UserWithMailInterface.php</require>
 		<require>UserDaoInterface.php</require>
 		<require>UserServiceInterface.php</require>
 		<require>MoufUserService.php</require>

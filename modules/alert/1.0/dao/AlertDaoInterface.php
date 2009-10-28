@@ -8,7 +8,7 @@ require_once 'AlertBean.php';
  * 
  * @Component
  */
-class AlertDaoInterface 
+interface AlertDaoInterface 
 {
 	
 	/**
@@ -35,7 +35,7 @@ class AlertDaoInterface
 	 * Get VideoadsCampaignBean specified by its ID
 	 *
 	 * @param string $id
-	 * @return VideoadsCampaignBean
+	 * @return AlertBean
 	 */
 	public function getAlertById($id);
 }

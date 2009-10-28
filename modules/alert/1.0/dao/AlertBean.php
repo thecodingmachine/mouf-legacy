@@ -100,6 +100,15 @@ class AlertBean extends DBM_Object
 	}
 	
 	/**
+	 * The getter for the "date" column, as a timestamp.
+	 *
+	 * @return timestamp
+	 */
+	public function getDateAsTimestamp() {
+		return strtotime($this->date);
+	}
+	
+	/**
 	 * The setter for the "date" column.
 	 *
 	 * @param string $date
@@ -107,6 +116,16 @@ class AlertBean extends DBM_Object
 	public function setDate($date) {
 		$this->date = $date;
 	}
+	
+	/**
+	 * The setter for the "date" column.
+	 *
+	 * @param timestamp $date
+	 */
+	public function setDateAsTimeStamp($date) {
+		$this->date = date("Y-m-d H:i:s", $date);
+	}
+	
 	/**
 	 * The getter for the "level" column.
 	 *
@@ -151,12 +170,30 @@ class AlertBean extends DBM_Object
 	}
 	
 	/**
+	 * The getter for the "validation_date" column as a timestamp.
+	 *
+	 * @return timestamp
+	 */
+	public function getValidationDateAsTimeStamp(){
+		return strtotime($this->validation_date);
+	}
+	
+	/**
 	 * The setter for the "validation_date" column.
 	 *
 	 * @param string $validation_date
 	 */
 	public function setValidationDate($validation_date) {
 		$this->validation_date = $validation_date;
+	}
+	
+	/**
+	 * The setter for the "validation_date" column.
+	 *
+	 * @param timestamp $validation_date
+	 */
+	public function setValidationDateAsTimeStamp($validation_date) {
+		$this->validation_date = date("Y-m-d H:i:s", $validation_date);
 	}
 }
 ?>

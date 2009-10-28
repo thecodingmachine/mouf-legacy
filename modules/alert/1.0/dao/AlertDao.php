@@ -7,13 +7,14 @@ require_once 'AlertBean.php';
  * 
  * @Component
  */
-class AlertDao 
+class AlertDao implements AlertDaoInterface
 {
 	
 	/**
 	 * Return a new instance of AlertBean object, that will be persisted in database.
 	 *
-	 * @return AlertBean
+	 *
+	 *  @return AlertBean
 	 */
 	public function getNewAlert() {
 		return DBM_Object::getNewObject('alerts', true, 'AlertBean');
@@ -40,7 +41,7 @@ class AlertDao
 	 * Get VideoadsCampaignBean specified by its ID
 	 *
 	 * @param string $id
-	 * @return VideoadsCampaignBean
+	 * @return AlertBean
 	 */
 	public function getAlertById($id) {
 		return DBM_Object::getObject('alerts', $id, 'AlertBean');

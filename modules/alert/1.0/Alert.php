@@ -13,6 +13,11 @@ class Alert implements AlertInterface {
 	private $validationDate;
 	private $recipients;
 	
+	public function __construct() {
+		$this->date = time();
+		$this->validated = false;
+	}
+	
 	/**
 	 * Returns the title of the alert
 	 *
@@ -162,7 +167,9 @@ class Alert implements AlertInterface {
 	 *
 	 * @return array<UserWithMailInterface>
 	 */
-	public function getRecipients();
+	public function getRecipients() {
+		return $this->recipients;
+	}
 	
 	/**
 	 * Sets the recipients
