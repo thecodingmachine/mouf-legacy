@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery Date Range Picker</displayName>
+	<shortDescription>This package contains the JQuery Range Date Picker library from www.filamentgroup.com. It can be used to 
+	display controls that enable selecting date ranges.</shortDescription>
+	<docUrl>http://www.filamentgroup.com/lab/date_range_picker_using_jquery_ui_16_and_jquery_ui_css_framework/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-ui</name>
+			<version>1.7.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryDateRangePicker.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>JQueryDateRangePickerExternalComponent.php</require>
+	</externalComponentRequires>
+</package>
