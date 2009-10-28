@@ -27,6 +27,23 @@ class AlertService {
 	public $alertRecipientsDao;
 	
 	/**
+	 * The service used to send mails.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @var MailServiceInterface
+	 */
+	public $mailService;
+	
+	/**
+	 * The mail address the alerts will originate from.
+	 *
+	 * @Property
+	 * @var MailAddressInterface
+	 */
+	public $mailFrom;
+	
+	/**
 	 * Sends the alert (and stores the alert in database).
 	 *
 	 * @param AlertInterface $alert
@@ -54,7 +71,14 @@ class AlertService {
 		
 		// Send the alert via mail.
 		foreach ($alert->getRecipients() as $recipient) {
-			
+			$mail = new Mail();
+			if ($this->mailFrom != null) {
+				$mail->setFrom($this->mailFrom);
+			}
+			$mail->setTitle($alert->getTitle());
+			$mail->setBodyHtml($alert->getMessage());
+			$mail->addToRecipient(new MailAddress($recipient->getEmail(), $recipient->getFullName()));
+			$this->mailService->send($mail);
 		}
 	}
 
