@@ -5,6 +5,6 @@
 	<docUrl>http://www.zend.com</docUrl>
 	<logo>logo.png</logo>
 	<requires>
-		<require>inclde.php</require>
+		<require>include.php</require>
 	</requires>
 </package>

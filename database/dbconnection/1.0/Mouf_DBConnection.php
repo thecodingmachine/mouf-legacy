@@ -15,6 +15,17 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 */
 	protected $dbh;
 	
+	/**
+	 * The name for the database instance to connect to.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $dbname;
+	
+	
+	
 	/*public $db;
 	public $dsn;
 	public $options;*/
@@ -126,12 +137,13 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param boolean $onDemand If true, if the sequence does not exist, it will be created.
 	 * @return unknown The next value of the sequence
 	 */
-	public function nextId($seq_name, $onDemand = true) {
+	abstract public function nextId($seq_name, $onDemand = true);
+	/*public function nextId($seq_name, $onDemand = true) {
 		$id = $this->db->nextId($seq_name, $onDemand);
 		$this->checkError($id, 'Error while querying peardb sequence name '.$seq_name.'\n'.
 			"Possible symptom: the sequence is named $seq_name and your database user (".$this->getUserName().") does not have the rights to create it.");
 		return $id;
-	}
+	}*/
 
 	/**
 	 * Sets the sequence to the passed value.
@@ -233,7 +245,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 */
 	public function getTableInfo($tableName) {
 		
-		$str = "SELECT * FROM information_schema.COLUMNS WHERE table_name = ".$this->quoteSmart($tableName).";";
+		$str = "SELECT * FROM information_schema.COLUMNS WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
 
 		$res = $this->getAll($str);
 		
@@ -356,24 +368,6 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 		$result=$this->getOne($sql);
 		
 		return $result;
-	}
-
-	function affectedRows() {
-		return $this->db->affectedRows();
-	}
-
-	function checkError($TDBM_Object, $additional_error_message=null) {
-		if (PEAR::isError($TDBM_Object)) {
-			$message = 'Standard Message: ' . $TDBM_Object->getMessage() . "\n".
-				'Standard Code: ' . $TDBM_Object->getCode() . "\n".
-				'DBMS/User Message: ' . $TDBM_Object->getUserInfo() . "\n".
-				'DBMS/Debug Message: ' . $TDBM_Object->getDebugInfo() . "\n";
-			if ($additional_error_message != null)
-			{
-				$message .= 'Additional error message: '.$additional_error_message;
-			}
-			throw new TDBM_Exception($message);
-		}
 	}
 
 	/**
@@ -689,6 +683,30 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param string $indexName The index name, generated if not specified.
 	 */
 	abstract public function createIndex($tableName, $columnsList, $isUnique, $indexName=null);
+	
+	/**
+	 * Returns the sequence name (code from Pear DB, thanks to the Pear DB team).
+	 *
+	 * @param unknown_type $sqn
+	 * @return unknown
+	 */
+	public function getSequenceName($sqn)
+    {
+        //return sprintf($this->getOption('seqname_format'),
+        //               preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
+        return sprintf("%s_pk_seq",
+                       preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
+    }
+    
+    /**
+     * Creates a sequence with the name specified.
+     * Note: The name is transformed be the getSequenceName method.
+     * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
+     *
+     * @param string $seq_name
+     */
+    abstract public function createSequence($seq_name);
+    
 }
 
 

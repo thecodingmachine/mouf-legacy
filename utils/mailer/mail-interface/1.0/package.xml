@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Mail Interface</displayName>
+	<shortDescription>This package contains interfaces and classes describing mails. It also contains the MailerService interface that
+	should be implemented by any service that can send mails. You should use a package implementing this interface (like the
+	SmtpMailer package.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>MailAttachmentInterface.php</require>
+		<require>MailAttachment.php</require>
+		<require>MailAddressInterface.php</require>
+		<require>MailAddress.php</require>
+		<require>MailInterface.php</require>
+		<require>Mail.php</require>
+		<require>MailServiceInterface.php</require>
+	</requires>
+</package>

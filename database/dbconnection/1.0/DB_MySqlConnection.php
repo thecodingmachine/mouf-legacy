@@ -28,15 +28,6 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	public $port;
 	
 	/**
-	 * The name for the database instance to connect to.
-	 *
-	 * @Property
-	 * @Compulsory
-	 * @var string
-	 */
-	public $dbname;
-	
-	/**
 	 * Database user to use when connecting.
 	 *
 	 * @Property
@@ -129,8 +120,11 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		if (empty($charset)) {
 			$charset = "utf-8";
 		}		
-		if ($charset == 'utf8' || $charset == 'utf-8')
-			$options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
+		if ($charset == 'utf8' || $charset == 'utf-8') {
+			// Workaround for a bug in PHP 5.3.0: replace PDO::MYSQL_ATTR_INIT_COMMAND with 1002
+			//$options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
+			$options[1002] = "SET NAMES utf8";
+		}
 		
 		return $options;
 	}
@@ -359,6 +353,113 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	public function setPassword($password) {
 		$this->password = $password;
 	}
+	
+	/**
+	 * Returns the next Id from the sequence.
+	 *
+	 * @param string $seq_name The name of the sequence
+	 * @param boolean $onDemand If true, if the sequence does not exist, it will be created.
+	 * @return int The next value of the sequence
+	 */
+	public function nextId($seq_name, $onDemand = true) {
+		$seqname = $this->getSequenceName($seq_name);
+        //do {
+        //$repeat = 0;
+        try {
+        	$nbAff = $this->exec('UPDATE ' . $seqname
+                               . ' SET id = LAST_INSERT_ID(id + 1)');
+        } catch (PDOException $e) {
+        	if ($e->getCode() == '42S02') {
+             // ONDEMAND TABLE CREATION
+             $result = $this->createSequence($seq_name);
+
+             return 1;
+        	} else {
+        		throw $e;	
+        	}
+        }
+            /*$errCode = PDO::errorCode();
+            var_dump($errCode);
+            exit;
+            $this->popErrorHandling();
+            if ($result === DB_OK) {
+                // COMMON CASE
+                $id = @mysqli_insert_id($this->connection);
+                if ($id != 0) {
+                    return $id;
+                }
+
+                // EMPTY SEQ TABLE
+                // Sequence table must be empty for some reason,
+                // so fill it and return 1
+                // Obtain a user-level lock
+                $result = $this->getOne('SELECT GET_LOCK('
+                                        . "'${seqname}_lock', 10)");
+                if (DB::isError($result)) {
+                    return $this->raiseError($result);
+                }
+                if ($result == 0) {
+                    return $this->mysqliRaiseError(DB_ERROR_NOT_LOCKED);
+                }
+
+                // add the default value
+                $result = $this->query('REPLACE INTO ' . $seqname
+                                       . ' (id) VALUES (0)');
+                if (DB::isError($result)) {
+                    return $this->raiseError($result);
+                }
+
+                // Release the lock
+                $result = $this->getOne('SELECT RELEASE_LOCK('
+                                        . "'${seqname}_lock')");
+                if (DB::isError($result)) {
+                    return $this->raiseError($result);
+                }
+                // We know what the result will be, so no need to try again
+                return 1;
+
+            } elseif ($ondemand && DB::isError($result) &&
+                $result->getCode() == DB_ERROR_NOSUCHTABLE)
+            {
+                // ONDEMAND TABLE CREATION
+                $result = $this->createSequence($seq_name);
+
+                // Since createSequence initializes the ID to be 1,
+                // we do not need to retrieve the ID again (or we will get 2)
+                if (DB::isError($result)) {
+                    return $this->raiseError($result);
+                } else {
+                    // First ID of a newly created sequence is 1
+                    return 1;
+                }
+
+            } elseif (DB::isError($result) &&
+                      $result->getCode() == DB_ERROR_ALREADY_EXISTS)
+            {
+                // BACKWARDS COMPAT
+                // see _BCsequence() comment
+                $result = $this->_BCsequence($seqname);
+                if (DB::isError($result)) {
+                    return $this->raiseError($result);
+                }
+                $repeat = 1;
+            }
+        } while ($repeat);
+
+        return $this->raiseError($result);*/
+	}
+	
+	public function createSequence($seq_name)
+    {
+        $seqname = $this->getSequenceName($seq_name);
+        $res = $this->exec('CREATE TABLE ' . $seqname
+                            . ' (id INTEGER UNSIGNED AUTO_INCREMENT NOT NULL,'
+                            . ' PRIMARY KEY(id))');
+        
+        // insert yields value 1, nextId call will generate ID 2
+        $this->exec("INSERT INTO ${seqname} (id) VALUES (0)");
+    }
+	
 }
 
 

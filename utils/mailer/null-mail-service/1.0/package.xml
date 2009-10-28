@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Null Mail Service</displayName>
+	<shortDescription>This package contains a mailer that does not send mail.
+	Actually, it does nothing. Is is useful to disable the sending of mails.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/mailer</group>
+			<name>mail-interface</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>NullMailService.php</require>
+	</requires>
+</package>

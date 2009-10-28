@@ -279,6 +279,31 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	public function createIndex($tableName, $columnsList, $isUnique, $indexName=null) {
 		throw new Exception("Method not implemented yet");
 	}
+	
+	/**
+	 * Returns the next Id from the sequence.
+	 *
+	 * @param string $seq_name The name of the sequence
+	 * @param boolean $onDemand If true, if the sequence does not exist, it will be created.
+	 * @return int The next value of the sequence
+	 */
+	public function nextId($seq_name, $onDemand = true) {
+		throw new Exception("Not implemented yet");
+		
+	}
+	
+    /**
+     * Creates a sequence with the name specified.
+     * Note: The name is transformed be the getSequenceName method.
+     * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
+     *
+     * @param string $seq_name
+     */
+    public function createSequence($seq_name) {
+    	throw new Exception("Not implemented yet");
+    }
+	
+	
 }
 
 
