@@ -222,7 +222,7 @@ class AjaxHtmlGridWidget extends DataGrid implements HtmlElementInterface {
 		</tr>
 		<?php
 		$i=0;
-		$count = $this->datasource->getGlobalCount();
+		$count = $this->datasource->getGlobalCount($this->dsParams);
 		// calculate the total pages for the query 
 		if( $count > 0 ) { 
 			$total_pages = ceil($count/$this->maxDisplay); 
@@ -238,7 +238,7 @@ class AjaxHtmlGridWidget extends DataGrid implements HtmlElementInterface {
 		// if for some reasons start position is negative set it to 0 
 		// typical case is that the user type 0 for the requested page 
 		if($start <0) $start = 0; 
-		$this->datasource->load(array(), $start, $this->maxDisplay);
+		$this->datasource->load($this->dsParams, $start, $this->maxDisplay);
 		foreach ($this->datasource as $row){
 			$class = ($i%2)?"odd":"even";
 			$i++;

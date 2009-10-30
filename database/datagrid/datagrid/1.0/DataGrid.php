@@ -92,6 +92,15 @@ class DataGrid {
 	}
 	
 	/**
+	 * Returns the datasource used by the datagrid.
+	 *
+	 * @return XajaDataSourceInterface
+	 */
+	public function getDataSource() {
+		return $this->datasource;
+	}
+	
+	/**
 	 * Sets the params to be passed to the datasource.
 	 *
 	 * @Property
