@@ -58,21 +58,26 @@ class PieChartBuilder {
 			)
 		);
 		
-		$values = array();
+		/*$values = array();
 		// Tableau des valeurs
 		for ($i=0;$i<count($this->dataSet->values);$i++) {
 			$values[utf8_decode($this->dataSet->legend[$i])] = $this->dataSet->values[$i];
+		}*/
+		$legend = array();
+		// Tableau des valeurs
+		for ($i=0;$i<count($this->dataSet->legend);$i++) {
+			$legend[$i] = utf8_decode($this->dataSet->legend[$i]);
 		}
 			
 		// Seules les valeurs numériques sont utilisées pour l'instant,
 		// avec le thême de couleur par défaut.
-		$pie = new Pie(array_values($values));
+		$pie = new Pie($this->dataSet->values);
 		
 		// Pr�cision des valeurs.
 		$pie->setLabelPrecision($this->theme->accuracy);
 		
 		// Ajout de la l�gende
-		$pie->setLegend(array_keys($values));
+		$pie->setLegend($legend);
 		
 		// Repositionnement de la l�gende
 		$pie->legend->setPosition($this->theme->posLegendX, $this->theme->posLegendY);
