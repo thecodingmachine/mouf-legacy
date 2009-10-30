@@ -58,6 +58,15 @@ class PieChartBuilder {
 			)
 		);
 		
+		$colors = null;
+		if (is_array($this->dataSet->color) && !empty($this->dataSet->color)) {
+			$colors = array();
+			foreach ($this->dataSet->color as $color) {
+				$colorArr = $this->theme->colorHtmlToDecimal($color);
+				$colors[] = new Color($colorArr[0], $colorArr[1], $colorArr[2], 0);
+			}
+		}
+
 		/*$values = array();
 		// Tableau des valeurs
 		for ($i=0;$i<count($this->dataSet->values);$i++) {
@@ -68,10 +77,10 @@ class PieChartBuilder {
 		for ($i=0;$i<count($this->dataSet->legend);$i++) {
 			$legend[$i] = utf8_decode($this->dataSet->legend[$i]);
 		}
-			
+
 		// Seules les valeurs numériques sont utilisées pour l'instant,
 		// avec le thême de couleur par défaut.
-		$pie = new Pie($this->dataSet->values);
+		$pie = new Pie($this->dataSet->values, $colors);
 		
 		// Pr�cision des valeurs.
 		$pie->setLabelPrecision($this->theme->accuracy);
