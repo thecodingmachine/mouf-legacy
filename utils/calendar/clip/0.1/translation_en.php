@@ -20,19 +20,15 @@
 	$this->calendarLanguage["saturday"] = "saturday";
 	$this->calendarLanguage["sunday"] = "sunday";
 	
-	$this->calendarLanguage["mon"] = "mon";
-	$this->calendarLanguage["tue"] = "tue";
-	$this->calendarLanguage["wed"] = "wed";
-	$this->calendarLanguage["thu"] = "thu";
-	$this->calendarLanguage["fri"] = "fri";
-	$this->calendarLanguage["sat"] = "sat";
-	$this->calendarLanguage["sun"] = "sun";
-	
 	$this->calendarLanguage["from.day"] = "from";
 	$this->calendarLanguage["at"] = "at";
 	$this->calendarLanguage["from.time"] = "from";
 	$this->calendarLanguage["to.time"] = "to";
 	$this->calendarLanguage["on.day"] = "on day";
+	$this->calendarLanguage["to.day"] = "to";
+	$this->calendarLanguage["link.year"] = "By Year";
 	$this->calendarLanguage["link.month"] = "By month";
 	$this->calendarLanguage["link.week"] = "By week";
+	
+	$this->calendarLanguage["week"] = "week";
 ?>

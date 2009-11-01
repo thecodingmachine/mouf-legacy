@@ -21,19 +21,13 @@ class Calendar {
 	private $yearRequest;
 	private $monthRequest;
 	private $dayRequest;
-	private $link;
 	private $events = array();
 	private $categories = array();
 	private $functionFormatDate;
 	private $functionFormatDateTime;
 	private $functionFormatHalfDate;
-	private $colors = array("#FF0000", "#00FF00", "#0000FF",
-							"#FFFF00", "#00FFFF", "#FF00FF",
-							"#FFAAAA", "#AAFFAA", "#AAAAFF",
-							"#FFFFAA", "#AAFFFF", "#FFAAFF");
 	private $months = array("", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
 	private $days = array("", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday");
-	private $colorUse = 0;
 	private $url;
 	private $functionTranslate = null;
 	private $language = "en";
@@ -45,14 +39,16 @@ class Calendar {
 	* Constructor
 	*/
 	function __construct() {
-		// Retrieve calendar where calendar is displayed
+		// Retrieve calendar where calendar is displayed (url)
 		$url = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
 		if($pos = strpos($url, "?"))
 			$url = substr($url, 0, $pos);
 		$this->setUrl($url);
 		
+		// Get the time now
 		$this->setDate(mktime());
 		
+		// Retrieve data in parameter
 		if(isset($_REQUEST["year"]))
 			$this->setYear($_REQUEST["year"]);
 		if(isset($_REQUEST["month"]))
@@ -65,37 +61,57 @@ class Calendar {
 		else
 			$this->setType(null);
 		
+		// Height by default
 		$this->setHeight(600);
+		// Width by default
 		$this->setWidth(null);
 		
+		//Language by default
 		$this->setLanguage("en");
 	}
 	
+	/**
+	 * Set url of calendar
+	 * @param url string url of calendar
+	 */
 	public function setUrl($url) {
 		$this->url = $url;
 	}
 	
 	/**
-	 * 
-	 * @param $function
-	 * @return unknown_type
+	 * Set a function to translate text
+	 * @param function string name of your translate function
 	 */
 	public function setTranslateFunction($function) {
 		$this->translate_function = $function;
 	}
 
+	/**
+	 * Set the calendar type
+	 * @param type string value of type ("year", "month" or "week"). By Default is "year"
+	 */
 	public function setType($type) {
 		if(is_null($type)) {
 			if(isset($_REQUEST["type"])) {
-				$this->type = $_REQUEST["type"];
+				$value = $_REQUEST["type"];
 			}
 			else
-				$this->type = "year";
+				$value = "year";
 		}
 		else
-			$this->type = $type;
+			$value = $type;
+
+		if($value == "year" || $value == "month" || $value == "week")
+			$this->type = $value;
+		else
+			$this->type = "year";
+		
 	}
 
+	/**
+	 * Set a date to display calendar with it
+	 * @param date mixed It can be timestamp or string format (YYYY-mm-dd hh:mm:ss)
+	 */
 	public function setDate($date) {
 		if(is_numeric($date)) {
 			$timestamp = $date;
@@ -116,18 +132,43 @@ class Calendar {
 		$this->setWeek(date("W", $timestamp));
 	}
 	
+	/**
+	 * Set a year to display calendar
+	 * @param $year int Set year
+	 */
 	public function setYear($year) {
-		$this->year = $year;
+		if($year >= 1970)
+			$this->year = $year;
+		else
+			$this->year = 1970;
 	}
 	
+	/**
+	 * Set a month to display calendar
+	 * @param $month int Set month
+	 */
 	public function setMonth($month) {
-		$this->month = $month;
+		if($month >= 1 && $month <= 12)
+			$this->month = $month;
+		else
+			$this->month = 1;
 	}
 
+	/**
+	 * Set a day to display calendar
+	 * @param $day int Set day
+	 */
 	public function setDay($day) {
-		$this->day = $day;
+		if($month >= 1 && $month <= 31)
+			$this->day = $day;
+		else
+			$this->day = 1;
 	}
 
+	/**
+	 * Set a week to display calendar the year must be set before
+	 * @param $week int Set week
+	 */
 	public function setWeek($week) {
 		$timestamp = $this->mondayInWeek($week, $this->year);
 		$this->yearWeek = date("Y", $timestamp);
@@ -135,10 +176,18 @@ class Calendar {
 		$this->dayWeek = date("j", $timestamp);
 	}
 
+	/**
+	 * Set the width of calendar
+	 * @param $width mixed Set width, it can int or null
+	 */
 	public function setWidth($width) {
 		$this->width = $width;
 	}
 
+	/**
+	 * Set the height of calendar
+	 * @param $height int Set height
+	 */
 	public function setHeight($height) {
 		if($height)
 			$this->height = $height;
@@ -193,17 +242,20 @@ class Calendar {
 		return true;
 	}
 	
+	/**
+	 * Set the calendar data source
+	 * @param $dataSource <CalendarDataSourceInterface> Set data source
+	 */
 	public function setCalendarDataSource($dataSource) {
 		$this->categories = $dataSource->getCategories();
-//		foreach ($dataSource->getCategories() as $category)
-//			$this->addCategory($category);
 		foreach ($dataSource->getEvents() as $event)
 			$this->addEvent($event);
-//			echo "<br /><br />";
-//			var_dump($this->events);
-//			echo "<br /><br />";
 	}
 	
+	/**
+	 * Get calendar width
+	 * @return string return 100% or a string like [number]px
+	 */
 	public function getWidth() {
 		if(is_null($this->width))
 			return "100%";
@@ -211,10 +263,19 @@ class Calendar {
 			return $width."px";
 	}
 
+	/**
+	 * Get calendar height
+	 * @return string return a string like [number]px
+	 */
 	public function getHeight() {
 		return $this->height."px";
 	}
 	
+	/**
+	 * Return the first date display in calendar (it can be used to make a data base request
+	 * @param $date bool If you want a string set date at true (YYYY-mm-dd hh:ii:ss), else set false (by default) to return a timastamp
+	 * @return mixed return a date. In timestamp if $date is false (by default) or string (YYYY-mm-dd hh:ii:ss)
+	 */
 	public function getStartDate($date = false) {
 		if($this->type == "year")
 			$timestamp = mktime(0, 0, 0, 1, 1, $this->year);
@@ -229,6 +290,11 @@ class Calendar {
 			return $timestamp;
 	}
 
+	/**
+	 * Return the end date display in calendar (it can be used to make a data base request
+	 * @param $date bool If you want a string set date at true (YYYY-mm-dd hh:ii:ss), else set false (by default) to return a timastamp
+	 * @return mixed return a date. In timestamp if $date is false (by default) or string (YYYY-mm-dd hh:ii:ss)
+	 */
 	public function getEndDate($date = false) {
 		if($this->type == "year")
 			$timestamp = mktime(23, 59, 59, 12, 31, $this->year);
@@ -245,10 +311,7 @@ class Calendar {
 	
 	/**
 	* Add an event on the calendar.
-	* @param date mixed If you give only a date format, this is use to display an event on the full day. You can give an array with key start and end to make an event on many day and/or with a time start and time end. All the date can be timestamp or string format (YYYY-mm-dd hh:mm:ss).
-	* @param message mixed You can give only one text, it will be used for event title. You can give a array with index title and content. They are displayed according to the type of calendar.
-	* @param style[optionnal] mixed It is a css style. If you give only astring, it will be use for calendar event. You can give an array with event and tooltip.
-	* @param link[optionnal] string To add a link on the title
+	* @param event <EventInterface> Set an event
 	*/
 	public function addEvent($event) {
 		if(($date_start = $event->getDateStart()) && ($date_end = $event->getDateEnd())) {
@@ -256,10 +319,8 @@ class Calendar {
 			list($date_end, $time_end, $init_end) = $this->getDateTimeOfData($date_end);
 			$timeStart = $this->getTimeOfTimestamp($time_start);
 			$timeEnd = $this->getTimeOfTimestamp($time_end);
-//			echo $event->getTitle()." - ".$timeStart." - ".$timeEnd." - ".$time_end."<br />";
 			if($timeStart == $timeEnd && $timeStart == "00:00")
 				$time_end = mktime(23, 59, 59, date("n", $date_end), date("j", $date_end), date("Y", $date_end));
-//			echo $event->getTitle()." - ".$time_end."<br />";
 		}
 		else {
 			list($date_start, $time_start, $init_start) = $this->getDateTimeOfData($date_start);
@@ -278,8 +339,11 @@ class Calendar {
 		}
 	}
 
+	/**
+	 * Display legend, category name and color
+	 * @return string HTML code to display 
+	 */
 	public function displayLegend() {
-		ksort($this->categories);
 		$return = "<table>";
 		foreach ($this->categories as $category) {
 			$return .= '<tr>
@@ -291,6 +355,15 @@ class Calendar {
 		return $return;
 	}
 	
+	/**
+	 * Set the event on each day on its period
+	 * @param $date_start timestamp first second of the start date
+	 * @param $time_start timestamp time of start date
+	 * @param $date_end timestamp last second of the end date
+	 * @param $time_end timestamp time of end date
+	 * @param $position int position for its element. It is used to display many event to the same day
+	 * @param $event <EventInterface> The event object
+	 */
 	private function fillEventOnPeriod($date_start, $time_start, $date_end, $time_end, $position, $event) {
 		$date = $this->addOneDay($date_start);
 		while($date <= $date_end) {
@@ -303,9 +376,11 @@ class Calendar {
 		}
 	}
 
-	
+	/**
+	 * Return a HTML code to display. You must use echo or print to display the calendar
+	 * @return string HTML code to display
+	 */
 	public function draw() {
-		
 		$div_start = '<div class="calendar_main" style="position: relative; width: '.$this->getWidth().'; height: '.$this->getHeight().'">';
 		$div_end = '</div>';
 		if($this->type == "week") {
@@ -1044,7 +1119,6 @@ class Calendar {
 		else
 			$value = mktime(0, 0, 0, 1, $weeknb * 7 - $start + 2, $year);
 		return $value;
-//		return $year;
 	}
 	
 	private function formatDate($date) {
@@ -1069,7 +1143,6 @@ class Calendar {
 	}
 	
 	private function translate($message) {
-//		echo $message;
 		if(isset($this->translateFunction))
 			return call_user_func($this->translateFunction, $message);
 		elseif($this->language)
