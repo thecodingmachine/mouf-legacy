@@ -248,23 +248,23 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * Returns an array of columns that are declared to be primary keys for this table.
 	 *
 	 * @param string $table_name the table name
-	 * @return array an array of the primary key columns of the table
+	 * @return array<DB_Column> an array of the primary key columns of the table
 	 */
-	protected function getPrimaryKey($table_name) {
+	public function getPrimaryKey($table_name) {
+		// TODO: CHANGE RETURN TYPE FOR NEW MODEL!
 		$sql = "SELECT col.attname FROM pg_attribute col JOIN pg_constraint c JOIN pg_class t ON c.conrelid = t.oid ON c.conkey[1] = col.attnum AND col.attrelid = t.oid WHERE c.contype='p' AND relname='$table_name'";
 
 		$result = $this->getCol($sql);
 		return $result;
 	}
 	
-/**
+	/**
 	 * Creates a new table in the database.
 	 *
-	 * @param string $tableName The table name
-	 * @param array<Db_Column> $columnsList
+	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	public function createTable($tableName, $columnsList, $dropIfExist) {
+	public function createTable(DB_Table $table, $dropIfExist) {
 		throw new Exception("Method not implemented yet");
 	}
 	
@@ -303,6 +303,15 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
     	throw new Exception("Not implemented yet");
     }
 	
+    /**
+	 * Returns a table object (DB_Table) from the database. 
+	 *
+	 * @param string $tableName
+	 * @return DB_Table
+	 */
+	public function getTableFromDbModel($tableName) {
+		throw new Exception("Not implemented yet");
+	}
 	
 }
 

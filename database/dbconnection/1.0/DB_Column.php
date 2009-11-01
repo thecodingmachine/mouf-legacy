@@ -1,8 +1,9 @@
 <?php
 
 /**
- * A column from a database.
+ * This object represents a column from a table in a database.
  *
+ * @Component
  */
 class DB_Column {
 	

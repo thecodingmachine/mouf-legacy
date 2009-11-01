@@ -110,7 +110,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 */
 	public function getOptions() {
 		$options = array();
-		if ($isPersistentConnection != "No") {
+		if ($this->isPersistentConnection != "No") {
 			$options[PDO::ATTR_PERSISTENT] = true;
 		}
 		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -142,11 +142,13 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	/**
 	 * Creates a new table in the database.
 	 *
-	 * @param string $tableName The table name
-	 * @param array<Db_Column> $columnsList
+	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	public function createTable($tableName, $columnsList, $dropIfExist) {
+	public function createTable(DB_Table $table, $dropIfExist) {
+		$tableName = $table->name;
+		$columnsList = $table->columns;
+		
 		if ($dropIfExist) {
 			$sql = "DROP TABLE IF EXISTS `$tableName`;";
 			$this->exec($sql);
@@ -292,12 +294,14 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 * Returns an array of columns that are declared to be primary keys for this table.
 	 *
 	 * @param string $table_name the table name
-	 * @return array an array of the primary key columns of the table
+	 * @return array<DB_Column> an array of the primary key columns of the table
 	 */
-	protected function getPrimaryKey($table_name) {
+	public function getPrimaryKey($table_name) {
 
+		$table = $this->getTableFromDbModel($table_name);
+		return $table->getPrimaryKeys();
 		// TODO tableinfo override!!!!
-		$info = $this->db->tableInfo($table_name);
+		/*$info = $this->db->tableInfo($table_name);
 		$col = array();
 		foreach ($info as $column)
 		{
@@ -306,7 +310,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 				$col[] = $column['name'];
 			}
 		}
-		return $col;
+		return $col;*/
 	}
 	
 	/**
@@ -460,6 +464,38 @@ class DB_MySqlConnection extends Mouf_DBConnection {
         $this->exec("INSERT INTO ${seqname} (id) VALUES (0)");
     }
 	
+    /**
+	 * Returns a table object (DB_Table) from the database.
+	 * Throws an exception if the table does not exist. 
+	 *
+	 * @param string $tableName
+	 * @return DB_Table
+	 * @throws DB_Exception
+	 */
+	public function getTableFromDbModel($tableName) {
+		// Check that the table exist.
+		if  (!$this->isTableExist($tableName)) {
+			throw new DB_Exception("Unable to find table '".$tableName."'"); 
+		}
+
+		$dbTable = new DB_Table($tableName);
+		
+		// Get the columns
+		$tableInfo = $this->getTableInfo($tableName);
+
+		// Map the columns to DB_Column objects
+		foreach ($tableInfo as $column) {
+			$dbColumn = new DB_Column();
+			$dbColumn->name = $column['COLUMN_NAME'];
+			$dbColumn->type = $column['COLUMN_TYPE'];
+			$dbColumn->nullable = $column['IS_NULLABLE'] == 'YES'; 
+			$dbColumn->default = $column['COLUMN_DEFAULT'];
+			$dbColumn->autoIncrement = $column['EXTRA'] == 'auto_increment';
+			$dbColumn->isPrimaryKey = $column['COLUMN_KEY'] == 'PRI';
+			$dbTable->addColumn($dbColumn);
+		}
+		return $dbTable;
+	}
 }
 
 

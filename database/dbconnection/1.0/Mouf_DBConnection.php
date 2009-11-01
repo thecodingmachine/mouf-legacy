@@ -1,12 +1,14 @@
 <?php 
-
-require_once('DB_Column.php');
+require_once 'DB_ConnectionInterface.php';
+require_once 'DB_Exception.php';
+require_once 'DB_Column.php';
+require_once 'DB_Table.php';
 
 /**
  * An abstract class representing wrapping a connection to PDO with additional goodies (introspection support)
  *
  */
-abstract class Mouf_DBConnection implements DB_ConnectionSettings {
+abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_ConnectionInterface {
 
 	/**
 	 * The database handler. This is an object whose type is PDO.
@@ -28,9 +30,9 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	
 	/*public $db;
 	public $dsn;
-	public $options;*/
+	public $options;
 	private $commitOnQuit = true;
-	private $autoCommit = true;
+	private $autoCommit = true;*/
 
 	public function __construct() {
 		//$this->dsn = $dsn;
@@ -137,7 +139,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param boolean $onDemand If true, if the sequence does not exist, it will be created.
 	 * @return unknown The next value of the sequence
 	 */
-	abstract public function nextId($seq_name, $onDemand = true);
+	//abstract public function nextId($seq_name, $onDemand = true);
+	
 	/*public function nextId($seq_name, $onDemand = true) {
 		$id = $this->db->nextId($seq_name, $onDemand);
 		$this->checkError($id, 'Error while querying peardb sequence name '.$seq_name.'\n'.
@@ -169,7 +172,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * !! Warning !! Child table must share Mother table's primary key
 	 * @param unknown_type $table_name
 	 */
-	abstract protected function findRootSequenceTable($table_name);
+	//abstract protected function findRootSequenceTable($table_name);
 
 	/**
 	 * Returns parent table according to child parent's primary key's contraint
@@ -219,15 +222,15 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param string $table_name
 	 * @return string
 	 */
-	abstract public function getParentTable($table_name);
+	//abstract public function getParentTable($table_name);
 	
 	/**
 	 * Returns an array of columns that are declared to be primary keys for this table.
 	 *
 	 * @param string $table_name the table name
-	 * @return array an array of the primary key columns of the table
+	 * @return array<DB_Column> an array of the primary key columns of the table
 	 */
-	abstract protected function getPrimaryKey($table_name);
+	//abstract protected function getPrimaryKey($table_name);
 
 	public function getPrimaryKeyWithCache($table_name) {
 		if (!isset($_SESSION['__TDBM_CACHE__']['pk'][$table_name]))
@@ -253,6 +256,45 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	}
 	
 	/**
+	 * Returns a list of table names.
+	 *
+	 * 
+	 */
+	public function getListOfTables() {
+		$str = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = ".$this->quoteSmart($this->dbname)." ;";
+
+		$res = $this->getAll($str);
+		$array = array();
+		foreach ($res as $table) {
+			$array[] = $table['table_name'];
+		}
+		
+		return $array;
+	}
+	
+	/**
+	 * Returns true if the table exists, false if it does not.
+	 *
+	 * @param string $tableName The name of the table.
+	 * @return bool
+	 */
+	public function isTableExist($tableName) {
+		$str = "SELECT COUNT(1) as cnt FROM information_schema.TABLES WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
+
+		$res = $this->getOne($str);
+		
+		return $res != 0;
+	}
+	
+	/**
+	 * Returns a table object (DB_Table) from the database. 
+	 *
+	 * @param string $tableName
+	 * @return DB_Table
+	 */
+	//abstract public function getTableFromDbModel($tableName);
+	
+	/**
 	 * Returns the constraints on table "table_name" and column "column_name" if "column_name"is given
 	 * this function returns an array of arrays of the form:
 	 * ("table2"=>"name of the constraining table", "col2"=>"name of the constraining column", "col1"=>"name
@@ -262,7 +304,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param string $column_name
 	 * @return unknown
 	 */
-	abstract public function getConstraintsOnTable($table_name,$column_name=false);
+	//abstract public function getConstraintsOnTable($table_name,$column_name=false);
 	
 	/**
 	 * Returns the constraints on table "table_name" and column "column_name" if "column_name"is given
@@ -274,7 +316,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param string $column_name
 	 * @return unknown
 	 */
-	abstract public function getConstraintsFromTable($table_name,$column_name=false);
+	//abstract public function getConstraintsFromTable($table_name,$column_name=false);
 
 	/**
 	 * Returns a table of rows with structure identic to getConstraintsFromTable
@@ -376,10 +418,11 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param string $table
 	 * @return array
 	 */
-	public function getTableInfoWithCache($table) {
+	/*public function getTableInfoWithCache($table) {
 
 		if (!isset($_SESSION['__TDBM_CACHE__']['table_info'][$table]))
 		{
+			
 			// TODO migrate this to use getTableInfo
 			$data = $this->db->tableInfo($table);
 			
@@ -399,7 +442,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 		}
 		return $_SESSION['__TDBM_CACHE__']['table_info'][$table];
 
-	}
+	}*/
 	
 
 
@@ -413,20 +456,13 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param string $table_name name of the table to find
 	 */
 	function checkTableExist($table_name) {
-		// Once you have a valid DB object named $db...
-		$data = $this->db->getListOf('tables');
-
-		if (PEAR::isError($data)) {
-			return null;
-		}
-
-		foreach ($data as $current_table) {
-			if ($current_table==$table_name)
+		if ($this->isTableExist($table_name)) {
 			return true;
 		}
-
-		// If we are here, table was not found
-
+		
+		// If the table does not exist, let's try to find a close match in the name.
+		$data = $this->getListOfTables();
+		
 		// Let's compute the lenvenstein distance and keep the smallest one in $smallest.
 		$smallest = 99999999;
 		$distance_table = array();
@@ -454,25 +490,18 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * Returns null in case of error.
 	 * This function is used in case an exception is thrown to try to help the user find which column he wants.
 	 *
-	 * @param unknown_type $table_name
-	 * @param unknown_type $column_name
-	 * @return unknown
+	 * @param string $table_name
+	 * @param string $column_name
+	 * @return true|array<string>
 	 */
 	function checkColumnExist($table_name, $column_name) {
 		// Once you have a valid DB object named $db...
 		try {
 			$data = $this->getTableInfoWithCache($table_name);
-		} catch (TDBM_Exception $ex) {
+		} catch (DB_Exception $ex) {
 			// If the table does not exist, let's return null.
 			return null;
 		}
-		/*
-		$data = $this->db->tableInfo($table_name);
-		
-
-		if (PEAR::isError($data)) {
-			return null;
-		}*/
 
 		foreach ($data as $current_column) {
 			if ($this->toStandardcaseColumn($current_column['name'])==$column_name)
@@ -559,69 +588,56 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	}
 
 	/**
-	 * Turns auto-commit on or off.
+	 * Begins a transaction. You must use commit or rollback to end the transaction.
+	 * By default, if the scripts finishes and none of commit and rollback have been called,
+	 * the transaction will be rolled-back.
 	 *
-	 * @param bool $onOff
+	 * @return bool true on success, false on failure.
 	 */
-	public function autoCommit($onOff = true) {
-		TDBM_Object::completeSave();
-		$result = $this->db->autoCommit($onOff);
-		$this->checkError($result);
-		$this->autoCommit = $onOff;
+	public function beginTransaction() {
+		return $this->dbh->beginTransaction();
 	}
 	
 	/**
-	 * Returns true if the DB is in autocommit mode, false if commit or rollback is manual.
+	 * Commits the transaction that has been started with beginTransaction.
 	 *
-	 * @return boolean
+	 * @return bool true on success, false on failure.
 	 */
-	public function isAutoCommit() {
-		return $this->autoCommit;
+	public function commit() {
+		$this->dbh->commit(); 
 	}
-
+	
+	/**
+	 * Rolls-back the transaction that has been started with beginTransaction.
+	 *
+	 * @return bool true on success, false on failure.
+	 */
+	public function rollback() {
+		$this->dbh->rollBack();
+	}
+	
 	/**
 	 * Commits the current transaction.
 	 *
 	 */
-	public function commit() {
+	/*public function commit() {
 		TDBM_Object::completeSave();
 		$result = $this->db->commit();
 		$this->checkError($result);
-	}
+	}*/
 
 	/**
 	 * Rolls back the current transaction.
 	 *
 	 */
-	public function rollback() {
+	/*public function rollback() {
 		// TODO: since we are rolling back, we should remove anything in TDBM_Object::$new_objects
 		// instead of inserting in order to roll back.
 		TDBM_Object::completeSave();
 		$result = $this->db->rollback();
 		$this->checkError($result);
-	}
+	}*/
 	
-	/**
-	 * Should we commit anything when the process ends?
-	 * This is useful only if autoCommit is set to no.
-	 * Default is true.
-	 * 
-	 * @param unknown_type $commit
-	 */
-	public function setCommitOnQuit($commit) {
-		$this->commitOnQuit = $commit;
-	}
-	
-	/**
-	 * True if we commit all pending requests when the process ends.
-	 * This is useful only if autoCommit is set to no.
-	 *
-	 * @return boolean
-	 */
-	public function isCommitOnQuit() {
-		return $this->commitOnQuit;
-	}
-
 	/**
 	 * Returns the column type of the column $column from table $table
 	 * If the column does not exist, returns null.
@@ -668,11 +684,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	/**
 	 * Creates a new table in the database.
 	 *
-	 * @param string $tableName The table name
-	 * @param array<Db_Column> $columnsList
+	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	abstract public function createTable($tableName, $columnsList, $dropIfExist);
+	//abstract public function createTable(DB_Table $table, $dropIfExist);
 	
 	/**
 	 * Creates a new index in the database.
@@ -682,7 +697,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
 	 * @param boolean $isUnique whether the index is unique or not.
 	 * @param string $indexName The index name, generated if not specified.
 	 */
-	abstract public function createIndex($tableName, $columnsList, $isUnique, $indexName=null);
+	//abstract public function createIndex($tableName, $columnsList, $isUnique, $indexName=null);
 	
 	/**
 	 * Returns the sequence name (code from Pear DB, thanks to the Pear DB team).
@@ -705,7 +720,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings {
      *
      * @param string $seq_name
      */
-    abstract public function createSequence($seq_name);
+    //abstract public function createSequence($seq_name);
     
 }
 
