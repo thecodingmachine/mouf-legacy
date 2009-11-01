@@ -395,6 +395,10 @@ class Calendar {
 	}
 	
 	/********************************* By Year *********************************/
+	/**
+	 * Make table to display the calendar by year 
+	 * @return string HTML code to display
+	 */
 	private function drawYear() {
 		$return = '<table class="calendar_main_table" style="width: 100%; height: 100%">
 					<tr class="calendar_main_table_header">
@@ -439,10 +443,14 @@ class Calendar {
 		return $return;
 	}
 	
-
+	/**
+	 * Make HTML code for one month
+	 * @return string HTML code to display a month for year calendar
+	 */
 	private function displayMonthForYear($month, $year, $positions) {
 		$first = date("N", $this->getDateOf(null, $month, 1));
 		$day_nbr = date("t", $this->getDateOf(null, $month, 1));
+		// Table for one month
 		$return = '<table class="calendar_year_table_month" style="width: 100%; height: 100%;">
 					<tr style="height: 10%">
 						<th colspan="8"><a href="'.$this->url.'?type=month&month='.$month.'&year='.$this->year.'" class="calendar_year_table_month_title">'.ucfirst($this->translate($this->months[$month])).'</a></th>
@@ -462,6 +470,7 @@ class Calendar {
 			$pos .= " calendar_tooltip_pos_year_".$position;
 		}
 		
+		// TR and TD for the day in month
 		$k = 1;
 		for($i = 1; $i <= ceil(($first+$day_nbr-1)/7); $i ++) {
 			$week = (int)(date("W", $this->getDateOf(null, $month, 1+($i-1)*7)));
@@ -475,7 +484,8 @@ class Calendar {
 					$class = "";
 					if($this->getDateNow() == $this->getDateOf(null, $month, $k))
 						$class = " calendar_year_table_today";
-						
+					
+					// Display events for a day
 					$event = $this->displayDayForYear($this->getDateOf(null, $month, $k), $pos);
 					if(!is_numeric($event))
 						$class .= " calendar_year_table_day_event";
@@ -495,14 +505,23 @@ class Calendar {
 		return $return;
 	}
 	
+	/**
+	 * Prepare the day to add event
+	 * @param $date of day in timestamp
+	 * @param $positions the position of the month in year (left, right, top and/or bottom)
+	 * @return string HTML code to display for event in day
+	 */
 	private function displayDayForYear($date, $positions) {
 		$return = "";
+		// If there are event
 		if(isset($this->events[$date])) {
 			ksort($this->events[$date]);
 			$first = true;
 			$count = 0;
 			$return_temp = "";
+			// Get all event of one day
 			foreach ($this->events[$date] as $key_time => $event_time) {
+				// Event on many day
 				if(isset($this->events[$date][$key_time]["parent"])) {
 					foreach ($this->events[$date][$key_time]["parent"] as $event) {
 						$count ++;
@@ -513,6 +532,7 @@ class Calendar {
 						$return_temp .= $this->displayOneEventForYear($event, $date);
 					}
 				}
+				// Event on one day and first day of event
 				if(isset($this->events[$date][$key_time]["main"])) {
 					foreach ($this->events[$date][$key_time]["main"] as $event) {
 						$count ++;
@@ -524,21 +544,26 @@ class Calendar {
 					}
 				}
 			}
-			$return .= '
-							<div class="calendar_tooltip calendar_tooltip_pos_year'.$positions.'">
-									<sup class="count">'.$count.'</sup>'.date("j", $date)
-								.'<span class="calendar_tooltip_year">
-									<div class="calendar_tooltip_year_date">'.$this->formatHalfDate($date).'</div>
-									'.$return_temp.'
-								</span>
-							</div>';
+			// Display event
+			$return .= '<div class="calendar_tooltip calendar_tooltip_pos_year'.$positions.'">
+							<sup class="count">'.$count.'</sup>'.date("j", $date)
+						.'<span class="calendar_tooltip_year">
+							<div class="calendar_tooltip_year_date">'.$this->formatHalfDate($date).'</div>
+								'.$return_temp.'
+						</span>
+					</div>';
 		}
 		else
 			$return = date("j", $date);
 		return $return;
 	}
 	
-
+	/**
+	 * Make HTML code for event of year
+	 * @param $event Set event to show
+	 * @param $date Set the date of day
+	 * @return string HTML code to display
+	 */
 	private function displayOneEventForYear($event, $date) {
 		$return = "";
 		$style = "";
@@ -565,10 +590,14 @@ class Calendar {
 	}
 	
 	/********************************* By Month *********************************/
+	/**
+	 * Make table to display the calendar by month 
+	 * @return string HTML code to display
+	 */
 	private function drawMonth() {
 		$first = date("N", $this->getDateOf(null, null, 1));
 		$day_nbr = date("t", $this->getDateOf(null, null, 1));
-		
+		// Display the table
 		$return ='<table class="calendar_main_table" style="width: 100%; height: '.$this->getHeight().'">
 					<tr class="calendar_main_table_header" style="height: '.($this->height*11/100).'px">
 						<td colspan="8">
@@ -615,6 +644,8 @@ class Calendar {
 						<th style="width: 12%;">'.ucfirst($this->translate($this->days[6])).'</th>
 						<th style="width: 12%;">'.ucfirst($this->translate($this->days[7])).'</th>
 					</tr>';
+									
+		// Display all day of month
 		$k = 1;
 		for($i = 1; $i <= ceil(($first+$day_nbr-1)/7); $i ++) {
 			$week = (int)(date("W", $this->getDateOf(null, null, 1+($i-1)*7)));
@@ -651,37 +682,56 @@ class Calendar {
 			}
 			$return .= "</tr>";
 		}
+		// Fill all empty day
 		for($j = $i; $j < 7; $j ++)
 			$return .= '<tr style="height: '.($this->height*14/100).'px"><td colspan="8">&nbsp;</td></tr>';
 		$return .= "</table>";
 		return $return;
 	}
 	
+	/**
+	 * Prepare the day to add event for month
+	 * @param $date timestamp Date of day in timestamp
+	 * @param $element string "end", "start" or null set if the day is the first or not
+	 * @param $positions array The position of the day in month (left, right, top and/or bottom)
+	 * @return string HTML code to display for event in day
+	 */
 	private function displayEventsForMonth($date, $element, $positions) {
 		$return = "";
 		if(isset($this->events[$date])) {
 			$return .= '<div>
 						<div style="height: '.(($this->height*14/100) - 17).'px; overflow: auto;">';
 			ksort($this->events[$date]);
+			// Check all event of day
 			foreach ($this->events[$date] as $key_time => $event_time) {
+				// Event on many day
 				if(isset($this->events[$date][$key_time]["parent"])) {
 					foreach ($this->events[$date][$key_time]["parent"] as $event_parent) {
 						$return .= $this->displayOneEventForMonth($event_parent, $date, $positions, $element);
 					}
 				}
+				// Event on one day and first day of event
 				if(isset($this->events[$date][$key_time]["main"])) {
 					foreach ($this->events[$date][$key_time]["main"] as $event) {
 						$return .= $this->displayOneEventForMonth($event, $date, $positions);
 					}
 				}
 			}
-			
 			$return .= '</div>';
 			$return .= '</div>';
 		}
 		return $return;
 	}
 
+	
+	/**
+	 * Make HTML code for event of year
+	 * @param $event <EventInterface> Set event to show
+	 * @param $date timestamp Set the date of day
+	 * @param $positions array The position of the day in month (left, right, top and/or bottom)
+	 * @param $element string "end", "start" or null set if the day is the first or not
+	 * @return unknown_type
+	 */
 	private function displayOneEventForMonth($event, $date, $positions, $element = null) {
 		$style = "";
 		$class = "";
@@ -734,8 +784,14 @@ class Calendar {
 		return $return;
 	}
 	
-	/***** By Week *****/
+	/*********************************** By Week *****************************/
+	/**
+	 * Make table to display the calendar by week 
+	 * @return string HTML code to display
+	 */
 	private function drawWeek() {
+		// Prepare the table of week
+		// The first table contain 2 tables one for display grid with hour and one with events
 		$return = '<table style="width: 100%; height: '.$this->getHeight().'">
 					<tr style="height: 42px">
 						<td colspan="8">
@@ -809,6 +865,7 @@ class Calendar {
 										<td style=""></td>
 										<td style="width: 4%;">&nbsp;</td>
 									</tr>';
+		// Display all hour
 		for($i = 0; $i <= 23; $i ++) {
 				$return .= '<tr>
 							<td style="width: 4%; vertical-align: top; text-align: center; border-top: 1px solid #DDDDDD; height: 19px">'.$i.':00</td>
@@ -829,6 +886,7 @@ class Calendar {
 								&nbsp;';
 		
 		$return_temp .= '</td>';
+		// Display all day in week
 		for($i = 1; $i <= 7; $i ++) {
 			$day = $this->getDateForWeek($this->yearWeek, null, $this->dayWeek + $i - 1);
 			$style = "";
@@ -845,17 +903,24 @@ class Calendar {
 		return $return;
 	}
 	
+	/**
+	 * Prepare the day to add event for week
+	 * @param $date timestamp Date of day
+	 * @return string HTML code to display day for week
+	 */
 	private function displayDayForWeek($date) {
 		$events = array();
 		if(isset($this->events[$date])) {
 			ksort($this->events[$date]);
+			// Get all event of one day
 			foreach ($this->events[$date] as $key_time => $event_time) {
+				// Event on many day
 				if(isset($this->events[$date][$key_time]["parent"])) {
 					foreach ($this->events[$date][$key_time]["parent"] as $event_parent) {
-//						$event = $this->events[$event_parent["date"]][$event_parent["time"]]["main"][$event_parent["position"]];
 						$events[] = $event_parent;
 					}
 				}
+				// Event on one day and first day of event
 				if(isset($this->events[$date][$key_time]["main"])) {
 					foreach ($this->events[$date][$key_time]["main"] as $event) {
 						$events[] = $event;
@@ -863,18 +928,20 @@ class Calendar {
 				}
 			}
 		}
-//		var_dump($events);
 		$eventPosition = $this->checkEventSuperposition($events);
-//		echo "event pos $date <br />";
-//		var_dump($eventPosition);
-		
 		$return = $this->displayEventDayPositionForWeek($date, $eventPosition);
 		
 		return $return;
 	}
 	
+	/**
+	 * Check all event to detect if many event are on the same day
+	 * @param $events array<EventInterface> List of all event
+	 * @return array with event and its position
+	 */
 	private function checkEventSuperposition(&$events) {
 		$eventPosition = array();
+		// Check all event
 		foreach ($events as $event) {
 			if(count($eventPosition) == 0) {
 				$eventPosition[0][] = $event;
@@ -882,15 +949,12 @@ class Calendar {
 			else {
 				$i = 0;
 				$added = false;
+				// Check the position empty
 				while($i <= count($eventPosition) && !$added) {
 					if(isset($eventPosition[$i])) {
 						$j = 0;
 						$continue = true;
 						while($j < count($eventPosition[$i]) && $continue) {
-//							echo $j."<br />";
-//							var_dump($eventPosition[$i][$j]);
-//							if($event["time_start"] < $eventPosition[$i][$j]["time_end"]) {
-//							if($this->getTimeOfTimestamp($event->getDateStart()) < $this->getTimeOfTimestamp($eventPosition[$i][$j]->getDateEnd())) {
 							if($event->getDateStart() < $eventPosition[$i][$j]->getDateEnd()) {
 								$continue = false;
 							}
@@ -912,16 +976,23 @@ class Calendar {
 		return $eventPosition;
 	}
 	
+	/**
+	 * Prepare the size of event with its position and duration
+	 * @param $date timestamp Date of day in week
+	 * @param $events_position array of <EventInterface> with position in index
+	 * @return string HTML code to display day for week
+	 */
 	private function displayEventDayPositionForWeek($date, $events_position) {
-//		krsort($events);
 		$date_start = $date;
 		$date_end = $this->addOneDay($date) - 1;
 		$nbr_col = count($events_position);
 		$return = "";
 		$coef = 961/(60*24);
 		$width = (100 / ($nbr_col + 1)) * 2;
+		// Check all event
 		foreach ($events_position as $col => $event_col) {
 			$left = 100 * $col / ($nbr_col + 1);
+			// Prepare event
 			foreach ($event_col as $row => $event) {
 				$timeStart = $event->getDateStart();
 				$timeEnd = $event->getDateEnd();
@@ -948,6 +1019,17 @@ class Calendar {
 		return $return;
 	}
 	
+	/**
+	 * Display event for week
+	 * @param $event <EventInterface> Event to display
+	 * @param $left int Position of the event from the left side of the table
+	 * @param $top int Position of the event from the top side of the table
+	 * @param $width int Width of the event according event number on the day
+	 * @param $height int Height of the event according with duration of event
+	 * @param $start int Position to start the display of event
+	 * @param $end int Position to end the display of event
+	 * @return string HTML code to display event of day for a week
+	 */
 	private function displayEventDayForWeek($event, $left, $top, $width, $height, $start = false, $end = false) {
 		$style = "";
 		$style_tooltip = "";
@@ -961,7 +1043,6 @@ class Calendar {
 			$style .= $styleTemp.";";
 		if($styleTemp = $event->getStyleTooltip())
 			$style_tooltip .= $styleTemp.";";
-		
 			
 		$return_content = "";
 		$tooltip = "";
@@ -994,7 +1075,6 @@ class Calendar {
 		elseif($height < 40) {
 			$tooltip .= '<span style="'.$style_tooltip.';">'.$alink.$event->getTitle().($alink?"</a>":"")."<br />".$this->eventDateText($event, true).'<br /><br />'.$event->getContent().'</span>';
 			$return_content .= ''.$arrow_top.$event->getTitle();
-//			$return_content .= '<a style="background-color: rgb(255, 0, 0); margin-left: 3px; margin-right: 3px;" class="calendar_tooltip tooltip_pos_month" href="#">Info matin<span style="background-color: red;"><div style="font-size: 9px; text-align: right;">Cat 1</div>Info matin<br/>from_h 01:00 to_h 01:15</span></a>';
 			$class .= " calendar_event_week_tooltip";
 		}
 		else {
@@ -1006,9 +1086,7 @@ class Calendar {
 			$return_content .= "<br />";
 			$return_content .= $event->getContent();
 			$return_content .= '</div>';
-//			$class = "calendar_week_event_all_day";
 		}
-		//class="calendar_week_event '.$class.' cal_test"
 		$return = '<div class="calendar_week_event'.$class.' cal_test" style="position: absolute; left: '.$left.'%; top: '.$top.'px; width: '.$width.'%; height: '.$height.'px; border: 1px solid black; background-color: yellow; word-wrap: break-word;'.$style.'">';
 		if(!$end) {
 			$return .= '<div style="position: absolute; bottom: 0px; left: 0px">&darr;</div>';
@@ -1021,6 +1099,13 @@ class Calendar {
 		return $return;
 	}
 	
+	/***************************** Utils to display calendar **********************/
+	/**
+	 * Format the event date according to the language
+	 * @param $event <EventInterface> Set the event
+	 * @param $all boolean Display the full date or a partial
+	 * @return string A date format
+	 */
 	private function eventDateText($event, $all = true) {
 		$return = "";
 		$timeStart = $this->getTimeOfTimestamp($event->getDateStart());
@@ -1042,23 +1127,41 @@ class Calendar {
 		return $return;
 	}
 	
-	
-	
-	
+	/**
+	 * Add one day of a date 
+	 * @param $date timestamp Get date
+	 * @return timestamp Date with one more day
+	 */
 	private function addOneDay($date) {
 		$mktime = mktime(0, 0, 0, date("n", $date), date("j", $date)+1, date("Y", $date));
 		return $mktime;
 	}
 
+	/**
+	 * Remove one day of a date 
+	 * @param $date timestamp Get date
+	 * @return timestamp Date with one less day
+	 */
 	private function removeOneDay($date) {
 		$mktime = mktime(0, 0, 0, date("n", $date), date("j", $date)-1, date("Y", $date));
 		return $mktime;
 	}
 	
+	/**
+	 * Get a format string of time (hour:minute)
+	 * @param $date timestamp Set the timestamp to format
+	 * @return string Time format (hh:mm)
+	 */
 	private function getTimeOfTimestamp($date) {
 		return date("H:i", $date);
 	}
 
+	/**
+	 * Return date without time, format timestamp or string yyyy/mm/dd
+	 * @param $date timestamp Set date
+	 * @param $timestamp boolean True if you would timestamp, else false for a string (by default)
+	 * @return mixed string or timestamp
+	 */
 	private function getDateOfTimestamp($date, $timestamp = false) {
 		if($timestamp)
 			return mktime(null, null, null, date("n", $date), date("d", $date), date("Y", $date));
@@ -1066,6 +1169,13 @@ class Calendar {
 			return date("Y/m/d", $date);
 	}
 
+	/**
+	 * Return a timestamp for a day. If a parameter is empty, this function use attribut of week
+	 * @param $year int Set a year, if the value is null, use the attribut yearWeek
+	 * @param $month int Set a month, if the value is null, use the attribut monthWeek
+	 * @param $day int Set a day, if the value is null, use the attribut dayWeek
+	 * @return timestamp Date
+	 */
 	private function getDateForWeek($year = null, $month = null, $day = null) {
 		if(is_null($year))
 			$year = $this->yearWeek;
@@ -1073,10 +1183,16 @@ class Calendar {
 			$month = $this->monthWeek;
 		if(is_null($day))
 			$day = $this->dayWeek;
-		$return = $year."-".$month."-".$day;
 		return mktime(null, null, null, $month, $day, $year);
 	}
 	
+	/**
+	 * Return a timestamp for a day. If a parameter is empty, this function use attribut year, month, day
+	 * @param $year int Set a year, if the value is null, use the attribut year
+	 * @param $month int Set a month, if the value is null, use the attribut month
+	 * @param $day int Set a day, if the value is null, use the attribut day
+	 * @return timestamp Date
+	 */
 	private function getDateOf($year = null, $month = null, $day = null) {
 		if(is_null($year))
 			$year = $this->year;
@@ -1084,14 +1200,22 @@ class Calendar {
 			$month = $this->month;
 		if(is_null($day))
 			$day = $this->day;
-		$return = $year."-".$month."-".$day;
 		return mktime(null, null, null, $month, $day, $year);
 	}
 	
+	/**
+	 * Return the current date in timestamp
+	 * @return timestamp Current date
+	 */
 	private function getDateNow() {
 		return mktime(null, null, null, date("n"), date("j"), date("Y"));
 	}
 
+	/**
+	 * Return an array with date, time and if timestamp is the first second of day
+	 * @param $datetime timestamp of date time
+	 * @return array timestamp date, timestamp time and boolean true if datetime is the first second of day
+	 */
 	private function getDateTimeOfData($datetime) {
 		if(is_numeric($datetime)) {
 			$date = mktime(0, 0, 0, date("n", $datetime), date("j", $datetime), date("Y", $datetime));
@@ -1112,15 +1236,26 @@ class Calendar {
 		return array($date, $time, $init);
 	}
 	
-	private function mondayInWeek($weeknb, $year) {
+	/**
+	 * Get timestamp of the monday of week
+	 * @param $week int Set a week number
+	 * @param $year int Set a year
+	 * @return timestamp Date of monday
+	 */
+	private function mondayInWeek($week, $year) {
 		$start = date("N", mktime(null, null, null, 1, 1, $year));
 		if($start <= 4)
-			$value = mktime(0, 0, 0, 1, ($weeknb - 1) * 7 - $start + 2, $year);
+			$value = mktime(0, 0, 0, 1, ($week - 1) * 7 - $start + 2, $year);
 		else
-			$value = mktime(0, 0, 0, 1, $weeknb * 7 - $start + 2, $year);
+			$value = mktime(0, 0, 0, 1, $week * 7 - $start + 2, $year);
 		return $value;
 	}
 	
+	/**
+	 * Return string of a date. Use a calback function if functionFormatDate is set.  
+	 * @param $date timestamp Set date
+	 * @return string Date format
+	 */
 	private function formatDate($date) {
 		if($this->functionFormatDate)
 			return call_user_func($this->functionFormatDate, $date);
@@ -1128,13 +1263,23 @@ class Calendar {
 			return date("Y-m-d", $date);
 	}
 
+	/**
+	 * Return string of a half date (month and day). Use a calback function if functionFormatHalfDate is set.  
+	 * @param $date timestamp Set date
+	 * @return string Half date format
+	 */
 	private function formatHalfDate($date) {
 		if(isset($this->functionFormatHalfDate))
 			return call_user_func($this->functionFormatHalfDate, $date);
 		else
 			return date("m/d", $date);
 	}
-	
+
+	/**
+	 * Return string of a date time. Use a calback function if functionFormatDateTime is set.  
+	 * @param $date timestamp Set date
+	 * @return string Date time format
+	 */
 	private function formatDateTime($date) {
 		if($this->functionFormatDateTime)
 			return call_user_func($this->functionFormatDateTime, $date);
@@ -1142,6 +1287,11 @@ class Calendar {
 			return date("Y/m:d H:i", $date);
 	}
 	
+	/**
+	 * Set message and returna translation. Use a callback function if translateFunction is set or file for translation or message
+	 * @param $message string Set message
+	 * @return string return a translation
+	 */
 	private function translate($message) {
 		if(isset($this->translateFunction))
 			return call_user_func($this->translateFunction, $message);
