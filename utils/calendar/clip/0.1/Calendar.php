@@ -32,8 +32,10 @@ class Calendar {
 	private $functionTranslate = null;
 	private $language = "en";
 	private $calendarLanguage = array();
+	private $encodeutf8 = true;
 	private $width;
 	private $height;
+	private $typeLink = true;
 	
 	/**
 	* Constructor
@@ -76,6 +78,22 @@ class Calendar {
 	 */
 	public function setUrl($url) {
 		$this->url = $url;
+	}
+	
+	/**
+	 * Display the link to change type (year, month,or day)
+	 * @param $typeLink boolean true to display link or false
+	 */
+	public function setTypeLink($typeLink) {
+		$this->typeLink = $typeLink;
+	}
+	
+	/**
+	 * Set the encodage in utf8 by default. Else the translate function use the utf8decodefunction.
+	 * @param $encodeutf8 boolean true if you would use utf8 else false
+	 */
+	public function setEncodeutf8($encodeutf8) {
+		$this->encodeutf8 = $encodeutf8;
 	}
 	
 	/**
@@ -271,6 +289,23 @@ class Calendar {
 		return $this->height."px";
 	}
 	
+
+	/**
+	 * Get the information of the link for type is displayed
+	 * @return boolean true if the link is displayed, else false
+	 */
+	public function getTypeLink() {
+		return $this->typeLink;
+	}
+	
+	/**
+	 * Get the information of used encodage. True if is utf8, else false
+	 * @return boolean true if utf8, else false
+	 */
+	public function getEncodeutf8() {
+		return $this->encodeutf8;
+	}
+	
 	/**
 	 * Return the first date display in calendar (it can be used to make a data base request
 	 * @param $date bool If you want a string set date at true (YYYY-mm-dd hh:ii:ss), else set false (by default) to return a timastamp
@@ -413,10 +448,12 @@ class Calendar {
 									<td class="calendar_main_table_arrow_right">';
 									$return .= '<a href="'.$this->url.'?type=year&year='.($this->year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td class="calendar_main_table_link">
-										<a href="'.$this->url.'?type=week&year='.$this->year.'">'.$this->translate("link.week").'</a><br />
-										<a href="'.$this->url.'?type=month&year='.$this->year.'">'.$this->translate("link.month").'</a>
-									</td>
+									<td class="calendar_main_table_link">';
+									if($this->typeLink) {
+										$return .= '<a href="'.$this->url.'?type=week&year='.$this->year.'">'.$this->translate("link.week").'</a><br />
+											<a href="'.$this->url.'?type=month&year='.$this->year.'">'.$this->translate("link.month").'</a>';
+									}
+									$return .= '</td>
 								</tr>
 							</table>
 						</td>
@@ -618,7 +655,11 @@ class Calendar {
 										$return .= '<a href="'.$this->url.'?type=month&month='.($this->month + 1).'&year='.$this->year.'" >=&gt;</a>';
 									
 									$return .= '</td>
-									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=week">'.$this->translate('link.week').'</a></td>
+									<td style="width: 30%; text-align: right">';
+										if($this->typeLink) {
+											$return .= '<a href="'.$this->url.'?type=week">'.$this->translate('link.week').'</a>';
+										}
+									$return .= '</td>
 								</tr>
 								<tr>
 									<td></td>
@@ -629,7 +670,11 @@ class Calendar {
 									<td style="text-align: right">';
 									$return .= '<a href="'.$this->url.'?type=month&month='.$this->month.'&year='.($this->year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$this->year.'">'.$this->translate('link.year').'</a></td>
+									<td style="text-align: right">';
+										if($this->typeLink) {
+											$return .= '<a href="'.$this->url.'?type=year&year='.$this->year.'">'.$this->translate('link.year').'</a>';
+										}
+									$return .= '</td>
 								</tr>
 							</table>
 						</td>
@@ -828,7 +873,11 @@ class Calendar {
 										$return .= '<a href="'.$this->url.'?type=week&week='.($week + 1).'&year='.$year.'" >=&gt;</a>';
 									
 									$return .= '</td>
-									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=month&month='.$this->monthWeek.'">'.$this->translate('link.month').'</a></td>
+									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=month&month='.$this->monthWeek.'">';
+										if($this->typeLink) {
+											$return .= $this->translate('link.month');
+										}
+									$return .= '</a></td>
 								</tr>
 								<tr>
 									<td></td>
@@ -851,8 +900,11 @@ class Calendar {
 									<td style="text-align: right">';
 									$return .= '<a href="'.$this->url.'?type=week&week='.$week_add.'&year='.($year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$year.'">'.$this->translate('link.year').'</a></td>
-								</tr>
+									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$year.'">';
+										if($this->typeLink) {
+											$return .= $this->translate('link.year').'</a></td>';
+										}
+								$return .= '</tr>
 							</table>
 						</td>
 					</tr>
@@ -1294,11 +1346,15 @@ class Calendar {
 	 */
 	private function translate($message) {
 		if(isset($this->translateFunction))
-			return call_user_func($this->translateFunction, $message);
+			$return = call_user_func($this->translateFunction, $message);
 		elseif($this->language)
 			if(isset($this->calendarLanguage[$message]))
-				return $this->calendarLanguage[$message];
-		return $message;
+				$return = $this->calendarLanguage[$message];
+		if(!$return)
+			$return = $message;
+		if(!$this->encodeutf8)
+			return utf8_decode($return);
+		return $return;
 	}
 }
 ?>
