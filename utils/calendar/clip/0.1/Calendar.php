@@ -278,7 +278,7 @@ class Calendar {
 		if(is_null($this->width))
 			return "100%";
 		else
-			return $width."px";
+			return $this->width."px";
 	}
 
 	/**
@@ -438,7 +438,7 @@ class Calendar {
 		$return = '<table class="calendar_main_table" style="width: 100%; height: 100%">
 					<tr class="calendar_main_table_header">
 						<td colspan="4">
-							<table style="width: '.$this->getWidth().'">
+							<table style="width: 100%">
 								<tr>
 									<td class="calendar_main_table_link"></td>
 									<td class="calendar_main_table_arrow_left">';
@@ -490,7 +490,17 @@ class Calendar {
 		// Table for one month
 		$return = '<table class="calendar_year_table_month" style="width: 100%; height: 100%;">
 					<tr style="height: 10%">
-						<th colspan="8"><a href="'.$this->url.'?type=month&month='.$month.'&year='.$this->year.'" class="calendar_year_table_month_title">'.ucfirst($this->translate($this->months[$month])).'</a></th>
+						<th colspan="8">';
+						if($this->typeLink)
+							$return .= '<a href="'.$this->url.'?type=month&month='.$month.'&year='.$this->year.'" class="calendar_year_table_month_title">';
+						else
+							$return .= '<span  class="calendar_year_table_month_title">';
+						$return .= ucfirst($this->translate($this->months[$month]));
+						if($this->typeLink)
+							$return .= '</a>';
+						else
+							$return .= '</span>';
+						$return .= '</th>
 					</tr>
 					<tr style="height: 3%">
 						<th style="width: 4%;"></th>
@@ -512,9 +522,13 @@ class Calendar {
 		for($i = 1; $i <= ceil(($first+$day_nbr-1)/7); $i ++) {
 			$week = (int)(date("W", $this->getDateOf(null, $month, 1+($i-1)*7)));
 			$return .= '<tr style="height: 13%">
-							<td class="calendar_year_table_week">
-								<a href="'.$this->url.'?type=week&week='.$week.'&year='.$this->year.'">'.$week.'</a>
-							</td>';
+							<td class="calendar_year_table_week">';
+								if($this->typeLink)
+									$return .= '<a href="'.$this->url.'?type=week&week='.$week.'&year='.$this->year.'">';
+								$return .= $week;
+								if($this->typeLink)
+									$return .= '</a>';
+							$return .= '</td>';
 			for($j = 1; $j <= 7; $j++) {
 				if(($k != 1 || $j == $first) && $k <= $day_nbr) {
 					$style = "";
@@ -641,21 +655,21 @@ class Calendar {
 							<table style="width: 100%">
 								<tr>
 									<td style="width: 30%"></td>
-									<td style="text-align: left">';
+									<td class="calendar_main_table_arrow_left">';
 									if($this->month == 1)
 										$return .= '<a href="'.$this->url.'?type=month&month=12&year='.($this->year -1 ).'" >&lt;=</a>';
 									else
 										$return .= '<a href="'.$this->url.'?type=month&month='.($this->month - 1).'&year='.$this->year.'" >&lt;=</a>';
 									$return .= '</td>
 									<th style="text-transform: capitalize; font-size: 18px">'.$this->translate($this->months[$this->month]).'</th>
-									<td style="text-align: right">';
+									<td class="calendar_main_table_arrow_right">';
 									if($this->month == 12)
 										$return .= '<a href="'.$this->url.'?type=month&month=1&year='.($this->year + 1).'" >=&gt;</a>';
 									else
 										$return .= '<a href="'.$this->url.'?type=month&month='.($this->month + 1).'&year='.$this->year.'" >=&gt;</a>';
 									
 									$return .= '</td>
-									<td style="width: 30%; text-align: right">';
+									<td class="calendar_main_table_link">';
 										if($this->typeLink) {
 											$return .= '<a href="'.$this->url.'?type=week">'.$this->translate('link.week').'</a>';
 										}
@@ -663,14 +677,14 @@ class Calendar {
 								</tr>
 								<tr>
 									<td></td>
-									<td style="text-align: left">';
+									<td class="calendar_main_table_arrow_left">';
 									$return .= '<a href="'.$this->url.'?type=month&month='.$this->month.'&year='.($this->year - 1).'" >&lt;=</a>';
 									$return .= '</td>
 									<th style="text-transform: capitalize; font-size: 18px">'.$this->year.'</th>
-									<td style="text-align: right">';
+									<td class="calendar_main_table_arrow_right">';
 									$return .= '<a href="'.$this->url.'?type=month&month='.$this->month.'&year='.($this->year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td style="text-align: right">';
+									<td class="calendar_main_table_link">';
 										if($this->typeLink) {
 											$return .= '<a href="'.$this->url.'?type=year&year='.$this->year.'">'.$this->translate('link.year').'</a>';
 										}
@@ -694,7 +708,14 @@ class Calendar {
 		$k = 1;
 		for($i = 1; $i <= ceil(($first+$day_nbr-1)/7); $i ++) {
 			$week = (int)(date("W", $this->getDateOf(null, null, 1+($i-1)*7)));
-			$return .= '<tr style="height: '.($this->height*14/100).'px"><td style="vertical-align: middle"><a href="'.$this->url.'?type=week&week='.$week.'&year='.$this->year.'">'.$week.'</a></td>';
+			$return .= '<tr style="height: '.($this->height*14/100).'px">
+						<td class="calendar_month_table_week">';
+			if($this->typeLink)
+				$return .= '<a href="'.$this->url.'?type=week&week='.$week.'&year='.$this->year.'">';
+			$return .= $week;
+			if($this->typeLink)
+				$return .= '</a>';
+			$return .= '</td>';
 			
 			for($j = 1; $j <= 7; $j++) {
 				if(($k != 1 || $j == $first) && $k <= $day_nbr) {
@@ -843,7 +864,7 @@ class Calendar {
 							<table style="width: 100%">
 								<tr>
 									<td style="width: 30%"></td>
-									<td style="text-align: left">';
+									<td class="calendar_main_table_arrow_left">';
 									$week = (int)date("W", $this->getDateForWeek());
 									if($week == 1) {
 										$first_day = date("N", $this->getateForWeek($this->year_request, 1, 1));
@@ -862,7 +883,7 @@ class Calendar {
 										$return .= '<a href="'.$this->url.'?type=week&week='.($week - 1).'&year='.$year.'" >&lt;=</a>';
 									$return .= '</td>
 									<th style="text-transform: capitalize; font-size: 18px">'.$this->translate('week').' '.$week.'</th>
-									<td style="text-align: right">';
+									<td class="calendar_main_table_arrow_right">';
 									$week_temp =date("W", $this->getDateForWeek(null, 12, 31));
 									if($week_temp == 1)
 										$week_temp = 52;
@@ -873,15 +894,15 @@ class Calendar {
 										$return .= '<a href="'.$this->url.'?type=week&week='.($week + 1).'&year='.$year.'" >=&gt;</a>';
 									
 									$return .= '</td>
-									<td style="width: 30%; text-align: right"><a href="'.$this->url.'?type=month&month='.$this->monthWeek.'">';
+									<td class="calendar_main_table_link">';
 										if($this->typeLink) {
-											$return .= $this->translate('link.month');
+											$return .= '<a href="'.$this->url.'?type=month&month='.$this->monthWeek.'">'.$this->translate('link.month').'</a>';
 										}
-									$return .= '</a></td>
+									$return .= '</td>
 								</tr>
 								<tr>
 									<td></td>
-									<td style="text-align: left">';
+									<td class="calendar_main_table_arrow_left">';
 									if($week == 53) {
 										$week_add = date("W", $this->removeOneDay($this->mondayInWeek(1, $year + 2)));
 										if($week_add == 1)
@@ -897,14 +918,14 @@ class Calendar {
 									$return .= '<a href="'.$this->url.'?type=week&week='.$week_remove.'&year='.($year - 1).'" >&lt;=</a>';
 									$return .= '</td>
 									<th style="text-transform: capitalize; font-size: 18px">'.$year.'</th>
-									<td style="text-align: right">';
+									<td class="calendar_main_table_arrow_right">';
 									$return .= '<a href="'.$this->url.'?type=week&week='.$week_add.'&year='.($year + 1).'" >=&gt;</a>';
 									$return .= '</td>
-									<td style="text-align: right"><a href="'.$this->url.'?type=year&year='.$year.'">';
+									<td class="calendar_main_table_link">';
 										if($this->typeLink) {
-											$return .= $this->translate('link.year').'</a></td>';
+											$return .= '<a href="'.$this->url.'?type=year&year='.$year.'">'.$this->translate('link.year').'</a>';
 										}
-								$return .= '</tr>
+								$return .= '</td></tr>
 							</table>
 						</td>
 					</tr>

@@ -26,7 +26,7 @@
 	$this->calendarLanguage["to.time"] = "to";
 	$this->calendarLanguage["on.day"] = "on day";
 	$this->calendarLanguage["to.day"] = "to";
-	$this->calendarLanguage["link.year"] = "By Year";
+	$this->calendarLanguage["link.year"] = "By year";
 	$this->calendarLanguage["link.month"] = "By month";
 	$this->calendarLanguage["link.week"] = "By week";
 	
