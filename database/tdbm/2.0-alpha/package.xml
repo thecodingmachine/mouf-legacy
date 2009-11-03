@@ -4,7 +4,7 @@
 	<shortDescription>The Database Machine is a PHP ORM that requires no configuration. The object model is deduced at runtime from the 
 	database model.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/tdbm/doc/manual.html</docUrl>
-	<logo>icons/database.png</logo>
+	<logo>icon.png</logo>
 	<requires>
 		<require>tdbm.php</require>
 	</requires>
