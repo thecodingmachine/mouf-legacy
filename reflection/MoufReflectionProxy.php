@@ -18,7 +18,7 @@ class MoufReflectionProxy {
 	 */
 	public static function getClass($className, $selfEdit) {
 		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/get_class.php?class=".$className."&selfedit=".(($selfEdit)?"true":"false");
-		
+
 		$response = self::performRequest($url);
 		
 		return new MoufXmlReflectionClass($response);
@@ -38,7 +38,7 @@ class MoufReflectionProxy {
 		$obj = unserialize($response);
 		
 		if ($obj === false) {
-			throw new Exception($response);
+			throw new Exception("Unable to unserialize message:\n".$response);
 		}
 		
 		return $obj;
@@ -52,7 +52,7 @@ class MoufReflectionProxy {
 		$obj = unserialize($response);
 		
 		if ($obj === false) {
-			throw new Exception($response);
+			throw new Exception("Unable to unserialize message:\n".$response);
 		}
 		
 		return $obj;
@@ -67,7 +67,7 @@ class MoufReflectionProxy {
 		$obj = unserialize($response);
 		
 		if ($obj === false) {
-			throw new Exception($response);
+			throw new Exception("Unable to unserialize message:\n".$response);
 		}
 		
 		return $obj;

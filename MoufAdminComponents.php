@@ -132,6 +132,41 @@ class MoufAdmin {
 	/**
 	 * @return Splash
 	 */
+	 public function getSplash2() {
+	 	return MoufManager::getMoufManager()->getInstance('splash2');
+	 }
+
+	/**
+	 * @return HtmlJSJQuery
+	 */
+	 public function getJquery1_3_2() {
+	 	return MoufManager::getMoufManager()->getInstance('jquery-1.3.2');
+	 }
+
+	/**
+	 * @return HtmlJSJQueryAutoGrow
+	 */
+	 public function getJqueryautogrow1_2_2() {
+	 	return MoufManager::getMoufManager()->getInstance('jquery-autogrow-1.2.2');
+	 }
+
+	/**
+	 * @return HtmlJSJQueryUI
+	 */
+	 public function getJqueryui1_7_2() {
+	 	return MoufManager::getMoufManager()->getInstance('jquery-ui-1.7.2');
+	 }
+
+	/**
+	 * @return HtmlJSJQueryFileTree
+	 */
+	 public function getJqueryFileTree1_01() {
+	 	return MoufManager::getMoufManager()->getInstance('jqueryFileTree-1.01');
+	 }
+
+	/**
+	 * @return Splash
+	 */
 	 public function getSplash() {
 	 	return MoufManager::getMoufManager()->getInstance('splash');
 	 }
@@ -260,6 +295,41 @@ class MoufAdmin {
 	 */
 	 public function getPackages() {
 	 	return MoufManager::getMoufManager()->getInstance('packages');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getFineAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getFineSupportedLanguagesMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineSupportedLanguagesMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getFineEnableDisableMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineEnableDisableMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public function getFineMissingLabelsMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineMissingLabelsMenuItem');
+	 }
+
+	/**
+	 * @return EditLabelController
+	 */
+	 public function getEditLabels() {
+	 	return MoufManager::getMoufManager()->getInstance('editLabels');
 	 }
 
 }
