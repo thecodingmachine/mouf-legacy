@@ -69,6 +69,18 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	public function exec($query) {
 		return $this->dbConnection->exec($query);
 	}
+	
+	/**
+	 * Performs a PDO request
+	 *
+	 * @param string $query
+	 * @param int $from
+	 * @param int $limit
+	 * @return PDOStatement
+	 */
+	public function query($query, $from = null, $limit = null) {
+		return $this->dbConnection->query($query, $from, $limit);
+	}
 
 	/**
 	 * Runs the query and returns all lines in an associative table.
@@ -384,6 +396,31 @@ class DB_CachedConnection implements DB_ConnectionInterface {
     public function createSequence($seq_name) {
     	return $this->dbConnection->createSequence($seq_name);
     }
+    
+    /**
+	 * Returns, depending on the database system used and file system used the string passed
+	 * in parameter in lowercase or in the same case.
+	 * For instance, with a PgSQL database, you will always get a lowercase string.
+	 * On MySQL, it will depend the system used. By default, on Windows, it should return a lowercase string
+	 * while on Linux, it will return the same string.
+	 * The database setting is retrieved only once and stored in session to avoid unnecessary database calls.
+	 *
+	 * TODO: change the session mecanism so we can use 2 different databases. Right now, they should have the same
+	 * case sensitivity settings, which is not good.
+	 *
+	 */
+    
+    /**
+     * Returns true if the underlying database is case sensitive, or false otherwise.
+     *
+     * @return bool
+     */
+	public function isCaseSensitive() {
+		$this->loadCache();
+		$this->cache["toStandardcase"] = $this->dbConnection->isCaseSensitive();
+		$this->saveCache();
+		return $this->cache["toStandardcase"];
+	}
 	
 }
 ?>

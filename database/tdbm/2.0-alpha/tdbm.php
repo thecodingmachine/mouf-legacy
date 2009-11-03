@@ -1,6 +1,6 @@
 <?php
 /*
- Copyright (C) 2006 David NÃ©grier - THE CODING MACHINE
+ Copyright (C) 2006-2009 David Négrier - THE CODING MACHINE
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,18 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-require_once("DB.php");
 
 
 
 class TDBM_Object {
 
+	/**
+	 * The main db connection
+	 *
+	 * @var DB_ConnectionInterface
+	 */
+	static public $main_db;
+	
 	static private $table_descs;
 
 	/**
@@ -157,8 +163,8 @@ class TDBM_Object {
 	 * @param array $dsn The DSN to access the database. See Pear DB.
 	 * @param array $options The connect database options. Optionnal. See Pear DB.
 	 */
-	static public function connect($dsn, $options = null) {
-		TDBM_Connection::$main_db = new TDBM_Connection($dsn, $options);
+	static public function connect(DB_ConnectionInterface $connection) {
+		TDBM_Object::$main_db = $connection;
 	}
 
 	/**
@@ -188,10 +194,10 @@ class TDBM_Object {
 	 * @return TDBM_Object
 	 */
 	static public function getObject($table_name, $id) {
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
-		$table_name = TDBM_Connection::$main_db->toStandardcase($table_name);
+		$table_name = TDBM_Object::$main_db->toStandardcase($table_name);
 
 		// If the ID is null, let's throw an exception
 		if ($id === null) {
@@ -206,7 +212,7 @@ class TDBM_Object {
 		if (isset(TDBM_Object::$objects[$table_name][$id]))
 		return TDBM_Object::$objects[$table_name][$id];
 
-		TDBM_Object::$objects[$table_name][$id] = new TDBM_Object(TDBM_Connection::$main_db, $table_name, $id);
+		TDBM_Object::$objects[$table_name][$id] = new TDBM_Object(TDBM_Object::$main_db, $table_name, $id);
 		return TDBM_Object::$objects[$table_name][$id];
 	}
 
@@ -224,41 +230,41 @@ class TDBM_Object {
 	 * @return TDBM_Object
 	 */
 	static public function getNewObject($table_name, $auto_assign_id=true) {
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): No connection has been established on the database!");
 		}
-		$table_name = TDBM_Connection::$main_db->toStandardcase($table_name);
+		$table_name = TDBM_Object::$main_db->toStandardcase($table_name);
 		
 		// Ok, let's verify that the table does exist:
 		try {
-			$data = TDBM_Connection::$main_db->getTableInfoWithCache($table_name);
+			$data = TDBM_Object::$main_db->getTableInfoWithCache($table_name);
 		} catch (TDBM_Exception $exception) {
-			$probable_table_name = TDBM_Connection::$main_db->checkTableExist($table_name);
+			$probable_table_name = TDBM_Object::$main_db->checkTableExist($table_name);
 			if ($probable_table_name == null)
 				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist.");
 			else
 				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist. Maybe you meant the table '$probable_table_name'.");
 		}
 
-		$object = new TDBM_Object(TDBM_Connection::$main_db, $table_name);
+		$object = new TDBM_Object(TDBM_Object::$main_db, $table_name);
 
 		if ($auto_assign_id) {
 			$pk_table = $object->getPrimaryKey();
 			if (count($pk_table)==1)
 			{
-				$root_table = TDBM_Connection::$main_db->findRootSequenceTableWithCache($table_name);
-				$id = TDBM_Connection::$main_db->nextId($root_table);
+				$root_table = TDBM_Object::$main_db->findRootSequenceTableWithCache($table_name);
+				$id = TDBM_Object::$main_db->nextId($root_table);
 				// If $id == 1, it is likely that the sequence was just created.
 				// However, there might be already some data in the database. We will check the biggest ID in the table.
 				if ($id == 1) {
 					$sql = "SELECT MAX(".$pk_table[0].") AS maxkey FROM ".$root_table;
-					$res = TDBM_Connection::$main_db->getAll($sql);
+					$res = TDBM_Object::$main_db->getAll($sql);
 					// NOTE: this will work only if the ID is an integer!
 					$newid = $res[0]['maxkey'] + 1;
 					if ($newid>$id) {
 						$id = $newid;
 					}
-					TDBM_Connection::$main_db->setSequenceId($root_table, $id);
+					TDBM_Object::$main_db->setSequenceId($root_table, $id);
 				}
 
 				$object->DBM_Object_id = $id;
@@ -365,34 +371,19 @@ class TDBM_Object {
 	 * @return array
 	 */
 	private function getPrimaryKey() {
-		/*if (!isset(TDBM_Object::$primary_keys[$this->db_table_name]))
-		 {
-			TDBM_Object::$primary_keys[$this->db_table_name] = $this->db_connection->getPrimaryKey($this->db_table_name);
-			if (TDBM_Object::$primary_keys[$this->db_table_name] == false)
-			{
-			// Unable to find primary key.... this is an error
-			// Let's try to be precise in error reporting. Let's try to find the table.
-			$tables = $this->db_connection->checkTableExist($this->db_table_name);
-			if ($tables === true)
-			throw new TDBM_Exception("Could not find table primary key for table '$this->db_table_name'. Please define a primary key for this table.");
-			elseif ($tables !== null) {
-			if (count($tables)==1)
-			$str = "Could not find table '$this->db_table_name'. Maybe you meant this table: '".$tables[0]."'";
-			else
-			$str = "Could not find table '$this->db_table_name'. Maybe you meant one of those tables: '".implode("', '",$tables)."'";
-			throw new TDBM_Exception($str);
-			}
-			}
-			}
-			return TDBM_Object::$primary_keys[$this->db_table_name];*/
 		return TDBM_Object::getPrimaryKeyStatic($this->db_table_name, $this->db_connection);
 	}
 
-	private function getPrimaryKeyStatic($table, TDBM_Connection $conn) {
+	private function getPrimaryKeyStatic($table, Mouf_DBConnection $conn) {
 		if (!isset(TDBM_Object::$primary_keys[$table]))
 		{
-			TDBM_Object::$primary_keys[$table] = $conn->getPrimaryKeyWithCache($table);
-			if (TDBM_Object::$primary_keys[$table] == false)
+			$arr = array();
+			foreach ($conn->getPrimaryKey($table) as $col) {
+				$arr[] = $col->name;
+			}
+			// The primary_keys contains only the column's name, not the DB_Column object.
+			TDBM_Object::$primary_keys[$table] = $arr;
+			if (empty(TDBM_Object::$primary_keys[$table]))
 			{
 				// Unable to find primary key.... this is an error
 				// Let's try to be precise in error reporting. Let's try to find the table.
@@ -527,12 +518,12 @@ class TDBM_Object {
 			$result = $this->db_connection->query($sql);
 
 
-			if ($result->numRows()==0)
+			if ($result->rowCount()==0)
 			{
 				throw new TDBM_Exception("Could not retrieve object from table \"$this->db_table_name\" with ID \"".$this->DBM_Object_id."\".");
 			}
 
-			$fullCaseRow = $result->fetchRow(DB_FETCHMODE_ASSOC);
+			$fullCaseRow = $result->fetchAll(PDO::FETCH_ASSOC);
 			$this->db_row = array();
 			foreach ($fullCaseRow as $key=>$value)  {
 				$this->db_row[$this->db_connection->toStandardCaseColumn($key)]=$value;
@@ -853,11 +844,11 @@ class TDBM_Object {
 		TDBM_Object::completeSave();
 		
 		// Now, let's commit or rollback if needed.
-		if (TDBM_Connection::$main_db != null && !TDBM_Connection::$main_db->isAutoCommit()) {
-			if (TDBM_Connection::$main_db->isCommitOnQuit()) {
-				TDBM_Connection::$main_db->commit();
+		if (TDBM_Object::$main_db != null && !TDBM_Object::$main_db->isAutoCommit()) {
+			if (TDBM_Object::$main_db->isCommitOnQuit()) {
+				TDBM_Object::$main_db->commit();
 			} else {
-				TDBM_Connection::$main_db->rollback();
+				TDBM_Object::$main_db->rollback();
 			}
 		}
 	}
@@ -935,7 +926,7 @@ class TDBM_Object {
 
 
 			$sql = 'DELETE FROM '.$object->db_table_name.' WHERE '.$sql_where/*.$primary_key."='".plainstring_to_dbprotected($object->DBM_Object_id)."'"*/;
-			$result = TDBM_Connection::$main_db->exec($sql);
+			$result = TDBM_Object::$main_db->exec($sql);
 
 			if ($result != 1)
 			throw new TDBM_Exception("Error while deleting object from table ".$object->db_table_name.": ".$result." have been affected.");
@@ -972,31 +963,31 @@ class TDBM_Object {
 	 * @return DBM_ObjectArray The result set of the query as a DBM_ObjectArray (an array of DBM_Objects with special properties)
 	 */
 	static public function getObjectsFromSQL($table_name, $sql, $from=null, $limit=null) {
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
 
-		$table_name = TDBM_Connection::$main_db->toStandardcase($table_name);
+		$table_name = TDBM_Object::$main_db->toStandardcase($table_name);
 
 		/*if (!isset(TDBM_Object::$primary_keys[$table_name]))
 		 {
-			TDBM_Object::$primary_keys[$table_name] = TDBM_Connection::$main_db->getPrimaryKey($table_name);
+			TDBM_Object::$primary_keys[$table_name] = TDBM_Object::$main_db->getPrimaryKey($table_name);
 			if (TDBM_Object::$primary_keys[$table_name] == false)
 			{
 			throw new TDBM_Exception("Could not find table primary key.");
 			}
 			}*/
-		TDBM_Object::getPrimaryKeyStatic($table_name, TDBM_Connection::$main_db);
+		TDBM_Object::getPrimaryKeyStatic($table_name, TDBM_Object::$main_db);
 
-		$result = TDBM_Connection::$main_db->query($sql, array(), $from, $limit);
+		$result = TDBM_Object::$main_db->query($sql, array(), $from, $limit);
 
 		$returned_objects = new DBM_ObjectArray();
 
-		while ($fullCaseRow = $result->fetchRow(DB_FETCHMODE_ASSOC))
+		while ($fullCaseRow = $result->fetch(PDO::FETCH_ASSOC))
 		{
 			$row = array();
 			foreach ($fullCaseRow as $key=>$value)  {
-				$row[TDBM_Connection::$main_db->toStandardCaseColumn($key)]=$value;
+				$row[TDBM_Object::$main_db->toStandardCaseColumn($key)]=$value;
 			}
 			
 			$pk_table = TDBM_Object::$primary_keys[$table_name];
@@ -1016,7 +1007,7 @@ class TDBM_Object {
 
 			if (!isset(TDBM_Object::$objects[$table_name][$id]))
 			{
-				TDBM_Object::$objects[$table_name][$id] = new TDBM_Object(TDBM_Connection::$main_db, $table_name, $id);
+				TDBM_Object::$objects[$table_name][$id] = new TDBM_Object(TDBM_Object::$main_db, $table_name, $id);
 				TDBM_Object::$objects[$table_name][$id]->loadFromRow($row);
 			}
 			$returned_objects[] = TDBM_Object::$objects[$table_name][$id];
@@ -1048,10 +1039,10 @@ class TDBM_Object {
 	 * @return array the result of your query
 	 */
 	static public function getTransientObjectsFromSQL($sql) {
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
-		return TDBM_Connection::$main_db->getAll($sql, null, DB_FETCHMODE_OBJECT);
+		return TDBM_Object::$main_db->getAll($sql, null, DB_FETCHMODE_OBJECT);
 	}
 
 	/**
@@ -1235,7 +1226,7 @@ class TDBM_Object {
 	 */
 	private static function static_find_paths($table, $tables, $conn=null) {
 		if ($conn==null)
-		$conn = TDBM_Connection::$main_db;
+		$conn = TDBM_Object::$main_db;
 		/*if (isset($_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2]))
 			return $_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2];*/
 
@@ -1594,7 +1585,7 @@ class TDBM_Object {
 	 * @return DBM_ObjectArray A DBM_ObjectArray containing the resulting objects of the query.
 	 */
 	static public function getObjects($table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null) {
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
 		return TDBM_Object::getObjectsByMode('getObjects', $table_name, $filter_bag, $orderby_bag, $from, $limit, $hint_path);
@@ -1610,7 +1601,7 @@ class TDBM_Object {
 	 * @return integer
 	 */
 	static public function getCount($table_name, $filter_bag=null, $hint_path=null) {
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
 		return TDBM_Object::getObjectsByMode('getCount', $table_name, $filter_bag, null, null, null, $hint_path);
@@ -1628,7 +1619,7 @@ class TDBM_Object {
 	 * @return string The SQL that would be executed.
 	 */
 	static public function explainSQLGetObjects($table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null) 	{
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
 		return TDBM_Object::getObjectsByMode('explainSQL', $table_name, $filter_bag, $orderby_bag, $from, $limit, $hint_path);
@@ -1646,7 +1637,7 @@ class TDBM_Object {
 	 * @return string The SQL that would be executed.
 	 */
 	static public function explainRequestAsTextGetObjects($table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null) 	{
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
 		$tree = TDBM_Object::getObjectsByMode('explainTree', $table_name, $filter_bag, $orderby_bag, $from, $limit, $hint_path);
@@ -1667,7 +1658,7 @@ class TDBM_Object {
 	 * @return string The SQL that would be executed.
 	 */
 	static public function explainRequestAsHTMLGetObjects($table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null, $x=10, $y=10) 	{
-		if (TDBM_Connection::$main_db == null) {
+		if (TDBM_Object::$main_db == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
 		$tree = TDBM_Object::getObjectsByMode('explainTree', $table_name, $filter_bag, $orderby_bag, $from, $limit, $hint_path);
@@ -1842,7 +1833,7 @@ class TDBM_Object {
 			$sql .= ' WHERE '.$where_clause;
 
 			// Now, let's perform the request:
-			$result = TDBM_Connection::$main_db->getOne($sql, array());
+			$result = TDBM_Object::$main_db->getOne($sql, array());
 
 			return $result;
 		}
@@ -1981,7 +1972,7 @@ class TDBM_Object {
 	 */
 	private static function checkTablesExist($tables) {
 		foreach ($tables as $table) {
-			$possible_tables = TDBM_Connection::$main_db->checkTableExist($table);
+			$possible_tables = TDBM_Object::$main_db->checkTableExist($table);
 			if ($possible_tables !== true)
 			{
 				if (count($possible_tables)==1)
@@ -2296,7 +2287,7 @@ abstract class DBM_AbstractFilter {
 	public function DBM_AbstractFilter($db_connection=null) {
 		$this->db_connection = $db_connection;
 		if ($this->db_connection == null) {
-			$this->db_connection = TDBM_Connection::$main_db;
+			$this->db_connection = TDBM_Object::$main_db;
 		}
 	}
 

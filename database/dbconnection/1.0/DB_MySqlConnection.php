@@ -496,6 +496,36 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		}
 		return $dbTable;
 	}
+	
+	/**
+	 * Local cache for the case sensitivity.
+	 *
+	 * @var bool
+	 */
+	private $caseSensitive = null;
+	
+	/**
+     * Returns true if the underlying database is case sensitive, or false otherwise.
+     *
+     * @return bool
+     */
+	public function isCaseSensitive() {
+		if ($this->caseSensitive === null) {
+
+			$case_sensitive_result = $this->getAll("SHOW VARIABLES WHERE Variable_name = 'lower_case_table_names'");
+
+			if (count($case_sensitive_result)==0) {
+				throw new TDBM_Exception('Unable to retrieve case sensitivity for your MySQL database.<br />\nPlease note only MySQL 5+ is supported.');
+			}
+			if ($case_sensitive_result[0]['Value'] == 1 || $case_sensitive_result[0]['Value'] == 2) {
+				$this->caseSensitive = false;
+			} else {
+				$this->caseSensitive = true;
+			}
+		}
+		return $this->caseSensitive;
+	}
+	
 }
 
 

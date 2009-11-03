@@ -313,8 +313,16 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 		throw new Exception("Not implemented yet");
 	}
 	
+	/**
+     * Returns true if the underlying database is case sensitive, or false otherwise.
+     *
+     * @return bool
+     */
+	public function isCaseSensitive() {
+		// Pgsql is not case sensitive. Always.
+		return false;
+	}
 }
 
 
 ?>
-

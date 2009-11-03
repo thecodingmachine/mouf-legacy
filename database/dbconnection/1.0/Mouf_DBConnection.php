@@ -8,7 +8,7 @@ require_once 'DB_Table.php';
  * An abstract class representing wrapping a connection to PDO with additional goodies (introspection support)
  *
  */
-abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_ConnectionInterface {
+abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_ConnectionInterface {
 
 	/**
 	 * The database handler. This is an object whose type is PDO.
@@ -83,6 +83,31 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 		return $res;
 	}
 
+	/**
+	 * Performs a PDO request
+	 *
+	 * @param string $query
+	 * @param int $from
+	 * @param int $limit
+	 * @return PDOStatement
+	 */
+	public function query($query, $from = null, $limit = null) {
+		$queryStr = $query;
+		if ($limit !== null) {
+			$limitInt = (int)$limit;
+			$queryStr .= " LIMIT ".$limitInt;
+			
+			if ($from !== null) {
+				$fromInt = (int)$from;
+				$queryStr .= " OFFSET ".$fromInt;
+			}
+		}
+		
+		$res = $this->dbh->query($queryStr);
+
+		return $res;
+	}
+	
 	/**
 	 * Runs the query and returns all lines in an associative table.
 	 *
@@ -181,7 +206,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 	 * @param unknown_type $table_name
 	 */
 	private function getParentTableByPrimaryForeignKey($table_name){
-		$primary_key = $this->getPrimaryKeyWithCache($table_name);
+		$primary_key = $this->getPrimaryKey($table_name);
 		$parent_table = null;
 		// Primary Keys made of several columns are not handled
 		if (count($primary_key)>1) {
@@ -191,7 +216,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 			throw new TDBM_Exception('No primary key for table '.$table_name );
 		}
 		$primary_key = $primary_key[0];
-		$constraint_array = $this->getConstraintsFromTableWithCache($table_name);
+		$constraint_array = $this->getConstraintsFromTable($table_name);
 		foreach ($constraint_array as $constraint){
 			if ($constraint['col1']==$primary_key) {
 				$parent_table = $constraint['table_2'];
@@ -201,45 +226,6 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 		return $parent_table;
 	}
 
-	/**
-	 * Returns Root Sequence Table for $table_name
-	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
-	 * !! Warning !! Child table must share Mother table's primary key
-	 * @param unknown_type $table_name
-	 */
-	public function findRootSequenceTableWithCache($table_name){
-		if (!isset($_SESSION['__TDBM_CACHE__']['inherits'][$table_name]))
-		{
-			$_SESSION['__TDBM_CACHE__']['inherits'][$table_name] = $this->findRootSequenceTable($table_name);
-		}
-		return $_SESSION['__TDBM_CACHE__']['inherits'][$table_name];
-	}
-
-	/**
-	 * Returns the parent table (if the table inherits from another table).
-	 * For DB systems that do not support inheritence, returns the table name.
-	 *
-	 * @param string $table_name
-	 * @return string
-	 */
-	//abstract public function getParentTable($table_name);
-	
-	/**
-	 * Returns an array of columns that are declared to be primary keys for this table.
-	 *
-	 * @param string $table_name the table name
-	 * @return array<DB_Column> an array of the primary key columns of the table
-	 */
-	//abstract protected function getPrimaryKey($table_name);
-
-	public function getPrimaryKeyWithCache($table_name) {
-		if (!isset($_SESSION['__TDBM_CACHE__']['pk'][$table_name]))
-		{
-			$_SESSION['__TDBM_CACHE__']['pk'][$table_name] = $this->getPrimaryKey($table_name);
-		}
-		return $_SESSION['__TDBM_CACHE__']['pk'][$table_name];
-	}
-	
 	/**
 	 * Returns the table columns.
 	 *
@@ -319,45 +305,6 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 	//abstract public function getConstraintsFromTable($table_name,$column_name=false);
 
 	/**
-	 * Returns a table of rows with structure identic to getConstraintsFromTable
-	 * Provides a mechanism of caching above that.
-	 * Caching is kept in session, if sessions are active.
-	 *
-	 * @param unknown_type $foreign_table
-	 * @param unknown_type $fail_if_empty if true, throws an Exception if no constraint has been found.
-	 * @return unknown
-	 */
-	public function getConstraintsFromTableWithCache($table) {
-		/*if (!isset(TDBM_Object::$constraints_one_star[$table]))
-		 {
-			TDBM_Object::$constraints_one_star[$table] = $this->db_connection->getConstraintsFromTable($table);
-			}
-			return TDBM_Object::$constraints_one_star[$table];*/
-
-		if (!isset($_SESSION['__TDBM_CACHE__']['constraints_one_star'][$table]))
-		{
-			$_SESSION['__TDBM_CACHE__']['constraints_one_star'][$table] = $this->getConstraintsFromTable($table);
-		}
-		return $_SESSION['__TDBM_CACHE__']['constraints_one_star'][$table];
-
-	}
-
-	public function getConstraintsOnTableWithCache($table) {
-		/*if (!isset(TDBM_Object::$constraints_one_star[$table]))
-		 {
-			TDBM_Object::$constraints_one_star[$table] = $this->db_connection->getConstraintsFromTable($table);
-			}
-			return TDBM_Object::$constraints_one_star[$table];*/
-
-		if (!isset($_SESSION['__TDBM_CACHE__']['constraints_star_one'][$table]))
-		{
-			$_SESSION['__TDBM_CACHE__']['constraints_star_one'][$table] = $this->getConstraintsOnTable($table);
-		}
-		return $_SESSION['__TDBM_CACHE__']['constraints_star_one'][$table];
-
-	}
-
-	/**
 	 * Returns a table of rows with structure:
 	 * ("constraining_column" => XXX, "constrained_column" => XXX)
 	 *
@@ -412,38 +359,6 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 		return $result;
 	}
 
-	/**
-	 * Returns the columns information from the cache, or from the DB if not in cache.
-	 *
-	 * @param string $table
-	 * @return array
-	 */
-	/*public function getTableInfoWithCache($table) {
-
-		if (!isset($_SESSION['__TDBM_CACHE__']['table_info'][$table]))
-		{
-			
-			// TODO migrate this to use getTableInfo
-			$data = $this->db->tableInfo($table);
-			
-			$columns_data = array();
-			
-			// Ok, let's take the data from the table and reorganize that data in an associative array where the column name
-			// is the first parameter (more efficient for searching column data!)
-			foreach ($data as $column) {
-				$columns_data[$column['name']] = $column;
-			}
-
-			if (PEAR::isError($data)) {
-				throw new TDBM_Exception("Error while retrieving information for table ".$table);
-			}
-			
-			$_SESSION['__TDBM_CACHE__']['table_info'][$table] = $columns_data;
-		}
-		return $_SESSION['__TDBM_CACHE__']['table_info'][$table];
-
-	}*/
-	
 
 
 	/**
@@ -497,7 +412,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 	function checkColumnExist($table_name, $column_name) {
 		// Once you have a valid DB object named $db...
 		try {
-			$data = $this->getTableInfoWithCache($table_name);
+			$data = $this->getTableInfo($table_name);
 		} catch (DB_Exception $ex) {
 			// If the table does not exist, let's return null.
 			return null;
@@ -543,30 +458,9 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 	 *
 	 */
 	function toStandardcase($string) {
-		$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
-		if ($case_sensitive === null) {
-
-			if ($this->dsn["phptype"]=='pgsql') {
-				$_SESSION['__TDBM_CACHE__']['case_sensitive'] = false;
-			} else if ($this->dsn["phptype"]=='mysql') {
-				$case_sensitive_result = $this->getAll("SHOW VARIABLES WHERE Variable_name = 'lower_case_table_names'");
-
-				if (count($case_sensitive_result)==0) {
-					throw new TDBM_Exception('Unable to retrieve case sensitivity for your MySQL database.<br />\nPlease note only MySQL 5+ and PostGreSQL 7+ are supported.');
-				}
-				if ($case_sensitive_result[0]['Value'] == 1 || $case_sensitive_result[0]['Value'] == 2) {
-					$_SESSION['__TDBM_CACHE__']['case_sensitive'] = false;
-				} else {
-					$_SESSION['__TDBM_CACHE__']['case_sensitive'] = true;
-				}
-			} else {
-				throw new TDBM_Exception('Unable to retrieve case sensitivity for database type '.$this->dsn['phptype'].'<br />\nCurrently, only MySQL 5+ and PostGreSQL 7+ are supported.');
-			}
-
-			$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
-		}
-
-		if ($case_sensitive) {
+		$caseSensitive = $this->isCaseSensitive();
+		
+		if ($caseSensitive) {
 			return $string;
 		} else {
 			return strtolower($string);
@@ -647,7 +541,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettings, DB_Connection
 	 * @param string $column
 	 */
 	public function getColumnType($table, $column) {
-		$table_info = $this->getTableInfoWithCache($table);
+		$table_info = $this->getTableInfo($table);
 		if (!isset($table_info[$column]))
 			return null;
 		return $table_info[$column]['type'];

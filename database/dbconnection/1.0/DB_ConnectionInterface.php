@@ -20,6 +20,16 @@ interface DB_ConnectionInterface {
 	public function exec($query);
 
 	/**
+	 * Performs a PDO request
+	 *
+	 * @param string $query
+	 * @param int $from
+	 * @param int $limit
+	 * @return PDOStatement
+	 */
+	public function query($query, $from = null, $limit = null);
+	
+	/**
 	 * Runs the query and returns all lines in an associative table.
 	 *
 	 * @param string $query
@@ -257,5 +267,11 @@ interface DB_ConnectionInterface {
      */
     public function createSequence($seq_name);
 	
+    /**
+     * Returns true if the underlying database is case sensitive, or false otherwise.
+     *
+     * @return bool
+     */
+	public function isCaseSensitive();
 }
 ?>

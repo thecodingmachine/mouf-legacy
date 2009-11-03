@@ -5,7 +5,7 @@
  * Use one of the classes implementing this interface to specify real settings.
  *
  */
-interface DB_ConnectionSettings {
+interface DB_ConnectionSettingsInterface {
 	
 	/**
 	 * Returns the DSN for this connection.

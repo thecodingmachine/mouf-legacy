@@ -7,12 +7,13 @@
 	The DB Connection class has special features to help you get informations about the database schema,
 	and especially about the constraints between tables.</shortDescription>
 	<docUrl></docUrl>
-	<logo>logo.png</logo>
+	<logo>icons/database.png</logo>
 	<dependencies>
 	</dependencies>
 	<requires>
 		<require>DB_Column.php</require>
 		<require>DB_Table.php</require>
+		<require>DB_ConnectionSettingsInterface.php</require>
 		<require>DB_ConnectionInterface.php</require>
 		<require>DB_Exception.php</require>
 		<require>Mouf_DBConnection.php</require>
