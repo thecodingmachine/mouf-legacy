@@ -131,7 +131,7 @@ class MoufPropertyDescriptor {
 	 */
 	public static function getPropertyNameFromSetterName($methodName) {
 		if (strpos($methodName, "set") !== 0) {
-			throw new MoufException("Error while creating MoufPropertyDescriptor. A @Property annotation must be set to methods that start with 'set'. For instance: setName, and setPhone are valid @Property setters.");
+			throw new MoufException("Error while creating MoufPropertyDescriptor. A @Property annotation must be set to methods that start with 'set'. For instance: setName, and setPhone are valid @Property setters. $methodName is not a valid setter name.");
 		}
 		$propName1 = substr($methodName, 3);
 		if (empty($propName1)) {
