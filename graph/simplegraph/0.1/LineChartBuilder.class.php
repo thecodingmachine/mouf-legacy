@@ -52,10 +52,8 @@ class LineChartBuilder {
 		// On inclue le fichier qui nous permettra de dessiner des courbes
 		require_once(dirname(__FILE__).'/../../artichow/1.1.0/LinePlot.class.php');
 	
-		// Il est toujours nécessaire de donner une taille à la création de votre graphique.
-		// Ici, le graphique mesurera 400 x 400 pixels.
-		$graph = new Graph($this->theme->completeWidth, $this->theme->completeHeight);
-	   
+		$graph = $this->theme->getAwGraph();
+
 		// L'anti-aliasing permet d'afficher des courbes plus naturelles,
 		// mais cette option consomme beaucoup de ressources sur le serveur.
 		$graph->setAntiAliasing($this->theme->antiAliasing);
@@ -64,7 +62,7 @@ class LineChartBuilder {
 		$plot = new LinePlot($this->dataSet->values);
 		
 		// Ajoute un dégradé de fond
-		$colorOne = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorOne);
+		/*$colorOne = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorOne);
 		$colorTwo = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorTwo);
 		$plot->setBackgroundGradient(
 			new LinearGradient(
@@ -75,7 +73,7 @@ class LineChartBuilder {
 				// 0 pour aller du haut vers le bas
 				$this->theme->backgroundAngle
 			)
-		);
+		);*/
 		
 		
   		// On cache la ligne qui relie les valeurs...

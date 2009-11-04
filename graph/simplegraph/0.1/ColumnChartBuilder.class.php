@@ -54,7 +54,7 @@ class ColumnChartBuilder {
 
 		// Il est toujours n�cessaire de donner une taille � la cr�ation de votre graphique.
 		// Ici, le graphique mesurera 400 x 400 pixels.
-		$graph = new Graph($this->theme->completeWidth, $this->theme->completeHeight);
+		$graph = $this->theme->getAwGraph();
 		
 		// L'anti-aliasing permet d'afficher des courbes plus naturelles,
 		// mais cette option consomme beaucoup de ressources sur le serveur.
@@ -64,7 +64,7 @@ class ColumnChartBuilder {
 		$plot = new BarPlot($this->dataSet->values);
 		
 		// Ajoute un d�grad� de fond
-		$colorOne = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorOne);
+		/*$colorOne = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorOne);
 		$colorTwo = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorTwo);
 		$plot->setBackgroundGradient(
 			new LinearGradient(
@@ -75,7 +75,7 @@ class ColumnChartBuilder {
 				// 0� pour aller du haut vers le bas
 				$this->theme->backgroundAngle
 			)
-		);
+		);*/
 		
 		for ($i=0;$i<count($this->dataSet->legend);$i++) {
 			$xAxisLabel[$i]= utf8_decode($this->dataSet->legend[$i]);
