@@ -13,7 +13,7 @@ class PieChartBuilder {
 	 * Theme of your pie chart
 	 * 
 	 * @Property
-	 * @compulsory
+	 * @Compulsory
 	 * @var ChartTheme
 	 */
 	public $theme;
@@ -26,6 +26,26 @@ class PieChartBuilder {
 	 * @var ChartDataSerie
 	 */
 	public $dataSet;
+	
+	/**
+	 * The number of digits to print after the dot.
+	 * Defaults to 0.
+	 * 
+	 * @Property
+	 * @var int
+	 */
+	//public $labelPrecision = 0;
+	
+	/**
+	 * The distance in pixels between the labels and the pie chart.
+	 * Defaults to 0.
+	 * Can be negative.
+	 * Positive values go towards the center of the pie and negative towards the outside.
+	 * 
+	 * @Property
+	 * @var int
+	 */
+	public $labelPosition;
 	
 	public function setTheme(ChartTheme $theme) {
 		$this->theme = $theme;
@@ -40,23 +60,7 @@ class PieChartBuilder {
 		
 		// La classe Pie est celle utilis�e pour dessiner les camemberts.
 		require_once(dirname(__FILE__).'/../../artichow/1.1.0/Pie.class.php');
-		$graph = new Graph($this->theme->completeWidth, $this->theme->completeHeight);
-		
-		// ... ajout d'une ombre port�e...
-		// Si vous utilisez Artichow pour PHP 4 & 5,
-		// utilisez SHADOW_RIGHT_BOTTOM � la place de Shadow::RIGHT_BOTTOM
-		$graph->shadow->setPosition(Shadow::RIGHT_BOTTOM);
-		$graph->shadow->setSize($this->theme->shadow);
-		// ... et d'un joli fond.
-		$colorOne = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorOne);
-		$colorTwo = $this->theme->colorHtmlToDecimal($this->theme->backgroundColorTwo);
-		$graph->setBackgroundGradient(
-			new LinearGradient(
-				new Color($colorOne[0], $colorOne[1], $colorOne[2], 0),
-				new Color($colorTwo[0], $colorTwo[1], $colorTwo[2], 0),
-				0
-			)
-		);
+		$graph = $this->theme->getAwGraph();
 		
 		$colors = null;
 		if (is_array($this->dataSet->color) && !empty($this->dataSet->color)) {
@@ -80,13 +84,18 @@ class PieChartBuilder {
 
 		// Seules les valeurs numériques sont utilisées pour l'instant,
 		// avec le thême de couleur par défaut.
-		$pie = new Pie($this->dataSet->values, $colors);
+		$pie = new awPie($this->dataSet->values, $colors);
 		
 		// Pr�cision des valeurs.
 		$pie->setLabelPrecision($this->theme->accuracy);
-		
+				
 		// Ajout de la l�gende
 		$pie->setLegend($legend);
+
+		// Hide the legend if necessary.
+		if (!$this->theme->showLegend) {
+			$pie->legend->hide();
+		}
 		
 		// Repositionnement de la l�gende
 		$pie->legend->setPosition($this->theme->posLegendX, $this->theme->posLegendY);
@@ -100,19 +109,8 @@ class PieChartBuilder {
 		// Ajout d'un petit effet 3D; la valeur est donn�e en pixel.
 		$pie->set3D($this->theme->thickness);
 		
-		// Ajout d'un titre...
-		$pie->title->set(utf8_decode($this->theme->pieTitle));
+		$pie->setLabelPosition($this->labelPosition);
 		
-		// ... repositionnement...
-		$pie->title->move($this->theme->piePosTitleX, $this->theme->piePosTitleY);
-		
-		// ... et embellissement.
-		$colorBgTitle = $this->theme->colorHtmlToDecimal($this->theme->pieTitleBackgroundColor);
-		$colorFrameTitle = $this->theme->colorHtmlToDecimal($this->theme->pieTitleFrameColor);
-		$pie->title->setFont(new TuffyBold($this->theme->pieTitleFontSize));
-		$pie->title->setBackgroundColor(new Color($colorBgTitle[0], $colorBgTitle[1], $colorBgTitle[2], $this->theme->pieTitleBackgroundTransparency));
-		$pie->title->setPadding($this->theme->piePaddingTitleX, $this->theme->piePaddingTitleX, $this->theme->piePaddingTitleY, $this->theme->piePaddingTitleY);
-		$pie->title->border->setColor(new Color($colorFrameTitle[0], $colorFrameTitle[1], $colorFrameTitle[2], 0));
 		
 		$graph->add($pie);
 		$graph->draw();

@@ -13,6 +13,13 @@
 		</dependency>
 	</dependencies>
 	<requires>
+		<require>SimpleGraphUtils.php</require>
+		<require>ChartBorder.php</require>
+		<require>ChartShadow.php</require>
+		<require>ChartFontInterface.php</require>
+		<require>ChartStandardFont.php</require>
+		<require>ChartTrueTypeFont.php</require>
+		<require>ChartLabel.php</require>
 		<require>PieChartBuilder.class.php</require>
 		<require>LineChartBuilder.class.php</require>
 		<require>ColumnChartBuilder.class.php</require>
