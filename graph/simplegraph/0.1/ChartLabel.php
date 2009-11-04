@@ -150,6 +150,9 @@ class ChartLabel {
 		if (!empty($this->angle)) {
 			$label->setAngle($this->angle);
 		}
+		if ($this->hide) {
+			$label->hide();
+		}
 		$label->setPadding($this->paddingLeft, $this->paddingRight, $this->paddingTop, $this->paddingBottom);
 		$label->move($this->moveX, $this->moveY);
 		$label->setAlign($this->horizontalAlign, $this->verticalAlign);
