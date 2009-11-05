@@ -163,6 +163,15 @@ class TDBM_Object {
 	private static $autosave_default = true;
 
 	/**
+	 * The content of the cache variable.
+	 *
+	 * @var array<string, mixed>
+	 */
+	private static $cache;
+
+	private static $cacheKey = "__TDBM_Cache__";
+	
+	/**
 	 * Sets up the default connection to the database.
 	 * The parameters of TDBM_Object::connect are similar to the parameters used by PEAR DB (since TDBM_Object relies on PEAR DB).
 	 *
@@ -209,6 +218,24 @@ class TDBM_Object {
 			$cachedConnection->cacheService = self::$cacheService;
 			TDBM_Object::$main_db = $cachedConnection;
 		}
+	}
+	
+	/**
+	 * Loads the cache and stores it (to be reused in this instance).
+	 * Note: the cache is not returned. It is stored in the $cache instance variable.
+	 */
+	private static function loadCache() {
+		if (self::$cache == null) {
+			self::$cache = self::$cacheService->get(self::$cacheKey);
+		}
+	}
+	
+	/**
+	 * Saves the cache.
+	 *
+	 */
+	private static function saveCache() {
+		$this->cacheService->set(self::$cacheKey, self::$cache);
 	}
 	
 	/**
@@ -445,91 +472,6 @@ class TDBM_Object {
 		}
 		return TDBM_Object::$primary_keys[$table];
 	}
-
-	/*private function getColumnConstrainedBy($column) {
-		if (!isset(TDBM_Object::$external_constraint[$this->db_table_name][$column]))
-		{
-		TDBM_Object::$external_constraint[$this->db_table_name][$column] = db_getcolumnconstrainedby($this->db_table_name, $column);
-		if (TDBM_Object::$external_constraint[$this->db_table_name][$column] == false)
-		{
-		throw new Exception("Could not find any external constraint on column $column.");
-		}
-		}
-		return TDBM_Object::$external_constraint[$this->db_table_name][$column];
-		}*/
-
-	/*private function getConstraintsOnTable($foreign_table, $fail_if_empty=true) {
-		if (!isset(TDBM_Object::$foreign_constraints[$this->db_table_name][$foreign_table]))
-		{
-		////////// TODO A VERIFIER.....
-		TDBM_Object::$foreign_constraints[$this->db_table_name][$foreign_table] = $this->db_connection->getConstraintsBetweenTable($foreign_table, $this->db_table_name);
-		if (TDBM_Object::$foreign_constraints[$this->db_table_name][$foreign_table] == false)
-		{
-		if ($fail_if_empty)
-		throw new TDBM_Exception("Could not find any constraint from table $foreign_table on table $this->db_table_name.");
-		else
-		return false;
-		}
-		}
-		return TDBM_Object::$foreign_constraints[$this->db_table_name][$foreign_table];
-		}*/
-
-	/**
-	 * Returns a table of rows with structure:
-	 * ("constraining_column" => XXX, "constrained_column" => XXX)
-	 *
-	 * @param unknown_type $foreign_table
-	 * @param unknown_type $fail_if_empty if true, throws an Exception if no constraint has been found.
-	 * @return unknown
-	 */
-	/*private function getConstraintsFromTable($foreign_table, $fail_if_empty=true) {
-		if (!isset(TDBM_Object::$foreign_constraints[$foreign_table][$this->db_table_name]))
-		{
-		TDBM_Object::$foreign_constraints[$foreign_table][$this->db_table_name]= $this->db_connection->getConstraintsBetweenTable($this->db_table_name, $foreign_table);
-		if (TDBM_Object::$foreign_constraints[$foreign_table][$this->db_table_name] == false)
-		{
-		if ($fail_if_empty)
-		throw new TDBM_Exception("Could not find any constraint from table $this->db_table_name on table $foreign_table.");
-		else
-		return false;
-		}
-		}
-		return TDBM_Object::$foreign_constraints[$foreign_table][$this->db_table_name];
-		}
-
-		private function getPivotTables($table_name) {
-		if (!isset(TDBM_Object::$pivot_constraints[$this->db_table_name][$table_name]))
-		{
-		$pivot_tables_data = $this->db_connection->findPivotTable($table_name, $this->db_table_name);
-			
-		if ($pivot_tables_data == false)
-		{
-		throw new TDBM_Exception("Could not find any pivot table between table $table_name and table $this->db_table_name.");
-		}
-			
-		//unset (TDBM_Object::$foreign_constraints[$this->db_table_name][$pivot_table]);
-		//unset (TDBM_Object::$foreign_constraints[$table_name][$pivot_table]);
-			
-		$i=0;
-		foreach ($pivot_tables_data as $pivot_data) {
-		$pivot_table = $pivot_data['pivottable'];
-
-			
-		TDBM_Object::$pivot_constraints[$this->db_table_name][$table_name][] = $pivot_table;
-		TDBM_Object::$pivot_constraints[$table_name][$this->db_table_name][] = $pivot_table;
-
-		$constraint1['constraining_column'] = $pivot_data['colpivot1'];
-		$constraint1['constrained_column'] = $pivot_data['col1'];
-		TDBM_Object::$foreign_constraints[$this->db_table_name][$pivot_table][$i] = $constraint1;
-		$constraint2['constraining_column'] = $pivot_data['colpivot2'];
-		$constraint2['constrained_column'] = $pivot_data['col2'];
-		TDBM_Object::$foreign_constraints[$table_name][$pivot_table][$i] = $constraint2;
-		$i++;
-		}
-			
-		}
-		return TDBM_Object::$pivot_constraints[$this->db_table_name][$table_name];
-		}*/
 
 	/**
 	 * If the object is in state 'not loaded', this method performs a query in database to load the object.
@@ -1181,63 +1123,6 @@ class TDBM_Object {
 	}
 
 	/**
-	 * TO DO: remove this method after rewriting the behaviour of cleverget
-	 *
-	 * @param unknown_type $table1
-	 * @param unknown_type $table2
-	 * @param unknown_type $conn
-	 * @return unknown
-	 */
-	/*private static function static_find_path($table1, $table2, &$conn) {
-		if (isset($_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2]))
-		return $_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2];
-
-		$path = array();
-		$queue = array(array($table1,array()));
-
-		$found_paths=array();
-		$found = false;
-		$found_depth = 0;
-
-		while (!empty($queue))
-		{
-		$ret = TDBM_Object::find_path_iter($table2,  $path, $queue, $conn);
-		if ($found && $found_depth != count($path))
-		{
-		break;
-		}
-		if ($ret==true)
-		{
-		// Ok, we got one, we will continue a bit more until we reach the next level in the tree,
-		// just to see if there is no ambiguity
-		$found_paths[] = $path;
-		$found = true;
-		$found_depth = count($path);
-		}
-		}
-
-		if (count($found_paths)==0) {
-		throw new TDBM_Exception("Unable to find a path between table ".$table1." and table $table2.\nIt is likely that the table names are misspelled or that a constraint is missing.");
-		}
-		elseif (count($found_paths)>1) {
-		$msg = "An ambiguity has been found during the search. The table \"$table2\" can be reach by several different ways from the table \"$table1\"\n\n".
-		$count = 0;
-		foreach ($found_paths as $path) {
-		$count++;
-		$msg .= "Solution $count:\n";
-		$msg .= TDBM_Object::to_explain_string($path)."\n\n";
-		}
-			
-		throw new TDBM_Exception($msg);
-		}
-
-		$_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2] = $found_paths[0];
-		$_SESSION['__TDBM_CACHE__']['paths'][$table2][$table1] = $found_paths[0];
-
-		return $found_paths[0];
-		}*/
-
-	/**
 	 * Finds the path from our table to the given table.
 	 * Returns the path as a series of constraints defined by source and dest table, source and dest columns and the
 	 * constraint type (1* or *1).
@@ -1281,8 +1166,7 @@ class TDBM_Object {
 	private static function static_find_paths($table, $tables, $conn=null) {
 		if ($conn==null)
 		$conn = TDBM_Object::$main_db;
-		/*if (isset($_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2]))
-			return $_SESSION['__TDBM_CACHE__']['paths'][$table1][$table2];*/
+		self::loadCache();
 
 		$path = array();
 		$queue = array(array($table,array()));
@@ -1297,20 +1181,20 @@ class TDBM_Object {
 		// Let's fill the $tables_paths that will contain the name of the tables needed (and the paths soon).
 		// Also, let's use this moment to check if the tables we are looking for are not in cache.
 		foreach ($tables as $tablename) {
-			if (isset($_SESSION['__TDBM_CACHE__']['paths'][$table][$tablename]))
+			if (isset(self::$cache['paths'][$table][$tablename]))
 			{
 				$cached_path = array();
 				$cached_path['name'] = $tablename;
-				$cached_path['founddepth'] = count($_SESSION['__TDBM_CACHE__']['paths'][$table][$tablename]);
-				$cached_path['paths'][] = $_SESSION['__TDBM_CACHE__']['paths'][$table][$tablename];
+				$cached_path['founddepth'] = count(self::$cache['paths'][$table][$tablename]);
+				$cached_path['paths'][] = self::$cache['paths'][$table][$tablename];
 				$cached_tables_paths[] = $cached_path;
 			}
-			elseif (isset($_SESSION['__TDBM_CACHE__']['paths'][$tablename][$table]))
+			elseif (isset(self::$cache['paths'][$tablename][$table]))
 			{
 				$cached_path = array();
 				$cached_path['name'] = $tablename;
-				$cached_path['founddepth'] = count($_SESSION['__TDBM_CACHE__']['paths'][$tablename][$table]);
-				$cached_path['paths'][] = $_SESSION['__TDBM_CACHE__']['paths'][$tablename][$table];
+				$cached_path['founddepth'] = count(self::$cache['paths'][$tablename][$table]);
+				$cached_path['paths'][] = self::$cache['paths'][$tablename][$table];
 				$cached_tables_paths[] = $cached_path;
 			}
 			else
@@ -1381,14 +1265,17 @@ class TDBM_Object {
 				//throw new TDBM_AmbiguityException($msg, $tables_paths);
 			}
 
-			if (!$ambiguity)
-			$_SESSION['__TDBM_CACHE__']['paths'][$table][$table_path['name']] = $table_path['paths'][0];
+			if (!$ambiguity) {
+				self::$cache['paths'][$table][$table_path['name']] = $table_path['paths'][0];
+				self::saveCache();
+			}
 		}
 
 		$tables_paths = array_merge($tables_paths, $cached_tables_paths);
 
-		if ($ambiguity)
-		throw new TDBM_AmbiguityException($msg, $tables_paths);
+		if ($ambiguity) {
+			throw new TDBM_AmbiguityException($msg, $tables_paths);
+		}
 
 		//var_dump($tables_paths);
 		return $tables_paths;
@@ -1734,7 +1621,7 @@ class TDBM_Object {
 	 */
 	static public function getObjectsByMode($mode, $table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null) {
 		TDBM_Object::completeSave();
-
+		self::loadCache();
 		
 		// Let's get the filter from the filter_bag
 		$filter = self::buildFilterFromFilterBag($filter_bag);
@@ -1826,7 +1713,7 @@ class TDBM_Object {
 			// TODO! Pas bon!!!! Faut le quÃ©rir, hÃ©las!
 			// Mais comment gÃ©rer Ã§a sans plomber les perfs et en utilisant le path fourni?????
 
-			$path = $_SESSION['__TDBM_CACHE__']['paths'][$table_name][$target_table_table];
+			$path = self::$cache['paths'][$table_name][$target_table_table];
 			/*echo 'beuuuh';
 			 var_dump($needed_table_array_for_orderby);
 			 var_dump($path);*/
