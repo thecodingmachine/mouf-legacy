@@ -26,7 +26,14 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 */
 	public $dbname;
 	
-	
+	/**
+	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
+	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
+	 * will be ended, but the flag will not be set to false).
+	 * 
+	 * @var bool
+	 */
+	protected $_hasActiveTransaction = false;
 	
 	/*public $db;
 	public $dsn;
@@ -489,7 +496,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool true on success, false on failure.
 	 */
 	public function beginTransaction() {
-		return $this->dbh->beginTransaction();
+		$this->_hasActiveTransaction = $this->dbh->beginTransaction();
+		return $this->_hasActiveTransaction;
 	}
 	
 	/**
@@ -498,6 +506,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool true on success, false on failure.
 	 */
 	public function commit() {
+		$this->_hasActiveTransaction = false;
 		$this->dbh->commit(); 
 	}
 	
@@ -507,6 +516,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool true on success, false on failure.
 	 */
 	public function rollback() {
+		$this->_hasActiveTransaction = false;
 		$this->dbh->rollBack();
 	}
 	
@@ -616,6 +626,16 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
      */
     //abstract public function createSequence($seq_name);
     
+    /**
+	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
+	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
+	 * will be ended, but the flag will not be set to false).
+	 * 
+	 * @return bool
+	 */
+    public function hasActiveTransaction() {
+    	return $this->_hasActiveTransaction;
+    }
 }
 
 

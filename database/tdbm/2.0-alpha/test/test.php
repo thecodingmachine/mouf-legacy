@@ -7,7 +7,11 @@ $conn->dbname = "sticker";
 $conn->user = "root";
 $conn->connect();
 
-TDBM_Object::connect($conn);
+$sessionCache = new SessionCache();
+$sessionCache->log = new ErrorLogLogger();
+
+TDBM_Object::setCacheService($sessionCache);
+TDBM_Object::setConnection($conn);
 $test = TDBM_Object::getObjects("user", new DBM_EqualFilter("user", "login", "admin"));
 
 //var_dump($conn->getAll("SELECT * FROM users"));

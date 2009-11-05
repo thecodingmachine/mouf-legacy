@@ -11,6 +11,11 @@
 			<name>cache-interface</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>NoCache.php</require>

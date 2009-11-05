@@ -273,5 +273,14 @@ interface DB_ConnectionInterface {
      * @return bool
      */
 	public function isCaseSensitive();
+	
+	/**
+	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
+	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
+	 * will be ended, but the flag will not be set to false).
+	 * 
+	 * @return bool
+	 */
+    public function hasActiveTransaction();
 }
 ?>

@@ -30,6 +30,13 @@ class TDBM_Object {
 	 */
 	static public $main_db;
 	
+	/**
+	 * The cache service to cache data.
+	 * 
+	 * @var CacheInterface
+	 */
+	static public $cacheService;
+	
 	static private $table_descs;
 
 	/**
@@ -174,13 +181,36 @@ class TDBM_Object {
 	 *       hostspec is the IP of your database server (very likely, it will be 'localhost' for you)
 	 *       database is the name of your database
 	 *
-	 * @param array $dsn The DSN to access the database. See Pear DB.
-	 * @param array $options The connect database options. Optionnal. See Pear DB.
+	 * @param DB_ConnectionInterface $connection
 	 */
-	static public function connect(DB_ConnectionInterface $connection) {
-		TDBM_Object::$main_db = $connection;
+	static public function setConnection(DB_ConnectionInterface $connection) {
+		if (self::$cacheService != null && !($connection instanceof DB_CachedConnection)) {
+			$cachedConnection = new DB_CachedConnection();
+			$cachedConnection->dbConnection = $connection;
+			$cachedConnection->cacheService = self::$cacheService;
+			TDBM_Object::$main_db = $cachedConnection;
+		} else {
+			TDBM_Object::$main_db = $connection;
+		}
 	}
 
+	/**
+	 * Sets the cache service.
+	 * The cache service is used to store the structure of the database in cache, which will dramatically improve performances.
+	 * The cache service will also wrap the database connection into a cached connection.
+	 * 
+	 * @param CacheInterface $cacheService
+	 */
+	static public function setCacheService(CacheInterface $cacheService) {
+		self::$cacheService = $cacheService;
+		if (TDBM_Object::$main_db != null && !(TDBM_Object::$main_db instanceof DB_CachedConnection)) {
+			$cachedConnection = new DB_CachedConnection();
+			$cachedConnection->dbConnection = $connection;
+			$cachedConnection->cacheService = self::$cacheService;
+			TDBM_Object::$main_db = $cachedConnection;
+		}
+	}
+	
 	/**
 	 * Returns the TDBM_Object associated to the row "$id" of the table "$table_name".
 	 *
@@ -388,7 +418,7 @@ class TDBM_Object {
 		return TDBM_Object::getPrimaryKeyStatic($this->db_table_name, $this->db_connection);
 	}
 
-	private function getPrimaryKeyStatic($table, Mouf_DBConnection $conn) {
+	private function getPrimaryKeyStatic($table, DB_ConnectionInterface $conn) {
 		if (!isset(TDBM_Object::$primary_keys[$table]))
 		{
 			$arr = array();
