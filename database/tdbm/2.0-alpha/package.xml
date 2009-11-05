@@ -5,6 +5,13 @@
 	database model.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/tdbm/doc/manual.html</docUrl>
 	<logo>icon.png</logo>
+	<dependencies>
+		<dependency>
+			<group>database</group>
+			<name>dbconnection</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 	<requires>
 		<require>tdbm.php</require>
 	</requires>

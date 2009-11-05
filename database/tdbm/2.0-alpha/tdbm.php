@@ -17,6 +17,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+require_once 'TDBM_Exception.php';
+require_once 'TDBM_AmbiguityException.php';
 
 
 class TDBM_Object {
@@ -38,6 +40,18 @@ class TDBM_Object {
 	 * @var array
 	 */
 	static private $primary_keys;
+	
+	/**
+	 * If TDBM objects are modified, and if they are not saved, they will automatically be saved at the end of the script.
+	 * Of course, if a transaction has been started, and is not ended, at the end of the script, it is likely that the
+	 * transaction will roll-back and that the changes will be lost.
+	 * If commitOnQuit is set to "true", a commit will always be performed at the end of the script.
+	 * This is a dangerous parameter. Indeed, in case of error, it might commit data that would have otherwised been roll-back.
+	 * Use it sparesly.
+	 * 
+	 * @var bool
+	 */
+	static private $commitOnQuit = false;
 
 	/**
 	 * Table of objects that are cached in memory.
@@ -844,11 +858,21 @@ class TDBM_Object {
 		TDBM_Object::completeSave();
 		
 		// Now, let's commit or rollback if needed.
-		if (TDBM_Object::$main_db != null && !TDBM_Object::$main_db->isAutoCommit()) {
-			if (TDBM_Object::$main_db->isCommitOnQuit()) {
-				TDBM_Object::$main_db->commit();
+		if (TDBM_Object::$main_db != null && TDBM_Object::$main_db->hasActiveTransaction()) {
+			if (TDBM_Object::$commitOnQuit) {
+				try  {
+					TDBM_Object::$main_db->commit();
+				} catch (Exception $e) {
+					echo $e->getMessage()."<br/>";
+					echo $e->getTraceAsString();
+				}
 			} else {
-				TDBM_Object::$main_db->rollback();
+			try  {
+					TDBM_Object::$main_db->rollback();
+				} catch (Exception $e) {
+					echo $e->getMessage()."<br/>";
+					echo $e->getTraceAsString();
+				}
 			}
 		}
 	}
