@@ -303,9 +303,9 @@ jQuery(document).ready(function(){';
 		    		} else {
 		    			$result = call_user_func($functionName, $row);
 		    		}
-		    		$s .= "<cell>". htmlentities($result)."</cell>";
+		    		$s .= "<cell>". htmlspecialchars($result, ENT_NOQUOTES)."</cell>";
 		    	} else {
-		    		$s .= "<cell>". htmlentities($column->getValue($row))."</cell>";
+		    		$s .= "<cell>". htmlspecialchars($column->getValue($row), ENT_NOQUOTES)."</cell>";
 		    	}
 		    }
 		    $s .= "</row>";
