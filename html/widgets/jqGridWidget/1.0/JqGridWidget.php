@@ -149,9 +149,9 @@ jQuery(document).ready(function(){';
 				$manager = MoufManager::getMoufManager();
 				$instanceName = $manager->findInstanceName($column);
 				if ($instanceName == false) {
-					$columnsTitles[] = '"'.htmlentities($column->getTitle()).'"';
+					$columnsTitles[] = '"'.htmlspecialchars($column->getTitle(), ENT_QUOTES).'"';
 				} else {
-					$columnsTitles[] = '"'.htmlentities($column->getTitle()).addslashes(" <a onclick='window.location=\"".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName).BaseWidgetUtils::getBackToParameter()."\"; return false;'>edit</a>").'"';
+					$columnsTitles[] = '"'.htmlspecialchars($column->getTitle(), ENT_QUOTES).addslashes(" <a onclick='window.location=\"".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName).BaseWidgetUtils::getBackToParameter()."\"; return false;'>edit</a>").'"';
 				}
 			}
 			$formatter = $column->getFormatter();
@@ -194,7 +194,7 @@ jQuery(document).ready(function(){';
 				}
 				
 			}
-			$columnsDesc[] = '{name:"'.htmlentities($column->getSortColumn()).'", index:"'.htmlentities($column->getSortColumn()).'", width:"'.htmlentities($column->getWidth()).'"'.$formatStr.'}';
+			$columnsDesc[] = '{name:"'.htmlspecialchars($column->getSortColumn(), ENT_QUOTES).'", index:"'.htmlspecialchars($column->getSortColumn(), ENT_QUOTES).'", width:"'.htmlspecialchars($column->getWidth(), ENT_QUOTES).'"'.$formatStr.'}';
 			
 		}
 		$str .= implode(", ", $columnsTitles);
@@ -291,7 +291,7 @@ jQuery(document).ready(function(){';
 			}
 			$row = $this->datasource[$i];
 			$id = $this->idColumn->getValue($row);			
-		    $s .= "<row id='". htmlentities($id)."'>";
+		    $s .= "<row id='". htmlspecialchars($id, ENT_QUOTES)."'>";
 		    foreach ($this->columns as $column) {
 		    	if ($column->getFormatter() instanceof DateFormatter && $column->getFormatter()->sourceFormat == "timestamp") {
 		    		$s .= "<cell>". date("Y-m-d H:i:s",$column->getValue($row))."</cell>";
