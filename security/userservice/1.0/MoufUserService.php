@@ -84,6 +84,36 @@ class MoufUserService implements UserServiceInterface {
 	}
 	
 	/**
+	 * Logs the user using the provided login.
+	 * The password is not needed if you use this function.
+	 * Of course, you should use this functions sparingly.
+	 * For instance, it can be useful if you want an administrator to "become" another
+	 * user without requiring the administrator to provide the password. 
+	 * 
+	 * @param string $login
+	 */
+	public function loginWithoutPassword($login) {
+		// First, if we are logged, let's unlog the user.
+		if ($this->isLogged()) {
+			$this->logoff();
+		}
+		
+		$user = $this->userDao->getUserByLogin($login);
+		if ($user == null) {
+			throw new UserServiceException("Unable to find user whose login is ".$login);
+		}
+		$this->log->trace("User '".$user->getLogin()."' logs in, without providing a password.");
+		$_SESSION['MoufUserId'] = $user->getId();
+		$_SESSION['MoufUserLogin'] = $user->getLogin();
+		
+		if (is_array($this->authenticationListeners)) {
+			foreach ($this->authenticationListeners as $listener) {
+				$listener->afterLogIn($this);
+			}
+		}
+	}
+	
+	/**
 	 * Logs a user using a token. The token should be discarded as soon as it
 	 * was used.
 	 *

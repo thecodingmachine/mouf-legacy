@@ -16,6 +16,17 @@ interface UserServiceInterface {
 	public function login($user, $password);
 	
 	/**
+	 * Logs the user using the provided login.
+	 * The password is not needed if you use this function.
+	 * Of course, you should use this functions sparingly.
+	 * For instance, it can be useful if you want an administrator to "become" another
+	 * user without requiring the administrator to provide the password. 
+	 * 
+	 * @param string $login
+	 */
+	public function loginWithoutPassword($login);
+	
+	/**
 	 * Logs a user using a token. The token should be discarded as soon as it
 	 * was used.
 	 *
