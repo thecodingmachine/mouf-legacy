@@ -32,6 +32,8 @@ require_once dirname(__FILE__).'/controllers/MoufController.php';
 require_once dirname(__FILE__).'/controllers/MoufRootController.php';
 require_once dirname(__FILE__).'/controllers/ComponentsController.php';
 require_once dirname(__FILE__).'/controllers/PackageController.php';
+require_once dirname(__FILE__).'/controllers/MoufInstanceController.php';
+require_once dirname(__FILE__).'/controllers/MoufDisplayGraphController.php';
 require_once dirname(__FILE__).'/load.php';
 
 ?>

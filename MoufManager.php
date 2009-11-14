@@ -947,7 +947,7 @@ class ".$this->mainClassName." {
 		$realPathFromDirArray = explode("/", $realPathFromDir);
 		$realPathToFileArray = explode("/", $realPathToFile);
 
-		while ($realPathFromDirArray[0] == $realPathToFileArray[0]) {
+		while (!empty($realPathFromDirArray) && !empty($realPathToFileArray) && $realPathFromDirArray[0] == $realPathToFileArray[0]) {
 			array_shift($realPathFromDirArray);
 			array_shift($realPathToFileArray);
 		}

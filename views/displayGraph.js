@@ -344,10 +344,10 @@ function initJit() {
             } else if(node._depth == 2){
                 style.fontSize = "0.7em";
                 style.color = "#666";
-            
             } else {
-                style.fontSize = "0.6em";
-                style.color = "#999";
+                //style.fontSize = "0.6em";
+                //style.color = "#999";
+                style.display = 'none';
             }
 
             var left = parseInt(style.left);

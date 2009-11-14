@@ -19,7 +19,7 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 			str += defaultKey;
 			str += "=&gt;";
 		}
-		str += "<a href='displayComponent?name="+defaultValue+"&amp;selfedit=<?php echo $this->selfedit ?>'>"+defaultValue+"</a>";
+		str += "<a href='<?php echo ROOT_URL ?>mouf/mouf/displayComponent?name="+defaultValue+"&amp;selfedit=<?php echo $this->selfedit ?>'>"+defaultValue+"</a>";
 		str += '<a onclick="document.getElementById(\''+name+'_mouf_dropdown_text_'+dropDownCnt+'\').style.display=\'none\';document.getElementById(\''+name+"_mouf_dropdown_dropdown_"+dropDownCnt+'\').style.display=\'inline\';" ><img src="<?php echo ROOT_URL; ?>/mouf/views/images/pencil.png" alt="edit" /></a>';
 		str += "</span>";
 		str += "<span id='"+name+"_mouf_dropdown_dropdown_"+dropDownCnt+"' style='display:none'>";
@@ -292,7 +292,7 @@ foreach ($this->properties as $property) {
 			$defaultDisplaySelect = "";
 			if ($defaultValue != null) {
 				echo '<span id="'.$property->getName().'_mouf_link" >';
-				echo '<a href="displayComponent?name='.plainstring_to_htmlprotected($defaultValue).'&amp;selfedit='.$this->selfedit.'">'.$defaultValue.'</a>';
+				echo '<a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.plainstring_to_htmlprotected($defaultValue).'&amp;selfedit='.$this->selfedit.'">'.$defaultValue.'</a>';
 				echo '<a onclick="document.getElementById(\''.$property->getName().'_mouf_link\').style.display=\'none\';document.getElementById(\'moufproperty_'.$property->getName().'\').style.display=\'inline\';" ><img src="'.ROOT_URL.'/mouf/views/images/pencil.png" alt="edit" /></a>';
 				echo "</span>\n";
 				$defaultDisplaySelect = 'style="display:none"';

@@ -30,6 +30,8 @@ MoufManager::getMoufManager()->registerComponent('controllers/MoufController.php
 MoufManager::getMoufManager()->registerComponent('controllers/MoufRootController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/ComponentsController.php');
 MoufManager::getMoufManager()->registerComponent('controllers/PackageController.php');
+MoufManager::getMoufManager()->registerComponent('controllers/MoufInstanceController.php');
+MoufManager::getMoufManager()->registerComponent('controllers/MoufDisplayGraphController.php');
 MoufManager::getMoufManager()->registerComponent('load.php');
 
 MoufManager::getMoufManager()->declareComponent('splash', 'Splash');
@@ -51,6 +53,8 @@ MoufManager::getMoufManager()->declareComponent('loadComponentsMenuItem', 'Splas
 MoufManager::getMoufManager()->declareComponent('components', 'ComponentsController');
 MoufManager::getMoufManager()->declareComponent('jqueryFileTree', 'HtmlJSJQueryFileTree');
 MoufManager::getMoufManager()->declareComponent('packages', 'PackageController');
+MoufManager::getMoufManager()->declareComponent('instance', 'MoufInstanceController');
+MoufManager::getMoufManager()->declareComponent('displayGraph', 'MoufDisplayGraphController');
 
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'title', 'Mouf - Build your website');
 MoufManager::getMoufManager()->setParameter('moufTemplate', 'logoImg', 'mouf/views/images/MoufLogo.png');
@@ -121,6 +125,8 @@ MoufManager::getMoufManager()->bindComponent('splashTemplate', 'head', array (
 ));
 MoufManager::getMoufManager()->bindComponents('components', 'template', 'moufTemplate');
 MoufManager::getMoufManager()->bindComponents('packages', 'template', 'moufTemplate');
+MoufManager::getMoufManager()->bindComponents('instance', 'template', 'moufTemplate');
+MoufManager::getMoufManager()->bindComponents('displayGraph', 'template', 'moufTemplate');
 
 
 /**
@@ -295,6 +301,20 @@ class MoufAdmin {
 	 */
 	 public function getPackages() {
 	 	return MoufManager::getMoufManager()->getInstance('packages');
+	 }
+
+	/**
+	 * @return MoufInstanceController
+	 */
+	 public function getInstance() {
+	 	return MoufManager::getMoufManager()->getInstance('instance');
+	 }
+
+	/**
+	 * @return MoufDisplayGraphController
+	 */
+	 public function getDisplayGraph() {
+	 	return MoufManager::getMoufManager()->getInstance('displayGraph');
 	 }
 
 	/**

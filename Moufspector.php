@@ -10,8 +10,8 @@ require_once 'MoufPropertyDescriptor.php';
 class Moufspector {
 	
 	/**
-	 * Returns a list of all the classes that have the @Component attribute, or only classes extending the @Component attribute ANT inheriting the passed
-	 * class or interface.
+	 * Returns a list of all the classes that have the @Component attribute, or only classes extending the @Component attribute AND inheriting the passed
+	 * class or interface.  Abstract classes are excluded from the list.
 	 *
 	 * @type string the class or interface the @component must inherit to be part of the list. If not passed, all @component classes are returned.
 	 * @return array<string>
@@ -22,7 +22,7 @@ class Moufspector {
 		
 		foreach ($classesList as $className) {
 			$refClass = new MoufReflectionClass($className);
-			if ($refClass->hasAnnotation("Component")) {
+			if (!$refClass->isAbstract() && $refClass->hasAnnotation("Component")) {
 				if ($type == null) {
 					$componentsList[] = $className;
 				} else {
@@ -53,7 +53,7 @@ class Moufspector {
 
 	/**
 	 * Returns a list of all the classes that have the @Component attribute, or only classes extending the @Component attribute AND inheriting the passed
-	 * class or interface.
+	 * class or interface. Abstract classes are excluded from the list.
 	 * The list is passed as an associative arrray:
 	 * array<className, array<string, string>>
 	 * The inner array has those properties:
@@ -68,7 +68,7 @@ class Moufspector {
 		
 		foreach ($classesList as $className) {
 			$refClass = new MoufReflectionClass($className);
-			if ($refClass->hasAnnotation("Component")) {
+			if (!$refClass->isAbstract() && $refClass->hasAnnotation("Component")) {
 				$found = false;
 				if ($type == null) {
 					$found = true;
