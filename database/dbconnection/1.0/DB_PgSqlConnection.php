@@ -355,6 +355,14 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 		$this->exec("SELECT setval('$seq_name', '$id')");
 	}
 	
+	/**
+	 * Returns the list of databases available.
+	 * 
+	 * @return array<string>
+	 */
+	public function getDatabaseList() {
+		throw new Exception("Not implemented yet");
+	}
 }
 
 

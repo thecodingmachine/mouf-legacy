@@ -512,5 +512,14 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	public function executeSqlFile($file, $on_error_continue = true) {
 		$this->dbConnection->executeSqlFile($file, $on_error_continue);
 	}
+	
+	/**
+	 * Returns the list of databases available.
+	 * 
+	 * @return array<string>
+	 */
+	public function getDatabaseList() {
+		$this->dbConnection->getDatabaseList();
+	}
 }
 ?>

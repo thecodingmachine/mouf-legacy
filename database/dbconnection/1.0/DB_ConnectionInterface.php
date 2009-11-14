@@ -344,5 +344,12 @@ interface DB_ConnectionInterface {
 	 * @param bool $on_error_continue
 	 */
 	public function executeSqlFile($file, $on_error_continue = true);
+	
+	/**
+	 * Returns the list of databases available.
+	 * 
+	 * @return array<string>
+	 */
+	public function getDatabaseList();
 }
 ?>

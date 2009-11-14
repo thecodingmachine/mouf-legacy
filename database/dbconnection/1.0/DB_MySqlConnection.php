@@ -5,7 +5,7 @@ require_once('Mouf_DBConnection.php');
  * A class wrapping a connection to a MySQL database through PDO, with additional goodies (introspection support)
  *
  * @Component
- * @ExtendedAction {"name":"Edit", "url":"mouf/mysqlconnectionedit", "default":true}
+ * @ExtendedAction {"name":"Edit", "url":"mouf/mysqlconnectionedit/", "default":true}
  */
 class DB_MySqlConnection extends Mouf_DBConnection {
 	
@@ -578,6 +578,21 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		$seq_name = $this->getSequenceName($table_name);
 		
 		$this->exec("UPDATE $seq_name SET ID='$id'");
+	}
+	
+	/**
+	 * Returns the list of databases available.
+	 * 
+	 * @return array<string>
+	 */
+	public function getDatabaseList() {
+		$dbs = $this->getAll("show databases");
+		$list = array();
+		foreach ($dbs as $db_name)
+		{
+			$list[] = $db_name['Database'];
+		}
+		return $list;
 	}
     
 }
