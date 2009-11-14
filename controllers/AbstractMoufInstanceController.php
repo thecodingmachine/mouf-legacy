@@ -17,6 +17,11 @@ abstract class AbstractMoufInstanceController extends Controller {
 
 	public $instanceName;
 	public $className;
+	/**
+	 * List of properties for this class.
+	 * 
+	 * @var array<MoufPropertyDescriptor>
+	 */
 	public $properties;
 	public $reflectionClass;
 	public $selfedit;
@@ -129,6 +134,20 @@ abstract class AbstractMoufInstanceController extends Controller {
 			
 		}
 		return $defaultValue;
+	}
+	
+	/**
+	 * Returns the value set for the instance passed in parameter... or the default value if the value is not set.
+	 *
+	 * @param MoufPropertyDescription $property
+	 * @return mixed
+	 */
+	protected function getValueForPropertyByName($propertyName) {
+		foreach ($this->properties as $property) {
+			if ($property->getName() == $propertyName) {
+				return $this->getValueForProperty($property);
+			}
+		}
 	}
 	
 	/**
