@@ -8,12 +8,12 @@
  */
 class ErrorLogLogger implements LogInterface {
 	
-	private static $TRACE = 1;
-	private static $DEBUG = 2;
-	private static $INFO = 3;
-	private static $WARN = 4;
-	private static $ERROR = 5;
-	private static $FATAL = 6;
+	public static $TRACE = 1;
+	public static $DEBUG = 2;
+	public static $INFO = 3;
+	public static $WARN = 4;
+	public static $ERROR = 5;
+	public static $FATAL = 6;
 	
 	/**
 	 * The minimum level that will be tracked by this logger.

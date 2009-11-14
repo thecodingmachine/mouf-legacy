@@ -18,6 +18,6 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>tdbm.php</require>
+		<require>TDBM_Service.php</require>
 	</requires>
 </package>

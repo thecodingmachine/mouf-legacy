@@ -73,6 +73,15 @@ interface DB_ConnectionInterface {
 	public function setSequenceId($table_name, $id);
 	
 	/**
+	 * Returns Root Sequence Table for $table_name
+	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
+	 * !! Warning !! Child table must share Mother table's primary key
+	 * @param string $table_name
+	 * @return string
+	 */
+	public function findRootSequenceTable($table_name);
+	
+	/**
 	 * Returns the parent table (if the table inherits from another table).
 	 * For DB systems that do not support inheritence, returns the table name.
 	 *
@@ -88,7 +97,15 @@ interface DB_ConnectionInterface {
 	 * @return array<DB_Column> an array of the primary key columns of the table
 	 */
 	public function getPrimaryKey($table_name);
-		
+
+	/**
+	 * Returns the table columns.
+	 *
+	 * @param string $tableName
+	 * @return array<array> An array representing the columns for the specified table.
+	 */
+	public function getTableInfo($tableName);
+	
 	/**
 	 * Returns a list of table names.
 	 *
@@ -238,7 +255,7 @@ interface DB_ConnectionInterface {
 	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	public function createTable(DB_Table $table, $dropIfExist);
+	public function createTable(DB_Table $table, $dropIfExist = false);
 	
 	/**
 	 * Creates a new index in the database.
@@ -282,5 +299,50 @@ interface DB_ConnectionInterface {
 	 * @return bool
 	 */
     public function hasActiveTransaction();
+    
+    /**
+     * Checks if the database with the given name exists.
+     * Returns true if it exists, false otherwise.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * 
+     * @param string $dbName
+     * @return bool
+     */
+    public function checkDatabaseExists($dbName);
+    
+    /**
+     * Creates the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function createDatabase($dbName);
+
+    /**
+     * Drops the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function dropDatabase($dbName);
+    
+    /**
+	 * Executes the given SQL file.
+	 * If $on_error_continue == true, continues if an error is encountered.
+	 * Otherwise, stops.
+	 * 
+	 * Returns true on success, false if errors have been encountered (even non fatal errors).
+	 *
+	 * @param string $file The SQL filename
+	 * @param bool $on_error_continue
+	 */
+	public function executeSqlFile($file, $on_error_continue = true);
 }
 ?>

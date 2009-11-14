@@ -61,5 +61,25 @@ class DB_Column {
 	 * @var boolean
 	 */
 	public $autoIncrement;
+	
+	/**
+	 * Default constructor.
+	 * 
+	 * @param $name
+	 * @param $type
+	 * @param $nullable
+	 * @param $default
+	 * @param $isPrimaryKey
+	 * @param $autoIncrement
+	 * @return unknown_type
+	 */
+	public function __construct($name = null, $type = null, $nullable = null, $default = null, $isPrimaryKey = null, $autoIncrement = null) {
+		$this->name = $name;
+		$this->type = $type;
+		$this->nullable = $nullable;
+		$this->default = $default;
+		$this->isPrimaryKey = $isPrimaryKey;
+		$this->autoIncrement = $autoIncrement;
+	}
 }
 ?>

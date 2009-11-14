@@ -27,6 +27,14 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	public $dbname;
 	
 	/**
+	 * The logger to use, if any.
+	 * 
+	 * @Property
+	 * @var LogInterface
+	 */
+	public $log;
+	
+	/**
 	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
 	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
 	 * will be ended, but the flag will not be set to false).
@@ -161,6 +169,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return string
 	 */
 	public function quoteSmart($in) {
+		if ($this->dbh == null) {
+			$this->connect();
+		}
+		
 		return $this->dbh->quote($in);
 	}
 
@@ -180,24 +192,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		return $id;
 	}*/
 
-	/**
-	 * Sets the sequence to the passed value.
-	 *
-	 * @param string $seq_name
-	 * @param unknown_type $id
-	 */
-	public function setSequenceId($table_name, $id) {
-		$seq_name = sprintf($this->options['seqname_format'], $table_name);
-
-		if ($this->dsn["phptype"]=='pgsql') {
-			$this->exec("SELECT setval('$seq_name', '$id')");
-		} elseif ($this->dsn["phptype"]=='mysql') {
-			$this->exec("UPDATE $seq_name SET ID='$id'");
-		} else {
-			throw new TDBM_Exception('Unable to set the sequence value for database type '.$this->dsn['phptype'].'<br />\nCurrently, only MySQL 5+ and PostGreSQL 7+ are supported.');
-		}
-	}
-
+	
 	/**
 	 * Returns Root Sequence Table for $table_name
 	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
@@ -272,6 +267,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool
 	 */
 	public function isTableExist($tableName) {
+		
+		
 		$str = "SELECT COUNT(1) as cnt FROM information_schema.TABLES WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
 
 		$res = $this->getOne($str);
@@ -419,6 +416,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	function checkColumnExist($table_name, $column_name) {
 		// Once you have a valid DB object named $db...
 		try {
+			// TODO: try to use getTableDbModel instead of getTableInfo. This is more DB independent.
 			$data = $this->getTableInfo($table_name);
 		} catch (DB_Exception $ex) {
 			// If the table does not exist, let's return null.
@@ -426,7 +424,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		}
 
 		foreach ($data as $current_column) {
-			if ($this->toStandardcaseColumn($current_column['name'])==$column_name)
+			if ($this->toStandardcaseColumn($current_column['COLUMN_NAME'])==$column_name)
 				return true;
 		}
 
@@ -437,8 +435,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$distance_column = array();
 
 		foreach ($data as $current_column) {
-			$distance = levenshtein($column_name, $current_column['name']);
-			$distance_column[$current_column['name']]=$distance;
+			$distance = levenshtein($column_name, $current_column['COLUMN_NAME']);
+			$distance_column[$current_column['COLUMN_NAME']]=$distance;
 			if ($distance<$smallest)
 			$smallest = $distance;
 		}
@@ -636,6 +634,171 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
     public function hasActiveTransaction() {
     	return $this->_hasActiveTransaction;
     }
+    
+    /**
+     * Creates the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function createDatabase($dbName) {
+    	$this->exec("CREATE DATABASE ".$dbName);
+    	$this->dbname = $dbName;
+    	$this->connect();
+    }
+
+    /**
+     * Drops the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function dropDatabase($dbName) {
+    	$this->exec("DROP DATABASE ".$dbName);
+    }
+    
+	    
+	/**
+	 * Executes the given SQL file.
+	 * If $on_error_continue == true, continues if an error is encountered.
+	 * Otherwise, stops.
+	 * 
+	 * Returns true on success, false if errors have been encountered (even non fatal errors).
+	 *
+	 * @param string $file The SQL filename
+	 * @param bool $on_error_continue
+	 */
+	public function executeSqlFile($file, $on_error_continue = true) {
+		$this->info("Processing $file statements...\n");
+		$nb_errors = 0;
+		$sql_string = file_get_contents($file);
+		
+		do {
+			$next_statement = $this->clever_sql_split($sql_string);
+			
+			try {
+				if (trim($next_statement)!="") {
+					$this->trace("Executing statement: ".$next_statement);
+					$this->exec($next_statement);
+				}
+			} catch (DB_Exception $e) {
+				$this->error("A database error occured when running the script '$file': ". $e->getMessage(), $e);
+				$nb_errors++;
+				if (!$on_error_continue)
+				{
+					break;
+				}
+			}
+			
+			$sql_string = substr($sql_string, strlen($next_statement)+1);
+		} while ($sql_string != false);
+		
+		if (!$on_error_continue && $nb_errors!=0)
+		{
+			$this->error('Error while running SQL script "'.$file.'". Script aborted.');
+			return false;
+		} elseif ($on_error_continue && $nb_errors!=0) {
+			$this->warn("SQL script completed. $nb_errors errors have been detected.");
+			return false;
+		} else {
+			$this->info("SQL script completed.");
+		}
+	}
+	
+	/**
+	 * Gets the next SQL command from $str (which is supposed to be an SQL file).
+	 *
+	 * @param unknown_type $str
+	 * @return unknown
+	 */
+	private function clever_sql_split($str) {
+		preg_match("/((?:(?:'(?:(?:\\\\')|[^'])*')|[^;])*)/",$str, $res);
+		return $res[1];
+	}
+	
+	/**
+	 * Logs a message in the error log as a TRACE message.
+	 * This function takes 1 or 2 arguments:
+	 *
+	 * @param string $string The string to log
+	 * @param Exception $e The exception to log
+	 */
+	private function trace($string, Exception $e=null) {
+		if ($this->log != null) {
+			$this->log->trace($string, $e);
+		}
+	}
+	
+	/**
+	 * Logs a message in the error log as a DEBUG message.
+	 * This function takes 1 or 2 arguments:
+	 *
+	 * @param string $string The string to log
+	 * @param Exception $e The exception to log
+	 */
+	private function debug($string, Exception $e=null) {
+		if ($this->log != null) {
+			$this->log->debug($string, $e);
+		}
+	}
+	
+	/**
+	 * Logs a message in the error log as a INFO message.
+	 * This function takes 1 or 2 arguments:
+	 *
+	 * @param string $string The string to log
+	 * @param Exception $e The exception to log
+	 */
+	private function info($string, Exception $e=null) {
+		if ($this->log != null) {
+			$this->log->info($string, $e);
+		}
+	}
+	
+	/**
+	 * Logs a message in the error log as a WARN message.
+	 * This function takes 1 or 2 arguments:
+	 *
+	 * @param string $string The string to log
+	 * @param Exception $e The exception to log
+	 */
+	private function warn($string, Exception $e=null) {
+		if ($this->log != null) {
+			$this->log->warn($string, $e);
+		}
+	}
+	
+	/**
+	 * Logs a message in the error log as a ERROR message.
+	 * This function takes 1 or 2 arguments:
+	 *
+	 * @param string $string The string to log
+	 * @param Exception $e The exception to log
+	 */
+	private function error($string, Exception $e=null) {
+		if ($this->log != null) {
+			$this->log->error($string, $e);
+		}
+	}
+	
+	/**
+	 * Logs a message in the error log as a FATAL message.
+	 * This function takes 1 or 2 arguments:
+	 *
+	 * @param string $string The string to log
+	 * @param Exception $e The exception to log
+	 */
+	private function fatal($string, Exception $e=null) {
+		if ($this->log != null) {
+			$this->log->fatal($string, $e);
+		}
+	}
 }
 
 

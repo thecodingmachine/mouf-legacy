@@ -130,9 +130,10 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * Returns Root Sequence Table for $table_name
 	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
 	 * !! Warning !! Child table must share Mother table's primary key
-	 * @param unknown_type $table_name
+	 * @param string $table_name
+	 * @return string
 	 */
-	protected function findRootSequenceTable($table_name){
+	public function findRootSequenceTable($table_name){
 		
 		$child_table = $table_name;
 		$root_table = $table_name;
@@ -264,7 +265,7 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	public function createTable(DB_Table $table, $dropIfExist) {
+	public function createTable(DB_Table $table, $dropIfExist = false) {
 		throw new Exception("Method not implemented yet");
 	}
 	
@@ -322,6 +323,38 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 		// Pgsql is not case sensitive. Always.
 		return false;
 	}
+	
+	/**
+     * Checks if the database with the given name exists.
+     * Returns true if it exists, false otherwise.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * 
+     * @param string $dbName
+     * @return bool
+     */
+    public function checkDatabaseExists($dbName) {
+		$dbs = $this->getAll("select * from pg_database");
+		foreach ($dbs as $db_name)
+		{
+			if (strtolower($db_name['datname'])==$dbName)
+				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Sets the sequence to the passed value.
+	 *
+	 * @param string $seq_name
+	 * @param unknown_type $id
+	 */
+	public function setSequenceId($table_name, $id) {
+		$seq_name = $this->getSequenceName($table_name);
+		
+		$this->exec("SELECT setval('$seq_name', '$id')");
+	}
+	
 }
 
 

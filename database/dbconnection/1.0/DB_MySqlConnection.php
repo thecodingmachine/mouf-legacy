@@ -5,6 +5,7 @@ require_once('Mouf_DBConnection.php');
  * A class wrapping a connection to a MySQL database through PDO, with additional goodies (introspection support)
  *
  * @Component
+ * @ExtendedAction {"name":"Edit", "url":"mouf/mysqlconnectionedit", "default":true}
  */
 class DB_MySqlConnection extends Mouf_DBConnection {
 	
@@ -64,7 +65,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 * @Property
 	 * @var boolean
 	 */
-	public $isPersistentConnection;
+	public $isPersistentConnection = true;
 	
 	/**
 	 * Returns the DSN for this connection.
@@ -145,7 +146,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	public function createTable(DB_Table $table, $dropIfExist) {
+	public function createTable(DB_Table $table, $dropIfExist = false) {
 		$tableName = $table->name;
 		$columnsList = $table->columns;
 		
@@ -222,9 +223,10 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 * Returns Root Sequence Table for $table_name
 	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
 	 * !! Warning !! Child table must share Mother table's primary key
-	 * @param unknown_type $table_name
+	 * @param string $table_name
+	 * @return string
 	 */
-	protected function findRootSequenceTable($table_name){
+	public function findRootSequenceTable($table_name){
 		return $table_name;
 	}
 	
@@ -253,11 +255,11 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	public function getConstraintsOnTable($table_name,$column_name=false) {
 		if ($column_name)
 		{
-			$sql = "SELECT column_name as col1, referenced_table_name as table2, referenced_column_name as col2 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dsn['database']."' AND TABLE_NAME='$table_name' AND COLUMN_NAME='$column_name' AND REFERENCED_TABLE_NAME IS NOT NULL";
+			$sql = "SELECT column_name as col1, referenced_table_name as table2, referenced_column_name as col2 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND TABLE_NAME='$table_name' AND COLUMN_NAME='$column_name' AND REFERENCED_TABLE_NAME IS NOT NULL";
 		}
 		else
 		{
-			$sql = "SELECT column_name as col1, referenced_table_name as table2, referenced_column_name as col2 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dsn['database']."' AND TABLE_NAME='$table_name' AND REFERENCED_TABLE_NAME IS NOT NULL";
+			$sql = "SELECT column_name as col1, referenced_table_name as table2, referenced_column_name as col2 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND TABLE_NAME='$table_name' AND REFERENCED_TABLE_NAME IS NOT NULL";
 		}
 
 		$result = $this->getAll($sql);
@@ -278,11 +280,11 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	public function getConstraintsFromTable($table_name,$column_name=false) {
 		if ($column_name)
 		{
-			$sql = "SELECT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dsn['database']."' AND referenced_table_name='$table_name' AND referenced_column_name='$column_name'";
+			$sql = "SELECT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND referenced_table_name='$table_name' AND referenced_column_name='$column_name'";
 		}
 		else
 		{
-			$sql = "SELECT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dsn['database']."' AND referenced_table_name='$table_name'";
+			$sql = "SELECT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND referenced_table_name='$table_name'";
 		}
 
 		$result = $this->getAll($sql);
@@ -526,6 +528,58 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		return $this->caseSensitive;
 	}
 	
+	/**
+     * Checks if the database with the given name exists.
+     * Returns true if it exists, false otherwise.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * 
+     * @param string $dbName
+     * @return bool
+     */
+    public function checkDatabaseExists($dbName) {
+    	$dbs = $this->getAll("show databases");
+		foreach ($dbs as $db_name)
+		{
+			if (strtolower($db_name['Database'])==$dbName)
+				return true;
+		}
+		return false;
+    }
+    
+	/**
+     * Creates the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function createDatabase($dbName) {
+    	// Overload for Mysql: let's setup the encoding.
+    	$charset = $this->charset;
+    	if (empty($this->charset)) {
+    		$charset = "UTF8";
+    	}
+    	
+    	$this->exec("CREATE DATABASE ".$dbName." DEFAULT CHARACTER SET ".$charset);
+    	$this->dbname = $dbName;
+    	$this->connect();
+    }
+    
+    /**
+	 * Sets the sequence to the passed value.
+	 *
+	 * @param string $seq_name
+	 * @param unknown_type $id
+	 */
+	public function setSequenceId($table_name, $id) {
+		$seq_name = $this->getSequenceName($table_name);
+		
+		$this->exec("UPDATE $seq_name SET ID='$id'");
+	}
+    
 }
 
 

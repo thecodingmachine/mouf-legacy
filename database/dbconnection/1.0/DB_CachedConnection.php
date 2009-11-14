@@ -136,6 +136,20 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	}
 	
 	/**
+	 * Returns Root Sequence Table for $table_name
+	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
+	 * !! Warning !! Child table must share Mother table's primary key
+	 * @param string $table_name
+	 * @return string
+	 */
+	public function findRootSequenceTable($table_name){
+		$this->loadCache();
+		$this->cache["rootsequencetable"][$table_name] = $this->dbConnection->findRootSequenceTable($table_name);
+		$this->saveCache();
+		return $this->cache["rootsequencetable"][$table_name];
+	}
+	
+	/**
 	 * Returns the parent table (if the table inherits from another table).
 	 * For DB systems that do not support inheritence, returns the table name.
 	 *
@@ -160,6 +174,19 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->cache["primarykeys"][$table_name] = $this->dbConnection->getPrimaryKey($table_name);
 		$this->saveCache();
 		return $this->cache["primarykeys"][$table_name];
+	}
+	
+	/**
+	 * Returns the table columns.
+	 *
+	 * @param string $tableName
+	 * @return array<array> An array representing the columns for the specified table.
+	 */
+	public function getTableInfo($tableName) {
+		$this->loadCache();
+		$this->cache["tableinfo"][$tableName] = $this->dbConnection->getTableInfo($tableName);
+		$this->saveCache();
+		return $this->cache["tableinfo"][$tableName];
 	}
 		
 	/**
@@ -212,7 +239,7 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	 */
 	public function getConstraintsOnTable($table_name,$column_name=false) {
 		$this->loadCache();
-		$this->cache["getConstraintsOnTable"][$table_name][$column_name] = $this->dbConnection->getTableFromDbModel($table_name, $column_name);
+		$this->cache["getConstraintsOnTable"][$table_name][$column_name] = $this->dbConnection->getConstraintsOnTable($table_name, $column_name);
 		$this->saveCache();
 		return $this->cache["getConstraintsOnTable"][$table_name][$column_name];
 	}
@@ -229,7 +256,7 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	 */
 	public function getConstraintsFromTable($table_name,$column_name=false) {
 		$this->loadCache();
-		$this->cache["getConstraintsFromTable"][$table_name][$column_name] = $this->dbConnection->getTableFromDbModel($table_name, $column_name);
+		$this->cache["getConstraintsFromTable"][$table_name][$column_name] = $this->dbConnection->getConstraintsFromTable($table_name, $column_name);
 		$this->saveCache();
 		return $this->cache["getConstraintsFromTable"][$table_name][$column_name];
 	}
@@ -336,9 +363,9 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	public function getColumnType($table, $column) {
 		// TODO: we should use the getTableWithModel function and get info from here. That would restrict the size of the cache.
 		$this->loadCache();
-		$this->cache["getColumnType"][$table_name][$column_name] = $this->dbConnection->getColumnType($table, $column);
+		$this->cache["getColumnType"][$table][$column] = $this->dbConnection->getColumnType($table, $column);
 		$this->saveCache();
-		return $this->cache["getColumnType"][$table_name][$column_name];
+		return $this->cache["getColumnType"][$table][$column];
 	}
 	
 	/**
@@ -360,7 +387,7 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	 * @param DB_Table $table The table to create
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
-	public function createTable(DB_Table $table, $dropIfExist) {
+	public function createTable(DB_Table $table, $dropIfExist = false) {
 		return $this->dbConnection->createTable($table, $dropIfExist);
 	}
 	
@@ -432,5 +459,58 @@ class DB_CachedConnection implements DB_ConnectionInterface {
     public function hasActiveTransaction() {
     	return $this->dbConnection->hasActiveTransaction();
     }
+    
+   	/**
+     * Checks if the database with the given name exists.
+     * Returns true if it exists, false otherwise.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * 
+     * @param string $dbName
+     * @return bool
+     */
+    public function checkDatabaseExists($dbName) {
+		return $this->dbConnection->checkDatabaseExists($dbName);
+	}
+	
+    /**
+     * Creates the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function createDatabase($dbName) {
+    	$this->dbConnection->createDatabase($dbName);
+    }
+
+    /**
+     * Drops the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function dropDatabase($dbName) {
+    	$this->dbConnection->dropDatabase($dbName);
+    }
+    
+    /**
+	 * Executes the given SQL file.
+	 * If $on_error_continue == true, continues if an error is encountered.
+	 * Otherwise, stops.
+	 * 
+	 * Returns true on success, false if errors have been encountered (even non fatal errors).
+	 *
+	 * @param string $file The SQL filename
+	 * @param bool $on_error_continue
+	 */
+	public function executeSqlFile($file, $on_error_continue = true) {
+		$this->dbConnection->executeSqlFile($file, $on_error_continue);
+	}
 }
 ?>

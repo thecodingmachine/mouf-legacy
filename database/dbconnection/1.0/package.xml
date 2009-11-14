@@ -21,4 +21,8 @@
 		<require>DB_PgSqlConnection.php</require>
 		<require>DB_CachedConnection.php</require>
 	</requires>
+	<adminRequires>
+		<require>DbConnectionAdmin.php</require>
+		<require>controllers/MySqlConnectionEditController.php</require>
+	</adminRequires>
 </package>

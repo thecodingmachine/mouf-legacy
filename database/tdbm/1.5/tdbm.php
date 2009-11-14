@@ -214,7 +214,7 @@ class TDBM_Object {
 		self::$cacheService = $cacheService;
 		if (TDBM_Object::$main_db != null && !(TDBM_Object::$main_db instanceof DB_CachedConnection)) {
 			$cachedConnection = new DB_CachedConnection();
-			$cachedConnection->dbConnection = $connection;
+			$cachedConnection->dbConnection = $this->dbConnection;
 			$cachedConnection->cacheService = self::$cacheService;
 			TDBM_Object::$main_db = $cachedConnection;
 		}
