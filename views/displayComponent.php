@@ -1,18 +1,22 @@
 <script type="text/javascript">
 
+
 lastPropDisplayed = "";
 dropDownCnt = 0;
+
 
 /*
  * Adds a new drowdown list dynamically inside element "element".
  * name is the name of the select box.
- * jsonList is the content of the list to add:
- * jsonList = [{id:0, text:"Mr"}, {id:1, text:"Mrs"}]
  */
-function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKey, type) {
+function addNewDropDown(element, name, defaultValue, hasKey, defaultKey, type, isInArray, varType) {
+
+	var imageId = name+"_mouf_ajaxload_"+dropDownCnt;
 	var str = "";
 	str += "<div id='"+name+"_mouf_dropdown_"+dropDownCnt+"'>";
-	str += "<div class='moveable'></div>";
+	if (isInArray == true) {
+		str += "<div class='moveable'></div>";
+	}
 	if (defaultValue != "") {
 		str += "<span id='"+name+"_mouf_dropdown_text_"+dropDownCnt+"'>";
 		if (hasKey) {
@@ -20,7 +24,7 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 			str += "=&gt;";
 		}
 		str += "<a href='<?php echo ROOT_URL ?>mouf/mouf/displayComponent?name="+defaultValue+"&amp;selfedit=<?php echo $this->selfedit ?>'>"+defaultValue+"</a>";
-		str += '<a onclick="document.getElementById(\''+name+'_mouf_dropdown_text_'+dropDownCnt+'\').style.display=\'none\';document.getElementById(\''+name+"_mouf_dropdown_dropdown_"+dropDownCnt+'\').style.display=\'inline\';" ><img src="<?php echo ROOT_URL; ?>/mouf/views/images/pencil.png" alt="edit" /></a>';
+		str += '<a onclick="fillOptionList(\''+name+"_mouf_dropdown_select_"+dropDownCnt+'\', \''+imageId+'\', \''+varType+'\', \''+defaultValue+'\'); document.getElementById(\''+name+'_mouf_dropdown_text_'+dropDownCnt+'\').style.display=\'none\';document.getElementById(\''+name+"_mouf_dropdown_dropdown_"+dropDownCnt+'\').style.display=\'inline\';" ><img src="<?php echo ROOT_URL; ?>/mouf/views/images/pencil.png" alt="edit" /></a>';
 		str += "</span>";
 		str += "<span id='"+name+"_mouf_dropdown_dropdown_"+dropDownCnt+"' style='display:none'>";
 	}
@@ -28,27 +32,64 @@ function addNewDropDown(element, name, jsonList, defaultValue, hasKey, defaultKe
 		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
 		str += "=&gt;";
 	}
-	str += "<select id='"+name+"_mouf_dropdown_select_"+dropDownCnt+"' name='"+name+"[]'  onchange='propertySelectChange(this, \""+name+"\", \""+type+"\")'>";
+	var arraySuffix = "";
+	if (isInArray) {
+		arraySuffix="[]";
+	}
+	str += "<select id='"+name+"_mouf_dropdown_select_"+dropDownCnt+"' name='"+name+arraySuffix+"'  onchange='propertySelectChange(this, \""+name+"\", \""+type+"\")'>";
+	/*if (!isInArray) {
+		str += "<option value=''></option>";
+	}
+	str += "<option value='newInstance'>Create New Instance</option>";
 	jsonList.each(function(option) {
 		var selected = "";
 		if (option.id == defaultValue) {
 			selected = ' selected="true"';
 		}
 		str += "<option value='"+option.id+"' "+selected+">"+option.text+"</option>";
-	});
-	str += "<option value='newInstance'>Create New Instance</option>";
+	});*/
+	// By default, before the options are filled, let's fill the select box with at least the previous value selected:
+	if (defaultValue != "") {
+		str += "<option value='"+defaultValue+"'>"+defaultValue+"</option>"
+	}
 	str += "</select>";
-	str += "<a onclick='$(\""+name+"_mouf_dropdown_"+dropDownCnt+"\").remove()'><img src=\"<?php echo ROOT_URL ?>mouf/views/images/cross.png\"></a>";
+	str += "<img id='"+imageId+"' src='<?php echo ROOT_URL ?>mouf/views/images/ajax-loader.gif' alt='' />";
+	
+	if (isInArray == true) {
+		str += "<a onclick='$(\""+name+"_mouf_dropdown_"+dropDownCnt+"\").remove()'><img src=\"<?php echo ROOT_URL ?>mouf/views/images/cross.png\"></a>";
+	}
+	//str += '<a onclick="document.getElementById(\''+name+'_mouf_dropdown_text_'+dropDownCnt+'\').style.display=\'inline\';document.getElementById(\''+name+"_mouf_dropdown_dropdown_"+dropDownCnt+'\').style.display=\'none\';"><img src="<?php echo ROOT_URL ?>mouf/views/images/tick.png"></a>';
 	if (defaultValue != "") {
 		str += "</span>";
+	} else {
+		fillOptionList(name+"_mouf_dropdown_select_"+dropDownCnt, imageId, varType, defaultValue);
 	}
 	str += "</div>";
 	element.insert(str);
-	if (jsonList.length == 0) {
+	/*if (jsonList.length == 0) {
 		propertySelectChange(document.getElementById(name+"_mouf_dropdown_select_"+dropDownCnt), name, type);
-	}
+	}*/
 	dropDownCnt++;
 	
+}
+
+function fillOptionList(selectId, imageId, varType, defaultValue) {
+	var toSelect = defaultValue;
+	var toSelectId = selectId;
+	var ajaxLoadImageId = imageId;
+	jQuery.getJSON("<?php echo ROOT_URL ?>mouf/direct/get_instances.php", {class: varType, selfedit: jQuery("#selfedit").val(), encode:"json"}, function(j){
+      var options = '<option value=""></option>';
+      options += "<option value='newInstance'>Create New Instance</option>";
+      for (var i = 0; i < j.length; i++) {
+        options += '<option value="' + j[i] + '"' ;
+        if (toSelect == j[i]) {
+        	options += 'selected="true"';
+        }
+        options += '>' + j[i] + '</option>';
+      }
+      jQuery("#"+toSelectId).html(options);
+      jQuery("#"+ajaxLoadImageId).hide();
+    })
 }
 
 /*
@@ -226,14 +267,16 @@ foreach ($this->properties as $property) {
 				// note: we do not handle array of arrays, sorry....
 				
 				// Let's try to find any instances that could match this type.
-				$instances = $this->findInstances($recursiveType);
+				/*$instances = $this->findInstances($recursiveType);
+				// FIXME: findInstances est le responsable des performances déplorables sur les gros contrôleurs!
+				// Il faudrait l'utiliser en Ajax, avec requête juste au moment où il faut!!!!!
 				$instanceNameArray = array();
 				// Let's build a JSON object from it:
 				foreach ($instances as $instance) {
 					$instanceNameArray[] = array("id"=>$instance, "text"=>$instance);
 				}
 				$jsonArray = json_encode($instanceNameArray);
-				
+				*/
 				
 				echo "<div class='moufFormList'>";
 				// The div that will contain each array.
@@ -256,9 +299,9 @@ foreach ($this->properties as $property) {
 				if (is_array($defaultValues)) {
 					foreach ($defaultValues as $defaultKey=>$defaultValue) {
 						if ($isAssociative) {
-							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"$defaultValue\", true, \"$defaultKey\", \"".$property->getSubType()."\");\n";
+							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"$defaultValue\", true, \"$defaultKey\", \"".$property->getSubType()."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
 						} else {
-							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"$defaultValue\", false, \"\", \"".$property->getSubType()."\");\n";
+							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".$property->getSubType()."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
 						}
 					}
 				}
@@ -272,7 +315,7 @@ foreach ($this->properties as $property) {
 				
 				//$jsonArray = addslashes($jsonArray);
 				//[{id:0, text:\"toto\"}, {id:1, text:\"tata\"}]
-				echo "<a onclick='addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", $jsonArray, \"\", ".(($isAssociative)?"true":"false").", \"\", \"".$property->getSubType()."\");'>Add a component</a>";
+				echo "<a onclick='addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"\", ".(($isAssociative)?"true":"false").", \"\", \"".$property->getSubType()."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");'>Add a component</a>";
 				
 				echo "</div>";
 				echo "<div style='clear:both'></div>";
@@ -281,7 +324,15 @@ foreach ($this->properties as $property) {
 		} else {
 			// Ok, there is a type, and it's not an array of types
 			// Let's try to find any instances that could match this type.
-			$instances = $this->findInstances($varType);
+			/*$instances = $this->findInstances($varType);
+			// FIXME: findInstances est le responsable des performances déplorables sur les gros contrôleurs!
+			// Il faudrait l'utiliser en Ajax, avec requête juste au moment où il faut!!!!!
+			$instanceNameArray = array();
+			// Let's build a JSON object from it:
+			foreach ($instances as $instance) {
+				$instanceNameArray[] = array("id"=>$instance, "text"=>$instance);
+			}
+			$jsonArray = json_encode($instanceNameArray);*/
 			
 			if ($property->isPublicFieldProperty()) {
 				$defaultValue = $this->moufManager->getBoundComponentsOnProperty($this->instanceName, $property->getName());
@@ -289,7 +340,7 @@ foreach ($this->properties as $property) {
 				$defaultValue = $this->moufManager->getBoundComponentsOnSetter($this->instanceName, $property->getMethodName());
 			}
 			
-			$defaultDisplaySelect = "";
+			/*$defaultDisplaySelect = "";
 			if ($defaultValue != null) {
 				echo '<span id="'.$property->getName().'_mouf_link" >';
 				echo '<a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.plainstring_to_htmlprotected($defaultValue).'&amp;selfedit='.$this->selfedit.'">'.$defaultValue.'</a>';
@@ -309,7 +360,19 @@ foreach ($this->properties as $property) {
 				}
 				echo '<option value="'.plainstring_to_htmlprotected($instanceName).'" '.$selected.'>'.$instanceName.'</option>';
 			}
-			echo '</select>';
+			echo '</select>';*/
+			
+			echo "<div id='".$property->getName()."_mouf'>";
+				
+			echo "</div>";
+			
+			echo "<script>\n";
+			echo "jQuery(document).ready(function() {\n";
+			echo "addNewDropDown($(\"".$property->getName()."_mouf\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".$property->getSubType()."\", false, \"".plainstring_to_htmlprotected($varType)."\");\n";
+			
+			echo "\n});\n";
+			echo "</script>\n";
+			
 		}
 		
 		

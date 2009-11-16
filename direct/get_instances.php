@@ -15,6 +15,17 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 }
 require_once '../Moufspector.php';
 
-echo serialize(MoufManager::getMoufManager()->findInstances($_REQUEST["class"]));
+$encode = "php";
+if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
+	$encode = "json";
+}
+
+if ($encode == "php") {
+	echo serialize(MoufManager::getMoufManager()->findInstances($_REQUEST["class"]));
+} elseif ($encode == "json") {
+	echo json_encode(MoufManager::getMoufManager()->findInstances($_REQUEST["class"]));
+} else {
+	echo "invalid encode parameter";
+}
 
 ?>

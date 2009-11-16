@@ -608,11 +608,12 @@ class MoufManager {
 		fwrite($fp, " */\n");
 		fwrite($fp, "require_once '".$this->pathToMouf."MoufManager.php';\n");
 		fwrite($fp, "MoufManager::initMoufManager();\n");
+		fwrite($fp, "\$moufManager = MoufManager::getMoufManager();\n");
 		fwrite($fp, "\n");
 		
 		// Declare packages
 		foreach ($this->packagesList as $fileName) {
-			fwrite($fp, "MoufManager::getMoufManager()->addPackageByXmlFile(".var_export($fileName, true).");\n");
+			fwrite($fp, "\$moufManager->addPackageByXmlFile(".var_export($fileName, true).");\n");
 		}
 		fwrite($fp, "\n");
 		
@@ -632,13 +633,13 @@ class MoufManager {
 		// Declare local components
 		foreach ($this->registeredComponents as $registeredComponent) {
 			//fwrite($fp, "require_once dirname(__FILE__).'/$registeredComponent';\n");
-			fwrite($fp, "MoufManager::getMoufManager()->registerComponent('$registeredComponent');\n");
+			fwrite($fp, "\$moufManager->registerComponent('$registeredComponent');\n");
 		}
 		fwrite($fp, "\n");
 		
 		foreach ($this->declaredComponents as $name=>$className) {
 			if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
-				fwrite($fp, "MoufManager::getMoufManager()->declareComponent(".var_export($name, true).", ".var_export($className, true).");\n");
+				fwrite($fp, "\$moufManager->declareComponent(".var_export($name, true).", ".var_export($className, true).");\n");
 			}
 		}
 		fwrite($fp, "\n");
@@ -647,7 +648,7 @@ class MoufManager {
 			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
 				if (is_array($propArray)) {
 					foreach ($propArray as $propName=>$propValue) {
-						fwrite($fp, "MoufManager::getMoufManager()->setParameter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+						fwrite($fp, "\$moufManager->setParameter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 					}
 				}
 			}
@@ -658,7 +659,7 @@ class MoufManager {
 			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
 				if (is_array($propArray)) {
 					foreach ($propArray as $propName=>$propValue) {
-						fwrite($fp, "MoufManager::getMoufManager()->setParameterViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+						fwrite($fp, "\$moufManager->setParameterViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 					}
 				}
 			}
@@ -670,9 +671,9 @@ class MoufManager {
 				if (is_array($propArray)) {
 					foreach ($propArray as $propName=>$propValue) {
 						if (is_array($propValue)) {
-							fwrite($fp, "MoufManager::getMoufManager()->bindComponent(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+							fwrite($fp, "\$moufManager->bindComponent(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 						} else {
-							fwrite($fp, "MoufManager::getMoufManager()->bindComponents(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+							fwrite($fp, "\$moufManager->bindComponents(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 						}
 					}
 				}
@@ -685,14 +686,16 @@ class MoufManager {
 				if (is_array($propArray)) {
 					foreach ($propArray as $propName=>$propValue) {
 						if (is_array($propValue)) {
-							fwrite($fp, "MoufManager::getMoufManager()->bindComponentViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+							fwrite($fp, "\$moufManager->bindComponentViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 						} else {
-							fwrite($fp, "MoufManager::getMoufManager()->bindComponentsViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
+							fwrite($fp, "\$moufManager->bindComponentsViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
 						}
 					}
 				}
 			}
 		}
+		fwrite($fp, "\n");
+		fwrite($fp, "unset(\$moufManager);\n");
 		fwrite($fp, "\n");
 		
 		fwrite($fp, "/**
@@ -729,10 +732,11 @@ class ".$this->mainClassName." {
 
 		// Let's add the require_once from the packages first!
 		fwrite($fp2, "// Packages dependencies\n");
+		fwrite($fp2, "\$localFilePath = dirname(__FILE__);\n");
 		foreach ($this->packagesList as $fileName) {
 			$package = $packageManager->getPackage($fileName);
 			foreach ($package->getRequiredFiles() as $requiredFile) {
-				fwrite($fp2, "require_once dirname(__FILE__).'/".$this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile."';\n");
+				fwrite($fp2, "require_once \$localFilePath.'/".$this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile."';\n");
 			}
 		}
 		fwrite($fp2, "\n");
@@ -740,7 +744,7 @@ class ".$this->mainClassName." {
 		fwrite($fp2, "// User dependencies\n");
 		
 		foreach ($this->registeredComponents as $registeredComponent) {
-			fwrite($fp2, "require_once dirname(__FILE__).'/$registeredComponent';\n");
+			fwrite($fp2, "require_once \$localFilePath.'/$registeredComponent';\n");
 		}
 		fwrite($fp2, "\n");
 		
