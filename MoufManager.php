@@ -251,7 +251,7 @@ class MoufManager {
 					foreach ($bindedProperties as $paramName=>$properties) {
 						if (is_array($properties)) {
 							// If this is an array of properties
-							$keys_matching == array_keys($properties, $instanceName);
+							$keys_matching = array_keys($properties, $instanceName);
 							if (!empty($keys_matching)) {
 								foreach ($keys_matching as $key) {
 									unset($properties[$key]); 
@@ -275,7 +275,7 @@ class MoufManager {
 					foreach ($bindedProperties as $setterName=>$properties) {
 						if (is_array($properties)) {
 							// If this is an array of properties
-							$keys_matching == array_keys($properties, $instanceName);
+							$keys_matching = array_keys($properties, $instanceName);
 							if (!empty($keys_matching)) {
 								foreach ($keys_matching as $key) {
 									unset($properties[$key]); 
