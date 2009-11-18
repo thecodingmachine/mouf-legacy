@@ -68,8 +68,9 @@ class AlertController extends Controller {
 	}
 	
 	public static function checkboxFormatter($row) {
-		$checked = ($row->disabled)?"checked='checked'":"";
-		return "<input type='checkbox' value='on' $checked onclick='validateAlert($row->id)'></input>";
+		/*$checked = ($row->validated)?"checked='checked'":"";
+		return "<input type='checkbox' value='on' $checked onclick='validateAlert($row->id)'></input>";*/
+		return "<input type='checkbox' value='on' onclick='validateAlert($row->id)'></input>";
 	}
 	
 	/**

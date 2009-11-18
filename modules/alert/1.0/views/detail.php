@@ -21,7 +21,7 @@
 	<label for="title">Title:</label><span id="title"><?php echo $this->alertBean->getTitle() ?></span>
 </div>
 <div>
-	<label for="message">Message:</label><span id="title"><?php echo $this->alertBean->getMessage() ?></span>
+	<label for="message">Message:</label><div id="message" style="margin-left:10.5em"><?php echo $this->alertBean->getMessage() ?></div>
 </div>
 <div>
 	<label for="category">Category:</label><span id="category">
