@@ -104,7 +104,7 @@ class PieChartBuilder {
 		$pie->setCenter($this->theme->posChartX, $this->theme->posChartY);
 		
 		// Redimensionnement du camembert, taille relative � l'objet Graph le contenant.
-		$pie->setSize($this->theme->sizeChartX, $this->theme->sizeChartX);
+		$pie->setSize($this->theme->sizeChartX, $this->theme->sizeChartY);
 		
 		// Ajout d'un petit effet 3D; la valeur est donn�e en pixel.
 		$pie->set3D($this->theme->thickness);
