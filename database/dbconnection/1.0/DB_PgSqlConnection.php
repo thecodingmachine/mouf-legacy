@@ -72,7 +72,11 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * @return string
 	 */
 	public function getDsn() {
-		$dsn = "pgsql:host=".$this->host.";dbname=".$this->dbname.";";
+		if ($this->host) {
+			$dsn = "pgsql:host=".$this->host.";dbname=".$this->dbname.";";
+		} else {
+			$dsn = "pgsql:host=".$this->host.";dbname=template0;";
+		}
 		if (!empty($this->port)) {
 			$dsn .= "port=".$this->port.";";
 		}
@@ -110,7 +114,7 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 */
 	public function getOptions() {
 		$options = array();
-		if ($isPersistentConnection != "No") {
+		if ($this->isPersistentConnection != "No") {
 			$options[PDO::ATTR_PERSISTENT] = true;
 		}
 		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
@@ -159,9 +163,9 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 				left JOIN pg_class par ON inh.inhparent = par.oid 
 				WHERE tab.relname='$table_name'";
 
-		$result = $this->db->getCol($sql);
+		$result = $this->getAll($sql);
 		if (count($result)==1) {
-			$result = $result[0];
+			$result = $result[0]['parent_table'];
 		}elseif (count($result)==0){
 			$result = null;
 		}else{
@@ -244,20 +248,7 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 
 		return $result;
 	}
-	
-	/**
-	 * Returns an array of columns that are declared to be primary keys for this table.
-	 *
-	 * @param string $table_name the table name
-	 * @return array<DB_Column> an array of the primary key columns of the table
-	 */
-	public function getPrimaryKey($table_name) {
-		// TODO: CHANGE RETURN TYPE FOR NEW MODEL!
-		$sql = "SELECT col.attname FROM pg_attribute col JOIN pg_constraint c JOIN pg_class t ON c.conrelid = t.oid ON c.conkey[1] = col.attnum AND col.attrelid = t.oid WHERE c.contype='p' AND relname='$table_name'";
 
-		$result = $this->getCol($sql);
-		return $result;
-	}
 	
 	/**
 	 * Creates a new table in the database.
@@ -289,8 +280,21 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * @return int The next value of the sequence
 	 */
 	public function nextId($seq_name, $onDemand = true) {
-		throw new Exception("Not implemented yet");
+		$realSeqName = $this->getSequenceName($seq_name);
+		try {
+			$result = $this->getOne("SELECT NEXTVAL(".$this->quoteSmart($realSeqName).") as nextval");
+		} catch (PDOException $e) {
+			if ($e->getCode() == '42P01' && $onDemand) {
+             	// ONDEMAND TABLE CREATION
+             	$result = $this->createSequence($seq_name);
+
+             	return 1;
+        	} else {
+        		throw $e;	
+        	}
+		}
 		
+		return $result;
 	}
 	
     /**
@@ -301,7 +305,9 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
      * @param string $seq_name
      */
     public function createSequence($seq_name) {
-    	throw new Exception("Not implemented yet");
+    	$realSeqName = $this->getSequenceName($seq_name);
+    	$sql = 'CREATE SEQUENCE '.$realSeqName;
+    	$this->exec($sql);
     }
 	
     /**
@@ -311,7 +317,36 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * @return DB_Table
 	 */
 	public function getTableFromDbModel($tableName) {
-		throw new Exception("Not implemented yet");
+		// Check that the table exist.
+		if  (!$this->isTableExist($tableName)) {
+			throw new DB_Exception("Unable to find table '".$tableName."'"); 
+		}
+
+		$dbTable = new DB_Table($tableName);
+		
+		// Get the columns
+		$tableInfo = $this->getTableInfo($tableName);
+
+		// Map the columns to DB_Column objects
+		foreach ($tableInfo as $column) {
+			$dbColumn = new DB_Column();
+			$dbColumn->name = $column['column_name'];
+			// Let's compute the type:
+			$type = $column['udt_name'];
+			if ($type == "varchar") {
+				$type .= '('.$column['character_maximum_length'].')';
+			}
+			$dbColumn->type = $type;
+			$dbColumn->nullable = $column['is_nullable'] == 'YES'; 
+			$dbColumn->default = $column['column_default'];
+			
+			// TODO: initialize the Autoincrement value one way or the other!
+			//$dbColumn->autoIncrement = $column['extra'] == 'auto_increment';
+			$dbColumn->isPrimaryKey = $column['constraint_type'] == 'PRIMARY KEY';
+			$dbTable->addColumn($dbColumn);
+		}
+		
+		return $dbTable;
 	}
 	
 	/**
@@ -363,6 +398,65 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	public function getDatabaseList() {
 		throw new Exception("Not implemented yet");
 	}
+	
+	/**
+     * Creates the database.
+     * Of course, a connection must be established for this call to succeed.
+     * Please note that you can create a connection without providing a dbname.
+     * Please also note that the function does not protect the parameter. You will have to protect
+     * it yourself against SQL injection attacks.
+     * 
+     * @param string $dbName
+     */
+    public function createDatabase($dbName) {
+    	// Overload for Mysql: let's setup the encoding.
+    	/*$charset = $this->charset;
+    	if (empty($this->charset)) {
+    		$charset = "UTF8";
+    	}*/
+    	$charset = "UTF8";
+    	
+    	$this->exec("CREATE DATABASE ".$dbName." TEMPLATE = template0 ENCODING = ".$this->quoteSmart($charset));
+    	$this->dbname = $dbName;
+    	$this->connect();
+    }
+	
+	/**
+	 * Returns the table columns.
+	 *
+	 * @param string $tableName
+	 * @return array<array> An array representing the columns for the specified table.
+	 */
+	public function getTableInfo($tableName) {
+		
+		$str = "SELECT c.*, tc.constraint_type FROM information_schema.COLUMNS c
+				   LEFT JOIN (information_schema.constraint_column_usage co
+				        JOIN information_schema.table_constraints tc
+				        ON (co.constraint_name = tc.constraint_name AND co.table_name = tc.table_name))
+				        ON (c.table_catalog = co.table_catalog AND c.table_name = co.table_name AND c.column_name = co.column_name)
+				        WHERE c.table_name = ".$this->quoteSmart($tableName)." AND c.table_catalog = ".$this->quoteSmart($this->dbname)." ;";
+
+		$res = $this->getAll($str);
+		
+		return $res;
+	}
+	
+	/**
+	 * Returns true if the table exists, false if it does not.
+	 *
+	 * @param string $tableName The name of the table.
+	 * @return bool
+	 */
+	public function isTableExist($tableName) {
+		
+		
+		$str = "SELECT COUNT(1) as cnt FROM information_schema.TABLES WHERE table_name = ".$this->quoteSmart($tableName)." AND table_catalog = ".$this->quoteSmart($this->dbname)." ;";
+
+		$res = $this->getOne($str);
+		
+		return $res != 0;
+	}
+	
 }
 
 

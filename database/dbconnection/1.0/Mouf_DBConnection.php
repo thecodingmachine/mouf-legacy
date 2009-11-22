@@ -227,20 +227,17 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		}
 		return $parent_table;
 	}
-
+	
 	/**
-	 * Returns the table columns.
+	 * Returns an array of columns that are declared to be primary keys for this table.
 	 *
-	 * @param string $tableName
-	 * @return array<array> An array representing the columns for the specified table.
+	 * @param string $table_name the table name
+	 * @return array<DB_Column> an array of the primary key columns of the table
 	 */
-	public function getTableInfo($tableName) {
-		
-		$str = "SELECT * FROM information_schema.COLUMNS WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
+	public function getPrimaryKey($table_name) {
 
-		$res = $this->getAll($str);
-		
-		return $res;
+		$table = $this->getTableFromDbModel($table_name);
+		return $table->getPrimaryKeys();
 	}
 	
 	/**
@@ -258,22 +255,6 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		}
 		
 		return $array;
-	}
-	
-	/**
-	 * Returns true if the table exists, false if it does not.
-	 *
-	 * @param string $tableName The name of the table.
-	 * @return bool
-	 */
-	public function isTableExist($tableName) {
-		
-		
-		$str = "SELECT COUNT(1) as cnt FROM information_schema.TABLES WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
-
-		$res = $this->getOne($str);
-		
-		return $res != 0;
 	}
 	
 	/**

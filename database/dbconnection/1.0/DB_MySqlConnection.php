@@ -293,27 +293,21 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	}
 	
 	/**
-	 * Returns an array of columns that are declared to be primary keys for this table.
+	 * Returns true if the table exists, false if it does not.
 	 *
-	 * @param string $table_name the table name
-	 * @return array<DB_Column> an array of the primary key columns of the table
+	 * @param string $tableName The name of the table.
+	 * @return bool
 	 */
-	public function getPrimaryKey($table_name) {
+	public function isTableExist($tableName) {
+		
+		
+		$str = "SELECT COUNT(1) as cnt FROM information_schema.TABLES WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
 
-		$table = $this->getTableFromDbModel($table_name);
-		return $table->getPrimaryKeys();
-		// TODO tableinfo override!!!!
-		/*$info = $this->db->tableInfo($table_name);
-		$col = array();
-		foreach ($info as $column)
-		{
-			if (strpos($column['flags'],'primary_key')!==false )
-			{
-				$col[] = $column['name'];
-			}
-		}
-		return $col;*/
+		$res = $this->getOne($str);
+		
+		return $res != 0;
 	}
+	
 	
 	/**
 	 * Sets the host (DB server URL) for the connection.
@@ -375,7 +369,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
         	$nbAff = $this->exec('UPDATE ' . $seqname
                                . ' SET id = LAST_INSERT_ID(id + 1)');
         } catch (PDOException $e) {
-        	if ($e->getCode() == '42S02') {
+        	if ($e->getCode() == '42S02' && $onDemand) {
              // ONDEMAND TABLE CREATION
              $result = $this->createSequence($seq_name);
 
@@ -465,6 +459,29 @@ class DB_MySqlConnection extends Mouf_DBConnection {
         // insert yields value 1, nextId call will generate ID 2
         $this->exec("INSERT INTO ${seqname} (id) VALUES (0)");
     }
+    
+    /**
+	 * Returns the table columns.
+	 *
+	 * @param string $tableName
+	 * @return array<array> An array representing the columns for the specified table.
+	 */
+	public function getTableInfo($tableName) {
+		
+		$str = "SELECT * FROM information_schema.COLUMNS WHERE table_name = ".$this->quoteSmart($tableName)." AND table_schema = ".$this->quoteSmart($this->dbname)." ;";
+
+		$res = $this->getAll($str);
+
+		// Let's lower case the columns name, in order to get a consistent behaviour with PgSQL
+		$arr = array();
+		foreach ($res as $nbrow=>$row) {
+			foreach ($row as $key=>$value) {
+				$arr[$nbrow][strtolower($key)] = $value;	
+			}
+		}
+		
+		return $arr;
+	}
 	
     /**
 	 * Returns a table object (DB_Table) from the database.
@@ -488,12 +505,12 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		// Map the columns to DB_Column objects
 		foreach ($tableInfo as $column) {
 			$dbColumn = new DB_Column();
-			$dbColumn->name = $column['COLUMN_NAME'];
-			$dbColumn->type = $column['COLUMN_TYPE'];
-			$dbColumn->nullable = $column['IS_NULLABLE'] == 'YES'; 
-			$dbColumn->default = $column['COLUMN_DEFAULT'];
-			$dbColumn->autoIncrement = $column['EXTRA'] == 'auto_increment';
-			$dbColumn->isPrimaryKey = $column['COLUMN_KEY'] == 'PRI';
+			$dbColumn->name = $column['column_name'];
+			$dbColumn->type = $column['column_type'];
+			$dbColumn->nullable = $column['is_nullable'] == 'YES'; 
+			$dbColumn->default = $column['column_default'];
+			$dbColumn->autoIncrement = $column['extra'] == 'auto_increment';
+			$dbColumn->isPrimaryKey = $column['column_key'] == 'PRI';
 			$dbTable->addColumn($dbColumn);
 		}
 		return $dbTable;
