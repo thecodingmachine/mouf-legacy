@@ -194,7 +194,7 @@ jQuery(document).ready(function(){';
 				}
 				
 			}
-			$columnsDesc[] = '{name:"'.htmlspecialchars($column->getSortColumn(), ENT_QUOTES).'", index:"'.htmlspecialchars($column->getSortColumn(), ENT_QUOTES).'", width:"'.htmlspecialchars($column->getWidth(), ENT_QUOTES).'"'.$formatStr.'}';
+			$columnsDesc[] = '{name:"'.htmlspecialchars($column->getSortColumn(), ENT_QUOTES).'", index:"'.htmlspecialchars($column->getSortColumn(), ENT_QUOTES).'", width:"'.htmlspecialchars($column->getWidth(), ENT_QUOTES).'"'.$formatStr.', resizable:'.(($column->isResizable())?"true":"false").'}';
 			
 		}
 		$str .= implode(", ", $columnsTitles);

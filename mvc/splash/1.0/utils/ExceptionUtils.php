@@ -68,7 +68,7 @@ class ExceptionUtils {
 		$msg .= "<td style='background-color:#AAAAAA; color:white; text-align:center'>File</td>";
 		$msg .= "<td style='background-color:#AAAAAA; color:white; text-align:center'>Line</td></tr>";
 
-		$msg .= "<tr><td style='background-color:#EEEEEE; color:black'><b>".$exception->getMessage()."</b></td>";
+		$msg .= "<tr><td style='background-color:#EEEEEE; color:black'><b>".nl2br($exception->getMessage())."</b></td>";
 		$msg .= "<td style='background-color:#EEEEEE; color:black'>".$exception->getFile()."</td>";
 		$msg .= "<td style='background-color:#EEEEEE; color:black'>".$exception->getLine()."</td></tr>";
 		$msg .= self::getHTMLBackTrace($exception->getTrace());

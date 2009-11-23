@@ -13,12 +13,14 @@ abstract class AbstractDataColumnInterface implements DataColumnInterface {
 	private $useI18n;
 	private $translationPrefix;
 	private $translationSuffix;
+	private $resizable;
 	
-	public function __construct($title=null, $sortColumn=null, $width=null, $formatter=null) {
+	public function __construct($title=null, $sortColumn=null, $width=null, $formatter=null, $resizable=true) {
 		$this->title = $title;
 		$this->sortColumn = $sortColumn;
 		$this->width = $width;
 		$this->formatter = $formatter;
+		$this->resizable = true;
 	}
 	
 	/**
@@ -189,6 +191,25 @@ abstract class AbstractDataColumnInterface implements DataColumnInterface {
 		} else {
 			return $value;
 		}
+	}
+	
+	/**
+	 * Whether the column can be resized or not.
+	 *
+	 * @Property
+	 * @param bool $resizable
+	 */
+	public function setResizable($resizable) {
+		$this->resizable = $resizable;
+	}
+	
+	/**
+	 * Returns whether the column can be resized or not.
+	 *
+	 * @return bool
+	 */
+	public function isResizable() {
+		return $this->resizable;
 	}
 }
 ?>

@@ -66,7 +66,7 @@ if ($debug_mode) {
 	<div class="stats-key">
 		<div class="vertical-gap"></div>
 			<?php
-			echo $exception->getMessage();
+			echo nl2br($exception->getMessage());
 			?>
 		<div style="clear: both;"></div>
 	<div class="vertical-gap"></div>
