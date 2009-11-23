@@ -40,6 +40,7 @@ require_once 'utils/SplashSessionUtils.php';
 // MODELS
 require_once 'models/SplashObject.php';
 require_once 'models/Splash.php';
+require_once 'models/SplashAction.php';
 //require_once 'models/AdminBag.php';
 //require_once 'models/SplashUrlAnalyzer.php';
 require_once 'models/ApplicationException.php';

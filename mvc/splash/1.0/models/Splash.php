@@ -18,12 +18,12 @@ require_once dirname(__FILE__)."/../load.php";
  * of that controller.</br>
  * </li></ul>
  * Others methods are remaining to be done.
- * 
+ *
  * @Component
  * @RequiredInstance "splash"
  */
 class Splash {
-	
+
 	/**
 	 * The logger used by Splash
 	 *
@@ -32,7 +32,7 @@ class Splash {
 	 * @var LogInterface
 	 */
 	public $log;
-	
+
 	/**
 	 * The default template used by Splash (for displaying error pages, etc...)
 	 *
@@ -41,8 +41,8 @@ class Splash {
 	 * @var TemplateInterface
 	 */
 	public $defaultTemplate;
-	
-	
+
+
 	/**
 	 * If Splash debug mode is enabled, stack traces on error messages will be displayed.
 	 *
@@ -50,7 +50,7 @@ class Splash {
 	 * @var bool
 	 */
 	public $debugMode;
-	
+
 	/**
 	 * Set to "true" if the server supports HTTPS.
 	 * This can be used by various plugins (especially the RequiresHttps annotation).
@@ -58,11 +58,27 @@ class Splash {
 	 * @var boolean
 	 */
 	public $supportsHttps;
-	
+
+	/**
+	 * Defines the route map for input URLs
+	 *
+	 * @Property
+	 * @var array<string,SplashAction>
+	 */
+	public $authorizeInstanceAccess=true;
+
+	/**
+	 * Defines the route map for input URLs
+	 *
+	 * @Property
+	 * @var array<string,SplashAction>
+	 */
+	public $routeMap;
+
 	/**
 	 * The controller in the Url (this should be the first "directory" of the URL after the webapp.
 	 *
-	 * @var string
+	 * @var Controller
 	 */
 	private $controller;
 
@@ -72,84 +88,84 @@ class Splash {
 	 * @var string
 	 */
 	private $action;
-	
+
 	/**
 	 * An array containing all the directories after the action.
 	 *
 	 * @var string
 	 */
 	private $args;
-	
+
 	/**
 	 * True if the URL analyze has been already performed.
 	 *
 	 * @var boolean
 	 */
 	private $analyzeDone;
-	
+
 	/**
 	 * The beginning of the URL before Splash is activated. This is basically the webapp directory name.
 	 *
 	 * @var string
 	 */
 	private $splashUrlPrefix;
-	
+
 	/**
 	 * Analyze the URL and fills the "controller", "action" and "args" variables.
 	 *
 	 */
 	private function analyze() {
 		$redirect_uri = $_SERVER['REDIRECT_URL'];
-				
+
 		$pos = strpos($redirect_uri, $this->splashUrlPrefix);
-		
 		if ($pos === FALSE) {
 			throw new Exception('Error: the prefix of the web application "'.$this->splashUrlPrefix.'" was not found in the URL. The application must be misconfigured.');
 		}
-		
-		$action = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
 
-		$array = explode("/", $action);
-		
-		$this->controller = $array[0];
-		if (isset($array[1])) {
-			$this->action = $array[1];
+		$tailing_url = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
+
+		// Step 1: look at the route map
+		if($this->routeMap) {
+			foreach ($this->routeMap as $url=>$splashAction) {
+				if(strtolower($url) == substr(strtolower($tailing_url),0,strlen($url))) {
+					$this->controller = $splashAction->controller;
+					$this->action = $splashAction->actionName;
+					//args
+					$args = substr($tailing_url, strlen($url));
+					$array = explode("/", $args);
+					$this->args = $array;
+				}
+			}
 		}
-		$this->args = array();
 
-		array_shift($array);
-		array_shift($array);
+		// Step 2: If no controller is found with the mapping, search in the available controllers
+		// Warning : if Instance Access forbidden -> Map use only!
+		if($this->authorizeInstanceAccess && !$this->controller){
+			$array = explode("/", $tailing_url);
 
-		$this->args = $array;
+			try {
+				if(isset($array[0]) && !empty($array[0])){
+					$this->controller = MoufManager::getMoufManager()->getInstance($array[0]);
+				}
+			}catch (MoufException $e) {
+				Controller::FourOFour("controller.404.no.such.controller"."XXX ".$e->getMessage());
+				exit;
+			}
+			if (isset($array[1])) {
+				$this->action = $array[1];
+			}
+			$this->args = array();
+
+			array_shift($array);
+			array_shift($array);
+
+			$this->args = $array;
+		}
 
 		$this->analyzeDone = true;
 	}
-	
-	/**
-	 * Returns the instance of the destination controller, or throw a MoufException if the controller was not found.
-	 *
-	 * @return Controller
-	 */
-	public function getControllerInstance() {
-		if (!$this->analyzeDone) {
-			$this->analyze();
-		}
-		return MoufManager::getMoufManager()->getInstance($this->controller);
-	}
-	
-	/**
-	 * Returns the controller string, or null if the user wants the root directory.
-	 *
-	 * @return string
-	 */
-	public function getControllerName() {
-		if (!$this->analyzeDone) {
-			$this->analyze();
-		}
-		
-		return $this->controller;
-	}
-	
+
+
 	/**
 	 * Returns the action, or null if none is provided by the user.
 	 *
@@ -159,10 +175,10 @@ class Splash {
 		if (!$this->analyzeDone) {
 			$this->analyze();
 		}
-		
+
 		return $this->action;
 	}
-	
+
 	/**
 	 * Returns the args associated to the URL.
 	 * The args is the list of directories, as a list of strings, after the action
@@ -172,7 +188,7 @@ class Splash {
 	public function getArgs() {
 		return $this->args;
 	}
-	
+
 
 	/**
 	 * Route the user to the right controller according to the URL.
@@ -180,16 +196,17 @@ class Splash {
 	 */
 	public function route($splashUrlPrefix) {
 		$this->splashUrlPrefix = $splashUrlPrefix;
+
 		// Retrieve the split parts
-		$controllerName = $this->getControllerName();
-		
+		$this->analyze();
+
 		// If the controller name is not specified, then let's find the root controller.
 		// The root controller by convention is called "rootController".
-		if (empty($controllerName)) {
+
+		if (!($this->controller)) {
 			// Is there a root controller?
 			try {
 				$controller = MoufManager::getMoufManager()->getInstance("rootController");
-				$controllerName = "rootController";
 			} catch (MoufException $e) {
 				// There is no root controller!
 				// Let's go 404!
@@ -197,21 +214,14 @@ class Splash {
 				exit();
 			}
 		} else {
-			try {
-				$controller = $this->getControllerInstance();
-			} catch (MoufException $e) {
-				Controller::FourOFour("controller.404.no.such.controller"."XXX ".$e->getMessage());
-				exit;
-			}
-					
-				
+			$controller = $this->controller;
 		}
-		
-		
+
+
 		$action = $this->getAction();
-		
-		$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".$controllerName." and action ".$action);
-		
+
+		$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
+
 		if (!$controller instanceof Controller) {
 			// "Invalid class";
 			Controller::FourOFour("controller.404.class.doesnt.extends.controller");
@@ -220,7 +230,7 @@ class Splash {
 
 		// Let's pass everything to the controller:
 		$controller->callAction($action);
-		
+
 	}
 }
 
