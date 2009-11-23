@@ -429,7 +429,7 @@ class TDBM_Service {
 
 		$this->getPrimaryKeyStatic($table_name, $this->dbConnection);
 
-		$result = $this->dbConnection->query($sql, array(), $from, $limit);
+		$result = $this->dbConnection->query($sql, $from, $limit);
 
 		$returned_objects = new TDBM_ObjectArray();
 
