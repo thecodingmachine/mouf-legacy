@@ -711,7 +711,7 @@ class ".$this->mainClassName." {
 				fwrite($fp, "	/**\n");
 				fwrite($fp, "	 * @return $className\n");
 				fwrite($fp, "	 */\n");
-				fwrite($fp, "	 public function ".self::generateGetterString($name)."() {\n");
+				fwrite($fp, "	 public static function ".self::generateGetterString($name)."() {\n");
 				fwrite($fp, "	 	return MoufManager::getMoufManager()->getInstance(".var_export($name,true).");\n");
 				fwrite($fp, "	 }\n\n");
 			//}
