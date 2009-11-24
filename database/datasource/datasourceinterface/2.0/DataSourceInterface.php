@@ -103,4 +103,15 @@ interface ReverseDataSourceInterface {
 	public function registerUpdateCallback($callback);
 }
 
+interface ParametrisedInterface extends DataSourceInterface {
+	
+	/**
+	 * Adds a parameter to the Data Source
+	 *
+	 * @param string $key
+	 * @param string $value
+	 */
+	public function setParameter($key,$value) ;
+}
+
 ?>
