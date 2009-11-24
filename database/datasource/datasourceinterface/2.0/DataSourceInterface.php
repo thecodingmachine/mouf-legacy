@@ -79,13 +79,13 @@ interface UpdatableDataSourceInterface extends DataSourceInterface {
 	 * @param integer $offset
 	 * @param integer $limit
 	 */
-	public function load($params=array(), $offset=null, $limit=null);
+	public function load($offset=null, $limit=null);
 	
 	/**
 	 * Returns the global size of the source (not the size retrieved up to now).
 	 * @return integer
 	 */
-	public function getGlobalCount($params=array());
+	public function getGlobalCount();
 	
 }
 
@@ -112,6 +112,18 @@ interface ParametrisedInterface extends DataSourceInterface {
 	 * @param string $value
 	 */
 	public function setParameter($key,$value) ;
+	
+	/**
+	 * Returns the set of parameters applied to the Data Source
+	 * @return array
+	 */
+	public function getParameters();
+	
+	/**
+	 * Returns the value of the parameter defined by $key
+	 * @return string
+	 */
+	public function getParameters($key);
 }
 
 ?>
