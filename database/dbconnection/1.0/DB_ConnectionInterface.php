@@ -31,12 +31,13 @@ interface DB_ConnectionInterface {
 	
 	/**
 	 * Runs the query and returns all lines in an associative table.
-	 *
+	 * 
 	 * @param string $query
 	 * @param int $mode
-	 * @return unknown
+	 * @param string $classname
+	 * @return array
 	 */
-	public function getAll($query, $mode = PDO::FETCH_ASSOC);
+	public function getAll($query, $mode = PDO::FETCH_ASSOC,$classname="stdClass");
 
 	/**
 	 * Runs the query and returns the one and only value returned by this query.

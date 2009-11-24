@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once 'DB_ConnectionInterface.php';
 require_once 'DB_Exception.php';
 require_once 'DB_Column.php';
@@ -16,7 +16,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @var PDO
 	 */
 	protected $dbh;
-	
+
 	/**
 	 * The name for the database instance to connect to.
 	 *
@@ -25,55 +25,55 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @var string
 	 */
 	public $dbname;
-	
+
 	/**
 	 * The logger to use, if any.
-	 * 
+	 *
 	 * @Property
 	 * @var LogInterface
 	 */
 	public $log;
-	
+
 	/**
 	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
 	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
 	 * will be ended, but the flag will not be set to false).
-	 * 
+	 *
 	 * @var bool
 	 */
 	protected $_hasActiveTransaction = false;
-	
+
 	/*public $db;
-	public $dsn;
-	public $options;
-	private $commitOnQuit = true;
-	private $autoCommit = true;*/
+	 public $dsn;
+	 public $options;
+	 private $commitOnQuit = true;
+	 private $autoCommit = true;*/
 
 	public function __construct() {
 		//$this->dsn = $dsn;
 		/*if (!isset($options['seqname_format']))
-		$options['seqname_format'] = '%s_pk_seq';
-		if (!isset($options['persistent']))
-		$options['persistent'] = 'TRUE';
+		 $options['seqname_format'] = '%s_pk_seq';
+		 if (!isset($options['persistent']))
+		 $options['persistent'] = 'TRUE';
 
-		// By default, charset for the connection will be UTF-8.
-		if (!isset($dsn['charset']))
-		$dsn['charset']="UTF8";
+		 // By default, charset for the connection will be UTF-8.
+		 if (!isset($dsn['charset']))
+		 $dsn['charset']="UTF8";
 
-		$this->dsn = $dsn;
-		$this->options = $options;
-		$this->db =& DB::connect($dsn, $options);
-		$this->checkError($this->db);
+		 $this->dsn = $dsn;
+		 $this->options = $options;
+		 $this->db =& DB::connect($dsn, $options);
+		 $this->checkError($this->db);
 
-		// In the case of MySQL UTF8, there is an additional command to run!
-		if ($this->dsn["phptype"]=='mysql') {
+		 // In the case of MySQL UTF8, there is an additional command to run!
+		 if ($this->dsn["phptype"]=='mysql') {
 			$charset = strtolower($dsn['charset']);
 			if ($charset == 'utf8' || $charset == 'utf-8')
 			$this->query("SET NAMES 'utf8'");
-		}*/
+			}*/
 
 	}
-	
+
 	/**
 	 * Performs the connection to the the database.
 	 *
@@ -81,8 +81,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	public function connect() {
 		$this->dbh = new PDO($this->getDsn(), $this->getUserName(), $this->getPassword(), $this->getOptions());
 	}
-	
-	
+
+
 	/**
 	 * Runs the query against the database.
 	 *
@@ -93,7 +93,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-		
+
 		$res = $this->dbh->exec($query);
 		return $res;
 	}
@@ -111,18 +111,18 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($limit !== null) {
 			$limitInt = (int)$limit;
 			$queryStr .= " LIMIT ".$limitInt;
-			
+				
 			if ($from !== null) {
 				$fromInt = (int)$from;
 				$queryStr .= " OFFSET ".$fromInt;
 			}
 		}
-		
+
 		$res = $this->dbh->query($queryStr);
 
 		return $res;
 	}
-	
+
 	/**
 	 * Runs the query and returns all lines in an associative table.
 	 *
@@ -130,16 +130,20 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @param int $mode
 	 * @return unknown
 	 */
-	public function getAll($query, $mode = PDO::FETCH_ASSOC) {
+	public function getAll($query, $mode = PDO::FETCH_ASSOC, $classname = "stdClass") {
+		if($classname==null && $mode==PDO::FETCH_CLASS) $classname = "stdClass";
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-		
 		$stmt = $this->dbh->query($query);
-		$stmt->setFetchMode($mode);
+		if($mode==PDO::FETCH_CLASS){
+			$stmt->setFetchMode(PDO::FETCH_CLASS,$classname);
+		}else {
+			$stmt->setFetchMode($mode);
+		}
 		$arrValues = $stmt->fetchAll();
 		$stmt->closeCursor();
-		
+
 		return $arrValues;
 	}
 
@@ -153,18 +157,18 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-		
+
 		$stmt = $this->dbh->query($query);
 		$value = $stmt->fetchColumn();
 		$stmt->closeCursor();
-		
+
 		return $value;
 	}
 
 	/**
 	 * Protects the string (by adding \ in front of '.
 	 * TODO: Migrate to use prepared statements!!
-	 * 
+	 *
 	 * @param string $in
 	 * @return string
 	 */
@@ -172,7 +176,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-		
+
 		return $this->dbh->quote($in);
 	}
 
@@ -184,15 +188,15 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return unknown The next value of the sequence
 	 */
 	//abstract public function nextId($seq_name, $onDemand = true);
-	
+
 	/*public function nextId($seq_name, $onDemand = true) {
 		$id = $this->db->nextId($seq_name, $onDemand);
 		$this->checkError($id, 'Error while querying peardb sequence name '.$seq_name.'\n'.
-			"Possible symptom: the sequence is named $seq_name and your database user (".$this->getUserName().") does not have the rights to create it.");
+		"Possible symptom: the sequence is named $seq_name and your database user (".$this->getUserName().") does not have the rights to create it.");
 		return $id;
-	}*/
+		}*/
 
-	
+
 	/**
 	 * Returns Root Sequence Table for $table_name
 	 * i.e. : if "man" table inherits "human" table , returns "human" for Root Sequence Table
@@ -227,7 +231,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		}
 		return $parent_table;
 	}
-	
+
 	/**
 	 * Returns an array of columns that are declared to be primary keys for this table.
 	 *
@@ -239,11 +243,11 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$table = $this->getTableFromDbModel($table_name);
 		return $table->getPrimaryKeys();
 	}
-	
+
 	/**
 	 * Returns a list of table names.
 	 *
-	 * 
+	 *
 	 */
 	public function getListOfTables() {
 		$str = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = ".$this->quoteSmart($this->dbname)." ;";
@@ -253,18 +257,18 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		foreach ($res as $table) {
 			$array[] = $table['table_name'];
 		}
-		
+
 		return $array;
 	}
-	
+
 	/**
-	 * Returns a table object (DB_Table) from the database. 
+	 * Returns a table object (DB_Table) from the database.
 	 *
 	 * @param string $tableName
 	 * @return DB_Table
 	 */
 	//abstract public function getTableFromDbModel($tableName);
-	
+
 	/**
 	 * Returns the constraints on table "table_name" and column "column_name" if "column_name"is given
 	 * this function returns an array of arrays of the form:
@@ -276,7 +280,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return unknown
 	 */
 	//abstract public function getConstraintsOnTable($table_name,$column_name=false);
-	
+
 	/**
 	 * Returns the constraints on table "table_name" and column "column_name" if "column_name"is given
 	 * this function returns an array of arrays of the form:
@@ -340,7 +344,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$sql="SELECT max($pkey_field_name) AS id FROM $table_name";
 		//echo $sql;
 		$result=$this->getOne($sql);
-		
+
 		return $result;
 	}
 
@@ -359,10 +363,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->isTableExist($table_name)) {
 			return true;
 		}
-		
+
 		// If the table does not exist, let's try to find a close match in the name.
 		$data = $this->getListOfTables();
-		
+
 		// Let's compute the lenvenstein distance and keep the smallest one in $smallest.
 		$smallest = 99999999;
 		$distance_table = array();
@@ -406,7 +410,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 
 		foreach ($data as $current_column) {
 			if ($this->toStandardcaseColumn($current_column['COLUMN_NAME'])==$column_name)
-				return true;
+			return true;
 		}
 
 		// If we are here, table was not found
@@ -430,7 +434,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 
 		return $result_array;
 	}
-	
+
 	/**
 	 * Returns, depending on the database system used and file system used the string passed
 	 * in parameter in lowercase or in the same case.
@@ -445,7 +449,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 */
 	function toStandardcase($string) {
 		$caseSensitive = $this->isCaseSensitive();
-		
+
 		if ($caseSensitive) {
 			return $string;
 		} else {
@@ -454,14 +458,14 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	}
 
 	/**
-	 * Returns, depending on the database system used and file system used the string passed 
+	 * Returns, depending on the database system used and file system used the string passed
 	 * in parameter in lowercase or in the same case.
 	 * This lowercasing mecanism is used for columns.
 	 * If a column name is case insensitive, this will return the column name in lowercase.
-	 * 
+	 *
 	 * Note: in the current implementation, both MySQL and PostgreSQL are case insensitive.
 	 * PostgreSQL is case sensitive if a column is quoted, BUT TDBM does not quote columns.
-	 * 
+	 *
 	 */
 	function toStandardcaseColumn($string) {
 		return strtolower($string);
@@ -478,7 +482,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$this->_hasActiveTransaction = $this->dbh->beginTransaction();
 		return $this->_hasActiveTransaction;
 	}
-	
+
 	/**
 	 * Commits the transaction that has been started with beginTransaction.
 	 *
@@ -486,9 +490,9 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 */
 	public function commit() {
 		$this->_hasActiveTransaction = false;
-		$this->dbh->commit(); 
+		$this->dbh->commit();
 	}
-	
+
 	/**
 	 * Rolls-back the transaction that has been started with beginTransaction.
 	 *
@@ -498,7 +502,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$this->_hasActiveTransaction = false;
 		$this->dbh->rollBack();
 	}
-	
+
 	/**
 	 * Commits the current transaction.
 	 *
@@ -507,7 +511,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		TDBM_Object::completeSave();
 		$result = $this->db->commit();
 		$this->checkError($result);
-	}*/
+		}*/
 
 	/**
 	 * Rolls back the current transaction.
@@ -519,8 +523,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		TDBM_Object::completeSave();
 		$result = $this->db->rollback();
 		$this->checkError($result);
-	}*/
-	
+		}*/
+
 	/**
 	 * Returns the column type of the column $column from table $table
 	 * If the column does not exist, returns null.
@@ -532,10 +536,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	public function getColumnType($table, $column) {
 		$table_info = $this->getTableInfo($table);
 		if (!isset($table_info[$column]))
-			return null;
+		return null;
 		return $table_info[$column]['type'];
 	}
-	
+
 	/**
 	 * Checks whether the $value passed is compatible with the SQL $type passed.
 	 * For instance checkType(4, 'INTEGER') will return true.
@@ -551,19 +555,19 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			case "int4":
 			case "int8":
 				if ($value != null && !is_numeric($value))
-					return false;
+				return false;
 				break;
 			case "float4":
 			case "float8":
 				if ($value != null && !is_numeric($value))
-					return false;
+				return false;
 				break;
-				
+
 		}
 		// TODO: MySQL Types, date types.
 		return true;
 	}
-	
+
 	/**
 	 * Creates a new table in the database.
 	 *
@@ -571,7 +575,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @param boolean $dropIfExist whether the table should be dropped or not if it exists.
 	 */
 	//abstract public function createTable(DB_Table $table, $dropIfExist);
-	
+
 	/**
 	 * Creates a new index in the database.
 	 *
@@ -581,7 +585,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @param string $indexName The index name, generated if not specified.
 	 */
 	//abstract public function createIndex($tableName, $columnsList, $isUnique, $indexName=null);
-	
+
 	/**
 	 * Returns the sequence name (code from Pear DB, thanks to the Pear DB team).
 	 *
@@ -589,67 +593,67 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return unknown
 	 */
 	public function getSequenceName($sqn)
-    {
-        //return sprintf($this->getOption('seqname_format'),
-        //               preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
-        return sprintf("%s_pk_seq",
-                       preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
-    }
-    
-    /**
-     * Creates a sequence with the name specified.
-     * Note: The name is transformed be the getSequenceName method.
-     * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
-     *
-     * @param string $seq_name
-     */
-    //abstract public function createSequence($seq_name);
-    
-    /**
+	{
+		//return sprintf($this->getOption('seqname_format'),
+		//               preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
+		return sprintf("%s_pk_seq",
+		preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
+	}
+
+	/**
+	 * Creates a sequence with the name specified.
+	 * Note: The name is transformed be the getSequenceName method.
+	 * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
+	 *
+	 * @param string $seq_name
+	 */
+	//abstract public function createSequence($seq_name);
+
+	/**
 	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
 	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
 	 * will be ended, but the flag will not be set to false).
-	 * 
+	 *
 	 * @return bool
 	 */
-    public function hasActiveTransaction() {
-    	return $this->_hasActiveTransaction;
-    }
-    
-    /**
-     * Creates the database.
-     * Of course, a connection must be established for this call to succeed.
-     * Please note that you can create a connection without providing a dbname.
-     * Please also note that the function does not protect the parameter. You will have to protect
-     * it yourself against SQL injection attacks.
-     * 
-     * @param string $dbName
-     */
-    public function createDatabase($dbName) {
-    	$this->exec("CREATE DATABASE ".$dbName);
-    	$this->dbname = $dbName;
-    	$this->connect();
-    }
+	public function hasActiveTransaction() {
+		return $this->_hasActiveTransaction;
+	}
 
-    /**
-     * Drops the database.
-     * Of course, a connection must be established for this call to succeed.
-     * Please note that you can create a connection without providing a dbname.
-     * Please also note that the function does not protect the parameter. You will have to protect
-     * it yourself against SQL injection attacks.
-     * 
-     * @param string $dbName
-     */
-    public function dropDatabase($dbName) {
-    	$this->exec("DROP DATABASE ".$dbName);
-    }
-    
-	    
+	/**
+	 * Creates the database.
+	 * Of course, a connection must be established for this call to succeed.
+	 * Please note that you can create a connection without providing a dbname.
+	 * Please also note that the function does not protect the parameter. You will have to protect
+	 * it yourself against SQL injection attacks.
+	 *
+	 * @param string $dbName
+	 */
+	public function createDatabase($dbName) {
+		$this->exec("CREATE DATABASE ".$dbName);
+		$this->dbname = $dbName;
+		$this->connect();
+	}
+
+	/**
+	 * Drops the database.
+	 * Of course, a connection must be established for this call to succeed.
+	 * Please note that you can create a connection without providing a dbname.
+	 * Please also note that the function does not protect the parameter. You will have to protect
+	 * it yourself against SQL injection attacks.
+	 *
+	 * @param string $dbName
+	 */
+	public function dropDatabase($dbName) {
+		$this->exec("DROP DATABASE ".$dbName);
+	}
+
+	 
 	/**
 	 * Executes the given SQL file.
 	 * If $on_error_continue == true, continues if an error is encountered.
 	 * Otherwise, stops.
-	 * 
+	 *
 	 * Returns true on success, false if errors have been encountered (even non fatal errors).
 	 *
 	 * @param string $file The SQL filename
@@ -659,10 +663,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$this->info("Processing $file statements...\n");
 		$nb_errors = 0;
 		$sql_string = file_get_contents($file);
-		
+
 		do {
 			$next_statement = $this->clever_sql_split($sql_string);
-			
+				
 			try {
 				if (trim($next_statement)!="") {
 					$this->trace("Executing statement: ".$next_statement);
@@ -676,10 +680,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 					break;
 				}
 			}
-			
+				
 			$sql_string = substr($sql_string, strlen($next_statement)+1);
 		} while ($sql_string != false);
-		
+
 		if (!$on_error_continue && $nb_errors!=0)
 		{
 			$this->error('Error while running SQL script "'.$file.'". Script aborted.');
@@ -691,7 +695,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->info("SQL script completed.");
 		}
 	}
-	
+
 	/**
 	 * Gets the next SQL command from $str (which is supposed to be an SQL file).
 	 *
@@ -702,7 +706,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		preg_match("/((?:(?:'(?:(?:\\\\')|[^'])*')|[^;])*)/",$str, $res);
 		return $res[1];
 	}
-	
+
 	/**
 	 * Logs a message in the error log as a TRACE message.
 	 * This function takes 1 or 2 arguments:
@@ -715,7 +719,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->log->trace($string, $e);
 		}
 	}
-	
+
 	/**
 	 * Logs a message in the error log as a DEBUG message.
 	 * This function takes 1 or 2 arguments:
@@ -728,7 +732,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->log->debug($string, $e);
 		}
 	}
-	
+
 	/**
 	 * Logs a message in the error log as a INFO message.
 	 * This function takes 1 or 2 arguments:
@@ -741,7 +745,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->log->info($string, $e);
 		}
 	}
-	
+
 	/**
 	 * Logs a message in the error log as a WARN message.
 	 * This function takes 1 or 2 arguments:
@@ -754,7 +758,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->log->warn($string, $e);
 		}
 	}
-	
+
 	/**
 	 * Logs a message in the error log as a ERROR message.
 	 * This function takes 1 or 2 arguments:
@@ -767,7 +771,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->log->error($string, $e);
 		}
 	}
-	
+
 	/**
 	 * Logs a message in the error log as a FATAL message.
 	 * This function takes 1 or 2 arguments:

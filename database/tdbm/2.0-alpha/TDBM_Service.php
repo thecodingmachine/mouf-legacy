@@ -614,11 +614,11 @@ class TDBM_Service {
 	 * @param string $sql
 	 * @return array the result of your query
 	 */
-	public function getTransientObjectsFromSQL($sql) {
+	public function getTransientObjectsFromSQL($sql,$classname=null) {
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
-		return $this->dbConnection->getAll($sql, null, DB_FETCHMODE_OBJECT);
+		return $this->dbConnection->getAll($sql, PDO::FETCH_CLASS,$classname);
 	}
 	
 
