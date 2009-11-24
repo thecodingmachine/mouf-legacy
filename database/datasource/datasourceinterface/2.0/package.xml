@@ -6,7 +6,9 @@
 	<docUrl></docUrl>
 	<logo>database.png</logo>
 	<requires>
-		<require>XajaDataSourceInterface.php</require>
+		<require>DataSourceColumnInterface.php</require>
+		<require>DataSourceColumn.php</require>
+		<require>DataSourceInterface.php</require>
 		<require>OrderableDataSourceInterface.php</require>
 	</requires>
 </package>
