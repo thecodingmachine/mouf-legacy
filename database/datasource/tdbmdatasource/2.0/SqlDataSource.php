@@ -37,6 +37,13 @@ class SqlDataSource extends DynamicDataSource {
 	private $global_count = null;
 	
 	/**
+	 * Connection to DB
+	 *
+	 * @var DB_ConnectionInterface
+	 */
+	private $dbConnection;
+	
+	/**
 	 * The SQL that will be run to load data in the datasource.
 	 * This SQL can contain parameters (for instance {user_id}), but should not contain
 	 * any ORDER BY and OFFSET/LIMIT keywords (since the datasource will
@@ -48,6 +55,7 @@ class SqlDataSource extends DynamicDataSource {
 	 */
 	public function setSql($sql) {
 		$this->sql = $sql;
+		$this->rows = null;
 	}
 	
 	/**
@@ -58,24 +66,23 @@ class SqlDataSource extends DynamicDataSource {
 	 * @param string $countSql
 	 */
 	public function setCountSql($countSql) {
-		$this->countSql = $countSql;		
+		$this->countSql = $countSql;
+		$this->rows = null;		
 	}
 	
 	/**
-	 * This function loads data into the DataSource.
+	 * This function returns data in rows.
 	 *
 	 * @param mixed $params parameters for the loading.
 	 * @param unknown_type $offset
 	 * @param unknown_type $limit
 	 */
-	public function load($params=array(), $offset=null, $limit=null) {
-		// If the parameters have changed, let's purge!
-		if ($this->previous_params != $params) {
-			$this->purge();
-		}
-		$this->previous_params = $params;
+	public function getRows() {
+		
 
-		list($sql, $sqlCount) = $this->fillParameters($params);
+		if(!$this->rows) {
+		
+		$this->fillParameters();
 		
 		if ($this->order_column != null) {
 			$sql .= " ORDER BY ".$this->order_column;
@@ -87,14 +94,20 @@ class SqlDataSource extends DynamicDataSource {
 		
 		$objects = DBM_Object::getTransientObjectsFromSQL($sql, $offset, $limit);
 		$i=$offset?$offset:0;
+		// TODO: la ligne suivante est fausse mais je sais pas pourquoi...
+		$key_column = $this->getKeyColumn();
 		foreach ($objects as $object) {
-			$this[$i] = $object;
+			$this->rows[$object->$key_column] = $object;
 			$i++;
 		}
 		
 		if ($offset==null && $limit==null) {
 			$this->global_count = $i;
 		}
+		
+		}
+		
+		return $this->rows;
 	}
 	
 	/**
@@ -103,16 +116,16 @@ class SqlDataSource extends DynamicDataSource {
 	 * @param array $params
 	 * @return array an array with 2 members: array($resolved_filter_str, $resolved_order_str);
 	 */
-	private function fillParameters($params) {
+	private function fillParameters() {
+		$params = $this->params;
 		$keys = array_keys($params);
 		$values = array_values($params);
 		$keys2 = array_map (create_function( '$a'  , 'return "{".$a."}";' ), $keys);
 		$values2 = array_map (create_function( '$a'  , ' return plainstring_to_dbprotected($a);' ), $values);
 		// Now that we have the filter string, let's locate the parameters (in the form {toto})
-		$sql = str_replace($keys2, $values2, $this->sql);
-		$countSql = str_replace($keys2, $values2, $this->countSql);
+		$this->sql = str_replace($keys2, $values2, $this->sql);
+		$this->countSql = str_replace($keys2, $values2, $this->countSql);
 		
-		return array($sql, $countSql);
 	}
 
 	public function getGlobalCount($params=array()) {
@@ -125,6 +138,7 @@ class SqlDataSource extends DynamicDataSource {
 	}
 	
 	private function getOrderStatement() {
+		$order_statement = " ";
 		$order_array = $this->orders;
 		$order_column_array = $this->order_columns;
 		
@@ -133,15 +147,19 @@ class SqlDataSource extends DynamicDataSource {
 		}
 		
 		if($order_column_array && is_array($order_column_array)) {
+			$count_column_array = count($order_column_array);
 			$order_statement = "ORDER BY ";
 			$i=0;
 			foreach ($order_column_array as $order_column) {
-				
+				$order_statement .= " $order_column".$order_array[$i]." ";
 				$i++;
+				if($i+1<$count_column_array) $order_statement.= ", ";
 			}
-			
 		}
+		return $order_statement;
 	}
+	
+	
 }
 
 ?>

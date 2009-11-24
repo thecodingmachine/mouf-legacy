@@ -21,7 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 /**
- * A DynamicDataSource is an abstract class that contains some of the most useful methods to work with a dynamic data source.
+ * A DynamicDataSource is an abstract class that contains parameters you need to work with a dynamic data source.
+ * Any change on a parameter deletes the stored rows
  * 
  * You should implement this class when you work with a DataSource that is linked to a DB for example.
  *
@@ -69,6 +70,7 @@ abstract class DynamicDataSource implements UpdatableDataSourceInterface, Parame
 	 */
 	public function setOrderColumns($orders=array()){
 		$this->orders = $orders;
+		$this->rows = null;
 	}
 	
 	/**
@@ -77,6 +79,7 @@ abstract class DynamicDataSource implements UpdatableDataSourceInterface, Parame
 	 */
 	public function setOrders($order_columns=array()){
 		$this->order_columns = $order_columns;
+		$this->rows = null;
 	}
 	
 	/**
@@ -101,6 +104,7 @@ abstract class DynamicDataSource implements UpdatableDataSourceInterface, Parame
 	 */
 	public function setOffset($offset) {
 		$this->offset = $offset;
+		$this->rows = null;
 	}
 	
 	/**
@@ -110,6 +114,7 @@ abstract class DynamicDataSource implements UpdatableDataSourceInterface, Parame
 	 */
 	public function setOffset($limit) {
 		$this->limit = $limit;
+		$this->rows = null;
 	}
 	
 }
