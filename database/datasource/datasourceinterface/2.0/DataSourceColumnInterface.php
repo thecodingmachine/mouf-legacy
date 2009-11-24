@@ -19,5 +19,13 @@ interface DataSourceColumnInterface {
 	 * @return string
 	 */
 	public function getType();
+	
+	/**
+	 * Returns the value associated to the row passed in parameter for this column.
+	 *
+	 * @param array<object> $row
+	 * @return string
+	 */
+	public function getValue($row);
 }
 ?>
