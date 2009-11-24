@@ -59,5 +59,17 @@ interface OrderableDataSourceInterface {
 	 * @return array<string>
 	 */
 	public function getOrders();
+	
+	/**
+	 * Sets the orders array. Previous array is overwritten.
+	 *
+	 */
+	public function setOrders();
+	
+	/**
+	 * Sets the order columns array. Previous array is overwritten.
+	 *
+	 */
+	public function setOrderColumns();
 }
 ?>

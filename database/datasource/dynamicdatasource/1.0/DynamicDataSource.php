@@ -23,19 +23,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * A DynamicDataSource is an abstract class that contains some of the most useful methods to work with a dynamic data source.
  * 
- * You should implement this class when you work with a DataSource that is linked to a DB.
+ * You should implement this class when you work with a DataSource that is linked to a DB for example.
  *
  * @Component
  */
-abstract class DynamicDataSource extends ArrayObject implements UpdatableDataSourceInterface, ParametrisedInterface, OrderableDataSourceInterface {
+abstract class DynamicDataSource implements UpdatableDataSourceInterface, ParametrisedInterface, OrderableDataSourceInterface {
 	
-	private $sql;
-	private $countSql;
+	protected $rows;
 	
-	private $order_column;
-	private $order;
-	private $previous_params = null;
-	private $global_count = null;
+	protected $order_columns;
+	protected $orders;
+	
+	protected $offset;
+	protected $limit;
+	
+	protected $params;
+	protected $previous_params = null;
 	
 	/**
 	 * Sets the order column that will be used for this datasource.
@@ -44,8 +47,8 @@ abstract class DynamicDataSource extends ArrayObject implements UpdatableDataSou
 	 * @param string $order_column
 	 */
 	public function setOrderColumn($order_column) { 
-		$this->order_column = $order_column;
-		$this->purge();
+		$this->order_columns[] = $order_column;
+		$this->rows = null;
 	}
 	
 	/**
@@ -56,91 +59,59 @@ abstract class DynamicDataSource extends ArrayObject implements UpdatableDataSou
 	 * @param string $order
 	 */
 	public function setOrder($order) { 
-		$this->order = $order;
-		$this->purge();
+		$this->orders[] = $order;
+		$this->rows = null;
 	}
-	
-	public function __construct($sql=null, $countSql=null) {
-		$this->sql = $sql;
-		$this->countSql =$countSql;
 
-		parent::__construct(array());
+	/**
+	 * Sets the orders array. Previous array is overwritten.
+	 *
+	 */
+	public function setOrderColumns($orders=array()){
+		$this->orders = $orders;
 	}
 	
 	/**
-	 * This function loads data into the DataSource.
+	 * Sets the order columns array. Previous array is overwritten.
+	 *
+	 */
+	public function setOrders($order_columns=array()){
+		$this->order_columns = $order_columns;
+	}
+	
+	/**
+	 * This function loads parameters into the DataSource.
 	 *
 	 * @param mixed $params parameters for the loading.
-	 * @param unknown_type $offset
-	 * @param unknown_type $limit
 	 */
-	public function load($params=array(), $offset=null, $limit=null) {
+	public function setParams($params=array()) {
 		// If the parameters have changed, let's purge!
 		if ($this->previous_params != $params) {
-			$this->purge();
+		$this->rows = null;
 		}
 		$this->previous_params = $params;
 
-		list($sql, $sqlCount) = $this->fillParameters($params);
-		
-		if ($this->order_column != null) {
-			$sql .= " ORDER BY ".$this->order_column;
-			if ($this->order != null)
-				$sql .= " ".$this->order;
-			else
-				$sql .= " ASC";
-		}
-		
-		$objects = DBM_Object::getTransientObjectsFromSQL($sql, $offset, $limit);
-		$i=$offset?$offset:0;
-		foreach ($objects as $object) {
-			$this[$i] = $object;
-			$i++;
-		}
-		
-		if ($offset==null && $limit==null) {
-			$this->global_count = $i;
-		}
+		$this->params = $params;
+	}
+
+	/**
+	 * Stores the OFFSET for the data source
+	 *
+	 * @param int $offset
+	 */
+	public function setOffset($offset) {
+		$this->offset = $offset;
 	}
 	
 	/**
-	 * Replaces all the parameters passed into the filter string and the order by string
+	 * Stores the LIMIT for the data source
 	 *
-	 * @param array $params
-	 * @return array an array with 2 members: array($resolved_filter_str, $resolved_order_str);
+	 * @param int $limit
 	 */
-	private function fillParameters($params) {
-		$keys = array_keys($params);
-		$values = array_values($params);
-		$keys2 = array_map (create_function( '$a'  , 'return "{".$a."}";' ), $keys);
-		$values2 = array_map (create_function( '$a'  , ' return plainstring_to_dbprotected($a);' ), $values);
-		// Now that we have the filter string, let's locate the parameters (in the form {toto})
-		$sql = str_replace($keys2, $values2, $this->sql);
-		$countSql = str_replace($keys2, $values2, $this->countSql);
-		
-		return array($sql, $countSql);
+	public function setOffset($limit) {
+		$this->limit = $limit;
 	}
 	
-	/**
-	 * Removes all the fetched content from the datasource.
-	 *
-	 */
-	public function purge() {
-		foreach ($this as $key=>$value) {
-			unset($this[$key]);
-		}
-		$this->global_count = null;
-	}
-	
-	
-	public function getGlobalCount($params=array()) {
-		list($sql, $sqlCount) = $this->fillParameters($params);
-		
-		if ($this->global_count == null) {
-			$this->global_count = DBM_Object::getValueFromSQL($sqlCount);
-		}
-		return $this->global_count;
-	}
 }
 
 ?>

@@ -79,15 +79,6 @@ interface DataSourceInterface {
  */
 interface UpdatableDataSourceInterface extends DataSourceInterface {
 	/**
-	 * This function loads data into the DataSource.
-	 *
-	 * @param mixed $params parameters for the loading.
-	 * @param integer $offset
-	 * @param integer $limit
-	 */
-	public function load($offset=null, $limit=null);
-	
-	/**
 	 * Returns the global size of the source (not the size retrieved up to now).
 	 * @return integer
 	 */
