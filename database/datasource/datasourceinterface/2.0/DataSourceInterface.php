@@ -55,8 +55,15 @@ interface DataSourceInterface {
 	 * Returns all rows of the DataSource. Return type depends on mode (DS_FETCH_ASSOC or DS_FETCH_OBJ)
 	 *
 	 * @param int $mode
+	 * @return array<array>|array<object>
 	 */
 	public function getRows($mode = DS_FETCH_OBJ);
+	
+	/**
+	 * Returns the count of the Data Source's rows currently loaded
+	 * @return int
+	 */
+	public function getRowCount();
 }
 
 /**
@@ -64,7 +71,7 @@ interface DataSourceInterface {
  * Any object implementing this interface will provide a load method taking an array of parameters.
  *
  */
-interface UpdatableDataSourceInterface {
+interface UpdatableDataSourceInterface extends DataSourceInterface {
 	/**
 	 * This function loads data into the DataSource.
 	 *
