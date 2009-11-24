@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>jqGrid Widget</displayName>
+	<shortDescription>This package contains the jqGrid widget. This is a jQuery datagrid that can be used to display data.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>database/datagrid</group>
+			<name>datagrid</name>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-jqgrid</name>
+			<version>3.5</version>
+		</dependency>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>html/widgets</group>
+			<name>basewidget</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>JqGridWidget.php</require>
+	</requires>
+</package>
