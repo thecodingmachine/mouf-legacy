@@ -25,6 +25,26 @@ class DataGridColumn implements DataColumnInterface {
 	}
 	
 	/**
+	 * Returns the column to be used in the datasource.
+	 *
+	 * @return DataSourceColumnInterface
+	 */
+	public function getDataSourceColumn() {
+		return $this->dataSourceColumn;
+	}
+	
+	/**
+	 * The column to be used in the datasource.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param DataSourceColumnInterface $dataSourceColumn
+	 */
+	public function setDataSourceColumn(DataSourceColumnInterface $dataSourceColumn) {
+		$this->dataSourceColumn = $dataSourceColumn;
+	}
+	
+	/**
 	 * Returns the title for the column
 	 *
 	 * @return string
@@ -112,86 +132,6 @@ class DataGridColumn implements DataColumnInterface {
 	 */
 	public function getFormatter() {
 		return $this->formatter;
-	}
-	
-	/**
-	 * Sets if the data in the formatter is translated through the I18N mechanism (using FINE).
-	 * If true, the content of the column will be used as a key.
-	 * For instance, if the column contains: "common.yes", and if the French translation for "common.yes" is "Oui",
-	 * then "Oui" will be displayed.
-	 * 
-	 * @Property
-	 * @param bool $useI18n
-	 */
-	public function setUseI18n($useI18n) {
-		$this->useI18n = $useI18n;
-	}
-	
-	/**
-	 * Returns true if the data in the formatter is translated through the I18N mechanism (using FINE).
-	 *
-	 * @return DataColumnFormatterInterface
-	 */
-	public function doesUseI18n() {
-		return $this->useI18n;
-	}
-
-	/**
-	 * The prefix for the I18N key.
-	 * For instance, if the column contains: "yes", if the prefix is "common" and if the French translation for "common.yes" is "Oui",
-	 * then "Oui" will be displayed.
-	 *
-	 * @Property
-	 * @Compulsory
-	 * @param string $prefix
-	 */
-	public function setTranslationPrefix($prefix) {
-		$this->translationPrefix = $prefix;
-	}
-	
-	/**
-	 * Returns the prefix used in translation.
-	 *
-	 * @return string
-	 */
-	public function getTranslationPrefix() {
-		return $this->translationPrefix;
-	}
-	
-	/**
-	 * The suffix for the I18N key.
-	 * For instance, if the column contains: "yes", if the suffix is "common" and if the French translation for "yes.common" is "Oui",
-	 * then "Oui" will be displayed.
-	 *
-	 * @Property
-	 * @Compulsory
-	 * @param string $suffix
-	 */
-	public function setTranslationSuffix($suffix) {
-		$this->translationSuffix = $suffix;
-	}
-	
-	/**
-	 * Returns the suffix used in translation.
-	 *
-	 * @return string
-	 */
-	public function getTranslationSuffix() {
-		return $this->translationSuffix;
-	}
-	
-	/**
-	 * Translates the value, if required.
-	 *
-	 * @param string $value
-	 * @return string
-	 */
-	protected function getTranslatedValue($value) {
-		if ($this->useI18n) {
-			return iMsg($this->translationPrefix.$value.$this->translationSuffix);
-		} else {
-			return $value;
-		}
 	}
 	
 	/**
