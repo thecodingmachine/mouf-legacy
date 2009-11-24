@@ -5,6 +5,13 @@
 	a range of objects, including the ExtDataGrid wrapper in Xaja, or other grids...</shortDescription>
 	<docUrl></docUrl>
 	<logo>database.png</logo>
+	<dependencies>
+		<dependency>
+			<group>database/datasource</group>
+			<name>formatters</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 	<requires>
 		<require>DataSourceColumnInterface.php</require>
 		<require>DataSourceColumn.php</require>
