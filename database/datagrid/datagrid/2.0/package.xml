@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>DataGrid Model</displayName>
+	<shortDescription>This package contains the base class you can use to build a datagrid. It contains the DataGrid class, tha can be used
+	as a base class for your custom datagrids. If you are looking to display a datagrid in an HTML page, you should not use this package directly.
+	This package is used as a dependency by other packages (like jqGridDataGrid for instance).</shortDescription>
+	<docUrl></docUrl>
+	<logo>database.png</logo>
+	<dependencies>
+		<dependency>
+			<group>database/datasource</group>
+			<name>datasourceinterface</name>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>DataGridColumnInterface.php</require>
+		<require>DataGridColumn.php</require>
+		<require>DataGrid.php</require>
+		<require>expander/GridExpanderInterface.php</require>
+	</requires>
+</package>
