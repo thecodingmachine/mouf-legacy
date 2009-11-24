@@ -29,6 +29,12 @@ define ("DS_FETCH_OBJ",2);
 interface DataSourceInterface {
 	
 	/**
+	 * Returns the column that acts as a key of the Data Source
+	 * @return DataSourceColumnInterface
+	 */
+	public function getKeyColumn();
+	
+	/**
 	 * Returns the column list of a Data Source
 	 * @return array<DataSourceColumnInterface>
 	 */
