@@ -148,7 +148,7 @@ class Splash {
 					$this->controller = MoufManager::getMoufManager()->getInstance($array[0]);
 				}
 			}catch (MoufException $e) {
-				Controller::FourOFour("controller.404.no.such.controller"."XXX ".$e->getMessage());
+				Controller::FourOFour($e->getMessage(), $this->debugMode);
 				exit;
 			}
 			if (isset($array[1])) {
@@ -210,7 +210,7 @@ class Splash {
 			} catch (MoufException $e) {
 				// There is no root controller!
 				// Let's go 404!
-				Controller::FourOFour("controller.404.no.root.controller");
+				Controller::FourOFour("No root controller found! There should be one instance inn your code that is named 'rootController' in Mouf.", $this->debugMode);
 				exit();
 			}
 		} else {
@@ -224,7 +224,7 @@ class Splash {
 
 		if (!$controller instanceof Controller) {
 			// "Invalid class";
-			Controller::FourOFour("controller.404.class.doesnt.extends.controller");
+			Controller::FourOFour("The class ".get_class($controller)." should extend the Controller class.", $this->debugMode);
 			exit();
 		}
 

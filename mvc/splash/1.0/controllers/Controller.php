@@ -38,19 +38,19 @@ abstract class Controller implements Scopable {
 
 	}
 
-	public static function FourOFour($message, $convert=true) {
+	public static function FourOFour($message, $debugMode) {
 
-		if (SplashSessionUtils::isDebugMode()) {
-			if($convert) $message = iMsg($message);
-		} else {
-			$message = "controller.404";
+		$text = "The page you request is not available. Please use <a href='".ROOT_URL."'>this link</a> to return to the home page.";
+		
+		if ($debugMode) {
+			$text .= " ".$message;
 		}
 
 		Log::info("404 : ".$message);
 
 		header("HTTP/1.0 404 Not Found");
 		$template = self::getTemplate();
-		$template->addContentFunction("FourOFour",$message)
+		$template->addContentFunction("FourOFour",$text)
 				 ->setTitle("404 - Not Found");
 
 		$template->draw();

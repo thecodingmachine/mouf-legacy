@@ -8,9 +8,7 @@ function FourOFour($message) {
 	<div class="vertical-gap"></div>
 	<div class="vertical-gap"></div>
 	
-		<div style="padding:20px"><?php 
-	eMsg("404.back.on.tracks");	
-		?></div>
+		<div style="padding:20px">The page you requested does not exist.</div>
 		<div class="vertical-gap"></div>
 		<div class="vertical-gap"></div>
 	<div class="stats-key">
