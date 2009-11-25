@@ -12,6 +12,9 @@
 		<require>TranslationFormatter.php</require>
 		<require>NullTransformationFormatter.php</require>
 		<require>AndFormatter.php</require>
+		<require>ReadOnlyCheckboxFormatter.php</require>
+		<require>NumberFormatter.php</require>
+		<require>CurrencyFormatter.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>FormatterExternalComponent.php</require>
