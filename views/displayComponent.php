@@ -368,7 +368,7 @@ foreach ($this->properties as $property) {
 			
 			echo "<script>\n";
 			echo "jQuery(document).ready(function() {\n";
-			echo "addNewDropDown($(\"".$property->getName()."_mouf\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".$property->getSubType()."\", false, \"".plainstring_to_htmlprotected($varType)."\");\n";
+			echo "addNewDropDown($(\"".$property->getName()."_mouf\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".$property->getType()."\", false, \"".plainstring_to_htmlprotected($varType)."\");\n";
 			
 			echo "\n});\n";
 			echo "</script>\n";
