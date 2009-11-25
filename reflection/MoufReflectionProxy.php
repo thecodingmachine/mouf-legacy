@@ -17,7 +17,7 @@ class MoufReflectionProxy {
 	 * @return MoufXmlReflectionClass
 	 */
 	public static function getClass($className, $selfEdit) {
-		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/get_class.php?class=".$className."&selfedit=".(($selfEdit)?"true":"false");
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_class.php?class=".$className."&selfedit=".(($selfEdit)?"true":"false");
 
 		$response = self::performRequest($url);
 		
@@ -31,7 +31,7 @@ class MoufReflectionProxy {
 	 * @return array<string>
 	 */
 	public static function getInstances($baseClass, $selfEdit) {
-		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
 		
 		$response = self::performRequest($url);
 
@@ -45,7 +45,7 @@ class MoufReflectionProxy {
 	}
 	
 	public static function getComponentsList($selfEdit) {
-		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/get_components_list.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_components_list.php?selfedit=".(($selfEdit)?"true":"false");
 
 		$response = self::performRequest($url);
 
@@ -60,7 +60,7 @@ class MoufReflectionProxy {
 	}
 	
 	public static function getEnhancedComponentsList($selfEdit) {
-		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/get_enhanced_components_list.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_enhanced_components_list.php?selfedit=".(($selfEdit)?"true":"false");
 
 		$response = self::performRequest($url);
 
