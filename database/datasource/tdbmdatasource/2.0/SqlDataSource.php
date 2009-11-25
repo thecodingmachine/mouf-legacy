@@ -39,9 +39,11 @@ class SqlDataSource extends DynamicDataSource {
 	/**
 	 * Connection to DB
 	 *
+	 * @Property
+	 * @Compulsory
 	 * @var DB_ConnectionInterface
 	 */
-	private $dbConnection;
+	public $dbConnection;
 	
 	/**
 	 * The SQL that will be run to load data in the datasource.
@@ -71,87 +73,156 @@ class SqlDataSource extends DynamicDataSource {
 	}
 	
 	/**
+	 * Sets the key column.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param DataSourceDBColumn $keyColumn
+	 */
+	public function setKeyColumn(DataSourceColumnInterface $keyColumn) {
+		$this->keyColumn = $keyColumn;
+	}
+	
+	/**
+	 * Sets the columns.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param array<DataSourceDBColumn> $columns
+	 */
+	public function setColumns(array $columns) {
+		$this->columns = $columns;
+	}
+	
+	/**
 	 * This function returns data in rows.
 	 *
-	 * @param mixed $params parameters for the loading.
-	 * @param unknown_type $offset
-	 * @param unknown_type $limit
+	 * @param int $mode
+	 * @return array<array>|array<object>
 	 */
-	public function getRows() {
-		
+	public function getRows($mode = DS_FETCH_OBJ) {		
+		$this->queryIfNeeded();
 
+		if ($mode == DS_FETCH_OBJ) {
+			$rows = array();
+			foreach ($this->rows as $key=>$row) {
+				$rows[$key] = (object) $row;
+			}
+		} else {
+			$rows = $this->rows;
+		}
+	
+		return $rows;
+	}
+	
+	/**
+	 * Returns a specific row determined by its key. Return type depends on mode (DS_FETCH_ASSOC or DS_FETCH_OBJ)
+	 *
+	 * @param string $key
+	 * @param int $mode
+	 * @return array|object
+	 */
+	public function getRowByKey($key, $mode=DS_FETCH_OBJ) {
+		
+		$this->queryIfNeeded();
+		
+		if ($mode == DS_FETCH_OBJ) {
+			return (object) $this->rows[$key];
+		} else {
+			return $this->rows[$key];
+		}
+	}
+	
+	private function queryIfNeeded() {
 		if(!$this->rows) {
 		
-		$this->fillParameters();
+			$sql = $this->fillParameters($this->sql);
 		
-		if ($this->order_column != null) {
-			$sql .= " ORDER BY ".$this->order_column;
-			if ($this->order != null)
-				$sql .= " ".$this->order;
-			else
-				$sql .= " ASC";
+			$sql .= $this->getOrderStatement();
+			
+			$rows = $this->dbConnection->getAll($sql, PDO::FETCH_CLASS, "stdClass", $this->offset, $this->limit);
+
+			$i=0;
+
+			$this->rows = array();
+			
+			$key_column = $this->getKeyColumn();
+			if ($key_column == null) {
+				throw new DataSourceException("Error while querying database for an SqlDataSource: the SqlDataSource must have a keyColumn declared.");
+			}
+			if (empty($this->columns)) {
+				throw new DataSourceException("Error while querying database for an SqlDataSource: the SqlDataSource must have at least one column declared.");
+			}
+			
+			//$key_column_name = $key_column->getName();
+			foreach ($rows as $object) {
+				$id = $key_column->getValue($object);
+				foreach ($this->columns as $column) {
+					$this->rows[$id][$column->getName()] = $column->getValue($object);
+				}
+				//$this->rows[$object->$key_column_name] = $object;
+				$i++;
+			}
+			
+			if ($this->offset==null && $this->limit==null) {
+				$this->global_count = $i;
+			}
+		
 		}
-		
-		$objects = DBM_Object::getTransientObjectsFromSQL($sql, $offset, $limit);
-		$i=$offset?$offset:0;
-		// TODO: la ligne suivante est fausse mais je sais pas pourquoi...
-		$key_column = $this->getKeyColumn();
-		foreach ($objects as $object) {
-			$this->rows[$object->$key_column] = $object;
-			$i++;
-		}
-		
-		if ($offset==null && $limit==null) {
-			$this->global_count = $i;
-		}
-		
-		}
-		
-		return $this->rows;
 	}
 	
 	/**
 	 * Replaces all the parameters passed into the filter string and the order by string
 	 *
-	 * @param array $params
-	 * @return array an array with 2 members: array($resolved_filter_str, $resolved_order_str);
+	 * @param string $sql The Original SQL with parameters.
+	 * @return string The SQL with parameters replaced.
 	 */
-	private function fillParameters() {
+	private function fillParameters($sql) {
 		$params = $this->params;
+		if ($params == null) {
+			return $sql;
+		}
 		$keys = array_keys($params);
 		$values = array_values($params);
 		$keys2 = array_map (create_function( '$a'  , 'return "{".$a."}";' ), $keys);
 		$values2 = array_map (create_function( '$a'  , ' return plainstring_to_dbprotected($a);' ), $values);
 		// Now that we have the filter string, let's locate the parameters (in the form {toto})
-		$this->sql = str_replace($keys2, $values2, $this->sql);
-		$this->countSql = str_replace($keys2, $values2, $this->countSql);
-		
+		return str_replace($keys2, $values2, $sql);		
 	}
 
-	public function getGlobalCount($params=array()) {
-		list($sql, $sqlCount) = $this->fillParameters($params);
-		
+	/**
+	 * Returns the count of the Data Source's rows contained (independent of any limit or offset set.
+	 * @return int
+	 */
+	public function getRowCount() {
 		if ($this->global_count == null) {
-			$this->global_count = DBM_Object::getValueFromSQL($sqlCount);
+			$countSql = self::fillParameters($this->countSql);
+			
+			$this->global_count = $this->dbConnection->getOne($countSql);
 		}
 		return $this->global_count;
 	}
 	
+	/**
+	 * Returns the "ORDER BY" part of the SQL to be applied. 
+	 *
+	 * @return string
+	 */
 	private function getOrderStatement() {
 		$order_statement = " ";
 		$order_array = $this->orders;
 		$order_column_array = $this->order_columns;
 		
 		if(count($order_array)!=count($order_column_array)) {
-			throw new DatasourceException("Order Columns array and Order Types array don't have the same length!",null);
+			throw new DataSourceException("Order Columns array and Order Types array don't have the same length!",null);
 		}
 		
 		if($order_column_array && is_array($order_column_array)) {
 			$count_column_array = count($order_column_array);
-			$order_statement = "ORDER BY ";
+			$order_statement = " ORDER BY ";
 			$i=0;
 			foreach ($order_column_array as $order_column) {
-				$order_statement .= " $order_column".$order_array[$i]." ";
+				$order_statement .= $order_column->getDbColumn()." ".$order_array[$i]." ";
 				$i++;
 				if($i+1<$count_column_array) $order_statement.= ", ";
 			}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Dynamic Interface</displayName>
+	<shortDescription>This package contains an abstract datasource that can be used to implement easily datasources.
+	Any datasource bound to a SQL database, or a webservice might use this class instead of directly implementing the DataSourceInterface.</shortDescription>
+	<docUrl></docUrl>
+	<logo>database.png</logo>
+	<dependencies>
+		<dependency>
+			<group>database/datasource</group>
+			<name>datasourceinterface</name>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>DynamicDataSource.php</require>
+	</requires>
+</package>

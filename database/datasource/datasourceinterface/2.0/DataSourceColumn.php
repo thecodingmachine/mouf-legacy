@@ -6,11 +6,11 @@
  *
  * @Component
  */
-class DataSourceColumn {
+class DataSourceColumn implements DataSourceColumnInterface {
 	
-	private $name;
-	private $type;
-	private $formatters = array();
+	protected $name;
+	protected $type;
+	protected $formatters = array();
 
 	/**
 	 * The name of the column.

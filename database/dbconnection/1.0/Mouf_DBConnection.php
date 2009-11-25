@@ -108,15 +108,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 */
 	public function query($query, $from = null, $limit = null) {
 		$queryStr = $query;
-		if ($limit !== null) {
-			$limitInt = (int)$limit;
-			$queryStr .= " LIMIT ".$limitInt;
-				
-			if ($from !== null) {
-				$fromInt = (int)$from;
-				$queryStr .= " OFFSET ".$fromInt;
-			}
-		}
+		$queryStr .= $this->getFromLimitString($from, $limit);
 
 		$res = $this->dbh->query($queryStr);
 
@@ -128,13 +120,19 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 *
 	 * @param string $query
 	 * @param int $mode
-	 * @return unknown
+	 * @param string $classname
+	 * @param int $from
+	 * @param int $limit
+	 * @return array
 	 */
-	public function getAll($query, $mode = PDO::FETCH_ASSOC, $classname = "stdClass") {
+	public function getAll($query, $mode = PDO::FETCH_ASSOC, $classname = "stdClass", $from = null, $limit = null) {
 		if($classname==null && $mode==PDO::FETCH_CLASS) $classname = "stdClass";
 		if ($this->dbh == null) {
 			$this->connect();
 		}
+		
+		$query .= $this->getFromLimitString($from, $limit);
+		
 		$stmt = $this->dbh->query($query);
 		if($mode==PDO::FETCH_CLASS){
 			$stmt->setFetchMode(PDO::FETCH_CLASS,$classname);
@@ -147,6 +145,23 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		return $arrValues;
 	}
 
+	private function getFromLimitString($from = null, $limit = null) {
+		if ($limit !== null) {
+			$limitInt = (int)$limit;
+			$queryStr = " LIMIT ".$limitInt;
+				
+			if ($from !== null) {
+				$fromInt = (int)$from;
+				$queryStr .= " OFFSET ".$fromInt;
+			}
+			return $queryStr;
+		}
+		else
+		{
+			return "";
+		}
+	}
+	
 	/**
 	 * Runs the query and returns the one and only value returned by this query.
 	 *

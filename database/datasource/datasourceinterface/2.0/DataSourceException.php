@@ -3,7 +3,7 @@
  * DataSource Exception
  *
  */
-class DatasourceException extends Exception {
+class DataSourceException extends Exception {
 	
 	
 }

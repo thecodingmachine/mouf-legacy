@@ -56,12 +56,5 @@ interface DataGridColumnInterface {
 	 */
 	public function getTextAlign();
 		
-	/**
-	 * Returns the value that will be displayed for that column. 
-	 *
-	 * @param mixed $row The database row that comes from the datasource used by the grid.
-	 * @return string
-	 */
-	public function getValue($row);
 }
 ?>

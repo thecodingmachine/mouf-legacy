@@ -66,24 +66,10 @@ interface DataSourceInterface {
 	public function getRows($mode = DS_FETCH_OBJ);
 	
 	/**
-	 * Returns the count of the Data Source's rows currently loaded
+	 * Returns the count of the Data Source's rows contained (independent of any limit or offset set.
 	 * @return int
 	 */
 	public function getRowCount();
-}
-
-/**
- * The UpdatableDataSourceInterface is implemented by any datasource that can be refreshed by a command.
- * Any object implementing this interface will provide a load method taking an array of parameters.
- *
- */
-interface UpdatableDataSourceInterface extends DataSourceInterface {
-	/**
-	 * Returns the global size of the source (not the size retrieved up to now).
-	 * @return integer
-	 */
-	public function getGlobalCount();
-	
 }
 
 /**
@@ -91,7 +77,7 @@ interface UpdatableDataSourceInterface extends DataSourceInterface {
  * A callback can be registered using the onUpdateCallback method to provide some behaviour when the DataSource is updated.
  *
  */
-interface ReverseDataSourceInterface {
+interface ReverseDataSourceInterface extends DataSourceInterface {
 	/**
 	 * Registers a callback method that will be called when some data is updated in the datasource.
 	 *
@@ -120,7 +106,7 @@ interface ParametrisedInterface extends DataSourceInterface {
 	 * Returns the value of the parameter defined by $key
 	 * @return string
 	 */
-	public function getParameters($key);
+	public function getParameter($key);
 }
 
 ?>

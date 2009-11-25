@@ -5,13 +5,13 @@
  *
  * @Component
  */
-class DataGridColumn implements DataColumnInterface {
+class DataGridColumn implements DataGridColumnInterface {
 	
 	private $dataSourceColumn;
 	private $title;
 	private $sortColumn;
 	private $width;
-	private $formatter;
+	private $formatters;
 	private $resizable;
 	private $textAlign;
 	
@@ -77,7 +77,7 @@ class DataGridColumn implements DataColumnInterface {
 	 * Returns the "sort column" to be passed to the datasource when the user wants to
 	 * sort on that column.
 	 *
-	 * @return string
+	 * @return DataSourceColumnInterface
 	 */
 	public function getSortColumn() {
 		return $this->sortColumn;
@@ -88,9 +88,9 @@ class DataGridColumn implements DataColumnInterface {
 	 * If none is provided, the column is not sortable.
 	 * 
 	 * @Property
-	 * @param string $sortColumn
+	 * @param DataSourceColumnInterface $sortColumn
 	 */
-	public function setSortColumn($sortColumn) {
+	public function setSortColumn(DataSourceColumnInterface $sortColumn) {
 		$this->sortColumn = $sortColumn;
 	}
 	
@@ -115,23 +115,23 @@ class DataGridColumn implements DataColumnInterface {
 	}
 	
 	/**
-	 * Sets the formatter used to display that column.
+	 * Sets the formatters used to display that column.
 	 * If no formatter is specified, content is displayed as text.
 	 *
 	 * @Property
-	 * @param DataColumnFormatterInterface $formatter
+	 * @param array<FormatterInterface> $formatter
 	 */
-	public function setFormatter(DataColumnFormatterInterface $formatter) {
-		$this->formatter = $formatter;
+	public function setFormatters(array $formatters) {
+		$this->formatters = $formatters;
 	}
 	
 	/**
 	 * Returns the formatter for this column.
 	 *
-	 * @return DataColumnFormatterInterface
+	 * @return array<FormatterInterface>
 	 */
-	public function getFormatter() {
-		return $this->formatter;
+	public function getFormatters() {
+		return $this->formatters;
 	}
 	
 	/**

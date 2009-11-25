@@ -82,16 +82,18 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		return $this->dbConnection->query($query, $from, $limit);
 	}
 
-/**
+	/**
 	 * Runs the query and returns all lines in an associative table.
-	 * 
+	 *
 	 * @param string $query
 	 * @param int $mode
 	 * @param string $classname
+	 * @param int $from
+	 * @param int $limit
 	 * @return array
 	 */
-	public function getAll($query, $mode = PDO::FETCH_ASSOC,$classname="stdClass") {
-		return $this->dbConnection->getAll($query, $mode,$classname);
+	public function getAll($query, $mode = PDO::FETCH_ASSOC, $classname = "stdClass", $from = null, $limit = null) {
+		return $this->dbConnection->getAll($query, $mode, $classname, $from, $limit);
 	}
 
 	/**

@@ -140,7 +140,7 @@ jQuery(document).ready(function(){';
 				}
 			}
 
-			$columnsDesc[] = '{name:"'.htmlspecialchars($column->getDataSourceColumn()->getName(), ENT_QUOTES).'", index:"'.htmlspecialchars($column->getDataSourceColumn()->getName(), ENT_QUOTES).'", width:"'.htmlspecialchars($column->getWidth(), ENT_QUOTES).'", align:"'.htmlspecialchars($column->getTextAlign(), ENT_QUOTES).'" resizable:'.(($column->isResizable())?"true":"false").'}';
+			$columnsDesc[] = '{name:"'.htmlspecialchars($column->getDataSourceColumn()->getName(), ENT_QUOTES).'", index:"'.htmlspecialchars($column->getDataSourceColumn()->getName(), ENT_QUOTES).'", width:"'.htmlspecialchars($column->getWidth(), ENT_QUOTES).'", align:"'.htmlspecialchars($column->getTextAlign(), ENT_QUOTES).'", resizable:'.(($column->isResizable())?"true":"false").'}';
 			
 		}
 		$str .= implode(", ", $columnsTitles);
@@ -166,13 +166,8 @@ jQuery(document).ready(function(){';
 			return;
 		}
 		
-		// Preliminary checks:
-		if ($this->idColumn == null) {
-			throw new Exception('Error while displaying a datagrid: the property "idColumn" must be set.');
-		}
-		
-		$this->datasource->setOrderColumns(array($sidx));
-		$this->datasource->setOrder(array($sord));
+		$this->datasource->setOrderColumns(array($this->datasource->getColumn($sidx)));
+		$this->datasource->setOrders(array($sord));
 		
 		// to the url parameter are added 4 parameters as described in colModel
 		// we should get these parameters to construct the needed query
@@ -190,11 +185,7 @@ jQuery(document).ready(function(){';
 		// if we not pass at first time index use the first column for the index or what you want
 		if(!$sidx) $sidx =1; 
 
-		if ($this->datasource instanceof XajaUpdatableDataSourceInterface) {
-			$count = $this->datasource->getGlobalCount();
-		} else {
-			$count = $this->datasource->getCount();
-		}
+		$count = $this->datasource->getRowCount();
 		
 		// calculate the total pages for the query 
 		if( $count > 0 ) { 
@@ -217,7 +208,8 @@ jQuery(document).ready(function(){';
 		$this->datasource->setOffset($start);
 		$this->datasource->setLimit($nbRows);
 		
-		$rows = $this->dataSource->getRows();
+		$rows = $this->datasource->getRows(DS_FETCH_OBJ);
+		
 		
 		// we should set the appropriate header information. Do not forget this.
 		header("Content-type: text/xml;charset=utf-8");
@@ -230,9 +222,8 @@ jQuery(document).ready(function(){';
 		
 		// be sure to put text data in CDATA
 		//foreach ($this->datasource as $row) {
-		foreach ($rows as $row) {
-			$id = $this->datasource->getKeyColumn()->getValue($row);			
-		    $s .= "<row id='". htmlspecialchars($id, ENT_QUOTES)."'>";
+		foreach ($rows as $key=>$row) {			
+		    $s .= "<row id='". htmlspecialchars($key, ENT_QUOTES)."'>";
 		    foreach ($this->columns as $column) {
 		    	$value = $column->getDataSourceColumn()->getValue($row);
 		    	$s .= "<cell>".htmlspecialchars($value, ENT_NOQUOTES)."</cell>";		    	

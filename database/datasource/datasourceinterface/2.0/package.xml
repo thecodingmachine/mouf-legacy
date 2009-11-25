@@ -11,8 +11,14 @@
 			<name>formatters</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>dbconnection</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
+		<require>DataSourceException.php</require>
 		<require>DataSourceColumnInterface.php</require>
 		<require>DataSourceColumn.php</require>
 		<require>DataSourceInterface.php</require>

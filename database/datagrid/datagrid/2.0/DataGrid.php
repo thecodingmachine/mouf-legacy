@@ -34,7 +34,7 @@ class DataGrid {
 	/**
 	 * Constructor for DataGrid
 	 *
-	 * @param XajaDataSourceInterface $datasource The datasource that will be used by the datagrid.
+	 * @param DataSourceInterface $datasource The datasource that will be used by the datagrid.
 	 * @param array<string,string> $dsParams The list of parameters that will be passed to the datasource.
 	 */
 	public function __construct($datasource = null, $dsParams = null) {
@@ -52,14 +52,14 @@ class DataGrid {
 	 * @Compulsory 
 	 * @param DataSourceInterface $ds
 	 */
-	public function setDataSource(XajaDataSourceInterface $ds) {
+	public function setDataSource(DataSourceInterface $ds) {
 		$this->datasource = $ds;
 	}
 
 	/**
 	 * Returns the datasource used by the datagrid.
 	 *
-	 * @return XajaDataSourceInterface
+	 * @return DataSourceInterface
 	 */
 	public function getDataSource() {
 		return $this->datasource;
@@ -81,7 +81,7 @@ class DataGrid {
 	 *
 	 * @param DataGridColumnInterface $column
 	 */
-	public function addColumn(DataColumnInterface $column) {
+	public function addColumn(DataGridColumnInterface $column) {
 		$this->columns[] = $column;
 	}
 

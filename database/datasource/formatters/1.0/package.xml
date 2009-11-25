@@ -10,5 +10,10 @@
 		<require>FormatterInterface.php</require>
 		<require>DateFormatter.php</require>
 		<require>TranslationFormatter.php</require>
+		<require>NullTransformationFormatter.php</require>
+		<require>AndFormatter.php</require>
 	</requires>
+	<externalComponentRequires>
+		<require>FormatterExternalComponent.php</require>
+	</externalComponentRequires>
 </package>

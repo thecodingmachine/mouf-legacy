@@ -8,7 +8,7 @@
 	<dependencies>
 		<dependency>
 			<group>database/datasource</group>
-			<name>datasourceinterface</name>
+			<name>dynamicdatasource</name>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -18,7 +18,8 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>DBMDataSource.php</require>
+		<!-- <require>DBMDataSource.php</require> -->
+		<require>DataSourceDBColumn.php</require>
 		<require>SqlDataSource.php</require>
 	</requires>
 </package>

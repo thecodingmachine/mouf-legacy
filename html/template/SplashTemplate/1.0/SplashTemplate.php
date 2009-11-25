@@ -16,7 +16,7 @@ class SplashTemplate extends BaseTemplate  {
 	public function __construct() {
 		parent::__construct();
 		$this->private_css_files = array(TEMPLATE_ROOT_URL."css/reset.css", TEMPLATE_ROOT_URL."css/splash.css", TEMPLATE_ROOT_URL."css/styles.css");
-		$this->logoImg = "plugins/mvc/splash/1.0/themes/Splash/css/images/logo.png";
+		$this->logoImg = "plugins/html/template/SplashTemplate/1.0/css/images/logo.png";
 	}
 
 

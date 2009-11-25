@@ -28,73 +28,195 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @Component
  */
-abstract class DynamicDataSource implements UpdatableDataSourceInterface, ParametrisedInterface, OrderableDataSourceInterface {
-	
-	protected $rows;
-	
-	protected $order_columns;
-	protected $orders;
-	
-	protected $offset;
-	protected $limit;
-	
-	protected $params;
-	protected $previous_params = null;
+abstract class DynamicDataSource implements ParametrisedInterface, OrderableDataSourceInterface {
 	
 	/**
-	 * Sets the order column that will be used for this datasource.
+	 * The data, as an array of array.
+	 * The key is the keyColumn.
 	 *
-	 * @Property
-	 * @param string $order_column
+	 * @var array<string, array>
 	 */
-	public function setOrderColumn($order_column) { 
-		$this->order_columns[] = $order_column;
-		$this->rows = null;
+	protected $rows;
+	
+	/**
+	 * @var DataSourceColumnInterface
+	 */
+	protected $keyColumn;
+	
+	/**
+	 * @var array<DataSourceColumnInterface>
+	 */
+	protected $columns;
+	
+	/**
+	 * @var array<DataSourceColumnInterface>
+	 */
+	protected $order_columns;
+	
+	/**
+	 * @var array<string>
+	 */
+	protected $orders;
+	
+	/**
+	 * @var int
+	 */
+	protected $offset;
+
+	/**
+	 * @var int
+	 */
+	protected $limit;
+	
+	/**
+	 * @var array<string, string>
+	 */
+	protected $params;
+	
+	/**
+	 * Returns the column that acts as a key of the Data Source.
+	 * 
+	 * @return DataSourceColumnInterface
+	 */
+	public function getKeyColumn() {
+		return $this->keyColumn;
 	}
 	
 	/**
-	 * Sets the order that will be used for this datasource (can be ASC or DESC).
+	 * Sets the key column.
 	 *
 	 * @Property
-	 * @OneOf("ASC","DESC")
-	 * @param string $order
+	 * @Compulsory
+	 * @param DataSourceColumnInterface $keyColumn
 	 */
-	public function setOrder($order) { 
+	public function setKeyColumn(DataSourceColumnInterface $keyColumn) {
+		$this->keyColumn = $keyColumn;
+	}
+	
+	/**
+	 * Returns the columns of the Data Source.
+	 * 
+	 * @return DataSourceColumnInterface
+	 */
+	public function getColumns() {
+		return $this->columns;
+	}
+	
+	/**
+	 * Sets the columns.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param array<DataSourceColumnInterface> $columns
+	 */
+	public function setColumns(array $columns) {
+		$this->columns = $columns;
+	}
+	
+	/**
+	 * Returns a specific column of a Data Source by its name
+	 *
+	 * @param string $name
+	 * @return DataSourceColumnInterface
+	 */
+	public function getColumn($name) {
+		foreach ($this->columns as $column) {
+			if ($column->getName() == $name) {
+				return $column;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Adds an order column that will be used for this datasource.
+	 * The first column to be added will be the first sort column, the second will be the second sort column, etc...
+	 *
+	 * @param DataSourceColumnInterface $order_column
+	 * @param string $order One of ASC or DESC.
+	 */
+	public function addOrderColumn(DataSourceColumnInterface $order_column, $order) { 
+		$this->order_columns[] = $order_column;
 		$this->orders[] = $order;
 		$this->rows = null;
 	}
-
+	
 	/**
 	 * Sets the orders array. Previous array is overwritten.
 	 *
+	 * @Property
+	 * @param array<DataSourceColumnInterface> $columns
 	 */
-	public function setOrderColumns($orders=array()){
-		$this->orders = $orders;
+	public function setOrderColumns(array $columns=array()){
+		$this->order_columns = $columns;
 		$this->rows = null;
 	}
 	
 	/**
 	 * Sets the order columns array. Previous array is overwritten.
 	 *
+	 * @Property
+	 * @param array<string> $orders
 	 */
-	public function setOrders($order_columns=array()){
-		$this->order_columns = $order_columns;
+	public function setOrders($orders=array()){
+		$this->orders = $orders;
 		$this->rows = null;
+	}
+	
+	/**
+	 * Returns all Data Source' order columns array
+	 * @return array<DataSourceColumnInterface>
+	 */
+	public function getOrderColumns() {
+		return $this->order_columns;
+	}
+	
+	/**
+	 * Returns all Data Source' orders array
+	 * @return array<string>
+	 */
+	public function getOrders() {
+		return $this->orders;
 	}
 	
 	/**
 	 * This function loads parameters into the DataSource.
 	 *
-	 * @param mixed $params parameters for the loading.
+	 * @Property
+	 * @param array<string, string> $params parameters to be loaded.
 	 */
-	public function setParams($params=array()) {
+	public function setParameters($params=array()) {
 		// If the parameters have changed, let's purge!
-		if ($this->previous_params != $params) {
-		$this->rows = null;
+		if ($this->params != $params) {
+			$this->rows = null;
 		}
-		$this->previous_params = $params;
-
 		$this->params = $params;
+	}
+	
+	/**
+	 * Adds a parameter to the Data Source
+	 *
+	 * @param string $key
+	 * @param string $value
+	 */
+	public function setParameter($key,$value) {
+		$this->params[$key] = $value;
+	}
+	
+	/**
+	 * Returns the set of parameters applied to the Data Source
+	 * @return array
+	 */
+	public function getParameters() {
+		return $this->params;
+	}
+	
+	/**
+	 * Returns the value of the parameter defined by $key
+	 * @return string
+	 */
+	public function getParameter($key) {
+		return $this->params[$key];
 	}
 
 	/**
@@ -112,7 +234,7 @@ abstract class DynamicDataSource implements UpdatableDataSourceInterface, Parame
 	 *
 	 * @param int $limit
 	 */
-	public function setOffset($limit) {
+	public function setLimit($limit) {
 		$this->limit = $limit;
 		$this->rows = null;
 	}
