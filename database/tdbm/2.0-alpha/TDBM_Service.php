@@ -94,12 +94,6 @@ class TDBM_Service {
 	/// Table of constraints that that table applies on another table n the form [this table][this column]=XXX
 	//private $external_constraint;
 
-	/// Table of foreign constraints that are applied on that table in the form [this table(constrained table)][foreign table (constraining table)]=array(['constraining_column']=>$column_name, ['constrained_table']=>$column_name)
-	private $foreign_constraints;
-
-	/// Table containing the name of pivot table between 2 tables in the form [table1][table2]=pivot_table
-	private $pivot_constraints;
-
 	/// The timestamp of the script startup. Useful to stop execution before time limit is reached and display useful error message.
 	public static $script_start_up_time;
 
@@ -777,7 +771,12 @@ class TDBM_Service {
 			foreach ($path as $path_step) {
 				$found = false;
 				foreach ($flat_path as $path_step_verify) {
-					if ($path_step == $path_step_verify) {
+					if ($path_step == $path_step_verify ||
+							($path_step['table1'] == $path_step_verify['table2'] &&
+							$path_step['table2'] == $path_step_verify['table1'] &&
+							$path_step['col1'] == $path_step_verify['col2'] &&
+							$path_step['col2'] == $path_step_verify['col1']
+							)) {
 						$found = true;
 						break;
 					}
@@ -816,7 +815,7 @@ class TDBM_Service {
 				// If all tables have been found, return true!
 				$found = true;
 				foreach ($target_tables as $test_table) {
-					if ($test_table['founddepth'] == null) {
+					if (!isset($test_table['founddepth']) || $test_table['founddepth'] == null) {
 						$found = false;
 					}
 				}

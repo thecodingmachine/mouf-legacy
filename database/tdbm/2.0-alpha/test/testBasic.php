@@ -16,7 +16,8 @@ require_once $baseDir.'/plugins/database/tdbm/2.0-alpha/TDBM_Service.php';
 require_once $baseDir.'/plugins/utils/cache/cache-interface/1.0/CacheInterface.php';
 require_once $baseDir.'/plugins/utils/cache/session-cache/1.0/SessionCache.php';
 require_once $baseDir.'/plugins/utils/log/log_interface/1.0/LogInterface.php';
-require_once $baseDir.'/plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php';
+//require_once $baseDir.'/plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php';
+require_once $baseDir.'/plugins/utils/log/output_logger/1.0/OutputLogger.php';
 
 
 /*
@@ -38,13 +39,14 @@ class TdbmBasicTest extends PHPUnit_Framework_TestCase
 	
 	public function setUp() {
 		// First step, let's create the database (or recreate the database) and fill it with test data.
-		$error_log = new ErrorLogLogger();
-		$error_log->level = ErrorLogLogger::$DEBUG;
+		$error_log = new OutputLogger();
+		$error_log->level = OutputLogger::$DEBUG;
 		
 		$this->conn = new DB_MySqlConnection();
 		$this->conn->host = "localhost";
 		//$conn->dbname = "admindeo";
 		$this->conn->user = "root";
+		$this->conn->log = $error_log;
 		$this->conn->connect();
 		
 		if ($this->conn->checkDatabaseExists("tdbmunittest")) {
@@ -66,9 +68,14 @@ class TdbmBasicTest extends PHPUnit_Framework_TestCase
 	
 	public function testInsertAndRetrieveData() {
 		
+		$country = $this->tdbm->getNewObject("country");
+		$country->label = "France";
+		$country->save();
+		
 		$user = $this->tdbm->getNewObject("users");
 		$user->login = "admin";
 		$user->password = "admin";
+		$user->country_id = 1;
 		$user->save();
 		
 		$users = $this->tdbm->getObjects("users");
@@ -81,15 +88,33 @@ class TdbmBasicTest extends PHPUnit_Framework_TestCase
 		$user_role->user_id=$user->id;
 		$user_role->role_id=$role->id;
 
-		$roles = $this->tdbm->getObjects("roles");
+		/*$roles = $this->tdbm->getObjects("roles");
 		$this->assertTrue($roles[0]->name == "admin");
 
 		$users = $this->tdbm->getObjects("users", new TDBM_EqualFilter("roles", "name", "admin"));
-		var_dump($users);
+		//var_dump($users);
 		$this->assertTrue(count($users)==1);
+		
+		$roles = $this->tdbm->getObjects("roles", new TDBM_EqualFilter("users", "login", "admin"));
+		$this->assertTrue(count($roles)==1);
+		$role = $roles[0];
+		$this->assertTrue($role->name=="admin");
+		*/
+		$users2 = $this->tdbm->getObjects("users", array(new TDBM_EqualFilter("users", "login", "admin"), new TDBM_EqualFilter("roles", "name", "admin")));
+		$this->assertTrue(count($users2)==1);
+		/*$roles2 = $this->tdbm->getObjects("roles", array(new TDBM_EqualFilter("users", "login", "admin"), new TDBM_EqualFilter("roles", "name", "admin")));
+		$this->assertTrue(count($roles2)==1);*/
+		$roles3 = $this->tdbm->getObjects("roles", array(new TDBM_EqualFilter("users", "login", "admin"), new TDBM_EqualFilter("country", "label", "France")));
+		$this->assertTrue(count($roles3)==1);
 		
 	}
 	
+	/*public function testDoubleSelectInverted() {
+		$users = $this->tdbm->getObjects("users", new TDBM_EqualFilter("roles", "name", "admin"));
+		$this->assertTrue(count($users)==1);
+		
+		
+	}*/
 } 
 
 ?>
