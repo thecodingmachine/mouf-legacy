@@ -88,7 +88,7 @@ class TdbmBasicTest extends PHPUnit_Framework_TestCase
 		$user_role->user_id=$user->id;
 		$user_role->role_id=$role->id;
 
-		/*$roles = $this->tdbm->getObjects("roles");
+		$roles = $this->tdbm->getObjects("roles");
 		$this->assertTrue($roles[0]->name == "admin");
 
 		$users = $this->tdbm->getObjects("users", new TDBM_EqualFilter("roles", "name", "admin"));
@@ -99,7 +99,7 @@ class TdbmBasicTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(count($roles)==1);
 		$role = $roles[0];
 		$this->assertTrue($role->name=="admin");
-		*/
+		
 		$users2 = $this->tdbm->getObjects("users", array(new TDBM_EqualFilter("users", "login", "admin"), new TDBM_EqualFilter("roles", "name", "admin")));
 		$this->assertTrue(count($users2)==1);
 		/*$roles2 = $this->tdbm->getObjects("roles", array(new TDBM_EqualFilter("users", "login", "admin"), new TDBM_EqualFilter("roles", "name", "admin")));
