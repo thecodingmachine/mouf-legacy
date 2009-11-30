@@ -50,13 +50,14 @@ if ($debug_mode) {
 function UnhandledException(Exception $exception, $debug_mode) {
 		?>
 	<div>
-	<h1 class="admindeo"><?php eMsg("error.500.title"); ?></h1>
+	<h1 class="admindeo">An error occured<?php //eMsg("error.500.title"); ?></h1>
 	</div>
 	<div class="vertical-gap"></div>
 	<div class="vertical-gap"></div>
 
-		<div style="padding:20px"><?php
-			eMsg("error.500.text");
+		<div style="padding:20px">An error occured in the application. Please try again, or contact an administrator.
+		<?php
+			//eMsg("error.500.text");
 		?></div>
 		<div class="vertical-gap"></div>
 		<div class="vertical-gap"></div>
