@@ -9,7 +9,7 @@
 class HtmlJSJQueryUI implements HtmlElementInterface {
 
 	public function toHtml() {
-		echo '<link type="text/css" href="'.ROOT_URL.'plugins/javascript/jquery/jquery-ui/1.7.2/css/ui-lightness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />';
+		echo '<link type="text/css" href="'.ROOT_URL.'plugins/javascript/jquery/jquery-ui/1.7.2/css/ui-lightness/jquery-ui-1.7.2.custom.css" rel="stylesheet" media="screen" />'."\n";
 		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/jquery/jquery-ui/1.7.2/js/jquery-ui-1.7.2.custom.min.js"></script>';
 		
 	}
