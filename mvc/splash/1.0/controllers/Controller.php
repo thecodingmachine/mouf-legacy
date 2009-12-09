@@ -111,7 +111,7 @@ abstract class Controller implements Scopable {
 			log::trace("REF METHOD : ".$refMethod." // has annotation Action ? ".$refMethod->hasAnnotation('Action'));
 			if ($refMethod->hasAnnotation('Action') == false) {
 				// This is not an action. Let's go in error.
-				self::FourOFour("controller.404.no.action");
+				self::FourOFour("controller.404.no.action", SplashSessionUtils::isDebugMode());
 				exit;
 			}
 
@@ -132,7 +132,7 @@ abstract class Controller implements Scopable {
 			}
 		}else {
 			// "Method Not Found";
-			self::FourOFour("404.wrong.method");
+			self::FourOFour("404.wrong.method", SplashSessionUtils::isDebugMode());
 			exit;
 		}
 		
