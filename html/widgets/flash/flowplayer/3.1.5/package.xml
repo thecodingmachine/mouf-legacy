@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Flowplayer</displayName>
+	<shortDescription>This package contains Flowplayer, an FLV player.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryUI.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>FlowPlayerExternalComponent.php</require>
+	</externalComponentRequires>
+</package>
