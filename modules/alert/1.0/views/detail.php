@@ -7,7 +7,7 @@
 	<label for="date">Date:</label>
 	<span id="date">
 		<?php 
-		echo date(iMsg('date.format.long'), $this->alertBean->getDateAsTimestamp());
+		echo date(iMsg('date.format.long.with.hour'), $this->alertBean->getDateAsTimestamp());
 		?>
 	</span>
 </div>

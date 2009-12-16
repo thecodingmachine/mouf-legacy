@@ -43,7 +43,11 @@ class XajaRecord {
 	}
 	
 	public function __get($key) {
-		return $this->_members[$key];
+		if (isset($this->_members[$key])) {
+			return $this->_members[$key];
+		} else {
+			return null;
+		}
 	}
 	
 	public function __set($key, $value) {
