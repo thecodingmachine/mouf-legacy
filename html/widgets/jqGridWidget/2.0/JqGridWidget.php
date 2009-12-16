@@ -47,6 +47,31 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	public $caption;
 	
 	/**
+	 * The height of the grid.
+	 * Can be set as number (in this case we mean pixels) or as percentage (only 100% is acceped) or value of auto is acceptable.
+	 *
+	 * @Property
+	 * @var string
+	 */
+	public $height = 150;
+	
+	/**
+	 * Number of rows displayed per page.
+	 *
+	 * @Property
+	 * @var int
+	 */
+	public $nbRowPerPage = 10;
+	
+	/**
+	 * An array containing the number of rows per page that can be requested (in a drop-down).
+	 *
+	 * @Property
+	 * @var array<int>
+	 */
+	public $nbRowPerPageList = array(10,20,30);
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
@@ -70,6 +95,17 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 			$pagerId = $this->pagerId;
 		}
 		
+		$nbRowPerPage = $this->nbRowPerPage;
+		if (empty($nbRowPerPage)) {
+			$nbRowPerPage = 10;
+		}
+		
+		if (empty($this->nbRowPerPageList)) {
+			$strNbRowPerPageList = '10,20,30';
+		} else {
+			$strNbRowPerPageList = implode(',', $this->nbRowPerPageList);
+		}
+		
 		echo "<table id=\"".$tableId."\"></table>\n"; 
 		echo "<div id=\"".$pagerId."\"></div>\n";
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
@@ -88,8 +124,9 @@ jQuery(document).ready(function(){';
     mtype: 'GET',
     ".$this->getColumnsDefinition()."
     pager: '#".$pagerId."',
-    rowNum:10,
-    rowList:[10,20,30],";
+    rowNum:$nbRowPerPage,
+    height:$this->height,
+    rowList:[$strNbRowPerPageList],";
 	if ($this->datasource instanceOf OrderableDataSourceInterface) {
 		$orderColumns = $this->datasource->getOrderColumns();
 		$orderSorts = $this->datasource->getOrders();
@@ -225,7 +262,7 @@ jQuery(document).ready(function(){';
 		foreach ($rows as $key=>$row) {			
 		    $s .= "<row id='". htmlspecialchars($key, ENT_QUOTES)."'>";
 		    foreach ($this->columns as $column) {
-		    	$value = $column->getDataSourceColumn()->getValue($row);
+		    	$value = $column->getValue($row);
 		    	$s .= "<cell>".htmlspecialchars($value, ENT_NOQUOTES)."</cell>";		    	
 		    }
 		    $s .= "</row>";
