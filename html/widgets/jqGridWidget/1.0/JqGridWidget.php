@@ -66,6 +66,15 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	public $caption;
 	
 	/**
+	 * The height of the grid.
+	 * Can be set as number (in this case we mean pixels) or as percentage (only 100% is acceped) or value of auto is acceptable.
+	 *
+	 * @Property
+	 * @var string
+	 */
+	public $height = 150;
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
@@ -107,6 +116,7 @@ jQuery(document).ready(function(){';
     mtype: 'GET',
     ".$this->getColumnsDefinition()."
     pager: '#".$pagerId."',
+    height:$this->height,
     rowNum:10,
     rowList:[10,20,30],
     sortname: '".$this->defaultSortColumn."',
@@ -174,7 +184,7 @@ jQuery(document).ready(function(){';
 						// jqGrid does not support timestamps. We will convert those on the server side.
 						$srcFormat = "Y-m-d H:i:s";
 					}
-					$formatStr = ", formatter:'date', formatoptions:{srcformat:'".addslashes($formatter->sourceFormat)."', destformat:'".addslashes($formatter->getDestFormat())."'}";
+					$formatStr = ", formatter:'date', formatoptions:{srcformat:'".addslashes($formatter->sourceFormat)."', newformat:'".addslashes($formatter->getDestFormat())."'}";
 				} elseif ($formatter instanceof CurrencyFormatter) {
 					$formatStr = ", formatter:'currency', formatoptions:{thousandsSeparator:'".addslashes($formatter->thousandsSeparator)."',
 											decimalSeparator:'".addslashes($formatter->decimalSeparator)."',
