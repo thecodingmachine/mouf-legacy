@@ -110,9 +110,11 @@ class LineChartBuilder {
 		}
   		$plot->xAxis->setLabelText($xAxisLabel);
 		
-  		$plot->grid->setInterval(1, 1);
+  		$hInterval = $this->calculInterval($this->dataSet->countValues(), $this->theme->labelInterval);
+  		//$plot->grid->setInterval(1, $hInterval);
   		//$plot->xAxis->label->setInterval($this->theme->labelInterval);
-  		$plot->xAxis->label->setInterval($this->calculInterval($this->dataSet->countValues(), $this->theme->labelInterval));
+  		$plot->xAxis->label->setInterval($hInterval);
+  		$plot->xAxis->setTickInterval($hInterval); 
   		
 		$graph->add($plot);
 		$graph->draw();
