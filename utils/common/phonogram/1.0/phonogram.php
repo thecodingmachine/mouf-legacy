@@ -19,7 +19,21 @@ class Phonogram {
 	 * @var array<string,string>
 	 * @Property
 	 */
-	public $replacedConsones=array("b"=>"p", "c"=>"s", "d"=>"t", "g"=>"j", "h"=>"","q"=>"k","ç"=>"s");
+	public $replacedConsones=array(
+				"ca"=>"k",
+				"cu"=>"k",
+				"co"=>"k",
+				"ci"=>"s",
+				"ce"=>"s",
+				"cy"=>"s",
+				"b"=>"p", 
+				"c"=>"s", 
+				"d"=>"t", 
+				"g"=>"j", 
+				"h"=>"",
+				"q"=>"k",
+				"ç"=>"s"
+				);
 
 	/**
 	 * List of consones (only those characteres will be kept). 
@@ -29,12 +43,12 @@ class Phonogram {
 	public $consones=array("b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n","p", "q", "r", "s","t", "v", "w", "x", "z");
 	
 	
-	public function transform($mot) {
-		$mot=' '.$mot.' ';
-		$mot = strtolower($mot);
-		$mot = str_replace($this->suppressedWords," ",$mot);
-		$mot = strtr($mot,$this->replacedConsones);
-		$words= preg_split('//', $mot, -1,PREG_SPLIT_NO_EMPTY);
+	public function transform($text) {
+		$text=' '.$text.' ';
+		$text = strtolower($text);
+		$text = str_replace($this->suppressedWords," ",$text);
+		$text = strtr($text,$this->replacedConsones);
+		$words= preg_split('//', $text, -1,PREG_SPLIT_NO_EMPTY);
 		foreach($words as $word){
 			if (array_search($word, $this->consones)){ 
 				$newword.=$word;
