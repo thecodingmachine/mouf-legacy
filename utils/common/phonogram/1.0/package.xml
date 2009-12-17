@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Phonogram</displayName>
+	<shortDescription>A simple package that provides functions to hash a string into phonetic representation. By using this package, the coder can easily make a proximity compare.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+	<requires>
+		<require>phonogram.php</require>
+	</requires>
+</package>
