@@ -618,9 +618,12 @@ class Calendar {
 				}
 			}
 			// Display event
-			$return .= '<div class="calendar_tooltip calendar_tooltip_pos_year'.$positions.'">
+			$return .= '<div
+							class="calendar_tooltip calendar_tooltip_pos_year'.$positions.'"
+							onmouseover="document.getElementById(\'calendar_tooltip_year_'.date("j", $date).'\').style.display = \'block\';"
+							onmouseout="document.getElementById(\'calendar_tooltip_year_'.date("j", $date).'\').style.display = \'\';">
 							<sup class="count">'.$count.'</sup>'.date("j", $date)
-						.'<span class="calendar_tooltip_year">
+						.'<span id="calendar_tooltip_year_'.date("j", $date).'" class="calendar_tooltip_year">
 							<div class="calendar_tooltip_year_date">'.$this->formatHalfDate($date).'</div>
 								'.$return_temp.'
 						</span>
@@ -659,7 +662,7 @@ class Calendar {
 		$return .= '<br />'.$this->eventDateText($event).'</div>';
 		
 		$return .= "</div>";
-		return $return;
+		return $return; //array("tooltip" => $tooltip, "event" => $event);
 	}
 	
 	/********************************* By Month *********************************/
@@ -792,8 +795,9 @@ class Calendar {
 	 */
 	private function displayEventsForMonth($date, $element, $positions) {
 		$return = "";
+		$tooltips = "";
 		if(isset($this->events[$date])) {
-			$return .= '<div>
+			$return .= '<div style="position: relative">
 						<div style="height: '.(($this->height*14/100) - 17).'px; overflow: auto;">';
 			ksort($this->events[$date]);
 			// Check all event of day
@@ -801,17 +805,22 @@ class Calendar {
 				// Event on many day
 				if(isset($this->events[$date][$key_time]["parent"])) {
 					foreach ($this->events[$date][$key_time]["parent"] as $event_parent) {
-						$return .= $this->displayOneEventForMonth($event_parent, $date, $positions, $element);
+						$tab = $this->displayOneEventForMonth($event_parent, $date, $positions, $element);
+						$return .= $tab["event"];
+						$tooltips .= $tab["tooltip"];
 					}
 				}
 				// Event on one day and first day of event
 				if(isset($this->events[$date][$key_time]["main"])) {
 					foreach ($this->events[$date][$key_time]["main"] as $event) {
-						$return .= $this->displayOneEventForMonth($event, $date, $positions);
+						$tab = $this->displayOneEventForMonth($event, $date, $positions);
+						$return .= $tab["event"];
+						$tooltips .= $tab["tooltip"];
 					}
 				}
 			}
 			$return .= '</div>';
+			$return .= $tooltips;
 			$return .= '</div>';
 		}
 		return $return;
@@ -827,10 +836,13 @@ class Calendar {
 	 * @return unknown_type
 	 */
 	private function displayOneEventForMonth($event, $date, $positions, $element = null) {
+		static $i = 0;
+		$i ++;
 		$style = "";
 		$class = "";
 		$style_tooltip = "";
 		$return = "";
+		
 		if($category = $event->getCategory()) {
 			if($styleTemp = $category->getStyleCategory())
 				$style .= $styleTemp.";";
@@ -852,7 +864,9 @@ class Calendar {
 			$link = $linkTemp;
 		else
 			$link = "#";
-		$return .= '<div class="calendar_event '.$class.'" style="'.$style.'">';
+		$return .= '<div class="calendar_event '.$class.'" style="'.$style.'"
+						onmouseover="document.getElementById(\'calendar_week_tooltip_'.date("j", $date).'_'.$i.'\').style.display = \'block\';"
+						onmouseout="document.getElementById(\'calendar_week_tooltip_'.date("j", $date).'_'.$i.'\').style.display = \'none\';">';
 		if($element == "start")
 			$return .= '<span style="font-size: 9px; float: left"><=&nbsp;&nbsp;</span>';
 		if($element == "end")
@@ -860,22 +874,35 @@ class Calendar {
 		$class = "";
 		foreach($positions as $position)
 			$class .= " calendar_tooltip_pos_month_$position";
+		
 		if($link = $event->getLink())
 			$alink = '<a href="'.$link.'">';
 		$return .= '<div class="calendar_tooltip calendar_tooltip_pos_month calendar_tooltip_month'.$class.'">'.$event->getTitle();
-		$return .= '<span style="z-index: 2; '.$style_tooltip.'">';
-		if($category) {
-			$return .= '<div style="font-size: 9px; text-align: right">'.$category->getName()."</div>";
-		}
-		$return .= $alink.$event->getTitle().($alink?"</a>":"");
+		$return .= '</div>';
+		$return .= "</div>";
 		
-		$return .= "<br />".$this->eventDateText($event);
+		$class_tooltip = '';
+		foreach($positions as $position)
+			$class_tooltip .= ' calendar_week_tooltip_'.$position;
+
+		$tooltip = '<span style="z-index: 2; display: none; '.$style_tooltip.'" class="calendar_week_tooltip'.$class_tooltip.'" id="calendar_week_tooltip_'.date("j", $date).'_'.$i.'"
+		onmouseover="document.getElementById(\'calendar_week_tooltip_'.date("j", $date).'_'.$i.'\').style.display = \'block\';"
+		onmouseout="document.getElementById(\'calendar_week_tooltip_'.date("j", $date).'_'.$i.'\').style.display = \'none\';"
+						
+		
+		>';
+		if($category) {
+			$tooltip .= '<div style="font-size: 9px; text-align: right">'.$category->getName()."</div>";
+		}
+		$tooltip .= $alink.$event->getTitle().($alink?"</a>":"");
+		
+		$tooltip .= "<br />".$this->eventDateText($event);
 		
 		if($content = $event->getContent())
-			$return .= "<br /><br />".$content;
-		$return .= '</span></div>';
-		$return .= "</div>";
-		return $return;
+			$tooltip .= "<br /><br />".$content;
+		$tooltip .= '</span>';
+		
+		return array("tooltip" => $tooltip, "event" => $return);
 	}
 	
 	/*********************************** By Week *****************************/

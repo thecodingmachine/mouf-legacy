@@ -25,11 +25,11 @@ div.calendar_main td.calendar_main_table_link a {
 	color: black;
 	text-decoration: none;
 }
-
+/*
 div.calendar_main td.calendar_main_table_link a:hover {
 	text-decoration: underline;
 }
-
+*/
 div.calendar_main td.calendar_main_table_arrow_left {
 	text-align: left;
 	color: black;
@@ -47,12 +47,12 @@ div.calendar_main td.calendar_main_table_arrow_left a {
 	color: black;
 	text-decoration: none;
 }
-	
+/*
 div.calendar_main td.calendar_main_table_arrow_right a:hover,
 div.calendar_main td.calendar_main_table_arrow_left a:hover {
 	font-weight: bold;
 }
-
+*/
 div.calendar_main td.calendar_main_table_title {
 	text-align: center;
 	text-transform: capitalize;
@@ -97,11 +97,11 @@ div.calendar_main td.calendar_year_table_week a {
 	color: black;
 	text-decoration: none;
 }
-
+/*
 div.calendar_main td.calendar_year_table_week a:hover {
 	text-decoration: underline;
 }
-
+*/
 div.calendar_main td.calendar_year_table_day {
 	vertical-align: top;
 	text-align: center;
@@ -131,25 +131,25 @@ div.calendar_tooltip_pos_year {
 	background-color: #BBBBBB;
 	position: relative;
 }
-div.calendar_tooltip_pos_year:hover span {
+div.calendar_tooltip_pos_year span {
 	top: -150px;
 	left: 0px;
 	height: 300px;
 	overflow: auto;
 }
-div.calendar_tooltip_pos_year_left:hover span {
+div.calendar_tooltip_pos_year_left span {
 	left: 0px;
 }
 
-div.calendar_tooltip_pos_year_right:hover span {
+div.calendar_tooltip_pos_year_right span {
 	left: -180px;
 }
 
-div.calendar_tooltip_pos_year_bottom:hover span {
+div.calendar_tooltip_pos_year_bottom span {
 	top: -280px;
 }
 
-div.calendar_tooltip_pos_year_top:hover span {
+div.calendar_tooltip_pos_year_top span {
 	top: 0px;
 }
 
@@ -171,11 +171,11 @@ div.calendar_main td.calendar_month_table_week a {
 	text-decoration: none;
 	color: black;
 }
-
+/*
 div.calendar_main td.calendar_month_table_week a:hover {
 	text-decoration: underline;
 }
-
+*/
 /*--- Tooltip ---*/
 /*
 div.calendar_tooltip_pos_month span {
@@ -218,8 +218,26 @@ div.calendar_event {
 	color: black;
 }
 
+/*
 div.calendar_week_event, div.calendar_tooltip {
 	behavior: url(hover.htc);
+}
+*/
+
+
+
+span.calendar_week_tooltip {
+	color: #333333;
+	border: 2px solid #444444;
+	padding: 5px;
+	background: #eae7d7;
+	width: 200px;
+	position: absolute;
+	left: -30px;
+	top: -50px;
+	text-align: justify;
+	font-style: normal;
+	z-index: 200000;
 }
 
 div.calendar_week_event span {
@@ -236,7 +254,25 @@ div.calendar_week_event span {
 	z-index: 200000;
 }
 
-div.calendar_week_event:hover {
+span.calendar_week_tooltip_right {
+	left: auto;
+	right: 0px;
+}
+
+span.calendar_week_tooltip_top {
+	top: 0px;
+}
+
+span.calendar_week_tooltip_left {
+	left: 0px;
+}
+
+span.calendar_week_tooltip_bottom {
+	top: auto;
+	bottom: 0px
+}
+
+div.calendar_week_event {
 	z-index: 2;
 }
 
@@ -247,10 +283,11 @@ div.calendar_week_event span {
 div.calendar_week_event_all_day {
 	/*overflow: hidden;*/
 }
+/*
 div.calendar_week_event:hover span{
 	overflow: visible;
 	display: block;
-}
+}*/
 
 div.calendar_tooltip {
 	color: black;
@@ -259,12 +296,13 @@ div.calendar_tooltip span {
 	display:none;
 }
 
+/*
 div.calendar_tooltip:hover {
 	border: 0;
 	text-decoration:none;
 	z-index: 2;
 }
-
+*/
 
 /****** Tooltip ******/
 div.calendar_tooltip span {
@@ -278,10 +316,11 @@ div.calendar_tooltip span {
 	text-align: justify;
 	z-index: 2;
 }
+/*
 div.calendar_tooltip span:hover {
 	display: block;
 }
-
+*/
 
 
 
@@ -294,11 +333,11 @@ a.calendar_month_by_year {
 	color: black;
 	text-decoration: none;
 }
-
+/*
 a.calendar_month_by_year:hover {
 	text-decoration: underline;
 }
-
+*/
 sup.count {
 	float: left;
 	font-size: 9px;
