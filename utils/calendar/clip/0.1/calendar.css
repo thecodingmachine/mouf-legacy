@@ -218,10 +218,9 @@ div.calendar_event {
 	color: black;
 }
 
-div.calendar_week_event {
-	/behavior: url(hover.htc);
+div.calendar_week_event, div.calendar_tooltip {
+	behavior: url(hover.htc);
 }
-
 
 div.calendar_week_event span {
 	color: #333333;
@@ -231,6 +230,7 @@ div.calendar_week_event span {
 	width: 170%;
 	position: absolute;
 	left: -60%;
+	top: -50px;
 	text-align: justify;
 	font-style: normal;
 	z-index: 200000;
@@ -267,9 +267,8 @@ div.calendar_tooltip:hover {
 
 
 /****** Tooltip ******/
-div.calendar_tooltip:hover span {
+div.calendar_tooltip span {
 	font-style: normal;
-	display: block;
 	position: absolute;
 	padding: 5px;
 	color: #333333;
@@ -277,6 +276,10 @@ div.calendar_tooltip:hover span {
 	background: #eae7d7;
 	width: 190px;
 	text-align: justify;
+	z-index: 2;
+}
+div.calendar_tooltip span:hover {
+	display: block;
 }
 
 

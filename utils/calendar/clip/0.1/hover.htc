@@ -2,6 +2,7 @@
 <PUBLIC:ATTACH EVENT="onmouseout"  ONEVENT="hide()" />
 
 <SCRIPT LANGUAGE="JScript">
+alert("oui");
 var ListeS = this.getElementsByTagName('span');
 function show() {
 	this.style.zIndex = 2;

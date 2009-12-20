@@ -1062,7 +1062,8 @@ class Calendar {
 						$j = 0;
 						$continue = true;
 						while($j < count($eventPosition[$i]) && $continue) {
-							if($event->getDateStart() < $eventPosition[$i][$j]->getDateEnd()) {
+							if(($event->getDateStart() < $eventPosition[$i][$j]->getDateEnd())
+								|| ($eventPosition[$i][$j]->getDateStart() == $eventPosition[$i][$j]->getDateEnd())) {
 								$continue = false;
 							}
 							$j ++;
