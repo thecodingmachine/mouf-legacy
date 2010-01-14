@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Drupal Template</displayName>
+	<shortDescription>This package is an adapter that allows you to use any Drupal template right into your application.
+	The DrupalTemplate component acts like a wrapper around the template and offers a clear, clean object-oriented interface
+	to use.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>template/BaseTemplate</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>drupalfunctionstubs.php</require>
+		<require>DrupalTemplate.php</require>
+	</requires>
+</package>
