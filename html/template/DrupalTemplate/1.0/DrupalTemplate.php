@@ -106,7 +106,7 @@ class DrupalTemplate extends BaseTemplate  {
 		header('Content-Type: text/html; charset=utf-8');
 		global $i18n_lg;
 
-		$this->private_css_files = array($this->drupalThemeDirectory."/style.css");
+		$this->private_css_files = array(ROOT_URL.$this->drupalThemeDirectory."/style.css");
 		
 		
 		$language = new stdClass();
