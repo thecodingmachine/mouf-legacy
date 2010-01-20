@@ -40,6 +40,14 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 	 * @var array<HtmlElementInterface>
 	 */
 	public $header;
+	
+	/**
+	 * The HTML elements that will be displayed in the footer.
+	 *
+	 * @Property
+	 * @var array<HtmlElementInterface>
+	 */	
+	public $footer;
 
 	/**
 	 * The HTML elements that will be written in the <head> tag.
@@ -107,6 +115,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 		$this->content = array();
 		$this->right = array();
 		$this->header = array();
+		$this->footer = array();
 		$this->head = array();
 		$this->javascript = array();
 		$this->javascript_files = array();
@@ -358,6 +367,60 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 		$this->right[] = $element;
 		return $this;
 	}
+
+	/**
+	 * Adds some content to the footer panel by calling the function passed in parameter.
+	 * @return SplashTemplate
+	 */
+	public function addFooterFunction($function) {
+		$arguments = func_get_args();
+		// Remove the first argument
+		array_shift($arguments);
+
+		$content = new HtmlFromFunction();
+		$content->functionPointer = $function;
+		$content->parameters = $arguments;
+		$this->footer[] = $content;
+		return $this;
+	}
+
+	/**
+	 * Adds some content to the footer panel by displaying the text passed in parameter.
+	 * @return SplashTemplate
+	 */
+	public function addFooterText($text) {
+		$content = new HtmlString();
+		$content->htmlString = $text;
+		$this->footer[] = $content;
+		//$this->content[] = array("type"=>"text", "text"=>$text);
+		return $this;
+	}
+
+	/**
+	 * Adds some content to the footer panel by displaying the text in the file passed in parameter.
+	 * The scope is the object that will refer the $this.
+	 * @return SplashTemplate
+	 */
+	public function addFooterFile($fileName, Scopable $scope = null) {
+		$content = new HtmlFromFile();
+		$content->fileName = $fileName;
+		$content->scope = $scope;
+		$this->footer[] = $content;
+		
+		return $this;
+	}
+	
+	/**
+	 * Adds an object extending the HtmlElementInterface interface to the footer of the template.
+	 *
+	 * @param HtmlElementInterface $element
+	 * @return SplashTemplate
+	 */
+	public function addFooterHtmlElement(HtmlElementInterface $element) {
+		$this->footer[] = $element;
+		return $this;
+	}
+	
 	
 	/**
 	 * Adds some content to the <head> tag by calling the function passed in parameter.
