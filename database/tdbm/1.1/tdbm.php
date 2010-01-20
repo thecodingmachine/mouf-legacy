@@ -1993,9 +1993,11 @@ class DBM_Object {
 			{
 				if ($className == null) {
 					$obj = new DBM_Object();
-				} else {
+				} elseif (is_string($className)) {
 					$obj = new $className();
-				}						
+				} else {
+					throw new DB_Exception("Error while casting DBM_Object to class, the parameter passed is not a string. Value passed: ".$className);
+				}
 				$obj->init(DB_Connection::$main_db, $table_name, $id);
 				$obj->loadFromRow($row);
 				DBM_Object::$objects[$table_name][$id] = $obj;
