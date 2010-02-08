@@ -30,6 +30,7 @@ require_once 'filters/TDBM_Filters.php';
  * 
  * @author David Negrier
  * @Component
+ * @ExtendedAction {"name":"Generate DAOs", "url":"mouf/tdbmadmin/", "default":false}
  */
 class TDBM_Service {
 	/**

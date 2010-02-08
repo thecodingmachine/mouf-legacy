@@ -112,9 +112,10 @@ interface DB_ConnectionInterface {
 	/**
 	 * Returns a list of table names.
 	 *
-	 * 
+	 * @param $ignoreSequences boolean: for some databases, sequences are managed with tables. If true, those tables will be ignored. Default is true.
+	 * @return array<string>
 	 */
-	public function getListOfTables();
+	public function getListOfTables($ignoreSequences = true);
 	
 	/**
 	 * Returns true if the table exists, false if it does not.
@@ -279,6 +280,14 @@ interface DB_ConnectionInterface {
 	public function getSequenceName($sqn);
     
     /**
+     * Returns true of name passed in parameter matches the sequence name pattern.
+     * 
+     * @param $sqn
+     * @return boolean
+     */
+    public function isSequenceName($sqn);
+	
+    /**
      * Creates a sequence with the name specified.
      * Note: The name is transformed be the getSequenceName method.
      * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
@@ -354,5 +363,25 @@ interface DB_ConnectionInterface {
 	 * @return array<string>
 	 */
 	public function getDatabaseList();
+	
+	/**
+	 * Returns the underlying type in a db agnostic way, from a string representing the type.
+	 * 
+	 * For instance, "varchar(255)" or "text" will return "string".
+	 * "datetime" will return "datetime", etc...
+	 * 
+	 * Possible values returned:
+	 * - string
+	 * - int
+	 * - number
+	 * - boolean
+	 * - timestamp
+	 * - datetime
+	 * - date
+	 * 
+	 * @param $type string
+	 * @return string
+	 */
+	public function getUnderlyingType($type);
 }
 ?>

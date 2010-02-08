@@ -30,7 +30,7 @@ class TDBM_Object {
 	 * 
 	 * @var TDBM_Service
 	 */
-	private $tdbmService;
+	protected $tdbmService;
 	
 	/**
 	 * The name of the table the object if issued from

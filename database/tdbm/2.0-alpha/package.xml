@@ -20,4 +20,8 @@
 	<requires>
 		<require>TDBM_Service.php</require>
 	</requires>
+	<adminRequires>
+		<require>TdbmAdmin.php</require>
+		<require>controllers/TdbmController.php</require>
+	</adminRequires>	
 </package>

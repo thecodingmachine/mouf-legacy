@@ -262,15 +262,19 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	/**
 	 * Returns a list of table names.
 	 *
-	 *
+	 * 
+	 * @param $ignoreSequences boolean: for some databases, sequences are managed with tables. If true, those tables will be ignored. Default is true.
+	 * @return array<string>
 	 */
-	public function getListOfTables() {
+	public function getListOfTables($ignoreSequences = true) {
 		$str = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = ".$this->quoteSmart($this->dbname)." ;";
 
 		$res = $this->getAll($str);
 		$array = array();
 		foreach ($res as $table) {
-			$array[] = $table['table_name'];
+			if (!$ignoreSequences || !$this->isSequenceName($table['table_name'])) {
+				$array[] = $table['table_name'];
+			}
 		}
 
 		return $array;
@@ -608,23 +612,37 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return unknown
 	 */
 	public function getSequenceName($sqn)
-	{
-		//return sprintf($this->getOption('seqname_format'),
-		//               preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
-		return sprintf("%s_pk_seq",
-		preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
-	}
-
-	/**
-	 * Creates a sequence with the name specified.
-	 * Note: The name is transformed be the getSequenceName method.
-	 * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
-	 *
-	 * @param string $seq_name
-	 */
-	//abstract public function createSequence($seq_name);
-
-	/**
+    {
+        //return sprintf($this->getOption('seqname_format'),
+        //               preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
+        return sprintf("%s_pk_seq",
+                       preg_replace('/[^a-z0-9_.]/i', '_', $sqn));
+    }
+    
+    /**
+     * Returns true of name passed in parameter matches the sequence name pattern.
+     * 
+     * @param $sqn
+     * @return boolean
+     */
+    public function isSequenceName($sqn) {
+    	if (strpos($sqn, "_pk_seq") == strlen($sqn)-7) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    /**
+     * Creates a sequence with the name specified.
+     * Note: The name is transformed be the getSequenceName method.
+     * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
+     *
+     * @param string $seq_name
+     */
+    //abstract public function createSequence($seq_name);
+    
+    /**
 	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
 	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
 	 * will be ended, but the flag will not be set to false).

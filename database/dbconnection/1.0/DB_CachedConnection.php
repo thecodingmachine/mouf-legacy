@@ -195,11 +195,12 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	/**
 	 * Returns a list of table names.
 	 *
+	 * @param $ignoreSequences boolean: for some databases, sequences are managed with tables. If true, those tables will be ignored. Default is true.
 	 * @return array<string>
 	 */
-	public function getListOfTables() {
+	public function getListOfTables($ignoreSequences = true) {
 		$this->loadCache();
-		$this->cache["listoftables"] = $this->dbConnection->getListOfTables();
+		$this->cache["listoftables"] = $this->dbConnection->getListOfTables($ignoreSequences);
 		$this->saveCache();
 		return $this->cache["listoftables"];
 	}
@@ -417,6 +418,16 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	}
     
     /**
+     * Returns true of name passed in parameter matches the sequence name pattern.
+     * 
+     * @param $sqn
+     * @return boolean
+     */
+    public function isSequenceName($sqn) {
+    	return $this->dbConnection->isSequenceName($sqn);
+    }
+	
+    /**
      * Creates a sequence with the name specified.
      * Note: The name is transformed be the getSequenceName method.
      * By default, if "mytable" is passed, the name of the sequence will be "mytable_pk_seq".
@@ -523,6 +534,28 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	 */
 	public function getDatabaseList() {
 		$this->dbConnection->getDatabaseList();
+	}
+	
+	/**
+	 * Returns the underlying type in a db agnostic way, from a string representing the type.
+	 * 
+	 * For instance, "varchar(255)" or "text" will return "string".
+	 * "datetime" will return "datetime", etc...
+	 * 
+	 * Possible values returned:
+	 * - string
+	 * - int
+	 * - number
+	 * - boolean
+	 * - timestamp
+	 * - datetime
+	 * - date
+	 * 
+	 * @param $type string
+	 * @return string
+	 */
+	public function getUnderlyingType($type) {
+		return $this->dbConnection->getUnderlyingType($type);
 	}
 }
 ?>

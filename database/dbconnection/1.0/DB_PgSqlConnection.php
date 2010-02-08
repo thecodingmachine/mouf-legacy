@@ -400,6 +400,59 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	}
 	
 	/**
+	 * Returns the underlying type in a db agnostic way, from a string representing the type.
+	 * 
+	 * For instance, "varchar(255)" or "text" will return "string".
+	 * "datetime" will return "datetime", etc...
+	 * 
+	 * Possible values returned:
+	 * - string
+	 * - int
+	 * - number
+	 * - boolean
+	 * - timestamp
+	 * - datetime
+	 * - date
+	 * 
+	 * @param $type string
+	 * @return string
+	 */
+	public function getUnderlyingType($type) {
+		// FIXME: adapt the types to PostgreSQL (this are MySQL type below!!!!)
+		$type = strtolower($type);
+		$parenPos = strpos($type, "(");
+		if ($parenPos !== false) {
+			$type = substr($type, 0, $parenPos);
+		}
+		
+		switch ($type) {
+			case "int":
+			case "tinyint":
+			case "smallint":
+			case "mediumint":
+			case "int":
+			case "bigint":
+				return "int";
+			case "decimal":
+			case "float":
+			case "double":
+			case "real":
+				return "number";
+			case "bit":
+			case "bool":
+				return "boolean";
+			case "date":
+				return "date";
+			case "datetime":
+				return "datetime";
+			case "timestamp":
+				return "timestamp";
+			default:
+				return "string";
+		}
+	}
+	
+	/**
      * Creates the database.
      * Of course, a connection must be established for this call to succeed.
      * Please note that you can create a connection without providing a dbname.
