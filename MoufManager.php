@@ -935,6 +935,26 @@ class ".$this->mainClassName." {
 		
 		$this->registeredComponents = $registeredComponentsFile;
 	}
+
+	/**
+	 * Adds one file that will be included by Mouf, relative to the root of the project.
+	 * 
+	 * @param string $file
+	 */
+	public function addRegisteredComponentFile($file) {
+		$dirMoufFile = dirname(dirname(__FILE__)."/".$this->requireFileName);
+		$fulldir = realpath(dirname(__FILE__)."/../");
+		$fulldir = str_replace("\\", "/", $fulldir);
+		// Depending on the version of PHP, we might or might not have a trailing /. Let's add it.
+		if (substr($fulldir, -1) != "/" ) {
+			$fulldir .= "/";
+		}
+
+		$fileFull = $fulldir.$file;
+		if (array_search($file, $this->registeredComponents) === false) {
+			$this->registeredComponents[] = $this->createRelativePath($dirMoufFile, $fileFull);
+		}		
+	}
 	
 	/**
 	 * Creates a relative path from the directory $fromDirectory (current dir) to the file $toFile.
