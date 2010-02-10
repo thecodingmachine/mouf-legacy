@@ -2412,7 +2412,7 @@ class DBM_Object {
 				// If all tables have been found, return true!
 				$found = true;
 				foreach ($target_tables as $test_table) {
-					if ($test_table['founddepth'] == null) {
+					if (!isset($test_table['founddepth']) || $test_table['founddepth'] == null) {
 						$found = false;
 					}
 				}
