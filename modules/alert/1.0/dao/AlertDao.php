@@ -38,6 +38,15 @@ class AlertDao implements AlertDaoInterface
 	}
 	
 	/**
+	 * Get all not validated Alerts records. 
+	 *
+	 * @return array<AlertBean>
+	 */
+	public function getNonvalidatedAlerts() {
+		return DBM_Object::getObjects('alerts', new DBM_EqualFilter('alerts', 'validated', 0), null, null, null, 'AlertBean');
+	}
+	
+	/**
 	 * Get VideoadsCampaignBean specified by its ID
 	 *
 	 * @param string $id

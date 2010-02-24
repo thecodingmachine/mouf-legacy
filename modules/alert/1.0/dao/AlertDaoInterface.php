@@ -32,6 +32,13 @@ interface AlertDaoInterface
 	public function getAlerts();
 	
 	/**
+	 * Get all not validated Alerts records. 
+	 *
+	 * @return array<AlertBean>
+	 */
+	public function getNonvalidatedAlerts();
+	
+	/**
 	 * Get VideoadsCampaignBean specified by its ID
 	 *
 	 * @param string $id

@@ -100,6 +100,21 @@ class AlertController extends Controller {
 	}
 	
 	/**
+	 * Validates all alerts at once.
+	 *
+	 * @Action
+	 */
+	public function validateAll() {
+		$alerts = $this->alertsDao->getNonvalidatedAlerts();
+		foreach ($alerts as $alert) {
+			/* @var $alert AlertBean */
+			$alert->setValidated(1);
+			$alert->save();
+		}
+		header("Location: ".ROOT_URL."alerts/");
+	}
+	
+	/**
 	 * Prints the alerts detail screen.
 	 *
 	 * @Action
