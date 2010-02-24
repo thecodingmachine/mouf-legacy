@@ -430,7 +430,8 @@ class awPie extends awComponent {
 				
 				list($from, $to, $explode) = $value;
 				
-				$driver->filledArc($color, $explode->move($x, $y + $i), $width, $height, $from, $to);
+				if((int) $from != (int) $to)
+					$driver->filledArc($color, $explode->move($x, $y + $i), $width, $height, $from, $to);
 				
 				unset($color);
 				
