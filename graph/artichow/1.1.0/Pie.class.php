@@ -455,8 +455,8 @@ class awPie extends awComponent {
 			$color = $this->colors[$key % count($this->colors)];
 			
 			list($from, $to, $explode) = $value;
-			
-			$driver->filledArc($color, $explode->move($x, $y), $width, $height, $from, $to);
+			if((int) $from != (int) $to)
+				$driver->filledArc($color, $explode->move($x, $y), $width, $height, $from, $to);
 			
 			if($this->border instanceof awColor) {
 			
