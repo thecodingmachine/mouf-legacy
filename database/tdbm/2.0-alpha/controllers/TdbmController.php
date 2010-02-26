@@ -54,9 +54,9 @@ class TdbmController extends AbstractMoufInstanceController {
 
 			$instanceName = TDBMDaoGenerator::toVariableName($daoName);
 			$this->moufManager->declareComponent($instanceName, $daoName);
-			$this->moufManager->bindComponent($instanceName, "tdbmService", $name);
+			$this->moufManager->bindComponentViaSetter($instanceName, "setTdbmService", $name);
 
-			$this->moufManager->bindComponent($daofactoryinstancename, $instanceName, $instanceName);
+			$this->moufManager->bindComponentViaSetter($daofactoryinstancename, "set".$daoName, $instanceName);
 		}
 		
 		$this->moufManager->addRegisteredComponentFile("dao/".$daofactoryclassname.".php");

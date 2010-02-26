@@ -240,32 +240,39 @@ class TDBM_Service {
 	}
 	
 	/**
-	 * Returns the TDBM_Object associated to the row "$id" of the table "$table_name".
+	 * Returns the DBM_Object associated to the row "$id" of the table "$table_name".
 	 *
 	 * For instance, if there is a table 'users', with a primary key on column 'user_id' and a column 'user_name', then
-	 * 			$user = TDBM_Object::getObject('users',1);
+	 * 			$user = DBM_Object::getObject('users',1);
 	 * 			echo $user->name;
 	 * will return the name of the user whose user_id is one.
 	 *
 	 * If a table has a primary key over several columns, you should pass to $id an array containing the the value of the various columns.
 	 * For instance:
-	 * 			$group = TDBM_Object::getObject('groups',array(1,2));
+	 * 			$group = DBM_Object::getObject('groups',array(1,2));
 	 *
-	 * Note that TDBM_Object performs caching for you. If you get twice the same object, the reference of the object you will get
+	 * Note that DBM_Object performs caching for you. If you get twice the same object, the reference of the object you will get
 	 * will be the same.
 	 *
 	 * For instance:
-	 * 			$user1 = TDBM_Object::getObject('users',1);
-	 * 			$user2 = TDBM_Object::getObject('users',1);
+	 * 			$user1 = DBM_Object::getObject('users',1);
+	 * 			$user2 = DBM_Object::getObject('users',1);
 	 * 			$user1->name = 'John Doe';
 	 * 			echo $user2->name;
 	 * will return 'John Doe'.
+	 * 
+	 * Also, you can specify the return class for the object (provided the return class extends DBM_Object).
+	 * For instance:
+	 *  	$user = DBM_Object::getObject('users',1,'User');
+	 * will return an object from the "User" class. The "User" class must extend the "DBM_Object" class.
+	 * Please be sure not to override any method or any property unless you perfectly know what you are doing!
 	 *
 	 * @param string $table_name The name of the table we retrieve an object from.
-	 * @param unknown_type $id The id of the object (the value of the primary key).
-	 * @return TDBM_Object
+	 * @param mixed $id The id of the object (the value of the primary key).
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
+	 * @return DBM_Object
 	 */
-	public function getObject($table_name, $id) {
+	public function getObject($table_name, $id, $className = null) {
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
@@ -281,10 +288,22 @@ class TDBM_Service {
 			$id = serialize($id);
 		}
 
-		if (isset($this->objects[$table_name][$id]))
-		return $this->objects[$table_name][$id];
+		if (isset($this->objects[$table_name][$id])) {
+			$obj =  $this->objects[$table_name][$id];
+			if ($className == null || is_a($obj, $className)) {
+				return $obj;
+			} else {
+				throw new DB_Exception("Error! The object with ID '$id' for table '$table_name' has already been retrieved. The type for this object is '".get_class($obj)."'' which is not a subtype of '$className'");
+			}
+		}
 
-		$this->objects[$table_name][$id] = new TDBM_Object($this, $table_name, $id);
+		if ($className == null) {
+			$obj = new TDBM_Object($this, $table_name, $id);
+		} else {
+			$obj = new $className($this, $table_name, $id);
+		}
+		$this->objects[$table_name][$id] = $obj;
+		
 		return $this->objects[$table_name][$id];
 	}
 
@@ -299,9 +318,10 @@ class TDBM_Service {
 	 *
 	 * @param string $table_name
 	 * @param boolean $auto_assign_id
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
 	 * @return TDBM_Object
 	 */
-	public function getNewObject($table_name, $auto_assign_id=true) {
+	public function getNewObject($table_name, $auto_assign_id=true, $className = null) {
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): No connection has been established on the database!");
 		}
@@ -318,7 +338,11 @@ class TDBM_Service {
 				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist. Maybe you meant the table '$probable_table_name'.");
 		}
 
-		$object = new TDBM_Object($this, $table_name);
+		if ($className == null) {
+			$object = new TDBM_Object($this, $table_name);
+		} else {
+			$object = new $className($this, $table_name);
+		}
 
 		if ($auto_assign_id) {
 			$pk_table = $object->getPrimaryKey();
@@ -413,9 +437,10 @@ class TDBM_Service {
 	 * @param string $sql The SQL of the query
 	 * @param integer $from The offset
 	 * @param integer $limit The maximum number of objects returned
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
 	 * @return TDBM_ObjectArray The result set of the query as a TDBM_ObjectArray (an array of TDBM_Objects with special properties)
 	 */
-	public function getObjectsFromSQL($table_name, $sql, $from=null, $limit=null) {
+	public function getObjectsFromSQL($table_name, $sql, $from=null, $limit=null, $className=null) {
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
@@ -452,7 +477,14 @@ class TDBM_Service {
 
 			if (!isset($this->objects[$table_name][$id]))
 			{
-				$this->objects[$table_name][$id] = new TDBM_Object($this, $table_name, $id);
+				if ($className == null) {
+					$obj = new TDBM_Object($this, $table_name, $id);
+				} elseif (is_string($className)) {
+					$obj = new $className($this, $table_name, $id);
+				} else {
+					throw new DB_Exception("Error while casting DBM_Object to class, the parameter passed is not a string. Value passed: ".$className);
+				}
+				$this->objects[$table_name][$id] = $obj;
 				$this->objects[$table_name][$id]->loadFromRow($row);
 			} elseif ($this->objects[$table_name][$id]->_getStatus() == "not loaded") {
 				$this->objects[$table_name][$id]->loadFromRow($row);
@@ -999,14 +1031,15 @@ class TDBM_Service {
 	 * @param unknown_type $orderby_bag The order bag (see above for complete description)
 	 * @param integer $from The offset
 	 * @param integer $limit The maximum number of rows returned
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
 	 * @param unknown_type $hint_path Hints to get the path for the query (expert parameter, you should leave it to null).
 	 * @return TDBM_ObjectArray A TDBM_ObjectArray containing the resulting objects of the query.
 	 */
-	public function getObjects($table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null) {
+	public function getObjects($table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $className=null, $hint_path=null) {
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
-		return $this->getObjectsByMode('getObjects', $table_name, $filter_bag, $orderby_bag, $from, $limit, $hint_path);
+		return $this->getObjectsByMode('getObjects', $table_name, $filter_bag, $orderby_bag, $from, $limit, $className=null, $hint_path);
 	}
 
 	/**
@@ -1093,10 +1126,11 @@ class TDBM_Service {
 	 * @param unknown_type $orderby_bag The order bag (see above for complete description)
 	 * @param integer $from The offset
 	 * @param integer $limit The maximum number of rows returned
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
 	 * @param unknown_type $hint_path Hints to get the path for the query (expert parameter, you should leave it to null).
 	 * @return TDBM_ObjectArray A TDBM_ObjectArray containing the resulting objects of the query.
 	 */
-	public function getObjectsByMode($mode, $table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $hint_path=null) {
+	public function getObjectsByMode($mode, $table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $className=null, $hint_path=null) {
 		$this->completeSave();
 		$this->loadCache();
 		
@@ -1268,7 +1302,7 @@ class TDBM_Service {
 		if ($mode == 'explainSQL') {
 			return $sql;
 		}
-		return $this->getObjectsFromSQL($table_name, $sql,  $from, $limit);
+		return $this->getObjectsFromSQL($table_name, $sql,  $from, $limit, $className);
 
 	}
 

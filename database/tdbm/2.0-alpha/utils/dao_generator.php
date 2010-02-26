@@ -223,7 +223,7 @@ class $baseClassName extends TDBM_Object
 	 * @return '.$referencedBeanName.'
 	 */
 	public function '.$getterName.'() {
-		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].');
+		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].', "'.$referencedBeanName.'");
 	}
 	
 	/**
@@ -273,7 +273,7 @@ class $baseClassName extends TDBM_Object
 	 * @return '.$referencedBeanName.'
 	 */
 	public function '.$shortGetterName.'() {
-		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].');
+		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].', "'.$referencedBeanName.'");
 	}
 	
 	/**
@@ -357,6 +357,7 @@ class $baseClassName
 	 *
 	 * @Property
 	 * @Compulsory
+	 * @param TDBM_Service \$tdbmService
 	 */
 	public function setTdbmService(TDBM_Service \$tdbmService) {
 		\$this->tdbmService = \$tdbmService;
@@ -389,10 +390,10 @@ class $baseClassName
 	}
 	
 	/**
-	 * Get VideoadsCampaignBean specified by its ID
+	 * Get $beanClassName specified by its ID
 	 *
 	 * @param string \$id
-	 * @return VideoadsCampaignBean
+	 * @return $beanClassName
 	 */
 	public function get".$tableCamel."ById(\$id) {
 		return \$this->tdbmService->getObject('$tableName', \$id, '$beanClassName');
