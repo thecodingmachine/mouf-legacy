@@ -72,7 +72,16 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	 * @Property
 	 * @var string
 	 */
-	public $height = 150;
+	public $height = 250;
+	
+	/**
+	 * The number of rows to be displayed by default.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @var int
+	 */
+	public $rowNum = 20;
 	
 	/**
 	 * Renders the object in HTML.
@@ -117,7 +126,7 @@ jQuery(document).ready(function(){';
     ".$this->getColumnsDefinition()."
     pager: '#".$pagerId."',
     height:$this->height,
-    rowNum:10,
+    rowNum:$this->rowNum,
     rowList:[10,20,30],
     sortname: '".$this->defaultSortColumn."',
     sortorder: '".$this->defaultSortOrder."',
