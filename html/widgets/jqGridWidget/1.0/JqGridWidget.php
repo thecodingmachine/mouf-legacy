@@ -127,7 +127,7 @@ jQuery(document).ready(function(){';
     pager: '#".$pagerId."',
     height:$this->height,
     rowNum:$this->rowNum,
-    rowList:[10,20,30,100],
+    rowList:[10,20,30,50,100],
     sortname: '".$this->defaultSortColumn."',
     sortorder: '".$this->defaultSortOrder."',
     viewrecords: true,";
