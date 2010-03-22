@@ -33,7 +33,11 @@ foreach ($this->moufPackageList as $package) {
 	echo "<div class='package'>";
 	echo "<div class='packageicon'>";
 	if ($package->getLogoPath() != null) {
-		echo "<img alt='' style='float:left' src='".ROOT_URL."plugins/".$package->getPackageDirectory()."/".$package->getLogoPath()."'>";
+		if (strpos($package->getLogoPath(), "http://") === 0 || strpos($package->getLogoPath(), "https://") === 0) {
+			echo "<img alt='' style='float:left' src='".$package->getLogoPath()."'>";
+		} else {
+			echo "<img alt='' style='float:left' src='".ROOT_URL."plugins/".$package->getPackageDirectory()."/".$package->getLogoPath()."'>";
+		}
 	}
 	echo "</div>";
 	echo "<div class='packagetext'>";
