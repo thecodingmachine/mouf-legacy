@@ -27,8 +27,11 @@ require_once("DB.php");
  return $res;
  }*/
 
-class DB_Exception extends Exception {
-
+// Check to have some compatibility with DBConnection package.
+if (!class_exists('DB_Exception')) {
+	class DB_Exception extends Exception {
+	
+	}
 }
 
 class DB_AmbiguityException extends DB_Exception {
@@ -51,8 +54,8 @@ class DB_AmbiguityException extends DB_Exception {
 		$height_px = 0;
 		$global_height_px = 0;
 		foreach ($all_paths as $paths) {
-			$tree = DBM_object::getTablePathsTree($paths);
-			echo DBM_object::drawTree($tree, 0, $global_height_px, $width_px, $height_px);
+			$tree = DBM_Object::getTablePathsTree($paths);
+			echo DBM_Object::drawTree($tree, 0, $global_height_px, $width_px, $height_px);
 
 			echo "<div style='position:absolute; left:".$width_px."px; top:".$global_height_px."px; width:600px; height:".$height_px."; background-color:#EEEEEE; color: black; text-align:left;'>If you want to use this schema, use the code below:<br/><br/><code>";
 
