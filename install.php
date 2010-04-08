@@ -11,7 +11,7 @@ if ($installPos !== FALSE) {
 }
 
 
-$str .= "Options FollowSymLinks
+$str = "Options FollowSymLinks
 RewriteEngine on
 RewriteBase $uri
 
