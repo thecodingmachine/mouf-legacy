@@ -481,6 +481,7 @@ class DB_PgSqlConnection extends Mouf_DBConnection {
 	 * @return array<array> An array representing the columns for the specified table.
 	 */
 	public function getTableInfo($tableName) {
+		// TODO: EXTEND THIS TO RETRIEVE descriptions (seems to be only available in pg_description table)
 		
 		$str = "SELECT c.*, tc.constraint_type FROM information_schema.COLUMNS c
 				   LEFT JOIN (information_schema.constraint_column_usage co

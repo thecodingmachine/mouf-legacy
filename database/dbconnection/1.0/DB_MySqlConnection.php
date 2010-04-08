@@ -177,6 +177,9 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 			if ($column->autoIncrement) {
 				$sql .= " AUTO_INCREMENT ";
 			}
+			if ($column->comment) {
+				$sql .= " COMMENT '".mysql_escape_string($column->comment)."'";
+			}
 			
 			if ($column->isPrimaryKey) {
 				$primaryKeyList[] = $column->name;
@@ -188,7 +191,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		}
 		//$sql .= ",\n  PRIMARY KEY (ID)";
 		
-		$sql .= ");\n";
+		$sql .= ") ENGINE = InnoDB;\n";
 		//echo $sql;
 		$this->exec($sql);
 	}
@@ -511,6 +514,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 			$dbColumn->default = $column['column_default'];
 			$dbColumn->autoIncrement = $column['extra'] == 'auto_increment';
 			$dbColumn->isPrimaryKey = $column['column_key'] == 'PRI';
+			$dbColumn->comment = $column['column_comment'];
 			$dbTable->addColumn($dbColumn);
 		}
 		return $dbTable;

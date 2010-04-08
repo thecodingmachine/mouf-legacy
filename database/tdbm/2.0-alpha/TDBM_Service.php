@@ -227,6 +227,9 @@ class TDBM_Service {
 	 */
 	private function loadCache() {
 		if ($this->cache == null) {
+			if ($this->cacheService == null) {
+				throw new TDBM_Exception("A cache service must be explicitly bound to the TDBM Service. Please configure your instance of TDBM Service.");
+			}
 			$this->cache = $this->cacheService->get($this->cacheKey);
 		}
 	}

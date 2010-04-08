@@ -29,5 +29,6 @@
 	</externalComponentRequires>	
 	<adminRequires>
 		<require>SplashAdmin.php</require>
+		<require>controllers/admin/SplashAdminApacheConfigureController.php</require>
 	</adminRequires>	
 </package>

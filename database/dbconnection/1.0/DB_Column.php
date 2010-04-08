@@ -61,6 +61,15 @@ class DB_Column {
 	 * @var boolean
 	 */
 	public $autoIncrement;
+
+	/**
+	 * The comment associated to the column.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $comment;
 	
 	/**
 	 * Default constructor.
@@ -73,13 +82,14 @@ class DB_Column {
 	 * @param $autoIncrement
 	 * @return unknown_type
 	 */
-	public function __construct($name = null, $type = null, $nullable = null, $default = null, $isPrimaryKey = null, $autoIncrement = null) {
+	public function __construct($name = null, $type = null, $nullable = null, $default = null, $isPrimaryKey = null, $autoIncrement = null, $comment = null) {
 		$this->name = $name;
 		$this->type = $type;
 		$this->nullable = $nullable;
 		$this->default = $default;
 		$this->isPrimaryKey = $isPrimaryKey;
 		$this->autoIncrement = $autoIncrement;
+		$this->comment = $comment;
 	}
 }
 ?>
