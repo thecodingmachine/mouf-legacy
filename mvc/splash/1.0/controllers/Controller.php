@@ -27,11 +27,15 @@ abstract class Controller implements Scopable {
 
 		$debug = SplashSessionUtils::isDebugMode();
 
-		$template = self::getTemplate();
-		if($e instanceof ApplicationException ) {
-			$template->addContentFunction("FiveOO",$e,$debug);
-		}else {
-			$template->addContentFunction("UnhandledException",$e,$debug);
+		if (!headers_sent()) {
+			$template = self::getTemplate();
+			if($e instanceof ApplicationException ) {
+				$template->addContentFunction("FiveOO",$e,$debug);
+			}else {
+				$template->addContentFunction("UnhandledException",$e,$debug);
+			}
+		} else {
+			UnhandledException($e,$debug);
 		}
 
 		$template->draw();
