@@ -398,7 +398,7 @@ class MoufManager {
 		if (isset($this->declaredComponents[$instanceName])) {
 			$className = $this->declaredComponents[$instanceName];
 		} else {
-			throw new MoufInstanceNotFoundException("The object instance ".$instanceName." is not defined.", $instanceName);
+			throw new MoufInstanceNotFoundException("The object instance ".$instanceName." is not defined.");
 		}
 		
 		/*if (!class_exists($className)) {
