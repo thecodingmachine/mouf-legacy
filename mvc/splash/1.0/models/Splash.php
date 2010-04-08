@@ -210,7 +210,7 @@ class Splash {
 			} catch (MoufException $e) {
 				// There is no root controller!
 				// Let's go 404!
-				Controller::FourOFour("No root controller found! There should be one instance inn your code that is named 'rootController' in Mouf.", $this->debugMode);
+				Controller::FourOFour("No root controller found! There should be one instance in your code that is named 'rootController' in Mouf.", $this->debugMode);
 				exit();
 			}
 		} else {
