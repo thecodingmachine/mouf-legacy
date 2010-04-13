@@ -28,7 +28,7 @@ class DataSourceDBColumn extends DataSourceColumn {
 	 * @return string
 	 */
 	public function getDbColumn() {
-		if (empty($this->dbColumn)) {
+		if (!empty($this->dbColumn)) {
 			return $this->dbColumn;
 		} else {
 			return $this->getName();
@@ -44,9 +44,11 @@ class DataSourceDBColumn extends DataSourceColumn {
 	public function getValue($row) {
 		$name = $this->getDbColumn();
 		$value = $row->$name;
+		
 		foreach ($this->formatters as $formatter) {
 			$value = $formatter->format($value);
 		}
+
 		return $value;
 	}
 }

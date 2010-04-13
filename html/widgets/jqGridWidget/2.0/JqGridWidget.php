@@ -130,8 +130,13 @@ jQuery(document).ready(function(){';
 	if ($this->datasource instanceOf OrderableDataSourceInterface) {
 		$orderColumns = $this->datasource->getOrderColumns();
 		$orderSorts = $this->datasource->getOrders();
-    	echo "sortname: '".$orderColumns[0]->getName()."',
+		if (count($orderColumns)>0) {
+			if (count($orderColumns) != count($orderSorts)) {
+				throw new Exception("In datasource, the orderColumns and orders properties must have the same number of elements.");
+			}
+    		echo "sortname: '".$orderColumns[0]->getName()."',
     			sortorder: '".$orderSorts[0]."',";
+		}
 	}
     echo "viewrecords: true,";
 		if (!empty($this->caption)) {
@@ -203,8 +208,10 @@ jQuery(document).ready(function(){';
 			return;
 		}
 		
-		$this->datasource->setOrderColumns(array($this->datasource->getColumn($sidx)));
-		$this->datasource->setOrders(array($sord));
+		if(!empty($sidx)) {
+			$this->datasource->setOrderColumns(array($this->datasource->getColumn($sidx)));
+			$this->datasource->setOrders(array($sord));
+		}
 		
 		// to the url parameter are added 4 parameters as described in colModel
 		// we should get these parameters to construct the needed query
@@ -262,7 +269,7 @@ jQuery(document).ready(function(){';
 		foreach ($rows as $key=>$row) {			
 		    $s .= "<row id='". htmlspecialchars($key, ENT_QUOTES)."'>";
 		    foreach ($this->columns as $column) {
-		    	$value = $column->getValue($row);
+		    	$value = $column->getValue($row, $key);
 		    	$s .= "<cell>".htmlspecialchars($value, ENT_NOQUOTES)."</cell>";		    	
 		    }
 		    $s .= "</row>";

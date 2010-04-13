@@ -119,7 +119,7 @@ class DataGridColumn implements DataGridColumnInterface {
 	 * If no formatter is specified, content is displayed as text.
 	 *
 	 * @Property
-	 * @param array<FormatterInterface> $formatter
+	 * @param array<FormatterInterface> $formatters
 	 */
 	public function setFormatters(array $formatters) {
 		$this->formatters = $formatters;
@@ -175,5 +175,28 @@ class DataGridColumn implements DataGridColumnInterface {
 		return $this->textAlign;
 	}
 	
+	/**
+	 * Returns the value associated to the row passed in parameter for this column.
+	 *
+	 * @param array<object> $row
+	 * @param int $rowid
+	 * @return string
+	 */
+	public function getValue($row, $rowid) {
+		$dsColumn = $this->getDataSourceColumn();
+		if ($dsColumn == null) {
+			error_log("Error: DataGridColumn has no DataSourceColumn associated.");
+			throw new Exception("Error: DataGridColumn has no DataSourceColumn associated.");
+		}
+		$name = $dsColumn->getName();
+		$value = $row->$name;
+		
+		if (is_array($this->formatters)) {
+			foreach ($this->formatters as $formatter) {
+				$value = $formatter->format($value);
+			}
+		}
+		return $value;
+	}
 }
 ?>

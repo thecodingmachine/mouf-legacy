@@ -6,9 +6,6 @@ if (!MoufManager::hasHiddenInstance()) {
 	require_once dirname(__FILE__).'/../../../../Mouf.php';
 }
 
-// Split up the Incoming URL into controller/method/arg0/arg1/...
-//AdminBag::StoreRedirectUrl();
-
 $splash = MoufManager::getMoufManager()->getInstance('splash');
 
 if (!isset($splashUrlPrefix)) {

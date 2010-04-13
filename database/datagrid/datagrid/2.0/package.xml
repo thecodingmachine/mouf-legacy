@@ -18,5 +18,6 @@
 		<require>DataGridColumn.php</require>
 		<require>DataGrid.php</require>
 		<require>expander/GridExpanderInterface.php</require>
+		<require>DataGridLinkColumn.php</require>
 	</requires>
 </package>

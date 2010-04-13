@@ -4,7 +4,7 @@
  * Validators that validates account id.
  * An account ID is valid only if the account contains a user and the account is valid.
  */
-class AccountValidator {
+class AccountValidator extends AbstractValidator {
 
 
 	public function __construct($param) {

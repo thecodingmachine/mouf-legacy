@@ -22,7 +22,7 @@ class RedirectToHttp extends AbstractFilter
 	 * Function to be called before the action.
 	 */
 	public function beforeAction() {
-		if ($_SERVER['HTTPS']) {
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) {
 			if ($_SERVER['REQUEST_METHOD'] != 'GET') {
 				throw new ApplicationException("annotation.redirecttohttp.getonly.title", "annotation.redirecttohttp.getonly.getonly.text");
 			}

@@ -213,11 +213,11 @@ class SqlDataSource extends DynamicDataSource {
 		$order_array = $this->orders;
 		$order_column_array = $this->order_columns;
 		
-		if(count($order_array)!=count($order_column_array)) {
+		if(is_array($order_array) && is_array($order_column_array) && count($order_array)!=count($order_column_array)) {
 			throw new DataSourceException("Order Columns array and Order Types array don't have the same length!",null);
 		}
 		
-		if($order_column_array && is_array($order_column_array)) {
+		if($order_column_array && is_array($order_column_array) && count($order_column_array)>0) {
 			$count_column_array = count($order_column_array);
 			$order_statement = " ORDER BY ";
 			$i=0;

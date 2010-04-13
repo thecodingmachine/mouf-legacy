@@ -34,11 +34,10 @@ abstract class Controller implements Scopable {
 			}else {
 				$template->addContentFunction("UnhandledException",$e,$debug);
 			}
+			$template->draw();
 		} else {
 			UnhandledException($e,$debug);
 		}
-
-		$template->draw();
 
 	}
 

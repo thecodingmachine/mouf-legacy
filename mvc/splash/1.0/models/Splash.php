@@ -147,9 +147,14 @@ class Splash {
 				if(isset($array[0]) && !empty($array[0])){
 					$this->controller = MoufManager::getMoufManager()->getInstance($array[0]);
 				}
-			}catch (MoufException $e) {
-				Controller::FourOFour($e->getMessage(), $this->debugMode);
-				exit;
+			}catch (MoufInstanceNotFoundException $e) {
+				// If the error is because there is no such instance:
+				if ($e->getMissingInstanceName() == $array[0]) {
+					Controller::FourOFour($e->getMessage(), $this->debugMode);
+					exit;
+				}
+				// If the error is because there is a missing instance into the grap of objects retrieved:
+				throw $e;
 			}
 			if (isset($array[1])) {
 				$this->action = $array[1];

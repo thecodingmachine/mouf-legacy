@@ -3,7 +3,7 @@
 /**
  * Validators that validates number (int or floats).
  */
-class NumberValidator {
+class NumberValidator extends AbstractValidator {
 
 
 	public function __construct($param) {

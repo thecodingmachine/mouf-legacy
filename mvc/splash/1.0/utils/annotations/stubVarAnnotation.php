@@ -133,7 +133,8 @@ class stubVarAnnotation extends stubAbstractAnnotation implements stubAnnotation
 							$exception->setMessage('controller.annotation.var.urlorigintakesanint.text', $this->origin);
 							throw $exception;
 						}
-						$args = AdminBag::getInstance()->args;
+						$args = $this->getArgs();
+						
 						if (isset($args["arg".$param]))
 							return $args["arg".$param];
 					}
@@ -161,6 +162,25 @@ class stubVarAnnotation extends stubAbstractAnnotation implements stubAnnotation
 		return trim(substr($annotationName, $posSharp+1));
     }
 
+    private function getArgs() {
+		$redirect_uri = $_SERVER['REDIRECT_URL'];
+		$pos = strpos($redirect_uri, ROOT_URL);
+		$action = substr($redirect_uri, $pos+strlen(ROOT_URL));
+
+		$array = explode("/", $action);
+		$args = array();
+
+		array_shift($array);
+		array_shift($array);
+
+		$i=0;
+		foreach ($array as $arg) {
+			$args["arg$i"]=$arg;
+			$i++;
+		}
+		return $args;
+	}
+    
 }
 
 ?>

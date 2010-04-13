@@ -119,25 +119,6 @@ div.intro{
 	width: 700px;
 }
 
-#sign_up_button {
-	background-image: url("../images/login.png");
-	width: 120px;
-	height: 36px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  //background: transparent url(SearchGoogle.gif) no-repeat center top;
-  text-indent: -1000em;
-  cursor: pointer; /* hand-shaped cursor */
-  cursor: hand;
-	cursor: pointer;
-}
-
-#sign_up_button:hover {
-	background-image: url("../images/login_hover.png");
-	cursor: pointer;
-}
-
 p.error {
 	display: none;
 	font-weight: bold;

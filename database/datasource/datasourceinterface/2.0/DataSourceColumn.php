@@ -86,6 +86,7 @@ class DataSourceColumn implements DataSourceColumnInterface {
 		foreach ($this->formatters as $formatter) {
 			$value = $formatter->format($value);
 		}
+		
 		return $value;
 	}
 }
