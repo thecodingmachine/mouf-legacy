@@ -17,6 +17,11 @@
 			<name>fine</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/cache</group>
+			<name>CacheInterface</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>drupalfunctionstubs.php</require>
