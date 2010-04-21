@@ -181,7 +181,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	}
 
 	/**
-	 * Protects the string (by adding \ in front of '.
+	 * Protects the string (by adding \ in front of '), or returns the string NULL if value passed is null.
 	 * TODO: Migrate to use prepared statements!!
 	 *
 	 * @param string $in
@@ -191,7 +191,9 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-
+		if ($in === null) {
+			return 'NULL';
+		}
 		return $this->dbh->quote($in);
 	}
 

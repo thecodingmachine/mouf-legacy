@@ -50,7 +50,7 @@ interface DB_ConnectionInterface {
 	public function getOne($query);
 
 	/**
-	 * Protects the string (by adding \ in front of '.
+	 * Protects the string (by adding \ in front of '), or returns the string NULL if value passed is null.
 	 * TODO: Migrate to use prepared statements!!
 	 * 
 	 * @param string $in
