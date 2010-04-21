@@ -1042,7 +1042,7 @@ class TDBM_Service {
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
 		}
-		return $this->getObjectsByMode('getObjects', $table_name, $filter_bag, $orderby_bag, $from, $limit, $className=null, $hint_path);
+		return $this->getObjectsByMode('getObjects', $table_name, $filter_bag, $orderby_bag, $from, $limit, $className, $hint_path);
 	}
 
 	/**
