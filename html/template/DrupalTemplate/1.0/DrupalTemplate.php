@@ -1,5 +1,5 @@
 <?php
-
+include_once "InfoFileException.php";
 /**
  * This class is an adapter that allows you to use any Drupal template right into your application.
  * The DrupalTemplate component acts like a wrapper around the template and offers a clear, clean object-oriented interface
@@ -137,7 +137,7 @@ class DrupalTemplate extends BaseTemplate  {
 	public $region;
 	
 	
-	function addOptionalRegionFunction($region, $function){
+	public function addOptionalRegionFunction($region, $function){
 		$arguments = func_get_args();
 		// Remove the first argument
 		array_shift($arguments);
@@ -165,7 +165,6 @@ class DrupalTemplate extends BaseTemplate  {
 		return $this;
 	}
 	
-
 	
 	/**
 	 * Draws the Splash page by calling the template in /views/template/splash.php
@@ -174,15 +173,25 @@ class DrupalTemplate extends BaseTemplate  {
 		header('Content-Type: text/html; charset=utf-8');
 		global $i18n_lg;
 		global $theme;
+		$cacheinfo = array();
+		$cachedValue = null;
 		
+	
 		$this->private_css_files = array(ROOT_URL.$this->drupalThemeDirectory."/style.css");
 		
-		//get the datas stored in cache
-		$cachedValue = $this->cacheService->get("drupaltheme".$this->drupalThemeDirectory);
+		if (!$this->cacheService == null){
+			//get the datas stored in cache
+			$cachedValue = $this->cacheService->get("drupaltheme".$this->drupalThemeDirectory);
+		}
+
 		//if cache is empty
 		if ($cachedValue == null) {
 			//Read info file
-			$info_file = @glob(ROOT_PATH.$this->drupalThemeDirectory."/*.info");
+			$info_file = glob(ROOT_PATH.$this->drupalThemeDirectory."/*.info");
+			//if .info file is empty or doesn't exist, throw an exception
+			if (empty($info_file)){
+				throw new InfoFileException("No .info file found in ".ROOT_PATH.$this->drupalThemeDirectory.". Please check that the path to the Drupal theme directory is correct and .info file exists.");
+			}
 			$info = drupal_parse_info_file($info_file[0]);
 			foreach ($info as $key => $value){
 				//set features variables
@@ -207,15 +216,13 @@ class DrupalTemplate extends BaseTemplate  {
 							$cacheinfo['stylesheets'][] = $css;
 						}
 					}
-	//				if (array_key_exists('print', $value)){
-	//					foreach ($value['print'] as $css){
-	//						$this->private_css_files[] = ROOT_URL.$this->drupalThemeDirectory."/".$css;
-	//					}
-	//				}
 				}
 			}
-			//store the datas in cache
-			$this->cacheService->set("drupaltheme".$this->drupalThemeDirectory, $cacheinfo);
+			if (!$this->cacheService == null){
+				//store the datas in cache
+				$this->cacheService->set("drupaltheme".$this->drupalThemeDirectory, $cacheinfo);
+			}
+			
 		} else {
 			//if the datas are stored in cache, use it 
 			foreach($cachedvalue as $infoname => $value){
@@ -236,8 +243,6 @@ class DrupalTemplate extends BaseTemplate  {
 				}
 			}
 		}
-		
-		
 		
 		$language = new stdClass();
 		
