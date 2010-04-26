@@ -49,7 +49,7 @@ jQuery(document).ready( function() {
 	
 	//jQuery.ui.dialog.defaults.bgiframe = true;
 	jQuery(function() {
-		jQuery("#dialog").dialog({ autoOpen: false });
+		jQuery("#dialog").dialog({ autoOpen: false, width: 400, height: 500 });
 	});
  	
 });
