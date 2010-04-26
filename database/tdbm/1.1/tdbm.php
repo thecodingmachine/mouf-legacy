@@ -2802,10 +2802,12 @@ class DBM_Object {
 			 var_dump($needed_table_array_for_orderby);
 			 var_dump($path);*/
 			$is_ok = true;
-			foreach ($path as $step) {
-				if ($step["type"]=="*1") {
-					$is_ok = false;
-					break;
+			if($path) {
+				foreach ($path as $step) {
+					if ($step["type"]=="*1") {
+						$is_ok = false;
+						break;
+					}
 				}
 			}
 
