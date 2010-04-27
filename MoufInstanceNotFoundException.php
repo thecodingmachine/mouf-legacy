@@ -13,7 +13,7 @@ class MoufInstanceNotFoundException extends MoufException {
 	 */
 	private $instanceName;
 	
-	public function __construct($msg, $code, $instanceName) {
+	public function __construct($msg, $code = null, $instanceName = null) {
 		parent::__construct($msg, $code);
 		$this->instanceName = $instanceName;
 	}
