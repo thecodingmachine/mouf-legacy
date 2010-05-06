@@ -152,14 +152,17 @@ class MoufUserService implements UserServiceInterface {
 	 *
 	 */
 	public function logoff() {
-		if (is_array($this->authenticationListeners)) {
-			foreach ($this->authenticationListeners as $listener) {
-				$listener->beforeLogOut($this);
+		if (isset($_SESSION['MoufUserLogin'])) {
+			if (is_array($this->authenticationListeners)) {
+				foreach ($this->authenticationListeners as $listener) {
+					$listener->beforeLogOut($this);
+				}
 			}
+			
+			$this->log->trace("User ".$_SESSION['MoufUserLogin']." logs out.");
+			unset($_SESSION['MoufUserId']);
+			unset($_SESSION['MoufUserLogin']);
 		}
-		$this->log->trace("User ".$_SESSION['MoufUserLogin']." logs out.");
-		unset($_SESSION['MoufUserId']);
-		unset($_SESSION['MoufUserLogin']);
 	}
 	
 	/**
