@@ -419,8 +419,7 @@ foreach ($this->properties as $property) {
 <input type="hidden" name="newInstanceName" id="newInstanceName" />
 <input type="hidden" name="instanceClass" id="instanceClass" />
 
-<div id="dialog" title="Create a new instance">	
-	
+<div id="dialog" title="Create a new instance" style="width: 600px; height: 400px">		
 	
 	<div>
 	<label for="instanceNameDialog">Instance name:</label><input type="text" name="newInstanceNameDialog" id="newInstanceNameDialog" />
@@ -434,7 +433,6 @@ foreach ($this->properties as $property) {
 	
 	<input type="button" value="Create" onclick="onCreateNewInstance(); return false;" />
 	
-
 </div>
 <div id="duplicateDialog" title="Duplicate instance">	
 	
@@ -482,9 +480,9 @@ foreach ($this->properties as $property) {
 jQuery(document).ready( function() {
 
 	jQuery(function() {
-		jQuery("#dialog").dialog({ autoOpen: false });
-		jQuery("#dialogPropertyOptions").dialog({ autoOpen: false });
-		jQuery("#duplicateDialog").dialog({ autoOpen: false });
+		jQuery("#dialog").dialog({ autoOpen: false, width: 500 });
+		jQuery("#dialogPropertyOptions").dialog({ autoOpen: false, width: 500 });
+		jQuery("#duplicateDialog").dialog({ autoOpen: false, width: 500 });
 	});
  	
 });
