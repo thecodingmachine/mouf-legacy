@@ -1,5 +1,19 @@
 <h1>Missing labels screen</h1>
 
+<form action="editLabel">
+<input type="hidden" name="backto" value="<?php echo plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels"); ?>" />
+<p>Add a new label: <input type="text" name="key" value="" />
+<select name="language">
+<?php
+foreach ($this->languages as $language) {
+	echo "<option value='".plainstring_to_htmlprotected($language)."'>$language</option>";
+}
+?>
+</select>
+<button type="submit">Add</button>
+</p>
+</form>
+
 <table>
 	<tr>
 		<th>Key</th>
@@ -29,17 +43,3 @@
 	}
 	?>
 </table>
-
-<form action="editLabel">
-<input type="hidden" name="backto" value="<?php echo plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels"); ?>" />
-<p>Add a new label: <input type="text" name="key" value="" />
-<select name="language">
-<?php
-foreach ($this->languages as $language) {
-	echo "<option value='".plainstring_to_htmlprotected($language)."'>$language</option>";
-}
-?>
-</select>
-<button type="submit">Add</button>
-</p>
-</form>

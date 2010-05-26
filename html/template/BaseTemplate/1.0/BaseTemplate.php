@@ -120,6 +120,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 		$this->javascript = array();
 		$this->javascript_files = array();
 		$this->private_css_files = array();
+		$this->css_files = array();
 		$this->logoImg = null;
 	}
 	

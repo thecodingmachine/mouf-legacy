@@ -78,11 +78,11 @@ function dbdate_to_displaydate($strDate, $ccode="en", $long=false)
  * This function does automatically remove any added \
  * 
  *
- * @param unknown_type $var The name of the Request or Session parameter.
- * @param unknown_type $type Can be "string", "int", "float" or "date"
- * @param unknown_type $compulsory Can be true or false
+ * @param string $var The name of the Request or Session parameter.
+ * @param string $type Can be "string", "int", "float" or "date"
+ * @param bool $compulsory Can be true or false
  * @param unknown_type $default_value Default value of not compulsory
- * @param unknown_type $origin A string containing R and S or C. R for Request, S for Session, C for Cookie. So this can be "R","S","RSC" or whatever. The first found will stop the search.
+ * @param string $origin A string containing R and S or C. R for Request, S for Session, C for Cookie. So this can be "R","S","RSC" or whatever. The first found will stop the search.
  */
 function get($var, $type="string", $compulsory=false, $default_value=false, $origin="R") {
 	for ($i=0; $i<strlen($origin); $i++)
