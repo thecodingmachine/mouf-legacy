@@ -5,22 +5,14 @@
  *
  * @Component
  */
-class HtmlTextInputWidget extends AbstractHtmlInputWidget {
-		
+class HtmlPasswordInputWidget extends AbstractHtmlInputWidget {
+
 	/**
 	 * Number of fields displayed
 	 *
 	 * @var int
 	 */
 	private static $count = 0;
-	
-	/**
-	 * The default value to use.
-	 * 
-	 * @Property
-	 * @var string
-	 */
-	public $defaultValue;
 	
 	/**
 	 * Renders the object in HTML.
@@ -31,7 +23,7 @@ class HtmlTextInputWidget extends AbstractHtmlInputWidget {
 		self::$count++;
 		$id = $this->id;
 		if (!$id) {
-			$id = "mouf_textinput_".self::$count;
+			$id = "mouf_passwordinput_".self::$count;
 		}
 		
 		echo "<label for='".plainstring_to_htmlprotected($id)."'>\n";
@@ -41,7 +33,7 @@ class HtmlTextInputWidget extends AbstractHtmlInputWidget {
 			echo $this->label;
 		}
 		echo "</label>\n";
-		echo "<input type='text'";
+		echo "<input type='password'";
 		echo " id='".plainstring_to_htmlprotected($id)."'";
 
 		if ($this->css || $this->required) {
@@ -52,16 +44,6 @@ class HtmlTextInputWidget extends AbstractHtmlInputWidget {
 			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
 		}
 
-		$defaultSelect = null;
-		if ($this->selectDefaultFromRequest) {
-			$defaultSelect = get($this->name, "string", false, null);
-		}
-		
-		if ($defaultSelect !== null) {
-			echo " value='".plainstring_to_htmlprotected($defaultSelect)."'";
-		} else if ($this->defaultValue) {
-			echo " value='".plainstring_to_htmlprotected($this->defaultValue)."'";
-		}
 		echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";
 
 		echo "</input>\n";

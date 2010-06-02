@@ -496,7 +496,11 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 	 * @return SplashTemplate
 	 */
 	public function addCssFile($cssUrl) {
-		if (array_search($cssUrl, $this->css_files) === false) {
+		if (is_array($this->css_files)) {
+			if (array_search($cssUrl, $this->css_files) === false) {
+				$this->css_files[] = $cssUrl;
+			}
+		} else {
 			$this->css_files[] = $cssUrl;
 		}
 		return $this;

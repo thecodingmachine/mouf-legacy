@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package>
 	<displayName>BaseHtmlWidget</displayName>
-	<shortDescription>This package contains basic widgets representing HTML tags (select, input, etc...). Each widget is fully customizable, and benefits from an "edit" mode, thanks to the basewidget package.</shortDescription>
+	<shortDescription>This package contains basic widgets representing HTML tags (select, input, etc...). Each widget is fully customizable, and benefits from an "edit" mode, thanks to the basewidget package.
+	Please note this package comes with a smaple CSS file you can use as a starter.</shortDescription>
 	<docUrl></docUrl>
 	<dependencies>
 		<dependency>
@@ -34,9 +35,11 @@
 		<require>AbstractHtmlInputWidget.php</require>
 		<require>HtmlSelectWidget.php</require>
 		<require>HtmlTextInputWidget.php</require>
+		<require>HtmlPasswordInputWidget.php</require>
 		<require>HtmlHiddenInputWidget.php</require>
 		<require>HtmlCheckBoxGroupWidget.php</require>
 		<require>HtmlFormTag.php</require>
 		<require>HtmlButtonWidget.php</require>
+		<require>HtmlI18nString.php</require>
 	</requires>
 </package>

@@ -7,7 +7,14 @@
  * @Component
  */
 class HtmlSelectWidget extends AbstractHtmlInputWidget {
-		
+
+	/**
+	 * Number of fields displayed
+	 *
+	 * @var int
+	 */
+	private static $count = 0;
+	
 	/**
 	 * Datasource to populate the select box.
 	 *
@@ -87,17 +94,22 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 	 *
 	 */
 	function toHtml() {
+		self::$count++;
+		$id = $this->id;
+		if (!$id) {
+			$id = "mouf_select_".self::$count;
+		}
 		
-		echo "<label>\n";
+		echo "<label for='".plainstring_to_htmlprotected($id)."'>\n";
 		if ($this->enableI18nLabel) {
 			eMsg($this->label);
 		} else {
 			echo $this->label;
 		}
+		echo "</label>\n";
+		
 		echo "<select";
-		if ($this->id) {
-			echo " id='".plainstring_to_htmlprotected($this->id)."'";
-		}
+		echo " id='".plainstring_to_htmlprotected($id)."'";
 		if ($this->css || $this->required) {
 			$requiredClass = "";
 			if ($this->required) {
@@ -153,7 +165,6 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 		}
 		
 		echo "</select>\n";
-		echo "</label>\n";
 		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();
