@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Securimage</displayName>
+	<shortDescription>This package contains a PHP Captcha library that can be used to generate captcha (visual and audio captcha).</shortDescription>
+	<docUrl>http://www.phpcaptcha.org/</docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>securimage.php</require>
+	</requires>
+</package>

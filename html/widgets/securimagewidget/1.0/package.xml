@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>SecureImageWidget</displayName>
+	<shortDescription>This package contains basic widgets representing HTML tags (select, input, etc...). Each widget is fully customizable, and benefits from an "edit" mode, thanks to the basewidget package.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>html/widgets</group>
+			<name>basewidget</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/captcha</group>
+			<name>Securimage</name>
+			<version>2.0.1-beta</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>SecurimageCaptchaWidget.php</require>
+	</requires>
+</package>
