@@ -56,7 +56,7 @@ class MoufReflectionParameter extends ReflectionParameter
     {
         if (null === $this->refRoutine) {
             if (is_array($this->routineName) === true) {
-                $this->refRoutine = new stubReflectionMethod($this->routineName[0], $this->routineName[1]);
+                $this->refRoutine = new MoufReflectionMethod($this->routineName[0], $this->routineName[1]);
             } /*else {
                 $this->refRoutine = new stubReflectionFunction($this->routineName);
             }*/
