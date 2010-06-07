@@ -450,7 +450,7 @@ class TDBM_Service {
 
 		$table_name = $this->dbConnection->toStandardcase($table_name);
 
-		$this->getPrimaryKeyStatic($table_name, $this->dbConnection);
+		$this->getPrimaryKeyStatic($table_name);
 
 		$result = $this->dbConnection->query($sql, $from, $limit);
 
@@ -1280,8 +1280,16 @@ class TDBM_Service {
 		}
 
 		if ($mode=="getCount") {
-			// TODO: select count might not perform the required DISTINCT!
-			$sql = "SELECT COUNT(1) FROM $sql";
+			// Let's get the list of primary keys to perform a DISTINCT request.
+			$pk_table = $this->getPrimaryKeyStatic($table_name);
+			
+			$pk_arr = array();
+			foreach ($pk_table as $pk) {
+				$pk_arr[] = $table_name.'.'.$pk;
+			}
+			$pk_str = implode(',', $pk_arr);
+			
+			$sql = "SELECT COUNT(DISTINCT $pk_str) FROM $sql";
 
 			$where_clause = $filter->toSql($this->dbConnection);
 			if ($where_clause != '')
