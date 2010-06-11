@@ -327,9 +327,9 @@ class $className extends $baseClassName
 	 * @param string $tableName The name of the table
 	 */
 	public function generateDao($daoDirectory, $fileName, $baseFileName, $beanFileName, $className, $baseClassName, $beanClassName, $tableName) {
-		// TODO: générer un DAO base bean.
+
 		
-		$tableCamel = self::toCamelCase($tableName);
+		$tableCamel = self::toSingular(self::toCamelCase($tableName));
 		
 		$str = "<?php
 /*
@@ -397,6 +397,15 @@ class $baseClassName
 	 */
 	public function get".$tableCamel."ById(\$id) {
 		return \$this->tdbmService->getObject('$tableName', \$id, '$beanClassName');
+	}
+	
+	/**
+	 * Deletes the $beanClassName passed in parameter.
+	 *
+	 * @param $beanClassName \$obj
+	 */
+	public function delete".$tableCamel."(\$obj) {
+		\$this->tdbmService->deleteObject(\$obj);
 	}
 }
 ?>";
