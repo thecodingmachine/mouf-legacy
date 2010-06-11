@@ -6,6 +6,9 @@ require_once 'MoufManager.php';
 MoufManager::initMoufManager();
 $moufManager = MoufManager::getMoufManager();
 
+$moufManager->getConfigManager()->setConstantsDefinitionArray(array (
+));
+
 $moufManager->addPackageByXmlFile('utils/log/log_interface/1.0/package.xml');
 $moufManager->addPackageByXmlFile('html/htmlelement/1.0/package.xml');
 $moufManager->addPackageByXmlFile('html/template/BaseTemplate/1.0/package.xml');
@@ -27,109 +30,579 @@ require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/J
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/JQueryUIExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
 
+$moufManager->addComponentInstances(array (
+  'splash' => 
+  array (
+    'class' => 'Splash',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'debugMode' => 
+      array (
+        'value' => true,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+    'fieldBinds' => 
+    array (
+      'log' => 'errorLogger',
+      'defaultTemplate' => 'splashTemplate',
+    ),
+  ),
+  'splashTemplate' => 
+  array (
+    'class' => 'SplashTemplate',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'logoImg' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'title' => 
+      array (
+        'value' => 'Mouf - Your website',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'css_files' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+    'fieldBinds' => 
+    array (
+      'head' => 
+      array (
+        0 => 'prototype',
+      ),
+    ),
+  ),
+  'errorLogger' => 
+  array (
+    'class' => 'ErrorLogLogger',
+    'external' => false,
+  ),
+  'mouf' => 
+  array (
+    'class' => 'MoufController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
+  'moufTemplate' => 
+  array (
+    'class' => 'SplashTemplate',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'title' => 
+      array (
+        'value' => 'Mouf - Build your website',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'logoImg' => 
+      array (
+        'value' => 'mouf/views/images/MoufLogo.png',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'css_files' => 
+      array (
+        'value' => 
+        array (
+          0 => 'mouf/views/styles.css',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+    'fieldBinds' => 
+    array (
+      'head' => 
+      array (
+        0 => 'prototype',
+        1 => 'jQuery',
+        2 => 'jqueryui',
+        3 => 'jqueryFileTree',
+        4 => 'jquery-autogrow-1.2.2',
+      ),
+      'left' => 
+      array (
+        0 => 'actionMenu',
+      ),
+    ),
+  ),
+  'prototype' => 
+  array (
+    'class' => 'HtmlJSPrototype',
+    'external' => false,
+  ),
+  'newInstanceMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Create a new instance',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/mouf/newInstance',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'actionMenu' => 
+  array (
+    'class' => 'SplashMenu',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'menuItems' => 
+      array (
+        0 => 'packagesLabelMenuItem',
+        1 => 'managePackagesMenuItem',
+        2 => 'configLabelMenuItem',
+        3 => 'editConfigMenuItem',
+        4 => 'componentsLabelMenuItem',
+        5 => 'loadComponentsMenuItem',
+        6 => 'viewInstancesMenuItem',
+        7 => 'newInstanceMenuItem',
+      ),
+    ),
+  ),
+  'viewInstancesMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'View declared instances',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/mouf/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'rootController' => 
+  array (
+    'class' => 'MoufRootController',
+    'external' => false,
+  ),
+  'jQuery' => 
+  array (
+    'class' => 'HtmlJSJQuery',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'noConflictMode' => 
+      array (
+        'value' => true,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'jqueryui' => 
+  array (
+    'class' => 'HtmlJSJQueryUI',
+    'external' => false,
+  ),
+  'componentsLabelMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => '<b>Components</b>',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'packagesLabelMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => '<b>Packages</b>',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'managePackagesMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Enable/disable packages',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/packages/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'loadComponentsMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Load components',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/components/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'components' => 
+  array (
+    'class' => 'ComponentsController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
+  'jqueryFileTree' => 
+  array (
+    'class' => 'HtmlJSJQueryFileTree',
+    'external' => false,
+  ),
+  'packages' => 
+  array (
+    'class' => 'PackageController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
+  'instance' => 
+  array (
+    'class' => 'MoufInstanceController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
+  'displayGraph' => 
+  array (
+    'class' => 'MoufDisplayGraphController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
+  'config' => 
+  array (
+    'class' => 'ConfigController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
+  'configLabelMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => '<b>Configuration</b>',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'editConfigMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Edit configuration',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/config/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+));
+
 $moufManager->registerComponent('controllers/MoufController.php');
 $moufManager->registerComponent('controllers/MoufRootController.php');
 $moufManager->registerComponent('controllers/ComponentsController.php');
 $moufManager->registerComponent('controllers/PackageController.php');
 $moufManager->registerComponent('controllers/MoufInstanceController.php');
 $moufManager->registerComponent('controllers/MoufDisplayGraphController.php');
+$moufManager->registerComponent('controllers/ConfigController.php');
 $moufManager->registerComponent('load.php');
-
-$moufManager->declareComponent('splash', 'Splash');
-$moufManager->declareComponent('splashTemplate', 'SplashTemplate');
-$moufManager->declareComponent('errorLogger', 'ErrorLogLogger');
-$moufManager->declareComponent('mouf', 'MoufController');
-$moufManager->declareComponent('moufTemplate', 'SplashTemplate');
-$moufManager->declareComponent('prototype', 'HtmlJSPrototype');
-$moufManager->declareComponent('newInstanceMenuItem', 'SplashMenuItem');
-$moufManager->declareComponent('actionMenu', 'SplashMenu');
-$moufManager->declareComponent('viewInstancesMenuItem', 'SplashMenuItem');
-$moufManager->declareComponent('rootController', 'MoufRootController');
-$moufManager->declareComponent('jQuery', 'HtmlJSJQuery');
-$moufManager->declareComponent('jqueryui', 'HtmlJSJQueryUI');
-$moufManager->declareComponent('componentsLabelMenuItem', 'SplashMenuItem');
-$moufManager->declareComponent('packagesLabelMenuItem', 'SplashMenuItem');
-$moufManager->declareComponent('managePackagesMenuItem', 'SplashMenuItem');
-$moufManager->declareComponent('loadComponentsMenuItem', 'SplashMenuItem');
-$moufManager->declareComponent('components', 'ComponentsController');
-$moufManager->declareComponent('jqueryFileTree', 'HtmlJSJQueryFileTree');
-$moufManager->declareComponent('packages', 'PackageController');
-$moufManager->declareComponent('instance', 'MoufInstanceController');
-$moufManager->declareComponent('displayGraph', 'MoufDisplayGraphController');
-
-$moufManager->setParameter('moufTemplate', 'title', 'Mouf - Build your website');
-$moufManager->setParameter('moufTemplate', 'logoImg', 'mouf/views/images/MoufLogo.png');
-$moufManager->setParameter('moufTemplate', 'css_files', array (
-  0 => 'mouf/views/styles.css',
-));
-$moufManager->setParameter('newInstanceMenuItem', 'menuText', 'Create a new instance');
-$moufManager->setParameter('newInstanceMenuItem', 'menuLink', 'mouf/mouf/newInstance');
-$moufManager->setParameter('newInstanceMenuItem', 'menuCssClass', '');
-$moufManager->setParameter('newInstanceMenuItem', 'propagatedUrlParameters', array (
-  0 => 'selfedit',
-));
-$moufManager->setParameter('viewInstancesMenuItem', 'menuText', 'View declared instances');
-$moufManager->setParameter('viewInstancesMenuItem', 'menuLink', 'mouf/mouf/');
-$moufManager->setParameter('viewInstancesMenuItem', 'menuCssClass', '');
-$moufManager->setParameter('viewInstancesMenuItem', 'propagatedUrlParameters', array (
-  0 => 'selfedit',
-));
-$moufManager->setParameter('splashTemplate', 'logoImg', '');
-$moufManager->setParameter('splashTemplate', 'title', 'Mouf - Your website');
-$moufManager->setParameter('splashTemplate', 'css_files', false);
-$moufManager->setParameter('jQuery', 'noConflictMode', true);
-$moufManager->setParameter('componentsLabelMenuItem', 'menuText', '<b>Components</b>');
-$moufManager->setParameter('componentsLabelMenuItem', 'menuLink', '');
-$moufManager->setParameter('componentsLabelMenuItem', 'menuCssClass', '');
-$moufManager->setParameter('componentsLabelMenuItem', 'propagatedUrlParameters', false);
-$moufManager->setParameter('packagesLabelMenuItem', 'menuText', '<b>Packages</b>');
-$moufManager->setParameter('packagesLabelMenuItem', 'menuLink', '');
-$moufManager->setParameter('packagesLabelMenuItem', 'menuCssClass', '');
-$moufManager->setParameter('packagesLabelMenuItem', 'propagatedUrlParameters', false);
-$moufManager->setParameter('managePackagesMenuItem', 'menuText', 'Enable/disable packages');
-$moufManager->setParameter('managePackagesMenuItem', 'menuLink', 'mouf/packages/');
-$moufManager->setParameter('managePackagesMenuItem', 'menuCssClass', '');
-$moufManager->setParameter('managePackagesMenuItem', 'propagatedUrlParameters', array (
-  0 => 'selfedit',
-));
-$moufManager->setParameter('loadComponentsMenuItem', 'menuText', 'Load components');
-$moufManager->setParameter('loadComponentsMenuItem', 'menuLink', 'mouf/components/');
-$moufManager->setParameter('loadComponentsMenuItem', 'menuCssClass', '');
-$moufManager->setParameter('loadComponentsMenuItem', 'propagatedUrlParameters', array (
-  0 => 'selfedit',
-));
-$moufManager->setParameter('splash', 'debugMode', true);
-
-
-$moufManager->bindComponents('splash', 'log', 'errorLogger');
-$moufManager->bindComponents('splash', 'defaultTemplate', 'splashTemplate');
-$moufManager->bindComponents('mouf', 'template', 'moufTemplate');
-$moufManager->bindComponent('moufTemplate', 'head', array (
-  0 => 'prototype',
-  1 => 'jQuery',
-  2 => 'jqueryui',
-  3 => 'jqueryFileTree',
-  4 => 'jquery-autogrow-1.2.2',
-));
-$moufManager->bindComponent('moufTemplate', 'left', array (
-  0 => 'actionMenu',
-));
-$moufManager->bindComponent('actionMenu', 'menuItems', array (
-  0 => 'packagesLabelMenuItem',
-  1 => 'managePackagesMenuItem',
-  2 => 'componentsLabelMenuItem',
-  3 => 'loadComponentsMenuItem',
-  4 => 'viewInstancesMenuItem',
-  5 => 'newInstanceMenuItem',
-));
-$moufManager->bindComponent('splashTemplate', 'head', array (
-  0 => 'prototype',
-));
-$moufManager->bindComponents('components', 'template', 'moufTemplate');
-$moufManager->bindComponents('packages', 'template', 'moufTemplate');
-$moufManager->bindComponents('instance', 'template', 'moufTemplate');
-$moufManager->bindComponents('displayGraph', 'template', 'moufTemplate');
-
 
 unset($moufManager);
 
@@ -319,6 +792,27 @@ class MoufAdmin {
 	 */
 	 public static function getDisplayGraph() {
 	 	return MoufManager::getMoufManager()->getInstance('displayGraph');
+	 }
+
+	/**
+	 * @return ConfigController
+	 */
+	 public static function getConfig() {
+	 	return MoufManager::getMoufManager()->getInstance('config');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getConfigLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('configLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getEditConfigMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('editConfigMenuItem');
 	 }
 
 	/**

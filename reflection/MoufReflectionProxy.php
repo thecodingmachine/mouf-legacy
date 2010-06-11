@@ -74,6 +74,28 @@ class MoufReflectionProxy {
 		
 	}
 	
+
+	/**
+	 * Returns the array of all constants defined in the config.php file at the root of the project. 
+	 * 
+	 * @return array
+	 */
+	public static function getConfigConstants() {
+
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_defined_constants.php";
+		
+		$response = self::performRequest($url);
+
+		$obj = unserialize($response);
+		
+		if ($obj === false) {
+			throw new Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
+		}
+		
+		return $obj;
+	}
+	
+	
 	/**
 	 * Returns the default value for the property of the class, through a call to the "get_default.php" page. 
 	 * 
@@ -81,7 +103,7 @@ class MoufReflectionProxy {
 	 * @param string $propertyName
 	 * @return mixed
 	 */
-	public static function getDefaultValue($className, $propertyName) {
+	/*public static function getDefaultValue($className, $propertyName) {
 
 		var_dump($_SERVER);
 		exit;
@@ -108,7 +130,7 @@ class MoufReflectionProxy {
 	
 	
 		return $value;
-	}
+	}	*/
 	
 	private static function performRequest($url) {
 		// preparation de l'envoi
@@ -123,10 +145,10 @@ class MoufReflectionProxy {
 		//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		//curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
 		
+		$response = curl_exec( $ch );
+		
 		if( curl_error($ch) ) { 
-			throw new Exception("TODO: texte de l'erreur curl");
-		} else {
-			$response = curl_exec( $ch );
+			throw new Exception("An error occured: ".curl_error($ch));
 		}
 		curl_close( $ch );
 		

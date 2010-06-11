@@ -90,6 +90,7 @@ function onSourceChange(selectDropDown) {
 		jQuery("#requestSourceDiv").hide();
 		jQuery("#sessionSourceDiv").hide();
 		jQuery("#configSourceDiv").show();
+		loadConstantsInDropDown();
 	}
 }
 
@@ -100,6 +101,63 @@ function onSourceChange(selectDropDown) {
  * @return
  */
 function onPropertyOptionsClick(propertyName) {
-	jQuery("#dialogPropertyOptions").dialog("open");	
+	jQuery("#editedPropertyName").val(propertyName);
+	var type = jQuery("#moufpropertytype_"+propertyName).val();
+	
+	jQuery("#propertySource").val(type);
+	onSourceChange(document.getElementById("propertySource"));
+	
+	// TODO: initialize
+	
+	jQuery("#dialogPropertyOptions").dialog("open");
 }
 
+/**
+ * Sets the property (called when the property option dialog is closed).
+ * This function will change the type of the property.
+ * 
+ * @return
+ */
+function onSetProperty() {
+	var type = jQuery("#propertySource").val();
+	var propertyName = jQuery("#editedPropertyName").val();
+	
+	jQuery("#moufpropertytype_"+propertyName).val(type);
+	
+	jQuery("#moufpropertyblock_"+propertyName).find('.sessionmarker').hide();
+	jQuery("#moufpropertyblock_"+propertyName).find('.configmarker').hide();
+	jQuery("#moufpropertyblock_"+propertyName).find('.requestmarker').hide();
+	if (type == "session") {
+		jQuery("#moufpropertyblock_"+propertyName).find('.sessionmarker').show();	
+	}
+	if (type == "config") {
+		jQuery("#moufpropertyblock_"+propertyName).find('.configmarker').show();
+		jQuery("#moufproperty_"+propertyName).val(jQuery("#configValue").val());
+	}
+	if (type == "request") {
+		jQuery("#moufpropertyblock_"+propertyName).find('.requestmarker').show();	
+	}
+	
+	jQuery("#dialogPropertyOptions").dialog("close");
+}
+
+var constantsLoadedInDropDown = false;
+
+/**
+ * Loads the constants in the dropdown, if they are not loaded.
+ * 
+ * @return
+ */
+function loadConstantsInDropDown() {
+	if (!constantsLoadedInDropDown) {
+		jQuery.getJSON("../direct/get_defined_constants.php",{encode:"json", selfedit:jQuery('#selfedit').val(), ajax: 'true'}, function(msg){
+		      var options = '';
+		      for (var key in msg) {
+		        options += '<option value="' + key + '">' + key + '</option>';
+		      }
+		      jQuery("select#configValue").html(options);
+		});		
+		
+		constantsLoadedInDropDown = true;
+	}
+}

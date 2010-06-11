@@ -35,6 +35,7 @@ require_once $localFilePath.'/controllers/ComponentsController.php';
 require_once $localFilePath.'/controllers/PackageController.php';
 require_once $localFilePath.'/controllers/MoufInstanceController.php';
 require_once $localFilePath.'/controllers/MoufDisplayGraphController.php';
+require_once $localFilePath.'/controllers/ConfigController.php';
 require_once $localFilePath.'/load.php';
 
 ?>

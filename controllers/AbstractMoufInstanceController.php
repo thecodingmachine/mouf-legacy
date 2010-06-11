@@ -99,9 +99,13 @@ abstract class AbstractMoufInstanceController extends Controller {
 		$componentsList = $this->moufManager->getOwnerComponents($this->instanceName);
 		
 		if (!empty($componentsList)) {
+			$selfedit = get('selfedit');
+			if (!$selfedit) {
+				$selfedit = "false";
+			}
 			echo '<ul class="menu"><li><b>Referred by components:</b></li>';
 			foreach ($componentsList as $component) {
-				echo '<li><a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component).'&selfedit=false">'.plainstring_to_htmlprotected($component).'</a></li>';
+				echo '<li><a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component).'&selfedit='.$selfedit.'">'.plainstring_to_htmlprotected($component).'</a></li>';
 			}
 			echo '</ul>';
 		}
@@ -130,6 +134,61 @@ abstract class AbstractMoufInstanceController extends Controller {
 				// TODO: return a default value. We could try to find it using a getter maybe...
 				// Or a default value for the setter? 
 				return null;
+			}
+			
+		}
+		return $defaultValue;
+	}
+	
+	/**
+	 * Returns the type set for the instance passed in parameter.
+	 * Type is one of string|config|request|session
+	 *
+	 * @param MoufPropertyDescription $property
+	 * @return mixed
+	 */
+	protected function getTypeForProperty(MoufPropertyDescriptor $property) {
+		if ($property->isPublicFieldProperty()) {
+			$propertyName =  $property->getName();
+			if ($this->moufManager->hasParameter($this->instanceName, $propertyName)) {
+				$defaultValue = $this->moufManager->getParameterType($this->instanceName, $propertyName);
+			} else {
+				return "string";
+			}
+		} else {
+			// This is a setter.
+			$propertyName =  $property->getName();
+			if ($this->moufManager->hasParameterForSetter($this->instanceName, $property->getMethodName())) {
+				$defaultValue = $this->moufManager->getParameterTypeForSetter($this->instanceName, $property->getMethodName());
+			} else {
+				return "string";
+			}
+			
+		}
+		return $defaultValue;
+	}
+	
+	/**
+	 * Returns the metadata for the instance passed in parameter.
+	 *
+	 * @param MoufPropertyDescription $property
+	 * @return array
+	 */
+	protected function getMetadataForProperty(MoufPropertyDescriptor $property) {
+		if ($property->isPublicFieldProperty()) {
+			$propertyName =  $property->getName();
+			if ($this->moufManager->hasParameter($this->instanceName, $propertyName)) {
+				$defaultValue = $this->moufManager->getParameterMetadata($this->instanceName, $propertyName);
+			} else {
+				return array();
+			}
+		} else {
+			// This is a setter.
+			$propertyName =  $property->getName();
+			if ($this->moufManager->hasParameterForSetter($this->instanceName, $property->getMethodName())) {
+				$defaultValue = $this->moufManager->getParameterMetadataForSetter($this->instanceName, $property->getMethodName());
+			} else {
+				return array();
 			}
 			
 		}

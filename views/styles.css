@@ -94,9 +94,41 @@ div.directorycontent {
 }
 
 textarea.string {
-	width: 270px;
+	width: 210px;
 	max-height: 100px;
 	min-height: 16px;
 	line-height: 16px;
 	height: 16px
+}
+
+span.sessionmarker {
+	font-size: 8px;
+	border: 1px solid #006600;
+	color: #006600;
+	background-color: #77ff77;
+	padding: 1px 1px 1px 1px;
+}
+
+span.sessionmarker {
+	font-size: 8px;
+	border: 1px solid #006600;
+	color: #006600;
+	background-color: #77ff77;
+	padding: 1px 1px 1px 1px;
+}
+
+span.configmarker {
+	font-size: 8px;
+	border: 1px solid #665500;
+	color: #776600;
+	background-color: #ffcc33;
+	padding: 1px 1px 1px 1px;
+}
+
+span.requestmarker {
+	font-size: 8px;
+	border: 1px solid #660000;
+	color: #660000;
+	background-color: #ff7777;
+	padding: 1px 1px 1px 1px;
 }

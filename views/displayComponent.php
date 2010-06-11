@@ -168,7 +168,7 @@ jQuery(document).ready (function() {
 <div class='half'>
 <?php 
 foreach ($this->properties as $property) {
-	echo "<div onmouseover='if (lastPropDisplayed!=\"\") {document.getElementById(lastPropDisplayed).style.display=\"none\";}; lastPropDisplayed=\"".$property->getName()."_doc_div_mouf\";     document.getElementById(\"".$property->getName()."_doc_div_mouf\").style.display=\"block\";'>\n";
+	echo "<div id='moufpropertyblock_".$property->getName()."' onmouseover='if (lastPropDisplayed!=\"\") {document.getElementById(lastPropDisplayed).style.display=\"none\";}; lastPropDisplayed=\"".$property->getName()."_doc_div_mouf\";     document.getElementById(\"".$property->getName()."_doc_div_mouf\").style.display=\"block\";'>\n";
 	
 	$compulsory = "";
 	if ($property->hasAnnotation("Compulsory")) {
@@ -215,14 +215,36 @@ foreach ($this->properties as $property) {
 		$lowerVarType = strtolower($varType);
 		if ($lowerVarType == "string" || $lowerVarType == "bool" || $lowerVarType == "boolean" || $lowerVarType == "int" || $lowerVarType == "integer" || $lowerVarType == "double" || $lowerVarType == "float" || $lowerVarType == "real" || $lowerVarType == "mixed" || $lowerVarType == "callback") {
 			$defaultValue = $this->getValueForProperty($property);
+			$defaultType = $this->getTypeForProperty($property);
+			$metaData = $this->getMetadataForProperty($property);
 		
+			echo '<input type="hidden" id="moufpropertytype_'.$property->getName().'" name="moufpropertytype_'.$property->getName().'" value="'.$defaultType.'"/>';
+				
 			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
 				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='checked'":"").'"/>';
 			} else {
+				echo '<div style="float:right">';
+				$hideSession = ' style="display:none" ';
+				$hideConfig = ' style="display:none" ';
+				$hideRequest = ' style="display:none" ';
+				if ($defaultType == "session") {
+					$hideSession = '';
+				} elseif ($defaultType == "config") {
+					$hideConfig = '';
+				} elseif ($defaultType == "request") {
+					$hideRequest = '';
+				}
+				echo '<span class="sessionmarker" '.$hideSession.'>session</span> ';
+				echo '<span class="configmarker" '.$hideConfig.'>config</span>';
+				echo '<span class="requestmarker" '.$hideRequest.'>request</span>';
+				echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+				echo '</div>';
+				
+				// TODO: use metadata to display either a textarea or a textbox.
+
 				echo '<textarea class="string" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'">'.plainstring_to_htmlprotected($defaultValue).'</textarea>';
 				//echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'"/>';
-				// TODO: put back to enable
-				//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+				
 			}
 		} else if ($lowerVarType == "array") {
 			//$recursiveType = $varTypeAnnot->getSubType();
@@ -445,6 +467,8 @@ foreach ($this->properties as $property) {
 </div>
 <div id="dialogPropertyOptions" title="Property source">	
 
+	<input type="hidden" id="editedPropertyName" />
+
 	<div>
 	<label for="propertySource">Source:</label>
 	<select name="propertySource" id="propertySource" onchange="onSourceChange(this)"> 
@@ -456,7 +480,19 @@ foreach ($this->properties as $property) {
 	</div>
 	
 	<div id="propertySourceDiv">
-	<label for="propertyValue">Property value:</label><input type="text" name="propertyValue" id="propertyValue" />
+		<div>
+			<label for="propertyFieldType">Field type:</label>
+			<select name="propertyFieldType" id="propertyFieldType" onchange="onFieldTypeChange(this)"> 
+				<option value="field">Field</option>
+				<option value="textarea">Textarea</option>
+			</select>
+		</div>
+
+		<div>
+			<label for="propertyValue">Property value:</label>
+			<input type="text" name="propertyValue" id="propertyValue" />
+		</div>
+
 	</div>
 
 	<div id="requestSourceDiv">

@@ -116,15 +116,16 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 				
 				if ($lowerVarType == "string" || $lowerVarType == "bool" || $lowerVarType == "boolean" || $lowerVarType == "int" || $lowerVarType == "integer" || $lowerVarType == "double" || $lowerVarType == "float" || $lowerVarType == "real" || $lowerVarType == "mixed") {
 					$value = get($property->getName());
+					$type = get("moufpropertytype_".$property->getName());
 					if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
 						if ($value == "true") {
 							$value = true;
 						}
 					}
 					if ($property->isPublicFieldProperty()) {
-						$this->moufManager->setParameter($instanceName, $property->getName(), $value);
+						$this->moufManager->setParameter($instanceName, $property->getName(), $value, $type);
 					} else {
-						$this->moufManager->setParameterViaSetter($instanceName, $property->getMethodName(), $value);
+						$this->moufManager->setParameterViaSetter($instanceName, $property->getMethodName(), $value, $type);
 					}
 				} else if ($lowerVarType == "array") {
 					$recursiveType = $property->getSubType();
