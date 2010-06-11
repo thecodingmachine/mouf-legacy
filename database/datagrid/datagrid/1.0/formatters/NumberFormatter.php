@@ -39,7 +39,7 @@ class NumberFormatter implements DataColumnFormatterInterface {
 	 */
 	public $defaultValue;
 	
-	public function __construct($decimalSeparator=".", $thousandsSeparator=" ", $decimalPlaces=2, $defaultValue=null) {
+	public function __construct($decimalSeparator=".", $thousandsSeparator=" ", $decimalPlaces=2) {
 		$this->decimalSeparator = $decimalSeparator;
 		$this->thousandsSeparator = $thousandsSeparator;
 		$this->decimalPlaces = $decimalPlaces;

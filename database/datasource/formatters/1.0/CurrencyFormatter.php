@@ -24,8 +24,8 @@ class CurrencyFormatter extends NumberFormatter {
 	 */
 	public $suffix;
 	
-	public function __construct($decimalSeparator=".", $thousandsSeparator=" ", $decimalPlaces=2, $defaultValue=null, $prefix=null, $suffix=null) {
-		parent::__construct($decimalSeparator, $thousandsSeparator, $decimalPlaces, $defaultValue);
+	public function __construct($decimalSeparator=".", $thousandsSeparator=" ", $decimalPlaces=2, $prefix=null, $suffix=null) {
+		parent::__construct($decimalSeparator, $thousandsSeparator, $decimalPlaces);
 		$this->prefix = $prefix;
 		$this->suffix = $suffix;
 	}

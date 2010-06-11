@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>phpwhois library</displayName>
+	<shortDescription>This package contains the open-source PHPWhoIs library available at <a href="http://www.phpwhois.com/">http://www.phpwhois.com/</a>.
+	It does not contain any Mouf component.</shortDescription>
+	<docUrl>http://www.phpwhois.com/</docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>whois.main.php</require>
+	</requires>
+</package>

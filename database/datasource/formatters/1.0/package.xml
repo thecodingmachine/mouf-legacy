@@ -15,6 +15,7 @@
 		<require>ReadOnlyCheckboxFormatter.php</require>
 		<require>NumberFormatter.php</require>
 		<require>CurrencyFormatter.php</require>
+		<require>PrefixSuffixFormatter.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>FormatterExternalComponent.php</require>

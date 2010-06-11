@@ -174,7 +174,23 @@ class DataGridColumn implements DataGridColumnInterface {
 	public function getTextAlign() {
 		return $this->textAlign;
 	}
-	
+
+	/**
+	 * Returns the value to display after formatting.
+	 *
+	 * @param object $row
+	 * @return string
+	 */
+	public function getValue($row) {
+		$name = $this->dataSourceColumn->getName();
+		$value = $row->$name;
+		if (is_array($this->formatters)) {
+			foreach ($this->formatters as $formatter) {
+				$value = $formatter->format($value);
+			}
+		}
+		return $value;
+	}
 	/**
 	 * Returns the value associated to the row passed in parameter for this column.
 	 *

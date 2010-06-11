@@ -110,7 +110,12 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$queryStr = $query;
 		$queryStr .= $this->getFromLimitString($from, $limit);
 
-		$res = $this->dbh->query($queryStr);
+		try {
+			$res = $this->dbh->query($queryStr);
+		} catch (PDOException $e) {
+			$this->error("An error occured while playing this request: ".$queryStr);
+			throw $e;
+		}
 
 		return $res;
 	}
