@@ -590,7 +590,7 @@ class MoufManager {
 						$object->$key = constant($valueDef["value"]);
 						break;
 					default:
-						throw new MoufException("Invalid type for object instance '$instanceName'.");
+						throw new MoufException("Invalid type '".$valueDef["type"]."' for object instance '$instanceName'.");
 				}
 			}
 		}
@@ -598,7 +598,7 @@ class MoufManager {
 		if (isset($instanceDefinition["setterProperties"])) {
 			foreach ($instanceDefinition["setterProperties"] as $key=>$valueDef) {
 				//$object->$key($valueDef["value"]);
-				switch ($valueDef) {
+				switch ($valueDef["type"]) {
 					case "string":
 						$object->$key($valueDef["value"]);
 						break;
@@ -612,7 +612,7 @@ class MoufManager {
 						$object->$key(constant($valueDef["value"]));
 						break;
 					default:
-						throw new MoufException("Invalid type for object instance '$instanceName'.");
+						throw new MoufException("Invalid type '".$valueDef["type"]."' for object instance '$instanceName'.");
 				}
 			}
 		}
