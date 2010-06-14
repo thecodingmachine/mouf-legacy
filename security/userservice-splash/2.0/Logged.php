@@ -12,7 +12,7 @@ FilterUtils::registerFilter("Logged");
  * using the "myUserService" instance.
  *
  */
-class Logged extends AbstractFilter
+class LoggedAnnotation extends AbstractFilter
 {
 	
 	public function __construct($value) {

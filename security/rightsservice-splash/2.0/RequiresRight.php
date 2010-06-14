@@ -19,24 +19,16 @@ FilterUtils::registerFilter("RequiresRight");
  * verify that the user has the correct right using the "myRightService" instance.
  *
  */
-class RequiresRight extends AbstractFilter
+class RequiresRightAnnotation extends AbstractFilter
 {
 	
 	public function __construct($value) {
 		// Let's get the 2 first words:
 		$tmpStr = trim($value);
 		
-		$tmp = strtok($tmpStr, " \n\t(");
-		
-		if ($this->type === false) {
-			throw new Exception('Error while reading the @RequiresRight annotation. At least, an annotation must be in the form: \'@RequiresRight (name=MY_RIGHT)\'. But the annotation encountered is: @RequiresRight '.$value);
-		}
-		
-		$vars = strtok(")");
-		
-		
+		$vars = strtok($tmpStr, "()");
 		if ($vars === false) {
-			throw new Exception('Error while reading the @RequiresRight annotation. At least, an annotation must be in the form: \'@RequiresRight (name=MY_RIGHT)\'. But the annotation encountered is: @RequiresRight '.$value);
+			throw new Exception('Error while reading the @RequiresRight annotation. At least, an annotation must be in the form: \'@RequiresRight (name="MY_RIGHT")\'. But the annotation encountered is: @RequiresRight '.$value);
 		}
 		
 		// Ok, there are additional parameters if we start with a (.
@@ -51,9 +43,8 @@ class RequiresRight extends AbstractFilter
 			$splitParamsArray[trim($equalsArr[0])] = trim($equalsArr[1]);
 		}
 
-		$this->name = $splitParamsArray['name'];
+		$this->name = trim($splitParamsArray['name'], '"\'');
 		$this->instanceName = $splitParamsArray['instance'];
-			
 	}
 	
 	/**
