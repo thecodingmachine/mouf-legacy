@@ -181,7 +181,7 @@ class DataGridColumn implements DataGridColumnInterface {
 	 * @param object $row
 	 * @return string
 	 */
-	public function getValue($row) {
+	/*public function getValue($row) {
 		$name = $this->dataSourceColumn->getName();
 		$value = $row->$name;
 		if (is_array($this->formatters)) {
@@ -190,7 +190,7 @@ class DataGridColumn implements DataGridColumnInterface {
 			}
 		}
 		return $value;
-	}
+	}*/
 	/**
 	 * Returns the value associated to the row passed in parameter for this column.
 	 *

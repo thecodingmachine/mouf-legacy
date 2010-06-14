@@ -368,6 +368,7 @@ label {
 	float:left;
 	text-align:right;
 	width:150px;
+	padding-right: 8px;
 }
 
 div.moufFormList {
