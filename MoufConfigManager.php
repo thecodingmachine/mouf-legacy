@@ -56,7 +56,14 @@ class MoufConfigManager {
 	private function loadConstantsIfNotLoaded() {
 		if ($this->constants == null) {
 			$proxy = new MoufReflectionProxy();
-			$this->constants = $proxy->getConfigConstants();
+			// TODO: really not very clean.
+			// We need to move out of "selfedit" into a "managed dir" view of things.
+			if ($this->configFileName == "../config.php") {
+				$selfEdit = false;
+			} else {
+				$selfEdit = true;
+			}
+			$this->constants = $proxy->getConfigConstants($selfEdit);
 		}	
 	}
 	
@@ -81,7 +88,14 @@ class MoufConfigManager {
 		
 		foreach ($this->getMergedConstants() as $key=>$def) {
 			if (array_search($key, $this->undefinedConstants) === false) {
+							
 				if ($def['defined']) {
+					if (isset($this->constants[$key])) {
+						$value = $this->constants[$key];
+					} else {
+						$value = $def['defaultValue'];
+					}
+										
 					if (trim($def['comment']) != "") {
 						$commentArray = explode("\n", $def['comment']);
 						$commentStr = "/**\n";
@@ -91,11 +105,12 @@ class MoufConfigManager {
 						$commentStr .= " */\n";
 						fwrite($fp, $commentStr);
 					}
-					fwrite($fp, "define('".addslashes($key)."', '".addslashes($this->constants[$key])."');\n");
+					fwrite($fp, "define('".addslashes($key)."', ".var_export($value, true).");\n");
 				} else {
-					fwrite($fp, "define('".addslashes($key)."', '".addslashes($this->constants[$key])."');\n");
+					fwrite($fp, "define('".addslashes($key)."', ".var_export($this->constants[$key], true).");\n");
 				}
 			}
+		
 		}
 		
 		fclose($fp);

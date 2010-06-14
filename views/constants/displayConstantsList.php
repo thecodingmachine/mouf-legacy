@@ -8,15 +8,20 @@ function deleteConstant(name) {
 </script>
 
 <form action="saveConfig" method="post">
+<input type="hidden" name="selfedit" id="selfedit" value="<?php echo $this->selfedit; ?>" />
 <?php
-// TODO: add selfedti field!
 
 if (!empty($this->constantsList)) {
 	foreach ($this->constantsList as $key=>$def) {
+		echo '<div class="constant">';
 		echo '<div>';
 		if ($def["defined"]) {
 			echo $def['comment']."<br/>";
-			echo "<em>Default value: '".plainstring_to_htmlprotected($def['defaultValue'])."'.</em>";
+			if ($def['type'] == 'bool') {
+				echo "<em>Default value: '".($def['defaultValue']?"true":"false")."'.</em>";
+			} else {
+				echo "<em>Default value: '".plainstring_to_htmlprotected($def['defaultValue'])."'.</em>";
+			}
 		} else {
 			// TODO: correctly display bool
 			echo "<div class='warning'>This constant '".plainstring_to_htmlprotected($key)."' is present in the <code>config.php</code> file but not declared in Mouf. <a href='register?name=".urlencode($key)."'>Please declare this value</a>.</div>";
@@ -25,9 +30,15 @@ if (!empty($this->constantsList)) {
 		echo '<div>';
 		//echo '<input type="text" value="'.plainstring_to_htmlprotected($key).'" /> => ';
 		echo '<label>'.plainstring_to_htmlprotected($key).'</label>';
-		echo '<input type="text" name="'.plainstring_to_htmlprotected($key).'" value="'.plainstring_to_htmlprotected(isset($def['value'])?$def['value']:$def['defaultValue']).'" />';
+		if (isset($def['type']) && $def['type'] == 'bool') {
+			$val = isset($def['value'])?$def['value']:$def['defaultValue'];
+			echo '<input type="checkbox" name="'.plainstring_to_htmlprotected($key).'" value="true" '.(($val==true)?"checked='checked' ":"").' />';
+		} else {
+			echo '<input type="text" name="'.plainstring_to_htmlprotected($key).'" value="'.plainstring_to_htmlprotected(isset($def['value'])?$def['value']:$def['defaultValue']).'" />';
+		}
 		echo "<a href='register?name=".urlencode($key)."'><img src='".ROOT_URL."plugins/utils/icons/famfamfam/1.3/icons/pencil.png' alt='Edit' /></a>";
 		echo "<img src='".ROOT_URL."plugins/utils/icons/famfamfam/1.3/icons/cross.png' alt='Delete' onclick='deleteConstant(\"".plainstring_to_htmlprotected($key)."\")' />";
+		echo '</div>';
 		echo '</div>';
 	}
 } else {

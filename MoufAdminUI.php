@@ -6,5 +6,6 @@
 require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/FineAdmin.php';
 require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/controllers/EditLabelController.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashAdmin.php';
+require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/controllers/admin/SplashAdminApacheConfigureController.php';
 
 ?>

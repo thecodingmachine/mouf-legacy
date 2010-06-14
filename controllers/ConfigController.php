@@ -82,7 +82,11 @@ class ConfigController extends Controller {
 		
 		$constants = array();
 		foreach ($this->constantsList as $key=>$def) {
-			$constants[$key] = get($key);
+			if ($def['defined'] == true && $def['type'] == 'bool') {
+				$constants[$key] = (get($key)=="true")?true:false;
+			} else {
+				$constants[$key] = get($key);
+			}
 		}
 		$this->configManager->setDefinedConstants($constants);
 		
@@ -91,6 +95,8 @@ class ConfigController extends Controller {
 	
 	protected $name;
 	protected $defaultvalue;
+	protected $value;
+	protected $type;
 	protected $comment;
 	
 	/**
@@ -100,7 +106,7 @@ class ConfigController extends Controller {
 	 * @param string $name
 	 * @param string $selfedit
 	 */
-	public function register($name = null, $defaultvalue = null, $comment = null, $selfedit = "false") {
+	public function register($name = null, $defaultvalue = null, $value = null, $type = null, $comment = null, $selfedit = "false") {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -113,6 +119,8 @@ class ConfigController extends Controller {
 		$this->name = $name;
 				
 		$this->defaultvalue = $defaultvalue;
+		$this->value = $value;
+		$this->type = $type;
 		$this->comment = $comment;
 		
 		if ($name != null) {
@@ -123,6 +131,15 @@ class ConfigController extends Controller {
 				}
 				if ($this->defaultvalue == null) {
 					$this->defaultvalue = $def['defaultValue'];
+				}
+				if ($this->type == null) {
+					$this->type = $def['type'];
+				}
+			}
+			if ($this->value == null) {
+				$constants = $this->configManager->getDefinedConstants();
+				if (isset($constants[$name])) {
+					$this->value = $constants[$name];
 				}
 			}
 		}
@@ -140,10 +157,12 @@ class ConfigController extends Controller {
 	 * @Action
 	 * @param string $name
 	 * @param string $defaultvalue
-	 * @param string $comment
-	 * @param string $selfedit
+	 * @param string $value
+ 	 * @param string $comment
+ 	 * @param string $type
+ 	 * @param string $selfedit
 	 */
-	public function registerConstant($name, $defaultvalue, $comment, $selfedit = "false") {
+	public function registerConstant($name, $comment, $type, $defaultvalue = "", $value = "", $selfedit = "false") {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -153,8 +172,32 @@ class ConfigController extends Controller {
 		}
 		$this->configManager = $this->moufManager->getConfigManager();
 		
-		$this->configManager->registerConstant($name, "string", $defaultvalue, $comment);
+		if ($type == "int") {
+			$value = (int) $value;
+			$defaultvalue = (int) $defaultvalue;
+		} else if ($type == "float") {
+			$value = (float) $value;
+			$defaultvalue = (float) $defaultvalue;
+		} else if ($type == "bool") {
+			if ($value == "true") {
+				$value = true;
+			} else {
+				$value = false;
+			}
+			if ($defaultvalue == "true") {
+				$defaultvalue = true;
+			} else {
+				$defaultvalue = false;
+			}
+		}
+		
+		$this->configManager->registerConstant($name, $type, $defaultvalue, $comment);
 		$this->moufManager->rewriteMouf();
+		
+		// Now, let's write the constant for our environment:
+		$this->constantsList = $this->configManager->getDefinedConstants();
+		$this->constantsList[$name] = $value;
+		$this->configManager->setDefinedConstants($this->constantsList);
 		
 		header("Location: .?selfedit=".$selfedit);
 	}
@@ -178,6 +221,12 @@ class ConfigController extends Controller {
 		$this->configManager->unregisterConstant($name);
 		
 		$this->moufManager->rewriteMouf();
+
+		// Now, let's write the constant for our environment:
+		$this->constantsList = $this->configManager->getDefinedConstants();
+		unset($this->constantsList[$name]);
+		$this->configManager->setDefinedConstants($this->constantsList);
+		
 		
 		header("Location: .?selfedit=".$selfedit);
 	}

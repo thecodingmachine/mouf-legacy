@@ -4,7 +4,8 @@ div.file {
 	height: 20px;
 	border: 1px solid #cccccc;
 	background-color: #eeeeee;
-	clear:both	
+	clear:both;
+	margin-bottom: 2px;
 }
 
 div.moveable {
@@ -131,4 +132,13 @@ span.requestmarker {
 	color: #660000;
 	background-color: #ff7777;
 	padding: 1px 1px 1px 1px;
+}
+
+div.constant {
+	background-color:#EEEEEE;
+	border:1px solid #CCCCCC;
+	clear:both;
+	width:500px;
+	padding: 2px;
+	margin-bottom: 5px;
 }

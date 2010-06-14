@@ -422,7 +422,7 @@ $moufManager->addComponentInstances(array (
     array (
       'menuText' => 
       array (
-        'value' => 'Load components',
+        'value' => 'Include PHP files',
         'type' => 'string',
         'metadata' => 
         array (
@@ -848,6 +848,27 @@ class MoufAdmin {
 	 */
 	 public static function getEditLabels() {
 	 	return MoufManager::getMoufManager()->getInstance('editLabels');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSplashAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('splashAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSplashAdminApacheConfigItem() {
+	 	return MoufManager::getMoufManager()->getInstance('splashAdminApacheConfigItem');
+	 }
+
+	/**
+	 * @return SplashAdminApacheConfigureController
+	 */
+	 public static function getSplashApacheConfig() {
+	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
 	 }
 
 }

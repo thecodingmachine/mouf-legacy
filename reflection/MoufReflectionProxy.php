@@ -80,9 +80,9 @@ class MoufReflectionProxy {
 	 * 
 	 * @return array
 	 */
-	public static function getConfigConstants() {
+	public static function getConfigConstants($selfEdit) {
 
-		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_defined_constants.php";
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_defined_constants.php?selfedit=".(($selfEdit)?"true":"false");
 		
 		$response = self::performRequest($url);
 
