@@ -19,31 +19,37 @@
 	echo "</div></div>";
 ?>
 
+<?php 
+if (count($this->moufDependencies)>1) {
+?>
 <h2>The following packages needs to be disabled too:</h2>
 
 <div id="packageList">
 <?php 
 $oldGroup = "";
 foreach ($this->moufDependencies as $package) {
-	if ($package->getDescriptor()->getGroup() != $oldGroup) {
-		echo "<div class='group'>Group: <b>".htmlentities($package->getDescriptor()->getGroup())."</b></div>";
-		$oldGroup = $package->getDescriptor()->getGroup();
-	}
-	echo "<div class='outerpackage'>";
-	echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
-	if ($package->getShortDescription() || $package->getDocUrl()) {
-		echo "<div class='packagedescription'>";
-		echo $package->getShortDescription();
-		if ($package->getShortDescription() && $package->getDocUrl()) {
-			echo "<br/>";
+	if ($this->package != $package) { 
+		if ($package->getDescriptor()->getGroup() != $oldGroup) {
+			echo "<div class='group'>Group: <b>".htmlentities($package->getDescriptor()->getGroup())."</b></div>";
+			$oldGroup = $package->getDescriptor()->getGroup();
 		}
-		if ($package->getDocUrl()) {
-			echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
+		echo "<div class='outerpackage'>";
+		echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
+		if ($package->getShortDescription() || $package->getDocUrl()) {
+			echo "<div class='packagedescription'>";
+			echo $package->getShortDescription();
+			if ($package->getShortDescription() && $package->getDocUrl()) {
+				echo "<br/>";
+			}
+			if ($package->getDocUrl()) {
+				echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
+			}
+			echo "</div>";
 		}
-		echo "</div>";
+		
+		echo "</div></div>";
 	}
-	
-	echo "</div></div>";
+}
 }
 ?>
 <h2>The following instances will be deleted:</h2>

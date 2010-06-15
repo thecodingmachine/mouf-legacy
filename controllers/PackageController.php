@@ -214,22 +214,22 @@ class PackageController extends Controller {
 		}
 		
 		
-		if (count($this->moufDependencies)>1 && $confirm=="false") {
+		if ((count($this->moufDependencies)>1 || count($this->toDeleteInstance)>0) && $confirm=="false") {
 			$this->template->addContentFile("views/packages/displayConfirmPackagesDisable.php", $this);
 			$this->template->draw();	
 		} else {
-			
-			if (!array_search($this->package, $this->moufDependencies)) {
+			/*if (!array_search($this->package, $this->moufDependencies)) {
 				$this->moufDependencies[] = $this->package;
-			}
+			}*/
 
 			foreach ($this->toDeleteInstance as $instance=>$className) {
 				$this->moufManager->removeComponent($instance);
 			}
 			
 			foreach ($this->moufDependencies as $dependency) {
+				//var_dump($dependency->getDescriptor()->getPackageXmlPath());
 				$this->moufManager->removePackageByXmlFile($dependency->getDescriptor()->getPackageXmlPath());
-			}
+			}//exit;
 			$this->moufManager->rewriteMouf();
 						
 			$url = "Location: ".ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=disable";

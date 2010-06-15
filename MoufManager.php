@@ -364,8 +364,8 @@ class MoufManager {
 		// NEW
 		unset($this->declaredInstances[$instanceName]);
 		
-		foreach ($this->declaredInstances[$instanceName] as $declaredInstance) {
-			if (is_array($declaredInstance["fieldBinds"])) {
+		foreach ($this->declaredInstances as $declaredInstance) {
+			if (isset($declaredInstance["fieldBinds"])) {
 				foreach ($declaredInstance["fieldBinds"] as $paramName=>$properties) {
 					if (is_array($properties)) {
 						// If this is an array of properties
@@ -386,8 +386,8 @@ class MoufManager {
 			}
 		}
 		
-		foreach ($this->declaredInstances[$instanceName] as $declaredInstance) {
-			if (is_array($declaredInstance["setterBinds"])) {
+		foreach ($this->declaredInstances as $declaredInstance) {
+			if (isset($declaredInstance["setterBinds"])) {
 				foreach ($declaredInstance["setterBinds"] as $setterName=>$properties) {
 					if (is_array($properties)) {
 						// If this is an array of properties
