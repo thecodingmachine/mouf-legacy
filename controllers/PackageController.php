@@ -203,10 +203,12 @@ class PackageController extends Controller {
 		$fullPathToPluginsDirectory = $this->moufManager->getFullPathToPluginsDirectory();
 		
 		foreach ($instancesList as $instanceName=>$className) {
-			$fileName = $componentsList[$className]["filename"];
-			foreach ($this->moufDependencies as $dependency) {
-				if ($this->isPartOfPackage($fileName, $dependency, $fullPathToPluginsDirectory)) {
-					$this->toDeleteInstance[$instanceName] = $className;
+			if (isset($componentsList[$className])) {
+				$fileName = $componentsList[$className]["filename"];
+				foreach ($this->moufDependencies as $dependency) {
+					if ($this->isPartOfPackage($fileName, $dependency, $fullPathToPluginsDirectory)) {
+						$this->toDeleteInstance[$instanceName] = $className;
+					}
 				}
 			}
 		}
