@@ -54,4 +54,13 @@ require_once 'filters/RequireHttpsAnnotation.php';
 require_once 'filters/RedirectToHttpAnnotation.php';
 require_once 'filters/XajaAnnotation.php';
 
+if (file_exists(dirname(__FILE__).'/resources/message_'.$i18n_lg.'.php')){
+	@include_once dirname(__FILE__).'/resources/message.php';
+	require_once dirname(__FILE__).'/resources/message_'.$i18n_lg.'.php';
+}
+else{
+	// No error if the file is not found.
+	@include_once dirname(__FILE__).'/resources/message.php';
+}
+
 ?>

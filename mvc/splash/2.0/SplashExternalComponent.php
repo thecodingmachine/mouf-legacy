@@ -1,3 +1,3 @@
 <?php
-MoufManager::getMoufManager()->declareComponent('splash2', 'Splash', true);
+//MoufManager::getMoufManager()->declareComponent('splash2', 'Splash', true);
 ?>
