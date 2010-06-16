@@ -149,9 +149,10 @@ class MoufPhpDocComment {
 				$this->annotationsArrayAsObject[$annotationName][] = new $annotationClassName($value);
 			}
 		} else {
-			$this->annotationsArrayAsObject[$annotationName] = $this->annotationsArrayAsString[$annotationName];
+			foreach ($this->annotationsArrayAsString[$annotationName] as $value) {
+				$this->annotationsArrayAsObject[$annotationName][] = $value;
+			}
 		}
-		
 		return $this->annotationsArrayAsObject[$annotationName];
 	}
 	
