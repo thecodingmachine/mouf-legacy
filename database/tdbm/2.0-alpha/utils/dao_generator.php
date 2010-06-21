@@ -31,7 +31,6 @@ class TDBMDaoGenerator {
 	public function generateAllDaosAndBeans() {
 		// TODO: check that no class name ends with "Base". Otherwise, there will be name clash.
 		$tableList = $this->dbConnection->getListOfTables();
-		
 		foreach ($tableList as $table) {
 			$this->generateDaoAndBean($table);
 		}

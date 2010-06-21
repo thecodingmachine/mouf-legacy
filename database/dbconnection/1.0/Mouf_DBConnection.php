@@ -633,7 +633,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
      * @return boolean
      */
     public function isSequenceName($sqn) {
-    	if (strpos($sqn, "_pk_seq") == strlen($sqn)-7) {
+    	if (strpos($sqn, "_pk_seq") === strlen($sqn)-7) {
     		return true;
     	} else {
     		return false;
