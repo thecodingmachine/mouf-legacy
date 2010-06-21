@@ -193,6 +193,9 @@ foreach ($this->properties as $property) {
 		//$defaultValue = $this->instance->$propertyName;
 
 		$defaultValue = $this->getValueForProperty($property);
+
+		// TODO: add support for request/session/config for OneOf values
+		echo '<input type="hidden" id="moufpropertytype_'.$property->getName().'" name="moufpropertytype_'.$property->getName().'" value="string"/>';
 		
 		//$defaultValue = MoufDefaultValueGetter::getDefaultValue($this->className, $this->propertyName);
 //var_dump($defaultValue);	
