@@ -74,12 +74,12 @@ class HtmlFormTag implements HtmlElementInterface {
 			echo " id='".plainstring_to_htmlprotected($this->id)."'";
 		}
 		if ($this->name) {
-			echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";
+			echo " name='".plainstring_to_htmlprotected($this->name)."' ";
 		}
 		if ($this->action) {
-			echo " action='".plainstring_to_htmlprotected($this->action)."'>\n";
+			echo " action='".plainstring_to_htmlprotected($this->action)."' ";
 		} else {
-			echo " action='".plainstring_to_htmlprotected($_SERVER['REQUEST_URI'])."'";
+			echo " action='".plainstring_to_htmlprotected($_SERVER['REQUEST_URI'])."' ";
 		}
 		echo " method='".plainstring_to_htmlprotected($this->method)."'>\n";
 

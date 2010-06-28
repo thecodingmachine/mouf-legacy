@@ -94,7 +94,7 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 	 */
 	function toHtml() {
 		self::$count++;
-		$imageid = "mouf_catcha_image_".self::$count;
+		$imageid = "mouf_captcha_image_".self::$count;
 		
 		echo "<div class='captcha'>\n";
 		echo "<div class='halfcaptcha'>\n";
@@ -144,8 +144,17 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 			if ($instanceName != false) {
 				echo " <a href='".ROOT_URL."mouf/mouf/displayComponent?name=".urlencode($instanceName).BaseWidgetUtils::getBackToParameter()."'>Edit</a>\n";
 			}
-		}
-		
+		}	
+	}
+	
+	/**
+	 * Validates the current widget: returns true if the entered value is ok, false if it is ko.
+	 *
+	 * @return bool
+	 */
+	public function validate() {
+		$securimage = new Securimage();
+		return $securimage->check(get($this->name));
 	}
 }
 ?>

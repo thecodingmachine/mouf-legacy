@@ -29,13 +29,31 @@ class HtmlFromFile implements HtmlElementInterface {
 	 */
 	public $scope;
 	
+	/**
+	 * If true, the filename will be relative to the ROOT PATH (if the file name is relative).
+	 * Otherwise, the file is relative to the current directory.
+	 * 
+	 * @Property
+	 * @var bool
+	 */
+	public $relativeToRootPath;
 	
 	public function toHtml() {
-		if ($this->scope != null) {
-			$this->scope->loadFile($this->fileName);
+		$isRelative = true;
+		if (strpos($this->fileName, "/") === 0 || strpos($this->fileName, ":") === 1) {
+			$isRelative = false;
+		}
+		
+		if ($isRelative && $this->relativeToRootPath) {
+			$fileName = ROOT_PATH.$this->fileName;
 		} else {
-			// TODO: improve this with relative / absolute filename support.
-			require $this->fileName;
+			$fileName = $this->fileName;
+		}
+		
+		if ($this->scope != null) {
+			$this->scope->loadFile($fileName);
+		} else {
+			require $fileName;
 		}
 	}
 }

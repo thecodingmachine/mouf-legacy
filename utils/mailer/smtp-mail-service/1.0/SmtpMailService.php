@@ -106,7 +106,9 @@ class SmtpMailService implements MailServiceInterface {
 		if ($mail->getBodyHtml() != null) {
 			$zendMail->setBodyHtml($mail->getBodyHtml());
 		}
-		$zendMail->setFrom($mail->getFrom()->getMail(), $mail->getFrom()->getDisplayAs());
+		if ($mail->getFrom()) {
+			$zendMail->setFrom($mail->getFrom()->getMail(), $mail->getFrom()->getDisplayAs());
+		}
 		$zendMail->setSubject($mail->getTitle());
 		foreach ($mail->getToRecipients() as $recipient) {
 			$zendMail->addTo($recipient->getMail(), $recipient->getDisplayAs());

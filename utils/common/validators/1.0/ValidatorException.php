@@ -2,7 +2,7 @@
 /**
  * Thrown when an error is detected in a validator.
  */
-class ValidatorException extends AnnotationException {
+class ValidatorException {
 	
 	/**
 	 * Enter description here...
@@ -11,7 +11,7 @@ class ValidatorException extends AnnotationException {
 	 * @param unknown_type $parameterName
 	 * @param unknown_type $failedValue
 	 */
-	public function __construct($validatorName, $parameterName, $failedValue) {
+	/*public function __construct($validatorName, $parameterName, $failedValue) {
 		parent::__construct();
 		
 		if(DEBUG_MODE) {
@@ -21,6 +21,6 @@ class ValidatorException extends AnnotationException {
 			$this->setTitle("controller.annotation.var.validationexception.title");
 			$this->setMessage("controller.annotation.var.validationexception.text");
 		}
-	}
+	}*/
 }
 ?>

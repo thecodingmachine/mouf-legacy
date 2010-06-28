@@ -1,13 +1,14 @@
 <?php
 
 /**
- * Validators that validates account id.
- * An account ID is valid only if the account contains a user and the account is valid.
+ * Validator that validates number (int or floats).
+ * 
+ * @Component
  */
-class AccountValidator extends AbstractValidator {
+class NumberValidator extends AbstractValidator {
 
 
-	public function __construct($param) {
+	public function __construct($param = null) {
 		AbstractValidator::__construct($param);
 	}
 
@@ -18,10 +19,6 @@ class AccountValidator extends AbstractValidator {
 	 */
 	public function validate($value) {
 		if (is_numeric($value)) {
-			// Check Access Rights
-			if(!UserService::isMyAccount($value)) {
-				return false;
-			}
 			return true;
 		} else {
 			return false;

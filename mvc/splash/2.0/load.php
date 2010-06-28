@@ -33,17 +33,11 @@ require_once 'models/Splash.php';
 require_once 'models/SplashAction.php';
 require_once 'models/ApplicationException.php';
 
-// Validators
-require_once 'validators/ValidatorInterface.php';
-require_once 'validators/AbstractValidator.php';
-require_once 'validators/NumberValidator.php';
-require_once 'validators/EmailValidator.php';
-
 // Annotations
 require_once 'utils/annotations/AnnotationException.php';
 //require_once 'utils/annotations/stubActionAnnotation.php';
 require_once 'utils/annotations/paramAnnotation.php';
-require_once 'utils/annotations/ValidatorException.php';
+//require_once 'utils/annotations/ValidatorException.php';
 
 // Filters
 require_once 'models/FilterUtils.php';

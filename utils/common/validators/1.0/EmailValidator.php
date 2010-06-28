@@ -1,12 +1,14 @@
 <?php
 
 /**
- * Validators that validates emails.
+ * Validator that validates emails.
+ * 
+ * @Component
  */
 class EmailValidator extends AbstractValidator {
 
 
-	public function __construct($param) {
+	public function __construct($param = null) {
 		AbstractValidator::__construct($param);
 	}
 

@@ -56,7 +56,7 @@ class paramAnnotation //extends stubAbstractAnnotation implements stubAnnotation
 			if ($pos === false) {
 				throw new Exception('Error while reading the @param annotation. Could not find the closing parenthesis. But the annotation encountered is: @param '.$value);
 			}
-			$additionalParams = substr($additionalParams, 1, $pos-2);
+			$additionalParams = substr($additionalParams, 1, $pos-1);
 			$splitParamsStrings = explode(",", $additionalParams);
 			$splitParamsArray = array();
 			foreach ($splitParamsStrings as $string) {
@@ -68,8 +68,12 @@ class paramAnnotation //extends stubAbstractAnnotation implements stubAnnotation
 				$splitParamsArray[trim($equalsArr[0])] = trim($equalsArr[1]);
 			}
 
-			$this->origin = $splitParamsArray['origin'];
-			$this->validator = $splitParamsArray['validator'];
+			if (isset($splitParamsArray['origin'])) {
+				$this->origin = $splitParamsArray['origin'];
+			}
+			if (isset($splitParamsArray['validator'])) {
+				$this->validator = $splitParamsArray['validator'];
+			}
 			
 		}
 		
@@ -158,7 +162,12 @@ class paramAnnotation //extends stubAbstractAnnotation implements stubAnnotation
 			$validates = $validator->validate($value);
 			if (!$validates) {
 				// TODO: provide specialized behaviour in case of validation failure!
-				throw new ValidatorException($command, $this->getParameterName(), $value);
+				//throw new ValidatorException($command, $this->getParameterName(), $value);
+				$exception = new AnnotationException();
+				$exception->setTitle('controller.annotation.var.validation.error.title');
+				$exception->setMessage("controller.annotation.var.validation.error", $command, $this->getParameterName(), $value);
+				
+				throw $exception;
 			}
 
 		}

@@ -41,5 +41,6 @@
 		<require>HtmlFormTag.php</require>
 		<require>HtmlButtonWidget.php</require>
 		<require>HtmlI18nString.php</require>
+		<require>HtmlSimpleTemplate.php</require>
 	</requires>
 </package>

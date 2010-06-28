@@ -47,7 +47,7 @@ abstract class Controller implements Scopable {
 		$text = "The page you request is not available. Please use <a href='".ROOT_URL."'>this link</a> to return to the home page.";
 		
 		if ($debugMode) {
-			$text .= " ".$message;
+			$text .= "<div class='info'>".$message.'</div>';
 		}
 
 		self::getLogger()->info("404 : ".$message);
@@ -107,7 +107,11 @@ abstract class Controller implements Scopable {
 				// Default action is "defaultAction"
 		
 		if (empty($method)) {
-			$method = "defaultAction";
+			// Support for both defaultAction, and if not foudn "index" method.
+			if (method_exists($this,"defaultAction")) {
+				$method = "defaultAction";
+			}
+			$method = "index";
 		}
 
 		if (method_exists($this,$method)) {
@@ -118,7 +122,7 @@ abstract class Controller implements Scopable {
 			if ($refMethod->hasAnnotation('Action') == false) {
 				$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
 				// This is not an action. Let's go in error.
-				self::FourOFour("controller.404.no.action", $debug);
+				self::FourOFour(iMsg("controller.404.no.action", get_class($this), $method), $debug);
 				exit;
 			}
 
@@ -175,8 +179,8 @@ abstract class Controller implements Scopable {
 								// No default value and no parameter... this is an error!
 								// TODO: we could provide a special annotation to redirect on another action on error.
 								$application_exception = new ApplicationException();
-								$application_exception->setTitle("controller.incorrect.parameter.title",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter);
-								$application_exception->setMessage("controller.incorrect.parameter.text",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter);
+								$application_exception->setTitle("controller.incorrect.parameter.title",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
+								$application_exception->setMessage("controller.incorrect.parameter.text",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
 								throw $application_exception;
 							}
 						}

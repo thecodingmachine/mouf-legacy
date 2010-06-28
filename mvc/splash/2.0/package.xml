@@ -25,6 +25,11 @@
 			<name>fine</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>validators</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>models/Splash.php</require>
