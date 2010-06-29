@@ -250,7 +250,7 @@ class Splash {
 		$url = $webserviceInstance->getWebserviceUri();
 		
 		$server = new SoapServer(null, array('uri' => $url));
-   		$server->addObject($webserviceInstance); 
+   		$server->setObject($webserviceInstance); 
    		$server->handle();
 	}
 }
