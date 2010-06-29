@@ -24,6 +24,8 @@ require_once 'models/CommonUtils.php';
 // CONTROLLERS
 //require_once 'models/Scopable.php';
 require_once 'controllers/Controller.php';
+require_once 'controllers/WebServiceInterface.php';
+require_once 'controllers/WebService.php';
 
 // Utils
 require_once 'utils/ExceptionUtils.php';

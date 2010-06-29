@@ -228,15 +228,31 @@ class Splash {
 
 		$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
 
-		if (!$controller instanceof Controller) {
+		if ($controller instanceof Controller) {
+			// Let's pass everything to the controller:
+			$controller->callAction($action);			
+		} elseif ($controller instanceof WebServiceInterface) {
+			$this->handleWebservice($controller);
+		} else {
 			// "Invalid class";
-			Controller::FourOFour("The class ".get_class($controller)." should extend the Controller class.", $this->debugMode);
+			Controller::FourOFour("The class ".get_class($controller)." should extend the Controller class or the WebServiceInterface class.", $this->debugMode);
 			exit();
 		}
 
-		// Let's pass everything to the controller:
-		$controller->callAction($action);
 
+	}
+	
+	/**
+	 * Handles the call to the webservice
+	 * 
+	 * @param WebServiceInterface $webserviceInstance
+	 */
+	private function handleWebservice(WebServiceInterface $webserviceInstance) {
+		$url = $webserviceInstance->getWebserviceUri();
+		
+		$server = new SoapServer(null, array('uri' => $url));
+   		$server->addObject($webserviceInstance); 
+   		$server->handle();
 	}
 }
 
