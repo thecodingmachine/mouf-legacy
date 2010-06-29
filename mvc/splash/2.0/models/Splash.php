@@ -223,9 +223,8 @@ class Splash {
 			$controller = $this->controller;
 		}
 
-
 		$action = $this->getAction();
-
+		
 		$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
 
 		if ($controller instanceof Controller) {

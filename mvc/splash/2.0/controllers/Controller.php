@@ -110,8 +110,9 @@ abstract class Controller implements Scopable {
 			// Support for both defaultAction, and if not foudn "index" method.
 			if (method_exists($this,"defaultAction")) {
 				$method = "defaultAction";
+			} else {
+				$method = "index";
 			}
-			$method = "index";
 		}
 
 		if (method_exists($this,$method)) {
