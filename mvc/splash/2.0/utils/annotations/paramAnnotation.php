@@ -65,7 +65,7 @@ class paramAnnotation //extends stubAbstractAnnotation implements stubAnnotation
 				if (count($equalsArr) != 2) {
 					throw new Exception('Error while reading the @param annotation. Wrong syntax: @param '.$value);
 				}
-				$splitParamsArray[trim($equalsArr[0])] = trim($equalsArr[1]);
+				$splitParamsArray[trim($equalsArr[0], " \t\n\r\"'")] = trim($equalsArr[1], " \t\n\r\"'");
 			}
 
 			if (isset($splitParamsArray['origin'])) {
