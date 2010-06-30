@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery jqGrid</displayName>
+	<shortDescription>This package contains the JQuery jqGrid component, along a PHP wrapper class
+	to include grids and advanced tables easily in your web pages.</shortDescription>
+	<docUrl>http://www.trirand.com/blog/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-ui</name>
+			<version>1.8.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryJqGrid.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>JQueryJqGridExternalComponent.php</require>
+	</externalComponentRequires>
+</package>
