@@ -70,6 +70,13 @@ class EditLabelController extends Controller {
 		}
 
 		$messageFile = LanguageUtils::getMessageFileForLanguage($language);
+		
+		// If the language file is not defined, let's go back to the default language.
+		if ($messageFile == null) {
+			$language = "default"; 
+			$messageFile = LanguageUtils::getMessageFileForLanguage("default");
+		}
+		
 		$msg = $messageFile->getMessage($key);
 
 		LanguageUtils::loadAllMessages();

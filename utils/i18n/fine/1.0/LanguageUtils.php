@@ -134,7 +134,11 @@ class LanguageUtils {
 		if ($language == 'default') {
 			$messageFile->load(RESOURCES_PATHS."message.php");
 		} else {
-			$messageFile->load(RESOURCES_PATHS."message_".$language.".php");
+			if (file_exists(RESOURCES_PATHS."message_".$language.".php")) {
+				$messageFile->load(RESOURCES_PATHS."message_".$language.".php");
+			} else {
+				return null;
+			}
 		}
 		self::$messages[$language] = $messageFile;
 		return $messageFile;
