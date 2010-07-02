@@ -259,6 +259,7 @@ class MoufManager {
 		// New
 		$arr = array();
 		foreach ($this->declaredInstances as $instanceName=>$classDesc) {
+			//if (!isset($classDesc["class"])) {var_dump($instanceName);var_dump($classDesc);}
 			$arr[$instanceName] = $classDesc['class'];
 		}
 		return $arr;
@@ -363,8 +364,7 @@ class MoufManager {
 		
 		// NEW
 		unset($this->declaredInstances[$instanceName]);
-		
-		foreach ($this->declaredInstances as $declaredInstance) {
+		foreach ($this->declaredInstances as $declaredInstanceName=>$declaredInstance) {
 			if (isset($declaredInstance["fieldBinds"])) {
 				foreach ($declaredInstance["fieldBinds"] as $paramName=>$properties) {
 					if (is_array($properties)) {
@@ -374,19 +374,19 @@ class MoufManager {
 							foreach ($keys_matching as $key) {
 								unset($properties[$key]); 
 							}
-							$this->bindComponents($instanceName, $paramName, $properties);
+							$this->bindComponents($declaredInstanceName, $paramName, $properties);
 						}
 					} else {
 						// If this is a simple property
 						if ($properties == $instanceName) {
-							$this->bindComponent($instanceName, $paramName, null);
+							$this->bindComponent($declaredInstanceName, $paramName, null);
 						}
 					}
 				}
 			}
 		}
-		
-		foreach ($this->declaredInstances as $declaredInstance) {
+
+		foreach ($this->declaredInstances as $declaredInstanceName=>$declaredInstance) {
 			if (isset($declaredInstance["setterBinds"])) {
 				foreach ($declaredInstance["setterBinds"] as $setterName=>$properties) {
 					if (is_array($properties)) {
@@ -396,12 +396,12 @@ class MoufManager {
 							foreach ($keys_matching as $key) {
 								unset($properties[$key]); 
 							}
-							$this->bindComponentsViaSetter($instanceName, $setterName, $properties);
+							$this->bindComponentsViaSetter($declaredInstanceName, $setterName, $properties);
 						}
 					} else {
 						// If this is a simple property
 						if ($properties == $instanceName) {
-							$this->bindComponentViaSetter($instanceName, $setterName, null);
+							$this->bindComponentViaSetter($declaredInstanceName, $setterName, null);
 						}
 					}
 				}	
@@ -417,12 +417,20 @@ class MoufManager {
 	 * @param string $instanceName New name
 	 */
 	public function renameComponent($instanceName, $newInstanceName) {
+		if ($instanceName == $newInstanceName) {
+			return;
+		}
+		
 		if (isset($this->declaredComponents[$newInstanceName])) {
 			throw new MoufException("Unable to rename instance '$instanceName' to '$newInstanceName': Instance '$newInstanceName' already exists.");
 		}
-
+		
+		if ($this->declaredComponents[$instanceName]['external'] == true) {
+			throw new MoufException("Unable to rename instance '$instanceName' into '$newInstanceName': Instance '$instanceName' is declared externally.");
+		}
+		
 		// OLD
-		$this->declaredComponents[$newInstanceName] = $this->declaredComponents[$instanceName];
+		/*$this->declaredComponents[$newInstanceName] = $this->declaredComponents[$instanceName];
 		unset($this->declaredComponents[$instanceName]);
 		
 		if (isset($this->objectInstances[$instanceName])) {
@@ -493,14 +501,14 @@ class MoufManager {
 					}
 				}
 			}
-		}
+		}*/
 		
 		// NEW
 		$this->declaredInstances[$newInstanceName] = $this->declaredInstances[$instanceName];
 		unset($this->declaredInstances[$instanceName]);
 		
-		foreach ($this->declaredInstances as $declaredInstance) {
-			if (is_array($declaredInstance["fieldBinds"])) {
+		foreach ($this->declaredInstances as $declaredInstanceName=>$declaredInstance) {
+			if (isset($declaredInstance["fieldBinds"])) {
 				foreach ($declaredInstance["fieldBinds"] as $paramName=>$properties) {
 					if (is_array($properties)) {
 						// If this is an array of properties
@@ -509,20 +517,20 @@ class MoufManager {
 							foreach ($keys_matching as $key) {
 								$properties[$key] = $newInstanceName;
 							}
-							$this->bindComponents($instanceName, $paramName, $properties);
+							$this->bindComponents($declaredInstanceName, $paramName, $properties);
 						}
 					} else {
 						// If this is a simple property
 						if ($properties == $instanceName) {
-							$this->bindComponent($instanceName, $paramName, $newInstanceName);
+							$this->bindComponent($declaredInstanceName, $paramName, $newInstanceName);
 						}
 					}
 				}
 			}
 		}
 		
-		foreach ($this->declaredInstances as $declaredInstance) {
-			if (is_array($declaredInstance["setterBinds"])) {
+		foreach ($this->declaredInstances as $declaredInstanceName=>$declaredInstance) {
+			if (isset($declaredInstance["setterBinds"])) {
 				foreach ($declaredInstance["setterBinds"] as $setterName=>$properties) {
 					if (is_array($properties)) {
 						// If this is an array of properties
@@ -531,12 +539,12 @@ class MoufManager {
 							foreach ($keys_matching as $key) {
 								$properties[$key] = $newInstanceName;
 							}
-							$this->bindComponentsViaSetter($instanceName, $setterName, $properties);
+							$this->bindComponentsViaSetter($declaredInstanceName, $setterName, $properties);
 						}
 					} else {
 						// If this is a simple property
 						if ($properties == $instanceName) {
-							$this->bindComponentViaSetter($instanceName, $setterName, $newInstanceName);
+							$this->bindComponentViaSetter($declaredInstanceName, $setterName, $newInstanceName);
 						}
 					}
 				}	
@@ -569,7 +577,7 @@ class MoufManager {
 		}
 		
 		$instanceDefinition = $this->declaredInstances[$instanceName];
-		
+
 		$className = $instanceDefinition["class"];
 		
 		$object = new $className();
@@ -718,7 +726,7 @@ class MoufManager {
 		
 		// NEW
 		if ($type != "string" && $type != "config" && $type != "request" && $type != "session") {
-			throw new MoufException("Invalid type. Must be one of: string|config|request|session");
+			throw new MoufException("Invalid type. Must be one of: string|config|request|session. Value passed: '".$type."'");
 		}
 		
 		$this->declaredInstances[$instanceName]["fieldProperties"][$paramName]["value"] = $paramValue;
@@ -1023,7 +1031,7 @@ class MoufManager {
 		// Declare all components in one instruction
 		$internalDeclaredInstances = array();
 		foreach ($this->declaredInstances as $name=>$declaredInstance) {
-			if (!$declaredInstance["external"]) {
+			if (!isset($declaredInstance["external"]) || !$declaredInstance["external"]) {
 				$internalDeclaredInstances[$name] = $declaredInstance;
 			}
 		}

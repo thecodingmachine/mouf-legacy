@@ -89,6 +89,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 			$this->moufManager->rewriteMouf();
 			
 			header("Location: ".ROOT_URL."mouf/mouf/?selfedit=".$selfedit);
+			return;
 		}
 		
 		// Renames the component if needed.
