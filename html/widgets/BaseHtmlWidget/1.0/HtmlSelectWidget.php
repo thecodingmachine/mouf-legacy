@@ -113,7 +113,7 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 		if ($this->css || $this->required) {
 			$requiredClass = "";
 			if ($this->required) {
-				$requiredClass = "required ";
+				$requiredClass = "validate[required] ";
 			}
 			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
 		}

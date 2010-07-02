@@ -92,7 +92,7 @@ class HtmlButtonWidget implements HtmlElementInterface {
 			echo " value='".plainstring_to_htmlprotected($this->value)."'";
 		}
 		if ($this->css) {
-			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
+			echo " class='".plainstring_to_htmlprotected($this->css)."'";
 		}
 		echo ">";
 		if ($this->enableI18nLabel) {

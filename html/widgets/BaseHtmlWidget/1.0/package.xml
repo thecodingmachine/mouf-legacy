@@ -12,8 +12,8 @@
 		</dependency>
 		<dependency>
 			<group>javascript/jquery</group>
-			<name>jquery-validate</name>
-			<version>1.5.5</version>
+			<name>jquery-validateengine</name>
+			<version>1.6.3</version>
 		</dependency>
 		<dependency>
 			<group>html</group>
@@ -39,6 +39,7 @@
 		<require>HtmlHiddenInputWidget.php</require>
 		<require>HtmlCheckBoxGroupWidget.php</require>
 		<require>HtmlFormTag.php</require>
+		<require>HtmlListTag.php</require>
 		<require>HtmlButtonWidget.php</require>
 		<require>HtmlI18nString.php</require>
 		<require>HtmlSimpleTemplate.php</require>

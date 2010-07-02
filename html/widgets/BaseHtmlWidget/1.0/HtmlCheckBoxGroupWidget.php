@@ -104,7 +104,7 @@ class HtmlCheckBoxGroupWidget extends AbstractHtmlInputWidget {
 			
 			echo "<input type='checkbox' name='".plainstring_to_htmlprotected($name)."[]' value='".plainstring_to_htmlprotected($key)."'";
 			if ($this->css) {
-				echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
+				echo " class='".plainstring_to_htmlprotected($this->css)."'";
 			}
 			
 			if ($defaultSelect != false) {
