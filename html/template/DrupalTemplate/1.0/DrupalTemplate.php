@@ -261,7 +261,7 @@ class DrupalTemplate extends BaseTemplate  {
 		$head_title = $this->title;
 		$styles = $this->getCssFiles();
 		$scripts = $this->getJsFiles().$this->getHtmlArray($this->head);;
-		
+
 		$logo = $this->logoImg;
 		$site_name = $this->siteName;
 		$site_slogan = $this->siteSlogan;

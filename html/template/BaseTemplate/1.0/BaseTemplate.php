@@ -508,7 +508,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 
 	/**
 	 * Adds a css file to the list of css files loaded.
-	 * @return SplashTemplate
+	 * @return BaseTemplate
 	 */
 	public function addJsFile($jsUrl) {
 		if (array_search($jsUrl, $this->javascript_files) === false) {
@@ -539,7 +539,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 	 * Returns the HTML that will be embedded in the page for Javascript files loaded.
 	 */
 	protected function getJsFiles() {
-		$html = '';
+		$html = ''; 
 		foreach ($this->javascript_files as $file) {
 			$html .= "<script type='text/javascript' src='$file'></script>\n";
 
