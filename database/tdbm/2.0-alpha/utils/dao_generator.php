@@ -226,7 +226,7 @@ class $baseClassName extends TDBM_Object
 	}
 	
 	/**
-	 * The setter for the "'.$column->name.'" column.
+	 * The setter for the '.$referencedBeanName.' object bound to this object via the '.$array["col1"].' column.
 	 *
 	 * @param '.$referencedBeanName.' $object
 	 */
