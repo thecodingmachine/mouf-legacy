@@ -1147,6 +1147,8 @@ class Securimage {
 		if (isset($_SESSION['securimage_code_value']) && trim($_SESSION['securimage_code_value']) != '') {
 			if ($this->isCodeExpired($_SESSION['securimage_code_ctime']) == false) { 
 			  $code = $_SESSION['securimage_code_value'];
+			} else {
+				$code = '';
 			}
 		} else if ($this->use_sqlite_db == true && function_exists('sqlite_open')) { // no code in session - may mean user has cookies turned off
 			$this->openDatabase();
@@ -1163,9 +1165,10 @@ class Securimage {
 		if ($code != '') {
 			if ($code == $code_entered) {
 			  $this->correct_code = true;
-			  $_SESSION['securimage_code_value'] = '';
+			  // Modified by David: don't remove the session
+			  /*$_SESSION['securimage_code_value'] = '';
 			  $_SESSION['securimage_code_ctime'] = '';
-			  $this->clearCodeFromDatabase();
+			  $this->clearCodeFromDatabase();*/
 		  }
 		}
 	}
