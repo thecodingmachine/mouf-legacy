@@ -149,12 +149,16 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 	
 	/**
 	 * Validates the current widget: returns true if the entered value is ok, false if it is ko.
+	 * By default, the value is fetched from the request, but it can be passed manually via the argument.
 	 *
 	 * @return bool
 	 */
-	public function validate() {
-		$securimage = new Securimage();
-		return $securimage->check(get($this->name));
+	public function validate($value = null) {
+		if ($value == null) {
+			$value = get($this->name);
+		}
+		$securimage = new Securimage();		
+		return $securimage->check($value);
 	}
 }
 ?>
