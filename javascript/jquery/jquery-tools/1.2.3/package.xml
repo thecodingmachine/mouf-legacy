@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery Tools</displayName>
+	<shortDescription>This package contains the JQuery Tools libraries. There are 4 parts to this library: UI Tools, Form tools, Toolbox</shortDescription>
+	<docUrl>http://flowplayer.org/tools/download/index.html</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>1.4.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryToolsUI.php</require>
+		<require>HtmlJSJQueryToolsForm.php</require>
+		<require>HtmlJSJQueryToolsToolbox.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>JQueryToolsExternalComponent.php</require>
+	</externalComponentRequires>
+</package>

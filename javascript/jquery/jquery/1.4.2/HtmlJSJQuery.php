@@ -18,7 +18,7 @@ class HtmlJSJQuery implements HtmlElementInterface {
 	public $noConflictMode;
 	
 	public function toHtml() {
-		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/jquery/jquery/1.3.2/jquery-1.3.2.min.js"></script>';
+		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/jquery/jquery/1.4.2/jquery-1.4.2.min.js"></script>';
 		if ($this->noConflictMode) {
 			echo '<script type="text/javascript">jQuery.noConflict();</script>';
 		}

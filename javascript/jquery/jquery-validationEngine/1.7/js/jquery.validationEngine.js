@@ -1,7 +1,7 @@
 /*
- * Inline Form Validation Engine 1.6.5, jQuery plugin
+ * Inline Form Validation Engine 1.7, jQuery plugin
  * 
- * Copyright(c) 2009, Cedric Dugas
+ * Copyright(c) 2010, Cedric Dugas
  * http://www.position-relative.net
  *	
  * Form validation engine allowing custom regex rules to be added.
@@ -26,6 +26,8 @@
 		returnIsValid:false,
 		liveEvent:true,
 		unbindEngine:true,
+		containerOverflow:false,
+		containerOverflowDOM:"",
 		ajaxSubmit: false,
 		scroll:true,
 		promptPosition: "topRight",	// OPENNING BOX POSITION, IMPLEMENTED: topLeft, topRight, bottomLeft, centerRight, bottomRight
@@ -69,16 +71,14 @@
 		$.validationEngine.onSubmitValid = true;
 		$.validationEngine.settings = settings;
 		if($.validationEngine.submitValidation(this,settings) == false){
-			if($.validationEngine.submitForm(this,settings) == true) {return false;}
+			if($.validationEngine.submitForm(this,settings) == true) return false;
 		}else{
 			settings.failure && settings.failure(); 
 			return false;
 		}		
 	})
 	$(".formError").live("click",function(){	 // REMOVE BOX ON CLICK
-		$(this).fadeOut(150,function(){
-			$(this).remove();
-		}) 
+		$(this).fadeOut(150,function(){		$(this).remove()	}) 
 	})
 };	
 $.validationEngine = {
@@ -92,6 +92,8 @@ $.validationEngine = {
 			allrules:allRules,
 			validationEventTriggers:"blur",					
 			inlineValidation: true,	
+			containerOverflow:false,
+			containerOverflowDOM:"",
 			returnIsValid:false,
 			scroll:true,
 			unbindEngine:true,
@@ -103,9 +105,7 @@ $.validationEngine = {
 		$.validationEngine.settings = settings;
 	},
 	loadValidation : function(caller) {		// GET VALIDATIONS TO BE EXECUTED
-		if(!$.validationEngine.settings){
-			$.validationEngine.defaultSetting()
-		}
+		if(!$.validationEngine.settings) $.validationEngine.defaultSetting()
 		rulesParsing = $(caller).attr('class');
 		rulesRegExp = /\[(.*)\]/;
 		getRules = rulesRegExp.exec(rulesParsing);
@@ -121,7 +121,7 @@ $.validationEngine = {
 	validateCall : function(caller,rules) {	// EXECUTE VALIDATION REQUIRED BY THE USER FOR THIS FIELD
 		var promptText =""	
 		
-		if(!$(caller).attr("id")) { $.validationEngine.debug("This field have no ID attribut( name & class displayed): "+$(caller).attr("name")+" "+$(caller).attr("class")) }
+		if(!$(caller).attr("id")) $.validationEngine.debug("This field have no ID attribut( name & class displayed): "+$(caller).attr("name")+" "+$(caller).attr("class"))
 
 		caller = caller;
 		ajaxValidate = false;
@@ -148,9 +148,7 @@ $.validationEngine = {
 				 _exemptString(caller,rules,i);
 			break;
 			case "ajax": 
-				if(!$.validationEngine.onSubmitValid){
-					_ajax(caller,rules,i);	
-				};
+				if(!$.validationEngine.onSubmitValid) _ajax(caller,rules,i);	
 			break;
 			case "length": 
 				 _length(caller,rules,i);
@@ -176,10 +174,19 @@ $.validationEngine = {
 		};
 		radioHack();
 		if ($.validationEngine.isError == true){
-			linkTofield = $.validationEngine.linkTofield(caller);
-			
-			($("div."+linkTofield).size() ==0) ? $.validationEngine.buildPrompt(caller,promptText,"error")	: $.validationEngine.updatePromptText(caller,promptText);
-		}else{ $.validationEngine.closePrompt(caller);}			
+			var linkTofieldText = "." +$.validationEngine.linkTofield(caller);
+			if(linkTofieldText != "."){
+				if(!$(linkTofieldText)[0]){
+					$.validationEngine.buildPrompt(caller,promptText,"error")
+				}else{	
+					$.validationEngine.updatePromptText(caller,promptText);
+				}	
+			}else{
+				$.validationEngine.updatePromptText(caller,promptText);
+			}
+		}else{
+			$.validationEngine.closePrompt(caller);
+		}			
 		/* UNFORTUNATE RADIO AND CHECKBOX GROUP HACKS */
 		/* As my validation is looping input with id's we need a hack for my validation to understand to group these inputs */
 		function radioHack(){
@@ -247,7 +254,10 @@ $.validationEngine = {
 			var fn = window[funce];
 			if (typeof(fn) === 'function'){
 				var fn_result = fn();
-				$.validationEngine.isError = fn_result;
+				if(!fn_result){
+					$.validationEngine.isError = true;
+				}
+				
 				promptText += $.validationEngine.settings.allrules[customRule].alertText+"<br />";
 			}
 		}
@@ -272,7 +282,7 @@ $.validationEngine = {
 				   	type: "POST",
 				   	url: postfile,
 				   	async: true,
-				   	data: "validateValue="+fieldValue+"&validateId="+fieldId+"&validateError="+customAjaxRule+extraData,
+				   	data: "validateValue="+fieldValue+"&validateId="+fieldId+"&validateError="+customAjaxRule+"&extraData="+extraData,
 				   	beforeSend: function(){		// BUILD A LOADING PROMPT IF LOAD TEXT EXIST		   			
 				   		if($.validationEngine.settings.allrules[customAjaxRule].alertTextLoad){
 				   		
@@ -311,7 +321,7 @@ $.validationEngine = {
 						 	_checkInArray(true);
 						 	$.validationEngine.ajaxValid = true; 			
 						 	if(!customAjaxRule)	{$.validationEngine.debug("wrong ajax response, are you on a server or in xampp? if not delete de ajax[ajaxUser] validating rule from your form ")}		   
-	 			 			if($.validationEngine.settings.allrules[customAjaxRule].alertTextOk){	// NO OK TEXT MEAN CLOSE PROMPT	 			
+						 	if($.validationEngine.settings.allrules[customAjaxRule].alertTextOk){	// NO OK TEXT MEAN CLOSE PROMPT	 			
 	 			 				 				$.validationEngine.updatePromptText(ajaxCaller,$.validationEngine.settings.allrules[customAjaxRule].alertTextOk,"pass",true);
  			 				}else{
 				 			 	ajaxValidate = false;		 	
@@ -373,7 +383,7 @@ $.validationEngine = {
 				promptText += $.validationEngine.settings.allrules["minCheckbox"].alertText+" "+nbCheck+" "+$.validationEngine.settings.allrules["minCheckbox"].alertText2+"<br />";
 			}
 		}
-		return($.validationEngine.isError) ? $.validationEngine.isError : false;
+		return ($.validationEngine.isError) ? $.validationEngine.isError : false;
 	},
 	submitForm : function(caller){
 		if($.validationEngine.settings.ajaxSubmit){		
@@ -445,14 +455,19 @@ $.validationEngine = {
 		linkTofield = $.validationEngine.linkTofield(caller)
 		$(divFormError).addClass("formError")
 		
-		if(type == "pass"){ $(divFormError).addClass("greenPopup") }
-		if(type == "load"){ $(divFormError).addClass("blackPopup") }
-		if(ajaxed){ $(divFormError).addClass("ajaxed") }
+		if(type == "pass") $(divFormError).addClass("greenPopup")
+		if(type == "load") $(divFormError).addClass("blackPopup")
+		if(ajaxed) $(divFormError).addClass("ajaxed")
 		
 		$(divFormError).addClass(linkTofield);
 		$(formErrorContent).addClass("formErrorContent");
 		
-		$("body").append(divFormError);
+		if($.validationEngine.settings.containerOverflow){		// Is the form contained in an overflown container?
+			$(caller).before(divFormError);
+		}else{
+			$("body").append(divFormError);
+		}
+		
 		$(divFormError).append(formErrorContent);
 			
 		if($.validationEngine.showTriangle != false){		// NO TRIANGLE ON MAX CHECKBOX AND RADIO
@@ -469,32 +484,17 @@ $.validationEngine = {
 			}
 		}
 		$(formErrorContent).html(promptText)
-	
-		callerTopPosition = $(caller).offset().top;
-		callerleftPosition = $(caller).offset().left;
-		callerWidth =  $(caller).width();
-		inputHeight = $(divFormError).height();
-	
-		/* POSITIONNING */
-		if($.validationEngine.settings.promptPosition == "topRight"){callerleftPosition +=  callerWidth -30; callerTopPosition += -inputHeight -10; }
-		if($.validationEngine.settings.promptPosition == "topLeft"){ callerTopPosition += -inputHeight -10; }
 		
-		if($.validationEngine.settings.promptPosition == "centerRight"){ callerleftPosition +=  callerWidth +13; }
+		var calculatedPosition = $.validationEngine.calculatePosition(caller,promptText,type,ajaxed,divFormError)
 		
-		if($.validationEngine.settings.promptPosition == "bottomLeft"){
-			callerHeight =  $(caller).height();
-			callerleftPosition = callerleftPosition;
-			callerTopPosition = callerTopPosition + callerHeight + 15;
-		}
-		if($.validationEngine.settings.promptPosition == "bottomRight"){
-			callerHeight =  $(caller).height();
-			callerleftPosition +=  callerWidth -30;
-			callerTopPosition +=  callerHeight + 15;
-		}
+		calculatedPosition.callerTopPosition +="px";
+		calculatedPosition.callerleftPosition +="px";
+		calculatedPosition.marginTopSize +="px"
 		$(divFormError).css({
-			top:callerTopPosition,
-			left:callerleftPosition,
-			opacity:0
+			"top":calculatedPosition.callerTopPosition,
+			"left":calculatedPosition.callerleftPosition,
+			"marginTop":calculatedPosition.marginTopSize,
+			"opacity":0
 		})
 		return $(divFormError).animate({"opacity":0.87},function(){return true;});	
 	},
@@ -508,21 +508,60 @@ $.validationEngine = {
 		if(ajaxed) { $(updateThisPrompt).addClass("ajaxed") }else{ $(updateThisPrompt).removeClass("ajaxed")};
 	
 		$(updateThisPrompt).find(".formErrorContent").html(promptText);
-		callerTopPosition  = $(caller).offset().top;
-		inputHeight = $(updateThisPrompt).height();
 		
-		if($.validationEngine.settings.promptPosition == "bottomLeft" || $.validationEngine.settings.promptPosition == "bottomRight"){
+		var calculatedPosition = $.validationEngine.calculatePosition(caller,promptText,type,ajaxed,updateThisPrompt)
+		
+		calculatedPosition.callerTopPosition +="px";
+		calculatedPosition.callerleftPosition +="px";
+		calculatedPosition.marginTopSize +="px"
+		$(updateThisPrompt).animate({ "top":calculatedPosition.callerTopPosition,"marginTop":calculatedPosition.marginTopSize });
+	},
+	calculatePosition : function(caller,promptText,type,ajaxed,divFormError){
+		
+		if($.validationEngine.settings.containerOverflow){		// Is the form contained in an overflown container?
+			callerTopPosition = 0;
+			callerleftPosition = 0;
+			callerWidth =  $(caller).width();
+			inputHeight = $(divFormError).height();					// compasation for the triangle
+			var marginTopSize = "-"+inputHeight;
+		}else{
+			callerTopPosition = $(caller).offset().top;
+			callerleftPosition = $(caller).offset().left;
+			callerWidth =  $(caller).width();
+			inputHeight = $(divFormError).height();
+			var marginTopSize = 0;
+		}
+		
+		/* POSITIONNING */
+		if($.validationEngine.settings.promptPosition == "topRight"){ 
+			if($.validationEngine.settings.containerOverflow){		// Is the form contained in an overflown container?
+				callerleftPosition += callerWidth -30;
+			}else{
+				callerleftPosition +=  callerWidth -30; 
+				callerTopPosition += -inputHeight; 
+			}
+		}
+		if($.validationEngine.settings.promptPosition == "topLeft"){ callerTopPosition += -inputHeight -10; }
+		
+		if($.validationEngine.settings.promptPosition == "centerRight"){ callerleftPosition +=  callerWidth +13; }
+		
+		if($.validationEngine.settings.promptPosition == "bottomLeft"){
 			callerHeight =  $(caller).height();
-			callerTopPosition =  callerTopPosition + callerHeight + 15;
+			callerTopPosition = callerTopPosition + callerHeight + 15;
 		}
-		if($.validationEngine.settings.promptPosition == "centerRight"){  callerleftPosition +=  callerWidth +13;}
-		if($.validationEngine.settings.promptPosition == "topLeft" || $.validationEngine.settings.promptPosition == "topRight"){
-			callerTopPosition = callerTopPosition  -inputHeight -10;
+		if($.validationEngine.settings.promptPosition == "bottomRight"){
+			callerHeight =  $(caller).height();
+			callerleftPosition +=  callerWidth -30;
+			callerTopPosition +=  callerHeight +5;
 		}
-		$(updateThisPrompt).animate({ top:callerTopPosition });
+		return {
+			"callerTopPosition":callerTopPosition,
+			"callerleftPosition":callerleftPosition,
+			"marginTopSize":marginTopSize
+		}
 	},
 	linkTofield : function(caller){
-		linkTofield = $(caller).attr("id") + "formError";
+		var linkTofield = $(caller).attr("id") + "formError";
 		linkTofield = linkTofield.replace(/\[/g,""); 
 		linkTofield = linkTofield.replace(/\]/g,"");
 		return linkTofield;
@@ -555,7 +594,6 @@ $.validationEngine = {
 	submitValidation : function(caller) {					// FORM SUBMIT VALIDATION LOOPING INLINE VALIDATION
 		var stopForm = false;
 		$.validationEngine.ajaxValid = true;
-		$(caller).find(".formError").remove();
 		var toValidateSize = $(caller).find("[class*=validate]").size();
 		
 		$(caller).find("[class*=validate]").each(function(){
@@ -568,20 +606,26 @@ $.validationEngine = {
 		});
 		ajaxErrorLength = $.validationEngine.ajaxValidArray.length;		// LOOK IF SOME AJAX IS NOT VALIDATE
 		for(x=0;x<ajaxErrorLength;x++){
-	 		if($.validationEngine.ajaxValidArray[x][1] == false){
-	 			$.validationEngine.ajaxValid = false;
- 			}
+	 		if($.validationEngine.ajaxValidArray[x][1] == false) $.validationEngine.ajaxValid = false;
  		}
 		if(stopForm || !$.validationEngine.ajaxValid){		// GET IF THERE IS AN ERROR OR NOT FROM THIS VALIDATION FUNCTIONS
 			if($.validationEngine.settings.scroll){
-				destination = $(".formError:not('.greenPopup'):first").offset().top;
-				$(".formError:not('.greenPopup')").each(function(){
-					testDestination = $(this).offset().top;
-					if(destination>testDestination){
-						destination = $(this).offset().top;
-					}
-				})
-				$("html:not(:animated),body:not(:animated)").animate({ scrollTop: destination}, 1100);
+				if(!$.validationEngine.settings.containerOverflow){
+					var destination = $(".formError:not('.greenPopup'):first").offset().top;
+					$(".formError:not('.greenPopup')").each(function(){
+						testDestination = $(this).offset().top;
+						if(destination>testDestination) destination = $(this).offset().top;
+					})
+					$("html:not(:animated),body:not(:animated)").animate({ scrollTop: destination}, 1100);
+				}else{
+					var destination = $(".formError:not('.greenPopup'):first").offset().top;
+					var scrollContainerScroll = $($.validationEngine.settings.containerOverflowDOM).scrollTop();
+					var scrollContainerPos = - parseInt($($.validationEngine.settings.containerOverflowDOM).offset().top);
+					var destination = scrollContainerScroll + destination + scrollContainerPos -5
+					var scrollContainer = $.validationEngine.settings.containerOverflowDOM+":not(:animated)"
+					
+					$(scrollContainer).animate({ scrollTop: destination}, 1100);
+				}
 			}
 			return true;
 		}else{
