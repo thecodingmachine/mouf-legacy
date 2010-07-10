@@ -153,12 +153,12 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 	 *
 	 * @return bool
 	 */
-	public function validate($value = null) {
+	public function validate($value = null, $purgeSession = true) {
 		if ($value == null) {
 			$value = get($this->name);
 		}
 		$securimage = new Securimage();		
-		return $securimage->check($value);
+		return $securimage->check($value, $purgeSession);
 	}
 }
 ?>

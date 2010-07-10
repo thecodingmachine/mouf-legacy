@@ -56,7 +56,11 @@ class HtmlHiddenInputWidget implements HtmlElementInterface {
 			$defaultSelect = get($this->name, "string", false, null);
 			if ($defaultSelect !== null) {
 				echo " value='".plainstring_to_htmlprotected($defaultSelect)."'";
+			} elseif ($this->defaultValue !== null) {
+				echo " value='".plainstring_to_htmlprotected($this->defaultValue)."'";
 			}
+		} elseif ($this->defaultValue !== null) {
+			echo " value='".plainstring_to_htmlprotected($this->defaultValue)."'";
 		}
 		
 		echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";

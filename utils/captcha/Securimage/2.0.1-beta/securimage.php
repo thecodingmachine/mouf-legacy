@@ -600,12 +600,13 @@ class Securimage {
 	 *   }
 	 * </code>
 	 * @param string $code  The code the user entered
+	 * @param bool $purgeSession whether we should purge the session or not (if purged, a second call to check will fail).
 	 * @return boolean  true if the code was correct, false if not
 	 */
-	function check($code)
+	function check($code, $purgeSession = true)
 	{
 		$this->code_entered = $code;
-		$this->validate();
+		$this->validate($purgeSession);
 		return $this->correct_code;
 	}
 
@@ -1140,7 +1141,7 @@ class Securimage {
 	 * @access private
 	 *
 	 */
-	function validate()
+	function validate($purgeSession = true)
 	{
 		// retrieve code from session, if no code exists check sqlite database if supported.
 		
@@ -1166,9 +1167,11 @@ class Securimage {
 			if ($code == $code_entered) {
 			  $this->correct_code = true;
 			  // Modified by David: don't remove the session
-			  /*$_SESSION['securimage_code_value'] = '';
-			  $_SESSION['securimage_code_ctime'] = '';
-			  $this->clearCodeFromDatabase();*/
+			  if ($purgeSession) {
+				  $_SESSION['securimage_code_value'] = '';
+				  $_SESSION['securimage_code_ctime'] = '';
+				  $this->clearCodeFromDatabase();
+			  }
 		  }
 		}
 	}

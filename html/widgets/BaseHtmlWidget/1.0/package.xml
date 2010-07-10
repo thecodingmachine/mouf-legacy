@@ -12,7 +12,7 @@
 		</dependency>
 		<dependency>
 			<group>javascript/jquery</group>
-			<name>jquery-validateengine</name>
+			<name>jquery-validateEngine</name>
 			<version>1.6.3</version>
 		</dependency>
 		<dependency>
