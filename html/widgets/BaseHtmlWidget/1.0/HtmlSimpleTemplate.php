@@ -66,6 +66,15 @@ class HtmlSimpleTemplate implements HtmlElementInterface {
 	}
 	
 	/**
+	 * The base element (template) in which we will insert additional elements.
+	 * 
+	 * @return HtmlElementInterface
+	 */
+	public function getTemplate() {
+		return $this->template;
+	}
+	
+	/**
 	 * Adds a new HTML element to be put in the template.
 
 	 * @param string $key The key of the element
