@@ -10,7 +10,8 @@ class MailAttachment implements MailAttachmentInterface {
 	private $fileName;
 	private $mimeType = 'application/octet-stream';
 	private $encoding = 'ENCODING_BASE64';
-	private $disposition = 'attachment';
+	private $attachmentDisposition = 'attachment';
+	private $contentId;
 	
 	/**
 	 * Returns the content of the file to attach, as an octet stream.
@@ -102,7 +103,7 @@ class MailAttachment implements MailAttachmentInterface {
 	 * @return string
 	 */
 	public function getAttachmentDisposition() {
-		return $this->disposition;
+		return $this->attachmentDisposition;
 	}
 	
 	/**
@@ -116,5 +117,32 @@ class MailAttachment implements MailAttachmentInterface {
 	public function setAttachmentDisposition($attachmentDisposition) {
 		$this->attachmentDisposition = $attachmentDisposition;
 	}
+	
+	
+	/**
+	 * Returns the content-id of the mail attachment.
+	 * The content-id is required if you want to embed an image in a mail.
+	 * If so, you will use the syntax: <img src="cid:XXX" /> to display the image.
+	 * 
+	 * @return string
+	 */
+	public function getContentId() {
+		return $this->contentId;
+	}
+	
+	/**
+	 * The content-id of the mail attachment.
+	 * The content-id is required if you want to embed an image in a mail.
+	 * If so, you will use the syntax: <img src="cid:XXX" /> to display the image.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @param string $contentId
+	 */
+	public function setContentId($contentId) {
+		$this->contentId = $contentId;
+	}
+	
+	
 }
 ?>

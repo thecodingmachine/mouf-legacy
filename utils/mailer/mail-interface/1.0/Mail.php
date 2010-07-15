@@ -191,19 +191,19 @@ class Mail implements MailInterface {
 	 * An array containing the attachments.
 	 *
 	 * @Property
-	 * @param array<MailAttachmentInterface> attachments
+	 * @param array<MailAttachmentInterface> $attachements
 	 */
-	function setAttachements($attachments) {
-		$this->attachments = $attachments;
+	function setAttachements($attachements) {
+		$this->attachements = $attachements;
 	}
 	
 	/**
 	 * Adds an attachment.
 	 *
-	 * @param MailAttachmentInterface $ccRecipient
+	 * @param MailAttachmentInterface attachement
 	 */
-	function addAttachement(MailAttachmentInterface $attachment) {
-		$this->attachments[] = $attachment;
+	function addAttachement(MailAttachmentInterface $attachement) {
+		$this->attachements[] = $attachement;
 	}
 }
 ?>

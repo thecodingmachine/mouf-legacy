@@ -135,7 +135,23 @@ class SmtpMailService implements MailServiceInterface {
 					$encoding = Zend_Mime::ENCODING_BASE64;
 					break;
 			}
-			$zendMail->createAttachment($attachment->getFileContent(), $attachment->getMimeType(), $attachment->getDisposition(), $encoding, $attachment->getFileName());
+			$attachment_disposition = $attachment->getAttachmentDisposition();
+			switch ($attachment_disposition) {
+				case "inline":
+					$attachment_disposition = Zend_Mime::DISPOSITION_INLINE;
+					break;
+				case "attachment":
+					$attachment_disposition = Zend_Mime::DISPOSITION_ATTACHMENT;
+					break;
+				case "":
+				case null:
+					$attachment_disposition = null;
+					break;
+				default:
+					throw new Exception("Invalid attachment disposition for mail. Should be one of: 'inline', 'attachment'");
+			}
+			$zendAttachment = $zendMail->createAttachment($attachment->getFileContent(), $attachment->getMimeType(), $attachment_disposition, $encoding, $attachment->getFileName());
+			$zendAttachment->id = $attachment->getContentId();
 		}
 		
 

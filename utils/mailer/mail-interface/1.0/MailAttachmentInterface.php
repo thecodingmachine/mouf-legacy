@@ -41,5 +41,14 @@ interface MailAttachmentInterface {
 	 * @return string
 	 */
 	public function getAttachmentDisposition();
+	
+	/**
+	 * Returns the content-id of the mail attachment.
+	 * The content-id is required if you want to embed an image in a mail.
+	 * If so, you will use the syntax: <img src="cid:XXX" /> to display the image.
+	 * 
+	 * @return string
+	 */
+	public function getContentId();
 }
 ?>
