@@ -30,7 +30,8 @@ class SplashUrlManager {
 			// FIXME provide a full service in Proxy! Otherwise, it cannot work in admin
 			$urlProvider = $moufManager->getInstance($instanceName);
 			/* @var $urlProvider UrlProviderInterface */
-			$urls += $urlProvider->getUrlsList();
+			$tmpUrlList = $urlProvider->getUrlsList();
+			$urls = array_merge($urls, $tmpUrlList);
 		}
 		
 		return $urls;

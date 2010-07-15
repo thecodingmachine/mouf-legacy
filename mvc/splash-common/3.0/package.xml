@@ -20,6 +20,11 @@
 			<name>validators</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>load.php</require>
@@ -35,6 +40,7 @@
 		<require>utils/ApplicationException.php</require>
 		<require>utils/annotations/AnnotationException.php</require>
 		<require>utils/annotations/paramAnnotation.php</require>
+		<require>utils/annotations/URLAnnotation.php</require>
 		<require>utils/ExceptionUtils.php</require>
 		
 	</requires>

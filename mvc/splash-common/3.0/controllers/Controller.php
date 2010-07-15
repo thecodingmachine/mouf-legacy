@@ -8,7 +8,7 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	/**
 	 * Function called before an action is executed
 	 */
-	private function beforeActionExecute($filters) {
+	protected function beforeActionExecute($filters) {
 		for ($i=count($filters)-1; $i>=0; $i--) {
 			$filters[$i]->beforeAction();
 		}
@@ -17,7 +17,7 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	/**
 	 * Function called after an action is executed
 	 */
-	private function afterActionExecute($filters) {
+	protected function afterActionExecute($filters) {
 		foreach ($filters as $filter) {
 			$filter->afterAction();
 		}
@@ -97,13 +97,14 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				$argsArray = $this->mapParameters($refMethod);
 
 				//call_user_func_array(array($this,$method), AdminBag::getInstance()->argsArray);
-				$result = call_user_func_array(array($this,$method), $argsArray);
-
+				//$result = call_user_func_array(array($this,$method), $argsArray);
+				$result = $this->executeActionMethod($method, $argsArray);
+				
 				$this->afterActionExecute($filters);
 				return $result;
 			}
 			catch (Exception $e) {
-				$this->handleException($e);
+				return $this->handleException($e);
 			}
 		}else {
 			// "Method Not Found";
@@ -115,9 +116,19 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	}
 
 	/**
+	 * Calls the action (and does only call the action).
+	 * 
+	 * @param string $methodName
+	 * @param array $args
+	 */
+	protected function executeActionMethod($methodName, $args) {
+		return call_user_func_array(array($this,$methodName), $args);
+	}
+	
+	/**
 	 * Analyses the method, the annotation parameters, and returns an array to be passed to the method.
 	 */
-	private function mapParameters(MoufReflectionMethod $refMethod) {
+	protected function mapParameters(MoufReflectionMethod $refMethod) {
 		$parameters = $refMethod->getParameters();
 
 		// Let's analyze the @param annotations.
@@ -223,9 +234,10 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 		
 		$refClass = new MoufReflectionClass(get_class($this));
 		
-		// First, let's check the "Action" annotation
 		foreach ($refClass->getMethods() as $refMethod) {
 			/* @var $refMethod MoufReflectionMethod */
+
+			// First, let's check the "Action" annotation	
 			if ($refMethod->hasAnnotation('Action')) {
 				$methodName = $refMethod->getName(); 
 				if ($methodName == "index" || $methodName == "defaultAction") {
@@ -235,7 +247,21 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				}
 				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName());
 			}
+
+			// Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)
+			if ($refMethod->hasAnnotation('URL')) {
+				$urls = $refMethod->getAnnotations('URL');
+				foreach ($urls as $urlAnnotation) {
+					/* @var $urlAnnotation URLAnnotation */
+					$url = $urlAnnotation->getUrl();
+					$url = trim($url, "/");
+				}
+				
+				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName());
+			}
+			
 		}
+		
 		
 		return $urlsList;
 	}
