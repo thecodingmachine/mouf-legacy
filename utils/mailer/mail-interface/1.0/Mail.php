@@ -15,7 +15,7 @@ class Mail implements MailInterface {
 	private $ccRecipients = array();
 	private $bccRecipients = array();
 	private $attachements = array();
-	
+	private $encoding = "utf-8";
 	
 	/**
 	 * Returns the mail text body.
@@ -204,6 +204,25 @@ class Mail implements MailInterface {
 	 */
 	function addAttachement(MailAttachmentInterface $attachement) {
 		$this->attachements[] = $attachement;
+	}
+	
+	/**
+	 * Returns the encoding of the mail.
+	 *
+	 * @return string
+	 */
+	function getEncoding() {
+		return $this->encoding;
+	}
+	
+	/**
+	 * The mail text body.
+	 *
+	 * @Property
+	 * @param string $encoding
+	 */
+	function setEncoding($encoding) {
+		$this->encoding = $encoding;
 	}
 }
 ?>

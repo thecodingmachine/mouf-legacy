@@ -98,7 +98,7 @@ class SmtpMailService implements MailServiceInterface {
 	public function send(MailInterface $mail) {
 		$this->initZendMailTransport();
 		
-		$zendMail = new Zend_Mail();
+		$zendMail = new Zend_Mail($mail->getEncoding());
 
 		if ($mail->getBodyText() != null) {
 			$zendMail->setBodyText($mail->getBodyText());
