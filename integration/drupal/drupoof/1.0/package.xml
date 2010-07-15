@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Drupoof - Drupal Integration module</displayName>
+	<shortDescription>This module is in charge of integrating Mouf and Drupal. Drupal nodes can be stored directly into Mouf, and restored
+	back to Drupal, which makes deployment easier.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+	<requires>
+		<require>DrupalNode.php</require>
+	</requires>
+</package>

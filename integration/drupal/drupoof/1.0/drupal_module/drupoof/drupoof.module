@@ -1,0 +1,564 @@
+<?php
+require_once dirname(__FILE__).'/../../../../Mouf.php';
+
+/*
+function drupoof_get_options() {
+	return array("sharemousepointer" => array("title" => "Share the mouse pointer",
+												"description" => t(""),
+												"js" => "ApiTrack.shareMouse();\n"),
+					"sharewindowsscrolling" => array("title" => "Share the windows scrolling",
+												"description" => t(""),
+												"js" => "ApiTrack.share('window');\n"),
+					"shareinnerscrolling" => array("title" => "Share the inner scolling",
+												"description" => t(""),
+												"js" => "ApiTrack.share('div');\n"),
+					"shareallforms" => array("title" => "Share all forms",
+												"description" => t(""),
+												"js" => "ApiTrack.share('input');\n"),
+					"sharecustom" => array("title" => "Share custom",
+												"description" => t(""),
+												"type" => "textarea",
+												"js" => ""));
+}
+*/
+
+/*
+function drupoof_init() {
+	if(arg(0) != "admin") {
+		if(is_numeric((int)arg(1))) {
+			$node = node_load(arg(1));
+
+			$js_add = "";
+	      	$js_send = "";
+	      	// Check if the tracker is not disabled
+			if(!drupoof_load($node->nid, $node->vid, "disabled")) {
+				// If the user use the default configuration
+				if(drupoof_load($node->nid, $node->vid, "default") && drupoof_load_conf("cobrowsing")) {
+					// Retrieve data
+					foreach(drupoof_get_options() as $key => $option) {
+						if($value = drupoof_load_conf($key)) {
+							$js_add .= drupoof_get_option_js($option, $value);
+						}
+					}
+				}
+				// If the user use specific configuration of page
+				else {
+					// Retrieve data
+					foreach(drupoof_get_options() as $key => $option) {
+						if($value = drupoof_load($node->nid, $node->vid, $key)) {
+							$js_add .= drupoof_get_option_js($option, $value);
+						}
+					}
+				}
+		      	
+		      	$js = array();
+		      	$infos = array();
+		      	// Retrieve all additional data
+		      	foreach (drupoof_load_all_info() as $info) {
+		      		$infos[$info->id] = $info; 
+		      	}
+		      	foreach (drupoof_load_all_info_for_node($node->nid, $node->vid) as $info) {
+		      		if($parent = $infos[$info->drupoof_info_id]) {
+		      			switch($parent->type) {
+		      				case "link":
+		      					if($info->value && $info->value2)
+		      						$js[$parent->validate][$parent->key] .= array('label' => $info->value, 'link' => $info->value2);
+		      					break;
+		      				default:
+		      					if($info->value)
+		      						$js[$parent->validate][$parent->key] .= $info->value;
+		      			}
+		      		}
+		      	}
+			}
+		}
+		// Make apitrack js
+      	drupal_add_js(drupal_get_path('module', 'drupoof') . '/tracker/apideo/apideo.js');
+      	drupal_add_js(drupal_get_path('module', 'drupoof') . '/tracker/apideo-tracker.js');
+      	$key = drupoof_load_conf("key");
+      	drupal_add_js("$(document).ready(function() {
+   						 $js_add
+   						 //Add the line below for local testing
+   						 Apideo.defaultUrl = 'localhost';
+   						 
+   						 ApiTrack.init('$key', ".json_encode($js).")
+    					});",'inline');
+	}
+      	
+	
+}*/
+
+/*
+function drupoof_theme() {
+	return array(
+			'cobrowsing_button' => array(
+				'template' => 'cobrowsing_button',
+				'arguments' => array()
+			)
+		);
+}
+*/
+
+function drupoof_perm() {
+  return array('access drupoof', 'access admin drupoof');
+}
+
+/**
+ * Declares the admin pages for Drupoof
+ * 
+ */
+function drupoof_menu() {
+  /*$items['admin/settings/drupoof'] = array(
+    'title' => t('drupoof management'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupoof_admin'),
+    'access arguments' => array('access admin drupoof'),
+    'file' => 'drupoof.admin.inc',
+  );*/
+  $items['admin/settings/drupoof'] = array(
+    'title' => t('drupoof management'),
+    'page callback' => 'drupoof_nodes_instances_list',
+    'file' => 'drupoof.admin.inc',
+    'access arguments' => array('access admin drupoof'),
+  );
+  $items['admin/settings/drupoof/main'] = array(
+    'title' => t('raydee nodes'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/settings/drupoof/synchronize'] = array(
+    'title' => t('Additionnal info'),
+  	'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupoof_synchronize_to_drupal'),
+    'access arguments' => array('access admin drupoof'),
+    'type' => MENU_CALLBACK,
+    'file' => 'drupoof.admin.inc',
+  );
+  /*$items['admin/settings/drupoof/additional'] = array(
+    'title' => t('Additionnal info'),
+    'page callback' => 'drupoof_info_list',
+    'access arguments' => array('access admin drupoof'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+    'file' => 'drupoof.admin.inc',
+  );
+  
+  $items['admin/settings/drupoof/additional/list'] = array(
+    'title' => t('List'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/settings/drupoof/additional/add'] = array(
+    'title' => t('Add field'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupoof_info_add', 'add'),
+    'access arguments' => array('access admin drupoof'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+    'file' => 'drupoof.admin.inc',
+  );
+  $items['admin/settings/drupoof/additional/edit/%'] = array(
+    'title' => t('Edit field'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupoof_info_add', 'edit', 5),
+    'access arguments' => array('access admin drupoof'),
+    'type' => MENU_CALLBACK,
+    'file' => 'drupoof.admin.inc',
+  );
+  $items['admin/settings/drupoof/additional/delete/%'] = array(
+    'title' => t('Delete field'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drupoof_info_delete', 5),
+    'access arguments' => array('access admin drupoof'),
+    'type' => MENU_CALLBACK,
+    'file' => 'drupoof.admin.inc',
+  );*/
+  
+  return $items;
+}
+
+
+
+/**
+ * Implementation of hook_nodeapi().
+ *
+ * Allows URL aliases for nodes to be specified at node edit time rather
+ * than through the administrative interface.
+ */
+function drupoof_nodeapi(&$node, $op, $arg) {
+  // Permissions are required for everything except node loading.
+  if (user_access('access drupoof') || ($op == 'load') || ($op == 'view')) {
+    switch ($op) {
+      case 'view':
+
+        break;
+
+      // Node creation
+      case 'insert':
+      	drupoof_on_node_insert_update($node);
+		
+        break;
+	  // Node update
+      case 'update':
+      	// TODO: do not user $_REQUEST directly
+      	drupoof_on_node_insert_update($node);
+
+      	break;
+	  // Node delete
+      case 'delete':
+      	drupoof_db_unbind_node_from_mouf($node->nid, $node->vid);
+        break;
+    }
+  }
+}
+
+/**
+ * Function executed when a node is inserted or updated.
+ * 
+ * @param $node
+ */
+function drupoof_on_node_insert_update($node) {
+	require_once ROOT_PATH."mouf/MoufPackageManager.php";
+	
+	// We do not write the MoufComponents.php file if this function call was triggered by a synchronization from Mouf to Drupal.  
+	if (isset($node->drupoof_is_updating_from_drupoof) && $node->drupoof_is_updating_from_drupoof) {
+		return;
+	}
+	
+	// TODO: do not use $_REQUEST directly
+	drupoof_db_set_instance_name_for_node($node->nid, $node->vid, $_REQUEST['drupoof_instancename']);
+	$drupalNode = new DrupalNode();
+	$drupalNode->initFromNode($node);
+	$drupalNode->saveToMouf($_REQUEST['drupoof_instancename']);
+}
+
+/**
+ * Implementation of hook_form_alter().
+ * Allows the node edit form to be overloaded.
+ * 
+ */
+function drupoof_form_alter(&$form, $form_state, $form_id) {
+	if (isset($form['type']) && isset($form['#node']) && $form['type']['#value'] .'_node_form' == $form_id) {
+		//drupoof_load_conf("except");
+	  	$nid = $form['#node']->nid;
+	  	$vid = $form['#node']->vid;
+	  	
+	  	$instanceName = drupoof_db_get_instance_name_for_node($nid, $vid);
+	  	$form['drupoof'] = array(
+	      '#type' => 'fieldset',
+	      '#title' => t('Raydee integration'),
+	      '#collapsible' => TRUE,
+	      '#collapsed' => ($instanceName == null),
+	      '#access' => user_access('access drupoof'),
+	      '#weight' => 30,
+	    );
+	    
+	    $form["drupoof"]['drupoof_instancename'] = array(
+			'#type' => "textfield",
+			'#title' => t('Raydee instance name'),
+	    	'#value' => $instanceName,
+		);	    
+	}
+	/*elseif($form_id == 'block_admin_configure'){
+		$form['#attributes'] = array('enctype' => "multipart/form-data");
+	}*/
+}
+
+/**
+ * Loads and returns a node based on its Mouf instance name.
+ * 
+ * @param $instanceName
+ */
+function drupoof_node_load_by_instance_name($instanceName) {
+	$arr = drupoof_db_get_node_id_from_instance_name($instanceName);
+	if ($arr == null) {
+		return null;
+	}
+	list($nid, $vid) = $arr;
+	
+	return node_load($nid, $vid);
+}
+
+
+// Block of module
+/*function drupoof_block($op = 'list', $delta = 0, $edit = array()) {
+	if ($op == 'list') {
+		$blocks[0] = array(
+			'info' => t('Cyc coBrowsing button'),
+		);
+		return $blocks;
+	}
+	else if ($op == 'configure' && $delta == 0) {
+		drupal_add_js("function drupoof_change_element(value) {
+				document.getElementById('edit-text-agent-wrapper').style.display = 'none';
+				document.getElementById('edit-image-agent-wrapper').style.display = 'none';
+				document.getElementById('edit-html-agent-wrapper').style.display = 'none';
+				if(value == 'text') {
+					document.getElementById('edit-text-agent-wrapper').style.display = '';
+				}
+				else if(value == 'image') {
+					document.getElementById('edit-image-agent-wrapper').style.display = '';
+				}
+				else if(value == 'html') {
+					document.getElementById('edit-html-agent-wrapper').style.display = '';
+				}
+			}
+			$(document).ready(function(){
+				drupoof_change_element(document.getElementById('edit-type-agent').value);
+			})", "inline");
+		$options_agent = array("text" => "Texte",
+  			"image" => "Image",
+  			"html" => "HTML"
+  		);
+	  	$form['agent'] = array(
+					'#type' => 'fieldset',
+					'#title' => t('Online agent'),
+					'#collapsible' => TRUE,
+					'#collapsed' => FALSE,
+	  	);
+	  	$type_agent = variable_get('drupoof_block_button_agent', "text");
+	    $form['agent']['type_agent'] = array(
+			'#type' => 'select',
+			'#title' => t('Type'),
+			'#default_value' => $type_agent,
+			'#options' => $options_agent,
+			'#attributes' => array('onchange' => 'drupoof_change_element(this.value);')
+	    );
+	    $form['agent']['text_agent'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Text button'),
+			'#default_value' => ($type_agent=="text"?variable_get('drupoof_block_button_agent_value', ""):""),
+	    );
+	    $form['agent']['image_agent'] = array(
+			'#type' => 'file',
+			'#title' => t('Image button'),
+			'#description' => ($type_agent=="image"?variable_get('drupoof_block_button_agent_value', ""):""),
+	    );
+	    $form['agent']['html_agent'] = array(
+			'#type' => 'textarea',
+			'#title' => t('HTML code'),
+			'#default_value' => ($type_agent=="html"?variable_get('drupoof_block_button_agent_value', ""):""),
+			'#description' => "ATTENTION : Ce texte remplacera le bouton.",
+	    );
+	    $form['agent']['add_html'] = array(
+			'#type' => 'textarea',
+			'#title' => t('HTML'),
+			'#default_value' => variable_get('drupoof_block_button_agent_add_value', ""),
+			'#description' => "Texte additionel. Il peut contenir du html.",
+	    );
+	    
+	  	$form['noagent'] = array(
+			'#type' => 'fieldset',
+			'#title' => t('Offline agent'),
+			'#collapsible' => TRUE,
+			'#collapsed' => FALSE,
+	  	);
+	    $form['noagent']['image_noagent'] = array(
+			'#type' => 'file',
+			'#title' => t('Image button'),
+			'#description' => variable_get('drupoof_block_button_noagent_image', ""),
+	    );
+	    $form['noagent']['image_remove_noagent'] = array(
+			'#type' => 'checkbox',
+			'#title' => t("Delete image"),
+	    );
+	    $form['noagent']['text_noagent'] = array(
+			'#type' => 'textarea',
+			'#title' => t('Display text'),
+			'#default_value' => variable_get('drupoof_block_button_noagent_text', ""),
+			'#description' => "Texte qui sera affich� s'il n'y a pas d'agent. Il peut contenir du html.",
+	    );
+	    return $form;
+	}
+	else if ($op == 'save' && $delta == 0 && arg(1) != "admin") {
+		variable_set('drupoof_block_button_agent_type', $edit['type_agent']);
+		variable_set('drupoof_block_button_agent_add_value', $edit['add_html']);
+		variable_set('drupoof_block_button_noagent_text', $edit['text_noagent']);
+		
+		if($edit['type_agent'] == "text") {
+			variable_set('drupoof_block_button_agent_value', $edit['text_agent']);
+		}
+		elseif($edit['type_agent'] == "html") {
+			variable_set('drupoof_block_button_agent_value', $edit['html_agent']);
+		}
+		elseif($edit['type_agent'] == "image") {
+			$validators = array(
+		    	'file_validate_is_image' => array()
+				);
+			if($picture = file_save_upload('image_agent', $validators, file_directory_path())) {
+				variable_set('drupoof_block_button_agent_value', $picture->filepath);
+			}
+		}
+		$validators = array(
+	    	'file_validate_is_image' => array()
+			);
+		if($picture = file_save_upload('image_noagent', $validators, file_directory_path())) {
+			variable_set('drupoof_block_button_noagent_image', $picture->filepath);
+		}
+		
+		if($edit["image_remove_noagent"])
+			variable_set('drupoof_block_button_noagent_image', "");
+//		echo $picture;exit();
+	}
+  	else if ($op == 'view') {
+	    switch($delta) {
+	      case 0:
+//	      	if(arg(0) == "node") {
+		        $block = array(
+		        		'subject' => t('Cobrowsing'),
+		          		'content' => theme('cobrowsing_button')
+		        	);
+//	      	}
+	        break;
+	    }
+	    return $block;
+	}
+}*/
+/*
+function drupoof_node_insert($nid, $vid, $key, $value) {
+	db_query("INSERT INTO {drupoof_node} (`id`, `nid`, `vid`, `key`, `value`) VALUES ('', '%d', '%d', '%s', '%s')", $nid, $vid, $key, $value);
+}
+
+function drupoof_conf_insert($key, $value) {
+	db_query("INSERT INTO {drupoof_conf} (`id`, `key`, `value`) VALUES ('', '%s', '%s')", $key, $value);
+}
+
+function drupoof_info_insert($key, $type, $name, $validate) {
+	db_query("INSERT INTO {drupoof_info} (`id`, `key`, `type`, `name`, `validate`) VALUES ('', '%s', '%s', '%s', '%s')", $key, $type, $name, $validate);
+}
+
+function drupoof_info_node_insert($nid, $vid, $drupoof_info_id, $value, $value2 = "") {
+	db_query("INSERT INTO {drupoof_info_node} (`id`, `nid`, `vid`, `drupoof_info_id`, `value`, `value2`) VALUES ('', '%d', '%d', '%d', '%s', '%s')", $nid, $vid, $drupoof_info_id, $value, $value2);
+}
+
+
+function drupoof_node_update($nid, $vid, $key, $value) {
+	db_query("UPDATE {drupoof_node} SET `value` = '%s' WHERE `nid` = '%s' AND `vid` = '%s' AND `key` = '%s'", $value, $nid, $vid, $key);
+	if (!db_affected_rows()) {
+		drupoof_node_insert($nid, $vid, $key, $value);
+	}
+}
+
+function drupoof_conf_update($key, $value) {
+	db_query("UPDATE {drupoof_conf} SET `value` = '%s' WHERE `key` = '%s'", $value, $key);
+	if (!db_affected_rows()) {
+		drupoof_conf_insert($key, $value);
+	}
+}
+
+function drupoof_info_update($key, $type, $name, $validate, $id = null) {
+	if($id)
+		db_query("UPDATE {drupoof_info} SET `type` = '%s', `name` = '%s', `validate` = '%s', `key` = '%s' WHERE id = %d", $type, $name, $validate, $key, $id);
+	else
+		db_query("UPDATE {drupoof_info} SET `type` = '%s', `name` = '%s', `validate` = '%s' WHERE `key` = '%s'", $type, $name, $validate, $key);
+	if (!db_affected_rows()) {
+		drupoof_info_insert($key, $type, $name, $validate);
+	}
+}
+
+function drupoof_info_node_update($nid, $vid, $drupoof_info_id, $value, $value2 = "") {
+	db_query("UPDATE {drupoof_info_node} SET `value` = '%s', `value2` = '%s' WHERE `nid` = '%d' AND `vid` = '%d' AND `drupoof_info_id` = '%d'", $value, $value2, $nid, $vid, $drupoof_info_id);
+	if (!db_affected_rows()) {
+		drupoof_info_node_insert($nid, $vid, $drupoof_info_id, $value, $value2);
+	}
+}
+*/
+/**
+ * Returns the instance name bound to the node (or null if no instance name is bound).
+ * 
+ * @param int $nid
+ * @param int $vid
+ */
+function drupoof_db_get_instance_name_for_node($nid, $vid) {
+	$result = db_fetch_object(db_query("SELECT instancename FROM {drupoof_node} WHERE nid = %d AND vid = %d", $nid, $vid, $key));
+	if (!$result) {
+		return null;
+	}
+	return $result->instancename;
+}
+
+/**
+ * Sets the instance name of the node in database.
+ * 
+ * TODO: check this instance name is not bound to another node.
+ * 
+ * @param $nid
+ * @param $vid
+ * @param $instanceName
+ */
+function drupoof_db_set_instance_name_for_node($nid, $vid, $instanceName) {
+	$result = db_fetch_object(db_query("SELECT instancename FROM {drupoof_node} WHERE nid = %d AND vid = %d", $nid, $vid));
+	if ($result == null) {
+		db_query("INSERT INTO {drupoof_node} (`id`, `nid`, `vid`, `instancename`) VALUES ('', '%d', '%d', '%s')", $nid, $vid, $instanceName);
+	} else {
+		db_query("UPDATE {drupoof_node} SET `instancename` = '%s' WHERE `id` = '%d' AND `nid` = '%d'", $instanceName, $nid, $vid);
+	}
+}
+
+/**
+ * Unbinds the node from any Raydee instance.
+ * 
+ * @param $nid
+ * @param $vid
+ */
+function drupoof_db_unbind_node_from_mouf($nid, $vid) {
+	db_query("DELETE FROM {drupoof_node} WHERE nid = %d AND vid = %d", $nid, $vid);
+}
+
+/**
+ * Returns an array containing the node id and node version, from the instanceName
+ * 
+ * @param $instanceName
+ */
+function drupoof_db_get_node_id_from_instance_name($instanceName) {
+	$result = db_fetch_object(db_query("SELECT nid, vid FROM {drupoof_node} WHERE instancename = '%s'", $instanceName));
+	if (!$result) {
+		return null;
+	}
+	return array($result->nid, $result->vid);
+}
+
+/**
+ * Sets the changed date of a node in database.
+ * 
+ * @param $nid
+ * @param $vid
+ * @param $instanceName
+ */
+function drupoof_db_set_node_changed_date($nid, $vid, $changed) {
+	db_query("UPDATE {node} SET `changed` = '%s' WHERE nid = %d AND vid = %d", $changed, $nid, $vid);
+}
+
+/*function drupoof_load_conf($conf) {
+	$value = db_fetch_object(db_query("SELECT value FROM {drupoof_conf} WHERE `key` = '%s'", $conf));
+	return $value->value;
+}
+
+function drupoof_load_info($key) {
+	return db_fetch_object(db_query("SELECT * FROM {drupoof_info} WHERE `key` = '%s'", $key));
+}
+
+function drupoof_load_id_info($id) {
+	return db_fetch_object(db_query("SELECT * FROM {drupoof_info} WHERE `id` = '%d'", $id));
+}
+
+function drupoof_load_all_info() {
+	$return = array();
+	$res = db_query("SELECT * FROM {drupoof_info}");
+	while($data = db_fetch_object($res)) {
+		$return[] = $data;
+	}
+	return $return;
+}
+
+function drupoof_load_all_info_for_node($nid, $vid) {
+	$return = array();
+	$res = db_query("SELECT * FROM {drupoof_info_node} WHERE `nid` = %d AND vid = %d", $nid, $vid);
+	while($data = db_fetch_object($res)) {
+		$return[] = $data;
+	}
+	return $return;
+}
+
+function drupoof_load_info_node($nid, $vid, $drupoof_info_id) {
+	return db_fetch_object(db_query("SELECT * FROM {drupoof_info_node} WHERE `nid` = %d AND vid = %d AND `drupoof_info_id` = '%s'", $nid, $vid, $drupoof_info_id));
+}*/
+?>

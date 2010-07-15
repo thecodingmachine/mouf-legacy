@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Drupal 6\n"
+"POT-Creation-Date: 2008-08-27 20:14+0200\n"
+"PO-Revision-Date: 2008-01-11 18:46+0100\n"
+"Language-Team: drupalfr.org <traduction@drupalfr.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: France\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+
+msgid "drupoof management"
+msgstr "Gérer drupoof"
+
+msgid "Additionnal info"
+msgstr "Informations additionnelles"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "Add field"
+msgstr "Ajouter un champ"
+
+msgid "Edit field"
+msgstr "Editer le champ"
+
+msgid "Delete field"
+msgstr "Supprimer le champ"
+
+msgid "Api contact your customer"
+msgstr "Api contact your customer"
+
+msgid "Disable tracker"
+msgstr "Désactiver le tracker"
+
+msgid "Cobrowsing"
+msgstr "Cobrowsing"
+
+msgid "Use the default configuration"
+msgstr "Utiliser la configuration par défault"
+
+msgid "Change element"
+msgstr "Changer un élément"
+
+msgid "Type: "
+msgstr "Type : "
+
+msgid "Link name."
+msgstr "Nom du lien."
+
+msgid "Link url"
+msgstr "Url du lien"
+
+msgid "Link url."
+msgstr "Url du lien."
+
+msgid "Cyc coBrowsing button"
+msgstr "Cyc bouton coBrowsing"
+
+msgid "Online agent"
+msgstr "Agent en ligne"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Text button"
+msgstr "Texte du bouton"
+
+msgid "Image button"
+msgstr "Image du bouton"
+
+msgid "HTML code"
+msgstr "Code HTMl"
+
+msgid "HTML"
+msgstr "HTML"
+
+msgid "Offline agent"
+msgstr "Agent hors ligne"
+
+msgid "Delete image"
+msgstr "Supprimer l'image"
+
+msgid "Display text"
+msgstr "Texte affiché"
+
+msgid "Chat"
+msgstr "Chat"
+
+msgid "Apideo Key"
+msgstr "Clé Apideo"
+
+msgid "Apideo key. You can get it on <a href="http://www.apideo.com">Apideo</a>."
+msgstr "Clé Apideo. Vous pouvez la récupérer ici <a href="http://www.apideo.com">Apideo</a>."
+
+msgid "Enable Cobrowsing"
+msgstr "Activer le Cobrowsing"
+
+msgid "Element by default"
+msgstr "Elément par défaut"
+
+msgid "Save"
+msgstr "Sauvegarder"
+
+msgid "Api contact your customer configuration has been saved."
+msgstr "La configuration de l'api contact your customer est sauvegardée."
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Key"
+msgstr "Clé"
+
+msgid "Validate"
+msgstr "Validé"
+
+msgid "Edit"
+msgstr "Edition"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Text"
+msgstr "Texte"
+
+msgid "Link"
+msgstr "Lien"
+
+msgid "Number"
+msgstr "Nombre"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "This action cannot be undone."
+msgstr "Cette action est irréverssible."
+
+msgid "Are you sure you want to delete: "
+msgstr "Etes-vous sûr de vouloir supprimer :"
+
+msgid "The additional info has been deleted."
+msgstr "Les informations aditionnelles ont été supprimées."

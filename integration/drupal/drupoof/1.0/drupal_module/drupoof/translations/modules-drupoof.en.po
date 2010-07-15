@@ -1,0 +1,37 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  on_map.tpl.php: n/a
+#  restaurant_info.tpl.php: n/a
+#  restaurant.menu.inc: n/a
+#  restaurant_news.tpl.php: n/a
+#  search.tpl.php: n/a
+#  search_restaurant.tpl.php: n/a
+#  access.page.inc: n/a
+#  restaurant.module: n/a
+#  restaurant.closure.inc: n/a
+#  restaurant.news.inc: n/a
+#  service.admin.inc,v 1.26.2.4 2009/05/19 13:15:40 Marc Teyssier
+#  search.page.inc: n/a
+#  restaurant.info: n/a
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2009-06-23 12:48+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: restaurant_info.tpl.php:477
+msgid "from_price"
+msgstr "from"#: restaurant_info.tpl.php:477
+msgid "from_price"
+msgstr "from"

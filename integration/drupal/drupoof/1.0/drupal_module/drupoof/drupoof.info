@@ -1,0 +1,6 @@
+name = "Drupoof"
+description = "Raydee integration module into Drupal"
+package = "Drupoof"
+project = "Drupoof"
+version = "6.x-1.0"
+core = 6.x 

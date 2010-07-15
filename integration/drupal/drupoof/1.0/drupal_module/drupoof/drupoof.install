@@ -1,0 +1,131 @@
+<?php
+/**
+ * Implementation of hook_install().
+ */
+function drupoof_install() {
+	drupal_install_schema('drupoof');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function drupoof_uninstall() {
+	drupal_uninstall_schema('drupoof');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function drupoof_schema() {
+  $schema['drupoof_node'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+		'not null' => TRUE,
+      ),
+      'nid' => array(
+        'type' => 'int',
+      	'length' => 10,
+      	'unsigned' => TRUE,
+        'not null' => FALSE,
+      	'description' => 'Node ID',
+      ),
+      'vid' => array(
+        'type' => 'int',
+      	'length' => 10,
+      	'unsigned' => TRUE,
+        'not null' => FALSE,
+      	'description' => 'Node version',
+      ),
+      'instancename' => array(
+        'type' => 'varchar',
+      	'length' => 255,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  /*$schema['drupoof_conf'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+		'not null' => TRUE,
+      ),
+      'key' => array(
+        'type' => 'varchar',
+      	'length' => 25,
+      ),
+      'value' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema['drupoof_info'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+		'not null' => TRUE,
+      ),
+      'key' => array(
+        'type' => 'varchar',
+      	'length' => 25,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+      	'length' => 255,
+      ),
+      'type' => array(
+        'type' => 'varchar',
+        'length' => 32,
+      ),
+      'validate' => array(
+        'type' => 'varchar',
+        'length' => 32,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  $schema['drupoof_info_node'] = array(
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+		'not null' => TRUE,
+      ),
+      'nid' => array(
+        'type' => 'int',
+      	'length' => 10,
+      	'unsigned' => TRUE,
+        'not null' => FALSE,
+      	'description' => 'Node ID',
+      ),
+      'vid' => array(
+        'type' => 'int',
+      	'length' => 10,
+      	'unsigned' => TRUE,
+        'not null' => FALSE,
+      	'description' => 'Node version',
+      ),
+      'drupoof_info_id' => array(
+        'type' => 'varchar',
+      	'length' => 25,
+      ),
+      'value' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'value2' => array(
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );*/
+  return $schema;
+}
+?>
