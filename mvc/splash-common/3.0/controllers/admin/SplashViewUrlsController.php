@@ -17,14 +17,15 @@ class SplashViewUrlsController extends Controller {
 	public $template;
 	
 	protected $splashUrlsList;
+	protected $selfedit;
 	
 	/**
 	 * Displays the config page. 
 	 *
 	 * @Action
 	 */
-	public function defaultAction($selfedit) {
-		
+	public function defaultAction($selfedit = "false") {
+		$this->selfedit = $selfedit;
 		$this->splashUrlsList = SplashUrlManager::getUrlsList($selfedit == "true");
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../../views/admin/splashUrlsList.php", $this);

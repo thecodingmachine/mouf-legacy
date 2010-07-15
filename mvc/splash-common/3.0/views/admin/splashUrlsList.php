@@ -2,18 +2,21 @@
 
 <p>This page let's you see all the URLs that are managed by Splash.</p>
 
-<table>
+<table class='grid'>
 	<tr>
 		<th>URL</th>
 		<th>Controller</th>
 		<th>Action</th>
 	</tr>
-<?php foreach ($this->splashUrlsList as $splashUrl) { 
+	<?php 
+	$i=0;
+	foreach ($this->splashUrlsList as $splashUrl) { 
+		$i++;
 	/* @var $splashUrl SplashCallback */
 	?>
-	<tr>
-		<td><?php echo $splashUrl->url ?></td>
-		<td><?php echo $splashUrl->controllerInstanceName ?></td>
+	<tr class="<?php echo (($i%2)?"odd":"even") ?>">
+		<td title="<?php echo plainstring_to_htmlprotected($splashUrl->comment); ?>"><?php echo ROOT_URL.$splashUrl->url ?></td>
+		<td><?php echo '<a href="'.ROOT_URL.'mouf/instance/?name='.plainstring_to_htmlprotected($splashUrl->controllerInstanceName).'&selfedit='.$this->selfedit.'">'.$splashUrl->controllerInstanceName.'</a>'; ?></td>
 		<td><?php echo $splashUrl->methodName ?></td>
 	</tr>
 <?php } ?>
