@@ -35,15 +35,16 @@ if (!is_writable(dirname(__FILE__)) || !is_writable(dirname(__FILE__)."/..")) {
 		?>
 			<p>You can try these commands:</p>
 			<ul>
-				<li>chown <?php echo $processUser.":".$processUser." ".realpath(dirname(__FILE__)."/..") ?></li>
-				<li>chown <?php echo $processUser.":".$processUser." ".realpath(dirname(__FILE__)) ?></li>
+				<li>chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)."/..") ?></li>
+				<li>chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)) ?></li>
 			</ul>
 		<?php 
 		}
 		?>
 	</body>
 </html>
-<?php 	
+<?php
+	exit();
 }
 ?>
 
