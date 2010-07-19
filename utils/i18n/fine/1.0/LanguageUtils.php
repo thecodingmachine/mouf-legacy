@@ -13,11 +13,13 @@ else{
 
 
 if (file_exists(I18N_MESSAGE_PATH.'message_'.$i18n_lg.'.php')){
+	global $msg;
 	@include_once I18N_MESSAGE_PATH.'message.php';
 	require_once I18N_MESSAGE_PATH.'message_'.$i18n_lg.'.php';
 }
 else{
 	// No error if the file is not found.
+	global $msg;
 	@include_once I18N_MESSAGE_PATH.'message.php';
 }
 /*require_once RESOURCES_PATHS.'message.php';

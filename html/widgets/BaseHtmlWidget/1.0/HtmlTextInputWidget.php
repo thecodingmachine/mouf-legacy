@@ -62,9 +62,8 @@ class HtmlTextInputWidget extends AbstractHtmlInputWidget {
 		} else if ($this->defaultValue) {
 			echo " value='".plainstring_to_htmlprotected($this->defaultValue)."'";
 		}
-		echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";
+		echo " name='".plainstring_to_htmlprotected($this->name)."' />\n";
 
-		echo "</input>\n";
 		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();

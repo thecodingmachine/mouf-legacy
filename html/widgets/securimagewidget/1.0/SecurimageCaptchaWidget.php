@@ -88,6 +88,16 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 	public $enableI18nReloadText;
 	
 	/**
+	 * The URL that will be used to generate the captcha image.
+	 * The URL is relative to the ROOT URL.
+	 * Keep this empty to use the default URL.
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $imageUrl;
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
@@ -125,9 +135,15 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 		
 		echo "<div class='halfcaptcha'>\n";
 		
-		echo '<img src="'.ROOT_URL.'/plugins/utils/captcha/Securimage/2.0.1-beta/securimage_show.php" class="captcha" alt="CAPTCHA Image" id="'.$imageid.'" />';
+		if (!empty($this->imageUrl)) {
+			$imageUrl = ROOT_URL.$this->imageUrl;
+		} else {
+			$imageUrl = ROOT_URL.'plugins/utils/captcha/Securimage/2.0.1-beta/securimage_show.php';
+		}
 		
-		echo '<a class="small" href="#" onclick="document.getElementById(\''.$imageid.'\').src = \''.ROOT_URL.'/plugins/utils/captcha/Securimage/2.0.1-beta/securimage_show.php?\' + Math.random(); return false">';
+		echo '<img src="'.$imageUrl.'" class="captcha" alt="CAPTCHA Image" id="'.$imageid.'" />';
+		
+		echo '<a class="small" href="#" onclick="document.getElementById(\''.$imageid.'\').src = \''.$imageUrl.'?\' + Math.random(); return false">';
 		if ($this->enableI18nReloadText) {
 			eMsg($this->reloadText);
 		} else {

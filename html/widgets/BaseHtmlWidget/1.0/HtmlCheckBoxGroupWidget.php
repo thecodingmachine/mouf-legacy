@@ -48,6 +48,20 @@ class HtmlCheckBoxGroupWidget extends AbstractHtmlInputWidget {
 	 */
 	public $sort = true;
 	
+	/**
+	 * If this is set, the list of all checkboxes will be wrapped into a div with the class set.
+	 *
+	 * @Property
+	 * @var string
+	 */
+	public $checkBoxListContainerCss;
+	
+	/**
+	 * If this is set, each checkbox will be wrapped into a div with the class set.
+	 *
+	 * @Property
+	 * @var string
+	 */
 	public $checkBoxContainerCss;
 	
 	public $checkBoxLabelCss;
@@ -97,6 +111,10 @@ class HtmlCheckBoxGroupWidget extends AbstractHtmlInputWidget {
 			$defaultSelect = get($this->name);
 		}
 		
+		if ($this->checkBoxListContainerCss) {
+				echo "<div class='".$this->checkBoxListContainerCss."'>\n";
+		}
+		
 		foreach ($values as $key=>$value) {
 			if ($this->checkBoxContainerCss) {
 				echo "<div class='".$this->checkBoxContainerCss."'>\n";
@@ -123,7 +141,10 @@ class HtmlCheckBoxGroupWidget extends AbstractHtmlInputWidget {
 			}
 		}
 		
-		echo "</select>\n";
+		if ($this->checkBoxListContainerCss) {
+			echo "</div>\n";
+		}
+	
 		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();

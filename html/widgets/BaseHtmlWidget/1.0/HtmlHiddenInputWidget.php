@@ -63,9 +63,7 @@ class HtmlHiddenInputWidget implements HtmlElementInterface {
 			echo " value='".plainstring_to_htmlprotected($this->defaultValue)."'";
 		}
 		
-		echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";
-
-		echo "</input>\n";
+		echo " name='".plainstring_to_htmlprotected($this->name)."' />\n";
 		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();

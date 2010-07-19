@@ -17,7 +17,7 @@ class Druplash {
 			
 			$url = $urlCallback->url;
 			// remove trailing slash
-			rtrim($url, "/");
+			$url = rtrim($url, "/");
 			
 			$items[$url] = array(
 			    'title' => 'Action '.$urlCallback->methodName.' for controller '.$urlCallback->controllerInstanceName,
@@ -52,20 +52,20 @@ class Druplash {
 	public static function getDrupalBlocks() {
 		$moufManager = MoufManager::getMoufManager();
 		
-		$instanceNames = MoufReflectionProxy::getInstances("DrupalDynamicBlock", $selfedit);
+		$instanceNames = MoufReflectionProxy::getInstances("DrupalDynamicBlockInterface", $selfedit);
 		
 		$blocks = array();
 		
 		foreach ($instanceNames as $instanceName) {
 			$moufBlock = $moufManager->getInstance($instanceName);
-			/* @var $moufBlock DrupalDynamicBlock */
-			$block = array("info"=>$moufBlock->name,
-							"cache"=>(int)$moufBlock->cache,
-							'weight'=>$moufBlock->weight, 
-							'status'=>$moufBlock->status,
-							'region'=>$moufBlock->region,
-							'visibility'=>$moufBlock->visibility,
-							'pages'=>$moufBlock->pages);
+			/* @var $moufBlock DrupalDynamicBlockInterface */
+			$block = array("info"=>$moufBlock->getName(),
+							"cache"=>(int)$moufBlock->getCache(),
+							'weight'=>$moufBlock->getWeight(), 
+							'status'=>$moufBlock->getStatus(),
+							'region'=>$moufBlock->getRegion(),
+							'visibility'=>$moufBlock->getVisibility(),
+							'pages'=>$moufBlock->getPages());
 			
 			$blocks[$instanceName] = $block;
 		}
@@ -81,8 +81,8 @@ class Druplash {
 		$moufManager = MoufManager::getMoufManager();
 		$moufBlock = $moufManager->getInstance($instanceName);
 		/* @var $moufBlock DrupalDynamicBlock */
-		return array('subject'=>$moufBlock->subject,
-					'content'=>$moufBlock->content);
+		return array('subject'=>$moufBlock->getSubject(),
+					'content'=>$moufBlock->getContent());
 	}
 }
 

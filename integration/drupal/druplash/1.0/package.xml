@@ -13,6 +13,8 @@
 	</dependencies>
 	<requires>
 		<require>Druplash.php</require>
+		<require>DrupalController.php</require>
+		<require>DrupalDynamicBlockInterface.php</require>
 		<require>DrupalDynamicBlock.php</require>
 	</requires>
 </package>

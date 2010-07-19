@@ -44,10 +44,8 @@ class HtmlPasswordInputWidget extends AbstractHtmlInputWidget {
 			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
 		}
 
-		echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";
+		echo " name='".plainstring_to_htmlprotected($this->name)."' />\n";
 
-		echo "</input>\n";
-		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();
 			$instanceName = $manager->findInstanceName($this);
