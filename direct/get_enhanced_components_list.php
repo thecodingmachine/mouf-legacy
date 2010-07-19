@@ -4,6 +4,11 @@
  * along additional interesting infos (subclasses, name of the declaration file, etc...)
  */
 
+// Disable output buffering
+while (ob_get_level() != 0) {
+	ob_end_clean();
+}
+
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	require_once '../../Mouf.php';
 } else {
@@ -13,6 +18,15 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	require_once '../MoufAdmin.php';
 }
 require_once '../Moufspector.php';
+
+$file=null;
+$line=null;
+$isSent = headers_sent($file, $line);
+
+if ($isSent) {
+	echo "Error! Output started on line ".$line." in file ".$file;
+	exit;
+}
 
 $type = null;
 if (isset($_REQUEST["type"])) {
