@@ -82,7 +82,7 @@ class MoufReflectionMethod extends ReflectionMethod
 	public function hasAnnotation($annotationName) {
 		$this->analyzeComment();
 		
-		return $this->docComment->getAnnotationsCount($annotationName);
+		return ($this->docComment->getAnnotationsCount($annotationName) != 0);
 	}
 	
 	/**

@@ -47,6 +47,13 @@ class MoufController extends Controller {
 	public $instancesByPackage;
 	
 	/**
+	 * Array of all instances that are bound to classes that no longer exist.
+	 * 
+	 * @var array<string, string> key: instance name, value: class name.
+	 */
+	public $inErrorInstances;
+	
+	/**
 	 * Redirects the user to the right controller.
 	 * This canb e the detail controller, or any other controller, depending on the @ExtendedAction annotation.
 	 * 
@@ -150,12 +157,18 @@ class MoufController extends Controller {
 			$instanceListByClass[$className][] = $instanceName;
 		}
 		
+		// The instances are bound to classes that no longer exist:
+		$this->inErrorInstances = $instanceList;
+		
 		// type: array<package, array<class, instance>>
 		$instancesByPackage = array();
 		foreach ($componentsByShortFile as $package=>$classes) {
 			foreach ($classes as $class) {
 				if (isset($instanceListByClass[$class])) {
 					$instancesByPackage[$package][$class] = $instanceListByClass[$class];
+					foreach ($instanceListByClass[$class] as $instance) {
+						unset($this->inErrorInstances[$instance]);
+					}
 				}
 			}
 		}
