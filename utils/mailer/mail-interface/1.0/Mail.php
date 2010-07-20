@@ -2,6 +2,9 @@
 
 /**
  * This class represents a mail to be sent using a Mailer class extending the MailerInterface.
+ * + it has special features to add a text mail for any HTML mail that has not been provided the text mail.
+ * 
+ * Note: default encoding for the mail is UTF-8 if not specified.
  * 
  * @Component
  */
@@ -16,6 +19,7 @@ class Mail implements MailInterface {
 	private $bccRecipients = array();
 	private $attachements = array();
 	private $encoding = "utf-8";
+	private $autocreateMissingText = false;
 	
 	/**
 	 * Returns the mail text body.
@@ -23,7 +27,11 @@ class Mail implements MailInterface {
 	 * @return string
 	 */
 	function getBodyText() {
-		return $this->bodyText;
+		if ($this->bodyText != null) {
+			return $this->bodyText;
+		} elseif ($this->autocreateMissingText == true) {
+			return $this->removeHtml($this->bodyHtml);
+		}
 	}
 	
 	/**
@@ -54,7 +62,6 @@ class Mail implements MailInterface {
 	function setBodyHtml($bodyHtml) {
 		$this->bodyHtml = $bodyHtml;
 	}
-	
 	
 	/**
 	 * Returns the mail title.
@@ -224,5 +231,78 @@ class Mail implements MailInterface {
 	function setEncoding($encoding) {
 		$this->encoding = $encoding;
 	}
+	
+	/**
+	 * If no body text is set for that mail, and if autoCreateBodyText is set to true, this object will create the body text from the body HTML text,
+	 * by removing any tags.
+	 * 
+	 * @param boolean $autoCreate
+	 */
+	public function autoCreateBodyText($autoCreate) {
+		$this->autocreateMissingText = $autoCreate;
+	}
+	
+	/**
+	 * Removes the HTML tags from the text.
+	 * 
+	 * @param string $s
+	 * @param string $keep The list of tags to keep
+	 * @param string $expand The list of tags to remove completely, along their content
+	 */
+	private function removeHtml($s , $keep = '' , $expand = 'script|style|noframes|select|option'){
+        /**///prep the string
+        $s = ' ' . $s;
+       
+        /**///initialize keep tag logic
+        if(strlen($keep) > 0){
+            $k = explode('|',$keep);
+            for($i=0;$i<count($k);$i++){
+                $s = str_replace('<' . $k[$i],'[{(' . $k[$i],$s);
+                $s = str_replace('</' . $k[$i],'[{(/' . $k[$i],$s);
+            }
+        }
+       
+        //begin removal
+        /**///remove comment blocks
+        while(stripos($s,'<!--') > 0){
+            $pos[1] = stripos($s,'<!--');
+            $pos[2] = stripos($s,'-->', $pos[1]);
+            $len[1] = $pos[2] - $pos[1] + 3;
+            $x = substr($s,$pos[1],$len[1]);
+            $s = str_replace($x,'',$s);
+        }
+       
+        /**///remove tags with content between them
+        if(strlen($expand) > 0){
+            $e = explode('|',$expand);
+            for($i=0;$i<count($e);$i++){
+                while(stripos($s,'<' . $e[$i]) > 0){
+                    $len[1] = strlen('<' . $e[$i]);
+                    $pos[1] = stripos($s,'<' . $e[$i]);
+                    $pos[2] = stripos($s,$e[$i] . '>', $pos[1] + $len[1]);
+                    $len[2] = $pos[2] - $pos[1] + $len[1];
+                    $x = substr($s,$pos[1],$len[2]);
+                    $s = str_replace($x,'',$s);
+                }
+            }
+        }
+       
+        /**///remove remaining tags
+        while(stripos($s,'<') > 0){
+            $pos[1] = stripos($s,'<');
+            $pos[2] = stripos($s,'>', $pos[1]);
+            $len[1] = $pos[2] - $pos[1] + 1;
+            $x = substr($s,$pos[1],$len[1]);
+            $s = str_replace($x,'',$s);
+        }
+       
+        /**///finalize keep tag
+        for($i=0;$i<count($k);$i++){
+            $s = str_replace('[{(' . $k[$i],'<' . $k[$i],$s);
+            $s = str_replace('[{(/' . $k[$i],'</' . $k[$i],$s);
+        }
+       
+        return trim($s);
+    }
 }
 ?>
