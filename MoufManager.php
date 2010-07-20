@@ -996,6 +996,10 @@ class MoufManager {
 	 * TODO: protect special characters!!!!
 	 */
 	public function rewriteMouf() {
+		if (!is_writable(dirname(dirname(__FILE__)."/".$this->componentsFileName)) || (file_exists(dirname(__FILE__)."/".$this->componentsFileName) && !is_writable(dirname(__FILE__)."/".$this->componentsFileName))) {
+			throw new MoufException("Error, unable to write file ".realpath(dirname(__FILE__)."/".$this->componentsFileName));
+		}
+		
 		$fp = fopen(dirname(__FILE__)."/".$this->componentsFileName, "w");
 		fwrite($fp, "<?php\n");
 		fwrite($fp, "/**\n");
