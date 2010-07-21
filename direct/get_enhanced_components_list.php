@@ -24,7 +24,7 @@ $line=null;
 $isSent = headers_sent($file, $line);
 
 if ($isSent) {
-	echo "Error! Output started on line ".$line." in file ".$file;
+	echo "\n<error>Error! Output started on line ".$line." in file ".$file."</error>";
 	exit;
 }
 
