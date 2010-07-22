@@ -74,7 +74,7 @@ class MoufConfigManager {
 	 */
 	public function setDefinedConstants($constants) {
 		if (!is_writable(dirname(dirname(__FILE__)."/".$this->configFileName)) || (file_exists(dirname(__FILE__)."/".$this->configFileName) && !is_writable(dirname(__FILE__)."/".$this->configFileName))) {
-			throw new MoufException("Error, unable to write file ".realpath(dirname(__FILE__)."/".$this->configFileName));
+			throw new MoufException("Error, unable to write file ".dirname(__FILE__)."/".$this->configFileName);
 		}
 		
 		
