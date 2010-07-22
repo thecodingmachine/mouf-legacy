@@ -223,7 +223,7 @@ class Mail implements MailInterface {
 	}
 	
 	/**
-	 * The mail text body.
+	 * The mail encoding. Defaults to utf-8.
 	 *
 	 * @Property
 	 * @param string $encoding
