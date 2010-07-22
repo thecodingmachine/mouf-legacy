@@ -45,7 +45,7 @@ class SmtpMailService implements MailServiceInterface {
 	 * The authentication mode.
 	 *
 	 * @Property
-	 * @OneOf("", "plain", "login", "crammd5")
+	 * @OneOf("plain", "login", "crammd5")
 	 * @var string
 	 */
 	public $auth;
@@ -78,7 +78,7 @@ class SmtpMailService implements MailServiceInterface {
 	 * The SSL mode to use, if any.
 	 *
 	 * @Property
-	 * @OneOf("", "ssl", "tls")
+	 * @OneOf("ssl", "tls")
 	 * @var int
 	 */
 	public $ssl;
