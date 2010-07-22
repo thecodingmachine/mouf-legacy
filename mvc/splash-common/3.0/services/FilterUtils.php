@@ -35,12 +35,23 @@ class FilterUtils {
 
 		// Start with the most parent class and goes to the target class:
 		for ($i=count($parentsArray)-1; $i>=0; $i--) {
-			foreach (self::$filtersList as $filter) {
-				if ($parentsArray[$i]->hasAnnotation($filter)) {
+			foreach (self::$filtersList as $filterName) {
+				if ($parentsArray[$i]->hasAnnotation($filterName)) {
 					//$filterArray[$filter] = $parentsArray[$i]->getAnnotation($filter);
 					//$filterArray[$filter]->setMetaData($controller, $refMethod);
-					$filters = $parentsArray[$i]->getAnnotation($filter);
+					$filters = $parentsArray[$i]->getAnnotations($filterName);
+					
 					foreach ($filters as $filter) {
+						// The filter should be a class instance extending filter.
+						// If it is a string, it means the class was not properly loaded.
+						if (is_string($filter)) {
+							throw new Exception("Error while handling filter annotation: @$filterName. It seems that neither the class $filterName nor ".$filterName."Annotation does exist.");
+						}
+						
+						if (!$filter instanceof AbstractFilter) {
+							throw new Exception("Error while handling filter annotation: @$filterName. The ".get_class($filter)." class must extend the AbstractFilter class.");
+						}
+						
 						$filter->setMetaData($controller, $refMethod);
 						$filterArray[] = $filter;
 					}
