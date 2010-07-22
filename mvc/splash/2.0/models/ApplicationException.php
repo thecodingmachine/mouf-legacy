@@ -18,7 +18,8 @@ class ApplicationException extends Exception {
 	 * 	__construct(Exception $e)
 	 */
 	public function __construct($title=null, $message=null,$e=null) {
-
+		parent::__construct();
+		
 		if ($title instanceof Exception) {
 			$this->inner_exception = $title;
 			return;
