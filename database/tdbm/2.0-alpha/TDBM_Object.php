@@ -143,6 +143,30 @@ class TDBM_Object {
 	}
 	
 	/**
+	 * Returns the state of the TDBM Object
+	 * One of "new", "not loaded", "loaded", "deleted".
+	 * $TDBM_Object_state = "new" when a new object is created with DBMObject:getNewObject.
+	 * $TDBM_Object_state = "not loaded" when the object has been retrieved with getObject but when no data has been accessed in it yet.
+	 * $TDBM_Object_state = "loaded" when the object is cached in memory.
+	 * @return string
+	 */
+	public function getTDBMObjectState(){
+		return $this->TDBM_Object_state;
+	}
+	
+	/**
+	 * Sets the state of the TDBM Object
+	 * One of "new", "not loaded", "loaded", "deleted".
+	 * $TDBM_Object_state = "new" when a new object is created with DBMObject:getNewObject.
+	 * $TDBM_Object_state = "not loaded" when the object has been retrieved with getObject but when no data has been accessed in it yet.
+	 * $TDBM_Object_state = "loaded" when the object is cached in memory.
+	 * @param string $state
+	 */
+	public function setTDBMObjectState($state){
+		$this->TDBM_Object_state = $state;
+	}
+	
+	/**
 	 * Internal TDBM method, you should not use this.
 	 * Loads the db_row property of the object from the $row array.
 	 * Any row having a key starting with 'tdbm_reserved_col_' is ignored.

@@ -383,8 +383,7 @@ class TDBM_Service {
 	 * @param TDBM_Object $object the object to delete.
 	 */
 	public function deleteObject(TDBM_Object $object) {
-		$object->TDBM_Object_state == "deleted";
-		if ($object->TDBM_Object_state != "new")
+		if ($object->getTDBMObjectState() != "new" && $object->getTDBMObjectState() != "deleted")
 		{
 			//$primary_key = $object->getPrimaryKey();
 			$pk_table = $object->getPrimaryKey();
@@ -412,6 +411,7 @@ class TDBM_Service {
 			throw new TDBM_Exception("Error while deleting object from table ".$object->_getDbTableName().": ".$result." have been affected.");
 
 			unset ($this->objects[$object->_getDbTableName()][$object_id]);
+			$object->setTDBMObjectState("deleted");
 		}
 	}
 
@@ -611,9 +611,10 @@ class TDBM_Service {
 				{
 					foreach ($table as $object)
 					{
-						if (!$object->db_onerror && $object->TDBM_Object_state == "loaded")
+						/* @var $object TDBM_Object */
+						if (!$object->db_onerror && $object->getTDBMObjectState() == "loaded")
 						{
-							$object->TDBM_Object_state == "not loaded";
+							$object->setTDBMObjectState("not loaded");
 						}
 					}
 				}
