@@ -391,13 +391,13 @@ class TDBM_Service {
 			$object_id = $object->TDBM_Object_id;
 			// If there is only one primary key:
 			if (count($pk_table)==1) {
-				$sql_where = $pk_table[0]."=".$object->db_connection->quoteSmart($object->TDBM_Object_id);
+				$sql_where = $pk_table[0]."=".$this->dbConnection->quoteSmart($object->TDBM_Object_id);
 			} else {
 				$ids = unserialize($object_id);
 				$i=0;
 				$sql_where_array = array();
 				foreach ($pk_table as $pk) {
-					$sql_where_array[] = $pk."=".$object->db_connection->quoteSmart($ids[$i]);
+					$sql_where_array[] = $pk."=".$this->dbConnection->quoteSmart($ids[$i]);
 					$i++;
 				}
 				$sql_where = implode(" AND ",$sql_where_array);

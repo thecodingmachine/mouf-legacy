@@ -163,7 +163,7 @@ class TDBM_Object {
 	 * @param string $state
 	 */
 	public function setTDBMObjectState($state){
-		$this->TDBM_Object_state = $state;
+		$this->TDBM_Object_state = $state;	
 	}
 	
 	/**
