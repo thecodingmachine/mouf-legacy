@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery Uploadify</displayName>
+	<shortDescription>This package contains the JQuery Uploadify functions.</shortDescription>
+	<docUrl>http://www.uploadify.com/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>1.4.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryUploadify.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>JQueryUploadifyExternalComponent.php</require>
+	</externalComponentRequires>
+</package>
