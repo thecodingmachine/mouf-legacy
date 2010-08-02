@@ -95,6 +95,37 @@ class MoufReflectionProxy {
 		return $obj;
 	}
 	
+	/**
+	 * Analyzes the include files.
+	 * Returns an empty array if everything is fine, or an array like this if there is an error:
+	 * 	array("errorType"=>"crash", "errorMsg"=>"txt");
+	 * 
+	 * errorTypes can be "crash" or "outputStarted"
+	 * 
+	 * @param string $selfEdit
+	 * @throws Exception
+	 */
+	public static function analyzeIncludes($selfEdit) {
+		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/analyze_includes.php?selfedit=".(($selfEdit)?"true":"false");
+		
+		$response = self::performRequest($url);
+
+		// Let's strip the invalid parts:
+		$arr = explode("\nX4EVDX4SEVX548DSVDXCDSF489\n", $response);
+		if (count($arr) < 2) {
+			// No delimiter: there has been a crash.
+			return array("errorType"=>"crash", "errorMsg"=>$response);
+		}
+		$msg = $arr[count($arr)-1]; 
+		
+		$obj = unserialize($msg);
+		
+		if ($obj === false) {
+			throw new Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
+		}
+		
+		return $obj;
+	}
 	
 	/**
 	 * Returns the default value for the property of the class, through a call to the "get_default.php" page. 

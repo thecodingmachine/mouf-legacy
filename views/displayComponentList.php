@@ -1,9 +1,24 @@
+<?php 
+$files = $this->moufManager->getRegisteredComponentFiles();
+?>
 <h1>List of included component files</h1>
+
+<?php
+$errors = $this->analyzeErrors;
+
+if (isset($errors["errorType"])) {
+	echo "<div class='error'>".$errors["errorMsg"].'</div>';
+}
+?>
+
+<p>Below is the list of files that will be automatically <em>required</em> by Mouf when you include the <code>Mouf.php</code> file.
+Those files should not output directly something when included.</p>
 
 <form action="save">
 
 <input type="hidden" name="selfedit" id="selfedit" value="<?php echo $this->selfedit; ?>" />
 
+<div id="noFiles" class="notice" style="display:none">You have not selected any files yet for inclusion.</div>
 <div id="filesList">
 </div>
 
@@ -21,18 +36,14 @@
 
 <script type="text/javascript">
 jQuery(document).ready( function() {
-	<?php 
-
-	$files = $this->moufManager->getRegisteredComponentFiles();
-
-	foreach ($files as $file) {
-		//echo "<div style='clear:both'><div class='moveable'></div>";
-		//echo $file;
-		//echo "<input type='hidden' value='".plainstring_to_htmlprotected($file)."' />";
-		//echo "</div>";
-		echo "addFile('".plainstring_to_htmlprotected($file)."');\n";
+	<?php
+	if (!empty($files)) {
+		foreach ($files as $file) {
+			echo "addFile('".plainstring_to_htmlprotected($file)."');\n";
+		}
+	} else {
+		echo "jQuery('#noFiles').show();\n";
 	}
-
 
 	?>
 
@@ -71,10 +82,14 @@ function addFile(fileName) {
 	html += "</div>";
 	counter++;
 	jQuery('#filesList').append(html);
+	jQuery('#noFiles').hide();
 }
 
 function deleteFile(id) {
 	jQuery('#'+id).remove();
+	if (jQuery('#noFiles > div').size() == 0) {
+		jQuery('#noFiles').show();
+	}
 }
 </script>
 

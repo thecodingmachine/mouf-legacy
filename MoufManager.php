@@ -1578,5 +1578,31 @@ class ".$this->mainClassName." {
 			$this->declaredSetterBinds[$destInstanceName] = $this->declaredSetterBinds[$srcInstanceName];
 	}
 	
+	/**
+	 * Returns the list of files to be included because of the packages.
+	 * This function can be useful to analyze the Mouf includes.
+	 * @return array<string>
+	 */
+	public function getFilesListRequiredByPackages() {
+		$files = array();
+		$packageManager = new MoufPackageManager(dirname(__FILE__).'/../plugins');
+		foreach ($this->packagesList as $fileName) {
+			$package = $packageManager->getPackage($fileName);
+			foreach ($package->getRequiredFiles() as $requiredFile) {
+				$files[] = $this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile;
+			}
+		}
+		return $files;
+	}
+	
+	/**
+	 * Returns the list of files to be required (relative to the directory of Mouf.php)
+	 *
+	 * @return array<string>
+	 */
+	public function getRegisteredIncludeFiles() {
+		return $this->registeredComponents;
+	}
+	
 }
 ?>

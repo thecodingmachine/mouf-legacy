@@ -26,6 +26,11 @@ class ComponentsController extends Controller {
 	 */
 	public $template;
 	
+	/**
+	 * The errors returned by analyzing the files.
+	 * @var array
+	 */
+	protected $analyzeErrors;
 	
 	/**
 	 * Displays the list of component files
@@ -44,6 +49,9 @@ class ComponentsController extends Controller {
 				
 		$template = $this->template;
 		//$this->template->addJsFile(ROOT_URL."mouf/views/displayComponent.js");
+		
+		$this->analyzeErrors = MoufReflectionProxy::analyzeIncludes($selfedit != "false");
+		
 		$template->addContentFile("views/displayComponentList.php", $this);
 		$template->draw();	
 	}
