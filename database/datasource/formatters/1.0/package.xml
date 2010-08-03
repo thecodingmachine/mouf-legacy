@@ -16,6 +16,7 @@
 		<require>NumberFormatter.php</require>
 		<require>CurrencyFormatter.php</require>
 		<require>PrefixSuffixFormatter.php</require>
+		<require>SwitchFormatter.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>FormatterExternalComponent.php</require>
