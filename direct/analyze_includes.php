@@ -29,6 +29,10 @@ foreach (MoufManager::getMoufManager()->getFilesListRequiredByPackages() as $pac
 	require_once ROOT_PATH.$packageFile;
 }
 
+$moufResponse = array();
+$moufDeclaredClasses = get_declared_classes();
+$moufDeclaredClassesByFiles = array();
+
 // Ok, now, we can start including our files.
 foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
 	require_once ROOT_PATH.$registeredFile;
@@ -38,13 +42,21 @@ foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $register
 	$isSent = headers_sent($moufFile, $moufLine);
 	
 	if ($isSent) {
-		$response = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
+		$moufResponse = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
 		break;
 	}
+	
+	$moufDeclaredClassesNew = get_declared_classes();
+	$moufDeclaredClassesByFiles[$registeredFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
+	$moufDeclaredClasses = $moufDeclaredClassesNew;
 }
 
 // Unique ID that is unlikely to be in the bottom of the message
 echo "\nX4EVDX4SEVX548DSVDXCDSF489\n";
+
+if (!isset($moufResponse['errorType'])) {
+	$moufResponse["classes"] = $moufDeclaredClassesByFiles;
+}
 
 $encode = "php";
 if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
@@ -52,9 +64,9 @@ if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
 }
 
 if ($encode == "php") {
-	echo serialize($response);
+	echo serialize($moufResponse);
 } elseif ($encode == "json") {
-	echo json_encode($response);
+	echo json_encode($moufResponse);
 } else {
 	echo "invalid encode parameter";
 }

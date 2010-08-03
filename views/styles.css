@@ -1,7 +1,7 @@
 
 div.file {
 	width: 500px;
-	height: 20px;
+	min-height: 20px;
 	border: 1px solid #cccccc;
 	background-color: #eeeeee;
 	clear:both;
@@ -29,6 +29,18 @@ div.trash {
 	width: 15px;
 	height: 15px;
 	background-image:url(images/trash.png);
+	float:right;
+	cursor:pointer;
+}
+
+div.file div.details {
+	margin: 2px 2px 2px 50px;
+	border: 1px solid #cccccc;
+	clear: both;
+	display: none;
+}
+
+div.file div.viewdetails {
 	float:right;
 	cursor:pointer;
 }

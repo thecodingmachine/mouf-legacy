@@ -4,10 +4,10 @@ $files = $this->moufManager->getRegisteredComponentFiles();
 <h1>List of included component files</h1>
 
 <?php
-$errors = $this->analyzeErrors;
+$includesAnalyze = $this->analyzeErrors;
 
-if (isset($errors["errorType"])) {
-	echo "<div class='error'>".$errors["errorMsg"].'</div>';
+if (isset($includesAnalyze["errorType"])) {
+	echo "<div class='error'>".$includesAnalyze["errorMsg"].'</div>';
 }
 ?>
 
@@ -39,14 +39,22 @@ jQuery(document).ready( function() {
 	<?php
 	if (!empty($files)) {
 		foreach ($files as $file) {
-			echo "addFile('".plainstring_to_htmlprotected($file)."');\n";
+			if (isset($includesAnalyze['classes'][$file])) {
+				$classList = array_values($includesAnalyze['classes'][$file]);
+			} else {
+				$classList = null;
+			}
+			echo "addFile('".plainstring_to_htmlprotected($file)."', null, ".json_encode($classList).");\n";
 		}
 	} else {
 		echo "jQuery('#noFiles').show();\n";
 	}
 
 	?>
-
+	jQuery(".viewdetails").click(function(ev) {
+		jQuery(this).parent().find(".details").show();
+		ev.preventDefault();
+	});
 
 	
 	jQuery('#filesList').sortable({handle:'.moveable'});
@@ -71,15 +79,36 @@ function showDialog() {
 
 counter = 0;
 
-function addFile(fileName) {
+/**
+ * @param $fileName The file name
+ * @param $errorMsg The error message (or null if no error)
+ * @param $classList The list of the classes defined by this file
+ */
+function addFile(fileName, errorMsg, classList) {
 	var html = "<div id='file"+counter+"' class='file'>";
 	html += "<div class='moveable'></div>";
 	html += "<div class='phpfileicon'></div>";
 	html += "<div class='trash' onclick='deleteFile(\"file"+counter+"\")'></div>";
+	html += "<div class='viewdetails'><a href='#'>view details</a></div>";
+	if (errorMsg != null) {
+		html += "<div class='error'>"+errorMsg+"</div>";
+	}
 	html += fileName;
 	// Todo: protect the value of the hidden tag.
 	html += "<input type='hidden' name='files[]' value='"+fileName+"' />";
+
+	if (classList != null) {
+		html += "<div class='details'>Defined classes:<ul>";
+		for (var i=0; i<classList.length; i++) {
+			html += "<li>"+classList[i]+"</li>";
+		}
+		html += "</ul></div>";
+	} else {
+		html += "<div class='details'>No classes defined in that file</div>";
+	}
+
 	html += "</div>";
+	
 	counter++;
 	jQuery('#filesList').append(html);
 	jQuery('#noFiles').hide();
