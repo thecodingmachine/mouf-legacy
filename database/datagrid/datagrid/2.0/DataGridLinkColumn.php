@@ -31,6 +31,8 @@ class DataGridLinkColumn extends DataGridColumn {
 	
 	/**
 	 * The column to be used in the datasource as a source for the web link.
+	 * For instance if you select a column "ID" from the datasource, and if your $baseLinkUrl is userDetails?id=
+	 * then the final link URL will be userDetails?id=[the ID value from the datasource]
 	 *
 	 * @Property
 	 * @Compulsory
