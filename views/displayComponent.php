@@ -29,7 +29,7 @@ function addNewDropDown(element, name, defaultValue, hasKey, defaultKey, type, i
 		str += "<span id='"+name+"_mouf_dropdown_dropdown_"+dropDownCnt+"' style='display:none'>";
 	}
 	if (hasKey) {
-		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
+		str += "<input type='text' name='moufKeyFor"+htmlEntitiesAndQuotes(name)+"[]' value=\""+htmlEntitiesAndQuotes(defaultKey)+"\">";
 		str += "=&gt;";
 	}
 	var arraySuffix = "";
@@ -50,7 +50,7 @@ function addNewDropDown(element, name, defaultValue, hasKey, defaultKey, type, i
 	});*/
 	// By default, before the options are filled, let's fill the select box with at least the previous value selected:
 	if (defaultValue != "") {
-		str += "<option value='"+defaultValue+"'>"+defaultValue+"</option>"
+		str += "<option value='"+htmlEntitiesAndQuotes(defaultValue)+"'>"+htmlEntitiesAndQuotes(defaultValue)+"</option>"
 	}
 	str += "</select>";
 	str += "<img id='"+imageId+"' src='<?php echo ROOT_URL ?>mouf/views/images/ajax-loader.gif' alt='' />";
@@ -81,11 +81,11 @@ function fillOptionList(selectId, imageId, varType, defaultValue) {
       var options = '<option value=""></option>';
       options += "<option value='newInstance'>Create New Instance</option>";
       for (var i = 0; i < j.length; i++) {
-        options += '<option value="' + j[i] + '"' ;
+        options += '<option value="' + htmlEntitiesAndQuotes(j[i]) + '"' ;
         if (toSelect == j[i]) {
         	options += 'selected="true"';
         }
-        options += '>' + j[i] + '</option>';
+        options += '>' + htmlEntitiesAndQuotes(j[i]) + '</option>';
       }
       jQuery("#"+toSelectId).html(options);
       jQuery("#"+ajaxLoadImageId).hide();
@@ -102,14 +102,31 @@ function addNewTextBox(element, name, defaultValue, hasKey, defaultKey) {
 	str += "<div id='"+name+"_mouf_dropdown_"+dropDownCnt+"'>";
 	str += "<div class='moveable'></div>";
 	if (hasKey) {
-		str += "<input type='text' name='moufKeyFor"+name+"[]' value=\""+defaultKey+"\">";
+		str += "<input type='text' name='moufKeyFor"+htmlEntitiesAndQuotes(name)+"[]' value=\""+htmlEntitiesAndQuotes(defaultKey)+"\">";
 		str += "=&gt;";
 	}
-	str += "<input type='text' name='"+name+"[]' value=\""+defaultValue+"\">";
+	str += "<input type='text' name='"+htmlEntitiesAndQuotes(name)+"[]' value=\""+htmlEntitiesAndQuotes(defaultValue)+"\">";
 	str += "<a onclick='$(\""+name+"_mouf_dropdown_"+dropDownCnt+"\").remove()'><img src=\"<?php echo ROOT_URL ?>mouf/views/images/cross.png\"></a>";
 	str += "</div>";
 	element.insert(str);
 	dropDownCnt++;
+}
+
+/**
+ * Protects special HTML chars.
+ */
+function htmlEntities(text) {
+	return jQuery('<div/>').text(text).html();
+}
+
+/**
+ * Protects special HTML chars and quotes.
+ */
+function htmlEntitiesAndQuotes(text) {
+	html = htmlEntities(text);
+	html=html.replace(/"/g, "&quot;") ;
+	html=html.replace(/'/g, "&#146;") ;
+	return html;
 }
 
 /*
@@ -272,18 +289,18 @@ foreach ($this->properties as $property) {
 				if (is_array($defaultValues)) {
 					foreach ($defaultValues as $defaultKey=>$defaultValue) {
 						if ($isAssociative) {
-							echo "addNewTextBox($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"$defaultValue\", true, \"$defaultKey\");\n";
+							echo "addNewTextBox($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", true, \"$defaultKey\");\n";
 						} else {
-							echo "addNewTextBox($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\");\n";
+							echo "addNewTextBox($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", false, \"\");\n";
 						}
 					}
 				}
 				
-				echo "jQuery('#".$property->getName()."_mouf_array').sortable({handle:'.moveable'});";
+				echo "jQuery('#".addslashes($property->getName())."_mouf_array').sortable({handle:'.moveable'});";
 
 				echo "\n});\n";
 				echo "</script>";
-				echo "<a onclick='addNewTextBox($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"\", ".(($isAssociative)?"true":"false").", \"\");'>Add a value</a>";
+				echo "<a onclick='addNewTextBox($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"\", ".(($isAssociative)?"true":"false").", \"\");'>Add a value</a>";
 				echo "</div>";
 				echo "<div style='clear:both'></div>";
 				
@@ -324,9 +341,9 @@ foreach ($this->properties as $property) {
 				if (is_array($defaultValues)) {
 					foreach ($defaultValues as $defaultKey=>$defaultValue) {
 						if ($isAssociative) {
-							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"$defaultValue\", true, \"$defaultKey\", \"".$property->getSubType()."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
+							echo "addNewDropDown($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", true, \"".addslashes($defaultKey)."\", \"".addslashes($property->getSubType())."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
 						} else {
-							echo "addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".$property->getSubType()."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
+							echo "addNewDropDown($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", false, \"\", \"".addslashes($property->getSubType())."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
 						}
 					}
 				}
