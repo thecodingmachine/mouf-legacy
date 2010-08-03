@@ -50,6 +50,7 @@ class SqlDataSource extends DynamicDataSource {
 	 * This SQL can contain parameters (for instance {user_id}), but should not contain
 	 * any ORDER BY and OFFSET/LIMIT keywords (since the datasource will
 	 * add those).
+	 * This SQl query string MUST NOT finish by ";"
 	 *
 	 * @Property
 	 * @Compulsory
