@@ -425,7 +425,7 @@ class MoufManager {
 			throw new MoufException("Unable to rename instance '$instanceName' to '$newInstanceName': Instance '$newInstanceName' already exists.");
 		}
 		
-		if ($this->declaredComponents[$instanceName]['external'] == true) {
+		if (isset($this->declaredComponents[$instanceName]['external']) && $this->declaredComponents[$instanceName]['external'] == true) {
 			throw new MoufException("Unable to rename instance '$instanceName' into '$newInstanceName': Instance '$instanceName' is declared externally.");
 		}
 		

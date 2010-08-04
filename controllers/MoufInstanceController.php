@@ -164,6 +164,15 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 						} else {
 							$values = get($property->getName());
 						}
+
+						if (is_array($values)) {
+							foreach ($values as $key=>$value) {
+								if ($originalInstanceName == $value) {
+									// In the special case of a renaming with a recursion inside the object renamed, we must rename to the new name, not the old one. 
+									$values[$key] = $instanceName;
+								}
+							}
+						}
 						
 						if ($property->isPublicFieldProperty()) {
 							$this->moufManager->bindComponents($instanceName, $property->getName(), $values);
@@ -173,8 +182,12 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 					}
 				} else {
 					$value = get($property->getName());
-					if ($value == "")
+					if ($value == "") {
 						$value = null;
+					} else if ($originalInstanceName == $value) {
+						// In the special case of a renaming with a recursion inside the object renamed, we must rename to the new name, not the old one. 
+						$value = $instanceName;
+					}
 						
 					if ($property->isPublicFieldProperty()) {
 						$this->moufManager->bindComponent($instanceName, $property->getName(), $value);
