@@ -12,6 +12,6 @@ MoufManager::getMoufManager()->setParameter('italicFormatter', 'suffix', '</i>')
 
 
 
-MoufManager::getMoufManager()->declareComponent('readOnlyCheckBoxFormatter', 'ReadOnlyCheckBoxFormatter', true);
+MoufManager::getMoufManager()->declareComponent('readOnlyCheckBoxFormatter', 'ReadOnlyCheckboxFormatter', true);
 
 ?>
