@@ -12,7 +12,7 @@ class MoufRootController extends Controller {
 	 * @Action
 	 */
 	public function defaultAction() {
-		header("Location: mouf/");
+		header("Location: ".ROOT_URL."mouf/validate/");
 	}
 }
 ?>

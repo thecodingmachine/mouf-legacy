@@ -35,6 +35,7 @@ $moufDeclaredClassesByFiles = array();
 
 // Ok, now, we can start including our files.
 foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
+	// FIXME: in selfedit mode, the correct base path is ROOT_PATH/mouf/
 	require_once ROOT_PATH.$registeredFile;
 
 	$moufFile=null;

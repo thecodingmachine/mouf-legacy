@@ -249,6 +249,15 @@ class MoufManager {
 	}
 	
 	/**
+	 * Returns true if the instance name passed in parameter is defined in Mouf.
+	 * 
+	 * @param string $instanceName
+	 */
+	public function instanceExists($instanceName) {
+		return isset($this->declaredInstances[$instanceName]);
+	}
+	
+	/**
 	 * Returns the list of all instances of objects in Mouf.
 	 * Objects are not instanciated. Instead, a list containing the name of the instance in the key
 	 * and the name of the class in the value is returned.
@@ -1518,6 +1527,32 @@ class ".$this->mainClassName." {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Returns the version number enabled for the package passed in parameter,
+	 * or null if the package is not enabled.
+	 * 
+	 * @param string $group
+	 * @param string $name
+	 */
+	public function getVersionForEnabledPackage($group, $name) {
+		foreach ($this->packagesList as $packageFileName) {
+			$packageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($packageFileName);
+			if ($group == $packageDescriptor->getGroup() && $name == $packageDescriptor->getName()) {
+				return $packageDescriptor->getVersion();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the path to all the packages.xml files that are enabled, as a list of strings.
+	 * 
+	 * @return array<string>
+	 */
+	public function listEnabledPackagesXmlFiles() {
+		return $this->packagesList;
 	}
 	
 	/**

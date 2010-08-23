@@ -1,6 +1,7 @@
 <?php
 
 require_once 'MoufPackageDescriptor.php';
+require_once 'MoufDependencyDescriptor.php';
 
 /**
  * This class represents a package that can be downloaded and used by Mouf.
@@ -114,7 +115,7 @@ class MoufPackage {
 		$dependencies = $this->packageSimpleXml->dependencies;
 		if ($dependencies) {
 			foreach ($dependencies->dependency as $dependencyXml) {
-				$depList[] = new MoufPackageDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version);
+				$depList[] = new MoufDependencyDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version);
 			}
 		}
 		$this->dependencies = $depList;
@@ -204,9 +205,9 @@ class MoufPackage {
 	}
 	
 	/**
-	 * Returns an array of MoufPackageDescriptor.
+	 * Returns an array of MoufDependencyDescriptor.
 	 *
-	 * @return array<MoufPackageDescriptor>
+	 * @return array<MoufDependencyDescriptor>
 	 */
 	public function getDependenciesAsDescriptors() {
 		return $this->dependencies;

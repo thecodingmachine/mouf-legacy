@@ -45,16 +45,42 @@ div.file div.viewdetails {
 	cursor:pointer;
 }
 
+div#packageList {
+	width:652px;	
+}
+
 div.group {
 	width: 100%;
 	height: 20px;
-	background-color: #777777;
 	color: #ffffff;
 	font-family: Rockwell, Georgia, Arial, Verdana, Helvetica, sans-serif;
 	font-weight: normal;
 	font-size: 16px;
 	margin-bottom: 10px;
-	padding: 5px 5px 5px 5px
+	padding: 5px 5px 5px 16px;
+	cursor: pointer;
+}
+
+div.group:hover {
+	background-color: #AAAAAA;
+}
+	
+div.groupplus {
+	background-image: url('../../plugins/utils/icons/famfamfam/1.3/icons/bullet_toggle_plus.png');
+	background-position: center left;
+	background-repeat: no-repeat;
+	background-color: #777777;
+}
+
+div.groupminus {
+	background-image: url('../../plugins/utils/icons/famfamfam/1.3/icons/bullet_toggle_minus.png');
+	background-position: center left;
+	background-repeat: no-repeat;
+	background-color: #999999;
+}
+
+div.treegroup {
+	margin-left: 20px;
 }
 
 div.outerpackage {
@@ -67,6 +93,10 @@ div.package {
 	/*color: #EE0038;*/
 	margin-bottom: 10px;
 	padding: 5px 5px 5px 5px
+}
+
+div.packageenabled {
+	background-color: #aaffaa;	
 }
 
 span.packagename {
@@ -90,6 +120,16 @@ div.packageicon {
 
 div.packagetext {
 	padding-left: 70px;
+}
+
+a.viewotherversions {
+	display: block;
+	float:right;
+	padding-left: 14px;
+	padding-top: 2px;
+	background-image: url('images/bullet_add.png');
+	background-position: left;
+	background-repeat: no-repeat;
 }
 
 div.directorytitle {
@@ -169,4 +209,18 @@ table.grid tr.odd td {
 
 table.grid tr.even td {
 	background-color:#DDDDDD;	
+}
+
+div.loading {
+	background:#F3F3F3 none repeat scroll 0 0;
+	color:#777777;
+	padding:5px 5px 5px 26px;
+	border:1px solid #777777;
+	background-image: url("images/ajax-loader.gif");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+
+div.validator {
+	margin-bottom: 5px;
 }

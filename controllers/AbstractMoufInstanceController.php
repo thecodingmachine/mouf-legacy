@@ -10,7 +10,7 @@ require_once(dirname(__FILE__)."/../annotations/ExtendedActionAnnotation.php");
 
 /**
  * This abstract controller helps performing basic operations to display a detail instance page
- * (or any page that looks loke the detail instance pagen, with the right menu, etc...) 
+ * (or any page that looks loke the detail instance page, with the right menu, etc...) 
  *
  */
 abstract class AbstractMoufInstanceController extends Controller {

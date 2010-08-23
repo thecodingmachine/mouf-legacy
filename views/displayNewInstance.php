@@ -5,7 +5,7 @@
 <h1>Create a new instance</h1>
 
 <div>
-<label for="instanceName">Instance name:</label><input type="text" name="instanceName" />
+<label for="instanceName">Instance name:</label><input type="text" name="instanceName" value="<?php echo plainstring_to_htmlprotected($instanceName) ?>" />
 </div>
 
 <div>
@@ -13,7 +13,11 @@
 <select name="instanceClass">
 <?php 
 foreach ($componentsList as $component) {
-	echo "<option value='$component'>$component</option>\n";
+	echo "<option value='$component'";
+	if ($instanceClass==$component) {
+		echo "selected='selected'";	
+	}
+	echo ">$component</option>\n";
 }
 ?>
 </select>

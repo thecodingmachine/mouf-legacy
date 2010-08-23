@@ -29,6 +29,8 @@ require_once $localFilePath.'/../plugins/javascript/prototype/1.6.0.1/HtmlJSProt
 require_once $localFilePath.'/../plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php';
 
 // User dependencies
+require_once $localFilePath.'/validator/MoufValidatorService.php';
+require_once $localFilePath.'/validator/MoufBasicValidationProvider.php';
 require_once $localFilePath.'/controllers/MoufController.php';
 require_once $localFilePath.'/controllers/MoufRootController.php';
 require_once $localFilePath.'/controllers/ComponentsController.php';
@@ -36,6 +38,7 @@ require_once $localFilePath.'/controllers/PackageController.php';
 require_once $localFilePath.'/controllers/MoufInstanceController.php';
 require_once $localFilePath.'/controllers/MoufDisplayGraphController.php';
 require_once $localFilePath.'/controllers/ConfigController.php';
+require_once $localFilePath.'/controllers/MoufValidatorController.php';
 require_once $localFilePath.'/load.php';
 
 ?>

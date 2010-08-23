@@ -41,6 +41,14 @@ class PackageController extends Controller {
 	public $moufPackageList;
 	
 	/**
+	 * The root of the hierarchy of packages
+	 * 
+	 * @var MoufGroupDescriptor
+	 */
+	public $moufPackageRoot;
+	
+	
+	/**
 	 * The list of dependencies to the selected package.
 	 *
 	 * @var array<MoufPackage>
@@ -80,6 +88,9 @@ class PackageController extends Controller {
 		$this->validationPackageList = $packageList;
 				
 		$packageManager = new MoufPackageManager();
+		
+		$this->moufPackageRoot = $packageManager->getOrderedPackagesList();
+		
 		$this->moufPackageList = $packageManager->getPackagesList();
 		// Packages are almost sorted correctly.
 		// However, we should make a bit of sorting to transform this:
@@ -90,7 +101,9 @@ class PackageController extends Controller {
 		// javascript/jit
 		// javascript/prototype
 		// javascript/jquery/jquery
-		// So we will sort by group:
+		// (directories at the end)
+		// Furthermore, we will sort packages with different version numbers by version number.
+		// So we will sort by group, then package, then version:
 		uasort($this->moufPackageList, array($this, "comparePackageGroup"));
 		$this->template->addContentFile("views/packages/displayPackagesList.php", $this);
 		$this->template->draw();	
@@ -101,7 +114,12 @@ class PackageController extends Controller {
 		$group2 = $package2->getDescriptor()->getGroup();
 		$cmp = strcmp($group1, $group2);
 		if ($cmp == 0) {
-			return strcmp($package1->getDescriptor()->getName(), $package2->getDescriptor()->getName());
+			$nameCmp = strcmp($package1->getDescriptor()->getName(), $package2->getDescriptor()->getName());
+			if ($nameCmp != 0) {
+				return $nameCmp;
+			} else {
+				return -MoufPackageDescriptor::compareVersionNumber($package1->getDescriptor()->getVersion(), $package2->getDescriptor()->getVersion());
+			} 
 		} else 
 			return $cmp;
 	}
@@ -126,17 +144,9 @@ class PackageController extends Controller {
 		$packageManager = new MoufPackageManager();
 		$this->package = $packageManager->getPackage($name);
 		//$this->moufDependencies = $packageManager->getDependencies($this->package);
-		$dependencies = $packageManager->getDependencies($this->package);
-		$this->moufDependencies = array();
-		// Let's only keep the packages that are not already installed from this list:
-		foreach ($dependencies as $moufDependency) {
-			$enabled = $this->moufManager->isPackageEnabled($moufDependency->getDescriptor()->getPackageXmlPath());
-			if (!$enabled) {
-				$this->moufDependencies[] = $moufDependency;
-			}
-		}
-		
-		
+		$this->moufDependencies = $packageManager->getDependencies($this->package, $this->moufManager);
+		//var_dump($this->moufDependencies); exit;
+				
 		if (!empty($this->moufDependencies) && $confirm=="false") {
 			$this->template->addContentFile("views/packages/displayConfirmPackagesEnable.php", $this);
 			$this->template->draw();
@@ -179,15 +189,18 @@ class PackageController extends Controller {
 		$packageManager = new MoufPackageManager();
 		$this->package = $packageManager->getPackage($name);
 		//$this->moufDependencies = $packageManager->getDependencies($this->package);
-		$dependencies = $packageManager->getChildren($this->package);
-		$this->moufDependencies = array();
+		
+		$this->moufDependencies = $packageManager->getInstalledPackagesUsingThisPackage($this->package, $this->moufManager);
+		
+		//$dependencies = $packageManager->getChildren($this->package);
+		//$this->moufDependencies = array();
 		// Let's only keep the packages that are already installed from this list:
-		foreach ($dependencies as $moufDependency) {
+		/*foreach ($dependencies as $moufDependency) {
 			$enabled = $this->moufManager->isPackageEnabled($moufDependency->getDescriptor()->getPackageXmlPath());
 			if ($enabled) {
 				$this->moufDependencies[] = $moufDependency;
 			}
-		}
+		}*/
 		
 		// Let's add the package to be removed to the list of package.
 		$this->moufDependencies[] = $this->package;
@@ -238,6 +251,18 @@ class PackageController extends Controller {
 			}
 			header($url);	
 		}
+	}
+	
+	/**
+	 * Action that is run to upgrade/downgrade a package.
+	 *
+	 * @Action
+	 * @param string $name The path to the package.xml file relative to the plugins directory.
+	 * @param string $selfedit
+	 * @param string $confirm
+	 */
+	public function upgradePackage($name, $selfedit = "false", $confirm="false") {
+		throw new Exception("Sorry, upgrading packages is not supported yet.");
 	}
 	
 	/**

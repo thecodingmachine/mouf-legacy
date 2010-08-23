@@ -202,14 +202,14 @@ class MoufController extends Controller {
 	 *
 	 * @Action
 	 */
-	public function newInstance($selfedit = "false") {
+	public function newInstance($selfedit = "false", $instanceName=null, $instanceClass=null) {
 		//$componentsList = Moufspector::getComponentsList();
 		$this->selfedit = $selfedit;
 		$componentsList = MoufReflectionProxy::getComponentsList($selfedit=="true");
 		sort($componentsList);
 		
 		$template = $this->template;
-		$template->addContentFunction(array($this, "displayNewInstanceScreen"), $componentsList, $selfedit);
+		$template->addContentFunction(array($this, "displayNewInstanceScreen"), $componentsList, $selfedit, $instanceName, $instanceClass);
 		//$template->addContentFile(dirname(__FILE__)."/../views/displayNewInstance.php", $this);
 		$template->draw();	
 	}
@@ -218,7 +218,7 @@ class MoufController extends Controller {
 	 * Displays the new component view
 	 *
 	 */
-	public function displayNewInstanceScreen($componentsList, $selfedit) {
+	public function displayNewInstanceScreen($componentsList, $selfedit, $instanceName, $instanceClass) {
 		include(dirname(__FILE__)."/../views/displayNewInstance.php");
 	}
 	

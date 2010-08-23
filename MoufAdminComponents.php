@@ -211,14 +211,16 @@ $moufManager->addComponentInstances(array (
     array (
       'menuItems' => 
       array (
-        0 => 'packagesLabelMenuItem',
-        1 => 'managePackagesMenuItem',
-        2 => 'configLabelMenuItem',
-        3 => 'editConfigMenuItem',
-        4 => 'componentsLabelMenuItem',
-        5 => 'loadComponentsMenuItem',
-        6 => 'viewInstancesMenuItem',
-        7 => 'newInstanceMenuItem',
+        0 => 'selfAnalysisLabelMenu',
+        1 => 'moufStatusMenuItem',
+        2 => 'packagesLabelMenuItem',
+        3 => 'managePackagesMenuItem',
+        4 => 'configLabelMenuItem',
+        5 => 'editConfigMenuItem',
+        6 => 'componentsLabelMenuItem',
+        7 => 'loadComponentsMenuItem',
+        8 => 'viewInstancesMenuItem',
+        9 => 'newInstanceMenuItem',
       ),
     ),
   ),
@@ -593,8 +595,150 @@ $moufManager->addComponentInstances(array (
       ),
     ),
   ),
+  'validate' => 
+  array (
+    'class' => 'MoufValidatorController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+      'validatorService' => 'validatorService',
+    ),
+  ),
+  'validatorService' => 
+  array (
+    'class' => 'MoufValidatorService',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'validators' => 
+      array (
+        0 => 'requiredFilesValidator',
+      ),
+    ),
+  ),
+  'requiredFilesValidator' => 
+  array (
+    'class' => 'MoufBasicValidationProvider',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'name' => 
+      array (
+        'value' => 'Required files validator',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'url' => 
+      array (
+        'value' => 'mouf/direct/required_files_validator.php',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'selfAnalysisLabelMenu' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => '<b>Self-analysis</b>',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'moufStatusMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Mouf status',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/validate/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
 ));
 
+$moufManager->registerComponent('validator/MoufValidatorService.php');
+$moufManager->registerComponent('validator/MoufBasicValidationProvider.php');
 $moufManager->registerComponent('controllers/MoufController.php');
 $moufManager->registerComponent('controllers/MoufRootController.php');
 $moufManager->registerComponent('controllers/ComponentsController.php');
@@ -602,6 +746,7 @@ $moufManager->registerComponent('controllers/PackageController.php');
 $moufManager->registerComponent('controllers/MoufInstanceController.php');
 $moufManager->registerComponent('controllers/MoufDisplayGraphController.php');
 $moufManager->registerComponent('controllers/ConfigController.php');
+$moufManager->registerComponent('controllers/MoufValidatorController.php');
 $moufManager->registerComponent('load.php');
 
 unset($moufManager);
@@ -813,6 +958,41 @@ class MoufAdmin {
 	 */
 	 public static function getEditConfigMenuItem() {
 	 	return MoufManager::getMoufManager()->getInstance('editConfigMenuItem');
+	 }
+
+	/**
+	 * @return MoufValidatorController
+	 */
+	 public static function getValidate() {
+	 	return MoufManager::getMoufManager()->getInstance('validate');
+	 }
+
+	/**
+	 * @return MoufValidatorService
+	 */
+	 public static function getValidatorService() {
+	 	return MoufManager::getMoufManager()->getInstance('validatorService');
+	 }
+
+	/**
+	 * @return MoufBasicValidationProvider
+	 */
+	 public static function getRequiredFilesValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('requiredFilesValidator');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSelfAnalysisLabelMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('selfAnalysisLabelMenu');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getMoufStatusMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('moufStatusMenuItem');
 	 }
 
 	/**
