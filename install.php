@@ -56,7 +56,7 @@ if (!file_exists("../MoufUniversalParameters.php")) {
 	$uriWithoutMouf = substr($uri, 0, -4);
 	$moufUniversalStr = "<?php
 	
-	define('ROOT_PATH', realpath(dirname(__FILE__)).'/');
+	define('ROOT_PATH', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
 	define('ROOT_URL','".$uriWithoutMouf."');
 	define('PLUGINS_URL',ROOT_URL.'plugins/');
 	?>";

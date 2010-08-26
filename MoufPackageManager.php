@@ -509,5 +509,63 @@ class MoufPackageManager {
 			return $cmp;
 	}
 	
+	public function compressPackage(MoufPackage $moufPackage) {
+		
+		$packageDir = ROOT_PATH.$moufPackage->getPackageDirectory();
+		
+		echo $packageDir;
+		
+		$oldcwd = getcwd();
+		chdir($packageDir);
+		
+		
+		
+		
+		
+		
+		// create object
+		$zip = new ZipArchive();
+		
+		// open output file for writing
+		if ($zip->open('../my-archive.zip', ZIPARCHIVE::CREATE) !== TRUE) {
+		    throw new MoufException("Could not create the ZIP file");
+		}
+
+		// TODO!!!!!
+		
+		// add file from disk
+		$zip->addFile('app/webroot/img/arrow-prev.gif', 'webroot/img/arrow-prev.gif') or die ("ERROR: Could not add file");        
+		
+		// add text file as string
+		$str = "<?PHP die('Access denied'); ?>";
+		$zip->addFromString('webroot/index.php', $str) or die ("ERROR: Could not add file");        
+		
+		// add binary file as string
+		$str = file_get_contents('app/webroot/img/arrow-next.gif');
+		$zip->addFromString('webroot/img/arrow-next.gif', $str) or die ("ERROR: Could not add file");        
+		
+		// close and save archive
+		$zip->close();
+		echo "Archive created successfully.";    
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		chdir($oldcwd);
+		
+						
+	}
+	
+	private function recurseAddDir(ZipArchive $zip, $currentDir) {
+		
+	}
+	
 }
 ?>
