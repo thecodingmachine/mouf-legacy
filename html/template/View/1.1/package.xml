@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>View</displayName>
+	<shortDescription>A View represents an HTML page. It is based on a template, and contains the content to be filled in a template.
+	You should have one view per HTML page in your application, while you should have only one template, used by all the views.
+	Warning! The 1.1 version puts the View class in the html\template\view namespace. Therefore, it can only by used with PHP 5.3+
+	(note: the View class colided with the View class from the Drupal Views module)</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>template/BaseTemplate</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>View.php</require>
+	</requires>
+</package>
