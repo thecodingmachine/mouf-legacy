@@ -249,7 +249,33 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 		
 		$this->moufManager->rewriteMouf();
 		
-		$this->defaultAction($instanceName, $selfedit);	
+		header("Location: .?name=".plainstring_to_htmlprotected($instanceName)."&selfedit=".plainstring_to_htmlprotected($selfedit));
+		//$this->defaultAction($instanceName, $selfedit);	
+	}
+	
+	/**
+	 * Displays the toolbox at the right of the property field, with the image showing whether this comes from request, session, config, etc...
+	 * 
+	 * @param MoufPropertyDescriptor $property
+	 */ 
+	function displayFieldToolboxButton(MoufPropertyDescriptor $property) {
+		$defaultType = $this->getTypeForProperty($property);
+		echo '<div style="float:right">';
+		$hideSession = ' style="display:none" ';
+		$hideConfig = ' style="display:none" ';
+		$hideRequest = ' style="display:none" ';
+		if ($defaultType == "session") {
+			$hideSession = '';
+		} elseif ($defaultType == "config") {
+			$hideConfig = '';
+		} elseif ($defaultType == "request") {
+			$hideRequest = '';
+		}
+		echo '<span class="sessionmarker" '.$hideSession.'>session</span> ';
+		echo '<span class="configmarker" '.$hideConfig.'>config</span>';
+		echo '<span class="requestmarker" '.$hideRequest.'>request</span>';
+		echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+		echo '</div>';
 	}
 }
 ?>

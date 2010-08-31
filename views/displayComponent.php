@@ -243,22 +243,8 @@ foreach ($this->properties as $property) {
 			if ($lowerVarType == "bool" || $lowerVarType == "boolean") {
 				echo '<input type="checkbox" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="true" '.($defaultValue?"checked='checked'":"").'"/>';
 			} else {
-				echo '<div style="float:right">';
-				$hideSession = ' style="display:none" ';
-				$hideConfig = ' style="display:none" ';
-				$hideRequest = ' style="display:none" ';
-				if ($defaultType == "session") {
-					$hideSession = '';
-				} elseif ($defaultType == "config") {
-					$hideConfig = '';
-				} elseif ($defaultType == "request") {
-					$hideRequest = '';
-				}
-				echo '<span class="sessionmarker" '.$hideSession.'>session</span> ';
-				echo '<span class="configmarker" '.$hideConfig.'>config</span>';
-				echo '<span class="requestmarker" '.$hideRequest.'>request</span>';
-				echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
-				echo '</div>';
+				
+				$this->displayFieldToolboxButton($property);
 				
 				// TODO: use metadata to display either a textarea or a textbox.
 
