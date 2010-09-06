@@ -79,29 +79,35 @@ function dbdate_to_displaydate($strDate, $ccode="en", $long=false)
  * 
  *
  * @param string $var The name of the Request or Session parameter.
- * @param string $type Can be "string", "int", "float" or "date"
+ * @param string $type Can be "string", "int", "float", "date", "array" or "unknown_type"
  * @param bool $compulsory Can be true or false
  * @param unknown_type $default_value Default value of not compulsory
  * @param string $origin A string containing R and S or C. R for Request, S for Session, C for Cookie. So this can be "R","S","RSC" or whatever. The first found will stop the search.
  */
-function get($var, $type="string", $compulsory=false, $default_value=false, $origin="R") {
+function get($var, $type="unknown_type", $compulsory=false, $default_value=false, $origin="R") {
 	for ($i=0; $i<strlen($origin); $i++)
 	{
 		if ($origin{$i} == 'R' || $origin{$i} == 'r')
 		{
-			//TODO : réponse au passage de tableaux dans l'url
-			//mais ne fonctionne pas pour les tableaux de tableaux
-			//réfléchir à une solution récursive !
-			if (isset($_REQUEST[$var]) && is_array($_REQUEST[$var])){
-				foreach($_REQUEST[$var] as $key=>$value){
-					$tab[$key] = userinput_to_plainstring($value);
-				}
-				return $tab;
-			}
 			// get de variables classiques
 			if (isset($_REQUEST[$var]))
 			{
-				if ($type=='string')
+				// we check first for arrays
+				if (is_array($_REQUEST[$var])){
+					if ($type != "unknown_type" && $type != "array") {
+						echo '<b>Error!</b> The '.$var.' field must be a '.$type.". Array passed instead.";
+						exit;
+					}
+					$array = $_REQUEST[$var];
+					if (!array_walk_recursive($array, "userinput_to_plainstring")) {
+						echo '<b>Error!</b> An error occured while walking array '.$var.'.';
+						exit;
+					}
+					
+					return $array;
+				}
+				
+				if ($type=='string' || $type=='unknown_type')
 					return userinput_to_plainstring($_REQUEST[$var]);
 				elseif ($type=='int')
 				{
@@ -131,18 +137,39 @@ function get($var, $type="string", $compulsory=false, $default_value=false, $ori
 					}
 					return $_REQUEST[$var];
 				}
+				elseif ($type=='array')
+				{
+					echo '<b>Error!</b> The '.$var.' field must be an array';
+					exit;
+				}
 				else 
 				{
-					echo '<b>Error!</b> Unknown required type. Must be one "string", "int", "float" and "date"';
+					echo '<b>Error!</b> Unknown required type "'.$type.'" on "'.$var.'". Must be one "string", "int", "float" and "date"';
 					exit;
 				}
 			}
 		}
 		elseif ($origin{$i} == 'S' || $origin{$i} == 's')
 		{
+			
 			if (isset($_SESSION[$var]))
 			{
-				if ($type=='string')
+				// we check first for arrays
+				if (is_array($_SESSION[$var])){
+					if ($type != "unknown_type" && $type != "array") {
+						echo '<b>Error!</b> The '.$var.' field must be a '.$type.". Array passed instead.";
+						exit;
+					}
+					$array = $_SESSION[$var];
+					if (!array_walk_recursive($array, "userinput_to_plainstring")) {
+						echo '<b>Error!</b> An error occured while walking array '.$var.'.';
+						exit;
+					}
+					
+					return $array;
+				}
+				
+				if ($type=='string' || $type=='unknown_type')
 					return $_SESSION[$var];
 				elseif ($type=='int')
 				{
@@ -172,9 +199,14 @@ function get($var, $type="string", $compulsory=false, $default_value=false, $ori
 					}
 					return $_SESSION[$var];
 				}
+				elseif ($type=='array')
+				{
+					echo '<b>Error while walking the array '.$var.'</b>';
+					exit;
+				}
 				else 
 				{
-					echo '<b>Error!</b> Unknown required type. Must be one "string", "int", "float" and "date"';
+					echo '<b>Error!</b> Unknown required type "'.$type.'" on "'.$var.'". Must be one "string", "int", "float" and "date"';
 					exit;
 				}
 			}
@@ -183,7 +215,22 @@ function get($var, $type="string", $compulsory=false, $default_value=false, $ori
 		{
 			if (isset($_COOKIE[$var]))
 			{
-				if ($type=='string')
+				// we check first for arrays
+				if (is_array($_COOKIE[$var])){
+					if ($type != "unknown_type" && $type != "array") {
+						echo '<b>Error!</b> The '.$var.' field must be a '.$type.". Array passed instead.";
+						exit;
+					}
+					$array = $_COOKIE[$var];
+					if (!array_walk_recursive($array, "userinput_to_plainstring")) {
+						echo '<b>Error!</b> An error occured while walking array '.$var.'.';
+						exit;
+					}
+					
+					return $array;
+				}
+				
+				if ($type=='string' || $type=='unknown_type')
 					return $_COOKIE[$var];
 				elseif ($type=='int')
 				{
@@ -213,9 +260,14 @@ function get($var, $type="string", $compulsory=false, $default_value=false, $ori
 					}
 					return $_COOKIE[$var];
 				}
+				elseif ($type=='array')
+				{
+					echo '<b>Error!</b> The '.$var.' field must be an array';
+					exit;
+				}
 				else 
 				{
-					echo '<b>Error!</b> Unknown required type. Must be one "string", "int", "float" and "date"';
+					echo '<b>Error!</b> Unknown required type "'.$type.'" on "'.$var.'". Must be one "string", "int", "float" and "date"';
 					exit;
 				}
 			}
