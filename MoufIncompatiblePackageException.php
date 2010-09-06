@@ -1,5 +1,5 @@
 <?php
-
+require_once 'MoufException.php';
 /**
  * An exception thrown when enabling a new package.
  * This happens if the package to be enabled is not compatible with a previously installed package.
