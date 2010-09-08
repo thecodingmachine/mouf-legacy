@@ -102,7 +102,7 @@ class LanguageUtils {
 	 */
 	public static function getLanguage() {
 		$language = self::parseHttpAcceptLanguage();
-		if (file_exists(RESOURCES_PATHS.'message_'.$language.'.php')) {
+		if (file_exists(I18N_MESSAGE_PATH.'message_'.$language.'.php')) {
 			return $language;
 		} else {
 			return "default";
@@ -117,9 +117,9 @@ class LanguageUtils {
 
 		$language = self::getLanguage();
 		if ($language == 'default') {
-			$messageFile->load(RESOURCES_PATHS."message.php");
+			$messageFile->load(I18N_MESSAGE_PATH."message.php");
 		} else {
-			$messageFile->load(RESOURCES_PATHS."message_".self::parseHttpAcceptLanguage().".php");
+			$messageFile->load(I18N_MESSAGE_PATH."message_".self::parseHttpAcceptLanguage().".php");
 		}
 		return $messageFile;
 	}
@@ -134,10 +134,10 @@ class LanguageUtils {
 
 		$messageFile = new MessageFile();
 		if ($language == 'default') {
-			$messageFile->load(RESOURCES_PATHS."message.php");
+			$messageFile->load(I18N_MESSAGE_PATH."message.php");
 		} else {
-			if (file_exists(RESOURCES_PATHS."message_".$language.".php")) {
-				$messageFile->load(RESOURCES_PATHS."message_".$language.".php");
+			if (file_exists(I18N_MESSAGE_PATH."message_".$language.".php")) {
+				$messageFile->load(I18N_MESSAGE_PATH."message_".$language.".php");
 			} else {
 				return null;
 			}
@@ -150,7 +150,7 @@ class LanguageUtils {
 	 * Load all messages
 	 */
 	public static function loadAllMessages() {
-		$files = glob(RESOURCES_PATHS.'message*.php');
+		$files = glob(I18N_MESSAGE_PATH.'message*.php');
 
 		foreach ($files as $file) {
 			$base = basename($file);

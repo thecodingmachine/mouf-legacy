@@ -24,5 +24,6 @@
 	<adminRequires>
 		<require>FineAdmin.php</require>
 		<require>controllers/EditLabelController.php</require>
+		<require>ValidatorDescriptor.php</require>
 	</adminRequires>	
 </package>
