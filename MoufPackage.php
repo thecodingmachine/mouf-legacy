@@ -94,22 +94,50 @@ class MoufPackage {
 		
 	}
 	
+	/**
+	 * Initializes the MoufPackage variables with the package.xml file passed in parameter.
+	 * 
+	 * @param string $fileName The file path to the package.xml file.
+	 * @throws MoufException
+	 */
 	public function initFromFile($fileName) {
 		$this->packageFileName = $fileName;
+		$this->packageDir = dirname($fileName);
 		
 		if (!file_exists($fileName)) {
 			throw new MoufException("Unable to load file ".$fileName);
 		}
+		$this->packageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($this->packageFileName);
+		
 		$this->packageSimpleXml = simplexml_load_file($fileName);
 		
+		$this->initFromXml();
+	}
+	
+	
+	/**
+	 * Initializes the MoufPackage variables with the xml string file passed in parameter.
+	 * 
+	 * @param string $xmlStr The content of the package.xml file, as a string.
+	 * @throws MoufException
+	 */
+	/*public function initFromXmlString($xmlStr) {
+		$this->packageSimpleXml = simplexml_load_string($xmlStr);
+		$this->initFromXml();
+	}*/
+
+	/**
+	 * Initializes the MoufPackage variables once the $this->packageSimpleXml
+	 * variable was initialized. 
+	 * 
+	 */
+	private function initFromXml() {
 		$this->displayName = (string)$this->packageSimpleXml->displayName;
 		$this->shortDescription = (string)$this->packageSimpleXml->shortDescription;
 		$this->docUrl = (string)$this->packageSimpleXml->docUrl;
 		$this->logoPath = (string)$this->packageSimpleXml->logo;
 		
-		$this->packageDir = dirname($fileName);
 		
-		$this->packageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($this->packageFileName);
 		
 		$depList = array();
 		$dependencies = $this->packageSimpleXml->dependencies;
@@ -146,7 +174,7 @@ class MoufPackage {
 				$adminRequiresList[] = (string)$require;
 			}
 		}
-		$this->adminRequires = $adminRequiresList;
+		$this->adminRequires = $adminRequiresList;	
 	}
 	
 	/**

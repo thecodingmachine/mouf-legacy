@@ -509,63 +509,104 @@ class MoufPackageManager {
 			return $cmp;
 	}
 	
+	/**
+	 * Compresses the package into a ZIP file.
+	 * The ZIP file is installed in the group/package directory. 
+	 * 
+	 * @param MoufPackage $moufPackage
+	 * @throws MoufException
+	 */
 	public function compressPackage(MoufPackage $moufPackage) {
 		
 		$packageDir = ROOT_PATH.$moufPackage->getPackageDirectory();
 		
-		echo $packageDir;
+		//echo $packageDir;
 		
 		$oldcwd = getcwd();
 		chdir($packageDir);
 		
-		
-		
-		
-		
-		
 		// create object
 		$zip = new ZipArchive();
 		
+		$zipFileName = $moufPackage->getDescriptor()->getName()."-".$moufPackage->getDescriptor()->getVersion().".zip";
+		
+		if (file_exists($packageDir.'/../'.$zipFileName)) {
+			unlink($packageDir.'/../'.$zipFileName);
+		}
+		
 		// open output file for writing
-		if ($zip->open('../my-archive.zip', ZIPARCHIVE::CREATE) !== TRUE) {
+		if ($zip->open($packageDir.'/../'.$zipFileName, ZIPARCHIVE::CREATE) !== TRUE) {
 		    throw new MoufException("Could not create the ZIP file");
 		}
 
-		// TODO!!!!!
-		
-		// add file from disk
-		$zip->addFile('app/webroot/img/arrow-prev.gif', 'webroot/img/arrow-prev.gif') or die ("ERROR: Could not add file");        
-		
-		// add text file as string
-		$str = "<?PHP die('Access denied'); ?>";
-		$zip->addFromString('webroot/index.php', $str) or die ("ERROR: Could not add file");        
-		
-		// add binary file as string
-		$str = file_get_contents('app/webroot/img/arrow-next.gif');
-		$zip->addFromString('webroot/img/arrow-next.gif', $str) or die ("ERROR: Could not add file");        
+		$this->recurseAddDir($zip, ".");
 		
 		// close and save archive
 		$zip->close();
-		echo "Archive created successfully.";    
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		chdir($oldcwd);
-		
 						
 	}
 	
 	private function recurseAddDir(ZipArchive $zip, $currentDir) {
+
+		$files = glob("$currentDir/*");
+		
+		foreach ($files as $file) {
+			if (strpos($file, "./") === 0) {
+				$file = substr($file, 2);
+			}
+			
+			// Ignore version control directories
+			if ($file == ".svn" || $file == ".cvs") {
+				continue;
+			}
+			
+			if (is_dir($file)) {
+				$this->recurseAddDir($zip, $currentDir."/".$file);
+			} else {
+				//echo "Adding ".$file."<br/>";
+				$result = $zip->addFile($file, $file);
+				if (!$result) {
+					throw new MoufException("Could not add file ".$file." to package ZIP archive.");
+				}
+			}
+		}
+		/*$directories = glob("$currentDir/*", GLOB_ONLYDIR);
+		foreach ($directories as $directory) {
+			//echo "scanning ".$directory."<br/>";
+			$packageList = $this->scanDir($directory, $packageList); 
+		}
+		return $packageList;*/
+	}
+
+	/**
+	 * Unpack the ZIP archive $filename into a package (the name of the package, and therefore its directory, is defined by $packageDescriptor)
+	 * 
+	 * @param MoufPackageDescriptor $packageDescriptor
+	 * @param unknown_type $fileName
+	 * @throws MoufException
+	 */
+	public function unpackPackage(MoufPackageDescriptor $packageDescriptor, $fileName) {
+	
+		// create object
+		$zip = new ZipArchive();
+
+		// open output file for writing
+		if ($zip->open($fileName) !== TRUE) {
+		    throw new MoufException("Could not open the ZIP file '".$fileName."'");
+		}
+
+	    $res = $zip->extractTo(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/");
+		if (!$res) {
+			throw new MoufException("Could not unpack the ZIP file '".$fileName."'. It seems to be corrupted.");
+		}
+	    
+		// close archive
+		$zip->close();
 		
 	}
+	
 	
 }
 ?>
