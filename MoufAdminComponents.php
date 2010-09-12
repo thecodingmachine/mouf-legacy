@@ -7,6 +7,13 @@ MoufManager::initMoufManager();
 $moufManager = MoufManager::getMoufManager();
 
 $moufManager->getConfigManager()->setConstantsDefinitionArray(array (
+  'ACT_AS_REPOSITORY' => 
+  array (
+    'defaultValue' => false,
+    'type' => 'bool',
+    'comment' => 'If you set this variable to true, your Mouf installation will act as a repository: it will allow other Mouf installations to download any package available.
+By default, this is behaviour is disabled.',
+  ),
 ));
 
 $moufManager->addPackageByXmlFile('utils/log/log_interface/1.0/package.xml');

@@ -15,12 +15,14 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	require_once '../../MoufUniversalParameters.php';
 	require_once '../../config.php';
 	//require_once 'MoufRequire.php';
+	$mouf_base_path = ROOT_PATH;
 } else {
 	require_once '../MoufManager.php';
 	MoufManager::initMoufManager();
 	require_once '../../MoufUniversalParameters.php';
 	//require_once '../MoufAdmin.php';
 	require_once '../MoufAdminComponents.php';
+	$mouf_base_path = ROOT_PATH."mouf/";
 }
 //require_once '../Moufspector.php';
 require_once '../MoufPackageManager.php';
@@ -35,8 +37,7 @@ $moufDeclaredClassesByFiles = array();
 
 // Ok, now, we can start including our files.
 foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
-	// FIXME: in selfedit mode, the correct base path is ROOT_PATH/mouf/
-	require_once ROOT_PATH.$registeredFile;
+	require_once $mouf_base_path.$registeredFile;
 
 	$moufFile=null;
 	$moufLine=null;

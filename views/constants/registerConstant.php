@@ -5,22 +5,22 @@ jQuery(document).ready(function() {
 	jQuery("#type").change(function() {
 		if (jQuery("#type").val() == 'bool') {
 			jQuery("#booldefaultvalue").show();
-			jQuery("#booldefaultvalue").attr("disable", "false");
+			jQuery("#booldefaultvalue").removeAttr("disabled");
 			jQuery("#textdefaultvalue").hide();
-			jQuery("#textdefaultvalue").attr("disable", "true");
+			jQuery("#textdefaultvalue").attr("disabled", "true");
 			jQuery("#boolvalue").show();
-			jQuery("#boolvalue").attr("disable", "false");
+			jQuery("#boolvalue").removeAttr("disabled");
 			jQuery("#textvalue").hide();
-			jQuery("#textvalue").attr("disable", "true");
+			jQuery("#textvalue").attr("disabled", "true");
 		} else {
 			jQuery("#booldefaultvalue").hide();
-			jQuery("#booldefaultvalue").attr("disable", "true");
+			jQuery("#booldefaultvalue").attr("disabled", "true");
 			jQuery("#textdefaultvalue").show();
-			jQuery("#textdefaultvalue").attr("disable", "false");
+			jQuery("#textdefaultvalue").removeAttr("disabled");
 			jQuery("#boolvalue").hide();
-			jQuery("#boolvalue").attr("disable", "true");
+			jQuery("#boolvalue").attr("disabled", "true");
 			jQuery("#textvalue").show();
-			jQuery("#textvalue").attr("disable", "false");
+			jQuery("#textvalue").removeAttr("disabled");
 		}
 	});
 });

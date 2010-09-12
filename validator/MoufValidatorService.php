@@ -28,6 +28,7 @@ class MoufValidatorService implements HtmlElementInterface {
 ?>	
 		<div id="validators"></div>
 		<script type="text/javascript">
+				
 		function addValidator(name, url) {
 // FIXME:  todo: detect bad JSON and display an error message!
 
@@ -38,7 +39,12 @@ class MoufValidatorService implements HtmlElementInterface {
 			}
 			var validatorNb = window.moufNbValidators;
 			jQuery('#validators').append("<div id='validator"+validatorNb+"' class='validator'><div class='loading'>Running "+name+"</div></div>");
-			
+
+
+			jQuery.ajaxSetup({
+			  "error":function() {   
+				jQuery('#validator'+validatorNb).html("<div class='error'>Unable to run validator</div>");
+			}});	
 			jQuery.getJSON("<?php echo ROOT_URL ?>"+url, null, function(json){
 				if (json.code == "ok") {
 					jQuery('#validator'+validatorNb).html("<div class='good'>"+json.html+"</div>");
@@ -52,6 +58,8 @@ class MoufValidatorService implements HtmlElementInterface {
 		}
 		jQuery(document).ready(function() {
 <?php 
+
+
 			foreach ($this->validators as $validator) {
 				/* @var $validator MoufValidationProviderInterface */
 				echo "addValidator('".addslashes($validator->getName())."', '".addslashes($validator->getUrl())."')\n";

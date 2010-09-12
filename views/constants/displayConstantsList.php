@@ -47,7 +47,7 @@ if (!empty($this->constantsList)) {
 ?>
 <div>
 <button type="submit">Save</button>
-<a href="register">Add a new constant</button>
+<a href="register?selfedit=<?php echo $this->selfedit ?>">Add a new constant</button>
 </div>
 </form>
 
