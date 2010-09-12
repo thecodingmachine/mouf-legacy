@@ -16,4 +16,19 @@ MoufManager::getMoufManager()->bindComponent('splashApacheConfig', 'template', '
 
 MoufManager::getMoufManager()->getInstance("actionMenu")->menuItems[] = MoufManager::getMoufManager()->getInstance("splashAdminLabelMenuItem");
 MoufManager::getMoufManager()->getInstance("actionMenu")->menuItems[] = MoufManager::getMoufManager()->getInstance("splashAdminApacheConfigItem");
+
+MoufManager::getMoufManager()->declareComponent('splashHtaccessValidator', 'MoufBasicValidationProvider', true);
+MoufManager::getMoufManager()->setParameter('splashHtaccessValidator', 'name', 'Splash validator');
+MoufManager::getMoufManager()->setParameter('splashHtaccessValidator', 'url', "plugins/mvc/splash/3.0/direct/splash_htaccess_validator.php");
+MoufManager::getMoufManager()->setParameter('splashHtaccessValidator', 'propagatedUrlParameters', array('selfedit'));
+MoufManager::getMoufManager()->getInstance("validatorService")->validators[] = MoufManager::getMoufManager()->getInstance("splashHtaccessValidator");
+
+/*MoufManager::getMoufManager()->declareComponent('splashInstanceValidator', 'MoufBasicValidationProvider', true);
+MoufManager::getMoufManager()->setParameter('splashInstanceValidator', 'name', 'Splash validator');
+MoufManager::getMoufManager()->setParameter('splashInstanceValidator', 'url', "plugins/mvc/splash/3.0/direct/splash_instance_validator.php");
+MoufManager::getMoufManager()->setParameter('splashInstanceValidator', 'propagatedUrlParameters', array('selfedit'));
+MoufManager::getMoufManager()->getInstance("validatorService")->validators[] = MoufManager::getMoufManager()->getInstance("splashInstanceValidator");
+*/
+MoufAdmin::getValidatorService()->registerBasicValidator('Splash validator', 'plugins/mvc/splash/3.0/direct/splash_instance_validator.php');
+
 ?>
