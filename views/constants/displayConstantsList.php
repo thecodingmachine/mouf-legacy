@@ -26,6 +26,11 @@ if (!empty($this->constantsList)) {
 			// TODO: correctly display bool
 			echo "<div class='warning'>This constant '".plainstring_to_htmlprotected($key)."' is present in the <code>config.php</code> file but not declared in Mouf. <a href='register?name=".urlencode($key)."'>Please declare this value</a>.</div>";
 		}
+		if (isset($def['missinginconfigphp'])) {
+			echo "<div class='warning'>This constant '".plainstring_to_htmlprotected($key)."' is present in defined in Mouf but not defined in the <code>config.php</code> file.
+			Please choose a value, and click the Save button to add it to the <code>config.php</code> file.</div>";
+		}
+		
 		echo '</div>';
 		echo '<div>';
 		//echo '<input type="text" value="'.plainstring_to_htmlprotected($key).'" /> => ';

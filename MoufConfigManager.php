@@ -156,7 +156,7 @@ class MoufConfigManager {
 	 * It merges the constants definitions defined in MoufComponents and the constants defined in config.php.
 	 *
 	 * The returned values are in this format:
-	 * $array["constantName"] = array("defaultValue"=>"", "type"=>"string|int|float|bool", "comment"=>"some comment", "value"=>"", "defined"=>true|false);
+	 * $array["constantName"] = array("defaultValue"=>"", "type"=>"string|int|float|bool", "comment"=>"some comment", "value"=>"", "defined"=>true|false, "missinginconfigphp"=>true|notdefined);
 	 * 
 	 * return array
 	 */
@@ -169,6 +169,8 @@ class MoufConfigManager {
 			if (isset($constantsInConfig[$name])) {
 				$finalArr[$name]["value"] = $constantsInConfig[$name];
 				unset($constantsInConfig[$name]);
+			} else {
+				$finalArr[$name]["missinginconfigphp"] = true;
 			}
 			$finalArr[$name]["defined"] = true;
 		}

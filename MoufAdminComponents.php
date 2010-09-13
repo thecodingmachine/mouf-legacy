@@ -621,6 +621,7 @@ $moufManager->addComponentInstances(array (
       'validators' => 
       array (
         0 => 'requiredFilesValidator',
+        1 => 'configCompleteValidator',
       ),
     ),
   ),
@@ -724,6 +725,41 @@ $moufManager->addComponentInstances(array (
       'menuCssClass' => 
       array (
         'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'configCompleteValidator' => 
+  array (
+    'class' => 'MoufBasicValidationProvider',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'name' => 
+      array (
+        'value' => 'Configuration file validator',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'url' => 
+      array (
+        'value' => 'mouf/direct/config_complete_validator.php',
         'type' => 'string',
         'metadata' => 
         array (
@@ -1000,6 +1036,13 @@ class MoufAdmin {
 	 */
 	 public static function getMoufStatusMenuItem() {
 	 	return MoufManager::getMoufManager()->getInstance('moufStatusMenuItem');
+	 }
+
+	/**
+	 * @return MoufBasicValidationProvider
+	 */
+	 public static function getConfigCompleteValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('configCompleteValidator');
 	 }
 
 	/**
