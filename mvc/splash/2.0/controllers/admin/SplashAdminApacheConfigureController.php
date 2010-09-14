@@ -38,7 +38,9 @@ class SplashAdminApacheConfigureController extends Controller {
 		if ($installPos !== FALSE) {
 			$uri = substr($uri, 0, $installPos);
 		}
-		
+		if (empty($uri)) {
+			$uri = "/";
+		}
 		
 		$str = "Options FollowSymLinks
 		RewriteEngine on
