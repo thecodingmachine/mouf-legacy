@@ -36,8 +36,7 @@ if (empty($missingDefinedConstants) && empty($missingAvailableConstants)) {
 } else {
 	if (empty($constants)) {
 		$jsonObj['code'] = "warn";
-		$msg .= "Your <code>config.php</code> is empty. Please <a href='".ROOT_URL."mouf/config/?selfedit=".$selfEdit."'>configure your application</a>.";
-		$jsonObj['html'] = $msg;
+		$jsonObj['html'] = "Your <code>config.php</code> is empty. Please <a href='".ROOT_URL."mouf/config/?selfedit=".$selfEdit."'>configure your application</a>.";
 	} else {
 		
 		$msg = "";
