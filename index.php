@@ -34,10 +34,10 @@ if (!is_writable(dirname(__FILE__)) || !is_writable(dirname(__FILE__)."/..")) {
 			$processUserName = $processUser['name'];
 		?>
 			<p>You can try these commands:</p>
-			<ul>
-				<li>chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)."/..") ?></li>
-				<li>chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)) ?></li>
-			</ul>
+			<pre>
+chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)."/..") ?>
+chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)) ?>
+</pre>
 		<?php 
 		}
 		?>
