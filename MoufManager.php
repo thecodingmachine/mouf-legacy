@@ -582,7 +582,7 @@ class MoufManager {
 	private function instantiateComponent($instanceName) {
 		// NEW
 		if (!isset($this->declaredInstances[$instanceName])) {
-			throw new MoufInstanceNotFoundException("The object instance ".$instanceName." is not defined.");
+			throw new MoufInstanceNotFoundException("The object instance ".$instanceName." is not defined.", 1, $instanceName);
 		}
 		
 		$instanceDefinition = $this->declaredInstances[$instanceName];
@@ -668,7 +668,7 @@ class MoufManager {
 		if (isset($this->declaredComponents[$instanceName])) {
 			$className = $this->declaredComponents[$instanceName];
 		} else {
-			throw new MoufInstanceNotFoundException("The object instance '".$instanceName."' is not defined.");
+			throw new MoufInstanceNotFoundException("The object instance '".$instanceName."' is not defined.", 1, $instanceName);
 		}
 		
 		/*if (!class_exists($className)) {
