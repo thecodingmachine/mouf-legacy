@@ -274,7 +274,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 		echo '<span class="sessionmarker" '.$hideSession.'>session</span> ';
 		echo '<span class="configmarker" '.$hideConfig.'>config</span>';
 		echo '<span class="requestmarker" '.$hideRequest.'>request</span>';
-		echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+		echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 		echo '</div>';
 	}
 }
