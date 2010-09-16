@@ -30,11 +30,11 @@ foreach ($this->languages as $language) {
 			echo "<td>";
 			if ($msgsForKey[$language] != null) {
 				echo "<a href='editLabel?key=".plainstring_to_htmlprotected($key)."&language=".plainstring_to_htmlprotected($language)."&backto=".plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels")."'>" .
-						"<img src='".ROOT_URL."/plugins/utils/i18n/fine/1.0/views/images/checkOk.png' alt='ok' title='".plainstring_to_htmlprotected($msgsForKey[$language])."'/>" .
+						"<img src='".ROOT_URL."plugins/utils/i18n/fine/1.0/views/images/checkOk.png' alt='ok' title='".plainstring_to_htmlprotected($msgsForKey[$language])."'/>" .
 					"</a>";
 			} else {
 				echo "<a href='editLabel?key=".plainstring_to_htmlprotected($key)."&language=".plainstring_to_htmlprotected($language)."&backto=".plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels")."'>" .
-						"<img src='".ROOT_URL."/plugins/utils/i18n/fine/1.0/views/images/cancel.png' alt='No label provided' title='No label provided' />" .
+						"<img src='".ROOT_URL."plugins/utils/i18n/fine/1.0/views/images/cancel.png' alt='No label provided' title='No label provided' />" .
 					"</a>";
 			}
 			echo "</td>";
