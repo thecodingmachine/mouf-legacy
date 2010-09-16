@@ -372,7 +372,7 @@ foreach ($this->properties as $property) {
 			if ($defaultValue != null) {
 				echo '<span id="'.$property->getName().'_mouf_link" >';
 				echo '<a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.plainstring_to_htmlprotected($defaultValue).'&amp;selfedit='.$this->selfedit.'">'.$defaultValue.'</a>';
-				echo '<a onclick="document.getElementById(\''.$property->getName().'_mouf_link\').style.display=\'none\';document.getElementById(\'moufproperty_'.$property->getName().'\').style.display=\'inline\';" ><img src="'.ROOT_URL.'/mouf/views/images/pencil.png" alt="edit" /></a>';
+				echo '<a onclick="document.getElementById(\''.$property->getName().'_mouf_link\').style.display=\'none\';document.getElementById(\'moufproperty_'.$property->getName().'\').style.display=\'inline\';" ><img src="'.ROOT_URL.'mouf/views/images/pencil.png" alt="edit" /></a>';
 				echo "</span>\n";
 				$defaultDisplaySelect = 'style="display:none"';
 			}
@@ -413,7 +413,7 @@ foreach ($this->properties as $property) {
 		echo '<input type="text" id="moufproperty_'.$property->getName().'" name="'.$property->getName().'" value="'.plainstring_to_htmlprotected($defaultValue).'" />';
 		
 		// TODO: uncomment to enable
-		//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'/mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
+		//echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
 	}
 	echo "</div>\n";
 	
