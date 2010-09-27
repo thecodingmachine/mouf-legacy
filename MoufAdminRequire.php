@@ -27,6 +27,19 @@ require_once $localFilePath.'/../plugins/utils/common/getvars/1.0/tcm_utils.php'
 require_once $localFilePath.'/../plugins/javascript/jit/1.1.2/HtmlJSJit.php';
 require_once $localFilePath.'/../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php';
 require_once $localFilePath.'/../plugins/utils/log/errorlog_logger/1.0/ErrorLogLogger.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/UserDaoException.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/UserServiceException.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/AuthenticationListenerInterface.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/UserInterface.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/UserWithMailInterface.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/UserDaoInterface.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/UserServiceInterface.php';
+require_once $localFilePath.'/../plugins/security/userservice/1.0/MoufUserService.php';
+require_once $localFilePath.'/../plugins/security/userservice-splash/1.0/Logged.php';
+require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileBean.php';
+require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileDaoException.php';
+require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileDao.php';
+require_once $localFilePath.'/../plugins/security/simplelogincontroller/1.0/SimpleLoginController.php';
 
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';
@@ -39,6 +52,8 @@ require_once $localFilePath.'/controllers/MoufInstanceController.php';
 require_once $localFilePath.'/controllers/MoufDisplayGraphController.php';
 require_once $localFilePath.'/controllers/ConfigController.php';
 require_once $localFilePath.'/controllers/MoufValidatorController.php';
+require_once $localFilePath.'/controllers/MoufLoginController.php';
+require_once $localFilePath.'/controllers/PackageServiceController.php';
 require_once $localFilePath.'/load.php';
 
 ?>

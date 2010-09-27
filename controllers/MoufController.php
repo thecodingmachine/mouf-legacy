@@ -58,6 +58,7 @@ class MoufController extends Controller {
 	 * This canb e the detail controller, or any other controller, depending on the @ExtendedAction annotation.
 	 * 
 	 * @Action
+	 * @Logged
 	 * @param string $name the name of the component to display
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 */
@@ -95,6 +96,7 @@ class MoufController extends Controller {
 	 * Lists all the components available, sorted by "package" (directory of the class).
 	 * 
 	 * @Action
+	 * @Logged
 	 */
 	public function defaultAction($selfedit = "false") {
 		$this->selfedit = $selfedit;
@@ -183,6 +185,7 @@ class MoufController extends Controller {
 	 * Lists all the components available, ordered by creation date, in order to edit them.
 	 * 
 	 * @Action
+	 * @Logged
 	 */
 	public function instancesByDate($selfedit = "false") {
 		$this->selfedit = $selfedit;
@@ -201,6 +204,7 @@ class MoufController extends Controller {
 	 * Displays the screen allowing to create new instances.
 	 *
 	 * @Action
+	 * @Logged
 	 */
 	public function newInstance($selfedit = "false", $instanceName=null, $instanceClass=null) {
 		//$componentsList = Moufspector::getComponentsList();
@@ -226,6 +230,7 @@ class MoufController extends Controller {
 	 * The action that creates a new component instance.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $instanceName The name of the instance to create
 	 * @param string $instanceClass The class of the component to create
 	 */

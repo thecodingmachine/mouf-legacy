@@ -45,6 +45,7 @@ class ConfigController extends Controller {
 	 * Displays the list of defined parameters in config.php
 	 * 
 	 * @Action
+	 * @Logged
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 * @param string $validation The validation message to display (either null, or confirmok).
 	 */
@@ -67,6 +68,7 @@ class ConfigController extends Controller {
 	 * The action to save the configuration.
 	 *
 	 * @Action
+	 * @Logged
 	 */
 	public function saveConfig($selfedit = "false") {
 		$this->selfedit = $selfedit;
@@ -103,6 +105,7 @@ class ConfigController extends Controller {
 	 * Displays the screen to register a constant definition.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $name
 	 * @param string $selfedit
 	 */
@@ -155,6 +158,7 @@ class ConfigController extends Controller {
 	 * Actually saves the new constant declared.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $name
 	 * @param string $defaultvalue
 	 * @param string $value
@@ -206,6 +210,7 @@ class ConfigController extends Controller {
 	 * Deletes a constant.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $name
 	 */
 	public function deleteConstant($name, $selfedit = "false") {

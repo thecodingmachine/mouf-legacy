@@ -52,6 +52,32 @@ class MoufGroupDescriptor {
 		}
 		return $this->packages[$name];
 	}
+	
+	/**
+	 * Returns a PHP array that describes the group.
+	 * The array does not contain all available information, only enough information to display the list of packages in the Mouf interface.
+	 * 
+	 * The structure of the array is:
+	 * 	array("subGroups" => array('subGroupName' => subGroupArray, 'packages' => array('packageName', packageArray)
+	 * 
+	 * return array
+	 */
+	public function getJsonArray() {
+		$array = array();
+		if (!empty($this->subGroups)) {
+			$array['subgroups'] = array();
+			foreach ($this->subGroups as $name => $subGroup) {
+				$array['subgroups'][$name] = $subGroup->getJsonArray();
+			}
+		}
+		if (!empty($this->packages)) {
+			$array['packages'] = array();
+			foreach ($this->packages as $name => $package) {
+				$array['packages'][$name] = $package->getJsonArray();
+			}
+		}
+		return $array;		
+	}
 }
 
 ?>

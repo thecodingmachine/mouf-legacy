@@ -18,6 +18,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 
 	/**
 	 * @Action
+	 * @Logged
 	 *
 	 * @param string $name the name of the component to display
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
@@ -44,6 +45,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 	 * Displays the dependency graph around the component passed in parameter.
 	 * 
 	 * @Action
+	 * @Logged
 	 *
 	 * @param string $name
 	 * @param string $selfedit
@@ -63,6 +65,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 	 * Action that saves the component.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $originalInstanceName The name of the instance
 	 * @param string $instanceName The new name of the instance (if it was renamed)
 	 * @param string $delete Whether the instance should be deleted or not

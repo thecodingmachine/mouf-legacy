@@ -29,6 +29,7 @@ class MoufValidatorController extends Controller {
 	 * The default action will redirect to the MoufController defaultAction.
 	 *
 	 * @Action
+	 * @Logged
 	 */
 	public function defaultAction($selfedit = "false") {
 		if ($selfedit == "true") {

@@ -30,6 +30,10 @@ $moufManager->addPackageByXmlFile('utils/common/getvars/1.0/package.xml');
 $moufManager->addPackageByXmlFile('javascript/jit/1.1.2/package.xml');
 $moufManager->addPackageByXmlFile('javascript/prototype/1.6.0.1/package.xml');
 $moufManager->addPackageByXmlFile('utils/log/errorlog_logger/1.0/package.xml');
+$moufManager->addPackageByXmlFile('security/userservice/1.0/package.xml');
+$moufManager->addPackageByXmlFile('security/userservice-splash/1.0/package.xml');
+$moufManager->addPackageByXmlFile('security/userfiledao/1.0/package.xml');
+$moufManager->addPackageByXmlFile('security/simplelogincontroller/1.0/package.xml');
 
 require dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
@@ -63,11 +67,18 @@ $moufManager->addComponentInstances(array (
   array (
     'class' => 'SplashTemplate',
     'external' => false,
+    'fieldBinds' => 
+    array (
+      'head' => 
+      array (
+        0 => 'prototype',
+      ),
+    ),
     'fieldProperties' => 
     array (
       'logoImg' => 
       array (
-        'value' => '',
+        'value' => 'mouf/views/images/MoufLogo.png',
         'type' => 'string',
         'metadata' => 
         array (
@@ -75,7 +86,7 @@ $moufManager->addComponentInstances(array (
       ),
       'title' => 
       array (
-        'value' => 'Mouf - Your website',
+        'value' => 'Mouf - Build your website',
         'type' => 'string',
         'metadata' => 
         array (
@@ -83,18 +94,14 @@ $moufManager->addComponentInstances(array (
       ),
       'css_files' => 
       array (
-        'value' => false,
+        'value' => 
+        array (
+          0 => 'mouf/views/styles.css',
+        ),
         'type' => 'string',
         'metadata' => 
         array (
         ),
-      ),
-    ),
-    'fieldBinds' => 
-    array (
-      'head' => 
-      array (
-        0 => 'prototype',
       ),
     ),
   ),
@@ -228,6 +235,8 @@ $moufManager->addComponentInstances(array (
         7 => 'loadComponentsMenuItem',
         8 => 'viewInstancesMenuItem',
         9 => 'newInstanceMenuItem',
+        10 => 'miscellaneousLabelMenuItem',
+        11 => 'logoutMenuItem',
       ),
     ),
   ),
@@ -778,6 +787,256 @@ $moufManager->addComponentInstances(array (
       ),
     ),
   ),
+  'userService' => 
+  array (
+    'class' => 'MoufUserService',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'log' => 'errorLogger',
+      'userDao' => 'userFileDao',
+    ),
+    'fieldProperties' => 
+    array (
+      'loginPageUrl' => 
+      array (
+        'value' => 'mouf/login',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'sessionPrefix' => 
+      array (
+        'value' => 'Mouf',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'userFileDao' => 
+  array (
+    'class' => 'UserFileDao',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'userFile' => 
+      array (
+        'value' => 'MoufUsers.php',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'miscellaneousLabelMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => '<b>Miscellaneous</b>',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'logoutMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Logout',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/login/logout',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'login' => 
+  array (
+    'class' => 'MoufLoginController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'splashTemplate',
+      'userService' => 'userService',
+      'contentBeforeLoginBox' => 
+      array (
+        0 => 'loginWelcomeMessage',
+      ),
+    ),
+    'fieldProperties' => 
+    array (
+      'defaultRedirectUrl' => 
+      array (
+        'value' => 'mouf/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'logoutRedirectUrl' => 
+      array (
+        'value' => 'mouf/login/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'loginLabel' => 
+      array (
+        'value' => 'Login',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'i18nLoginLabel' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'passwordLabel' => 
+      array (
+        'value' => 'Password',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'i18nPasswordLabel' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'loginSubmitLabel' => 
+      array (
+        'value' => 'Login',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'i18nLoginSubmitLabel' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'badCredentialsLabel' => 
+      array (
+        'value' => 'Invalid login or password, please try again.',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'i18nBadCredentialsLabel' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'loginWelcomeMessage' => 
+  array (
+    'class' => 'HtmlString',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'htmlString' => 
+      array (
+        'value' => '<h1>Login</h1>
+<p>Welcome to Mouf. Please login to access the administration interface of your web application.</p>
+<br/>
+<br/>
+<br/>',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'packagesService' => 
+  array (
+    'class' => 'PackageServiceController',
+    'external' => false,
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
@@ -790,6 +1049,8 @@ $moufManager->registerComponent('controllers/MoufInstanceController.php');
 $moufManager->registerComponent('controllers/MoufDisplayGraphController.php');
 $moufManager->registerComponent('controllers/ConfigController.php');
 $moufManager->registerComponent('controllers/MoufValidatorController.php');
+$moufManager->registerComponent('controllers/MoufLoginController.php');
+$moufManager->registerComponent('controllers/PackageServiceController.php');
 $moufManager->registerComponent('load.php');
 
 unset($moufManager);
@@ -1046,6 +1307,48 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return MoufUserService
+	 */
+	 public static function getUserService() {
+	 	return MoufManager::getMoufManager()->getInstance('userService');
+	 }
+
+	/**
+	 * @return UserFileDao
+	 */
+	 public static function getUserFileDao() {
+	 	return MoufManager::getMoufManager()->getInstance('userFileDao');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getMiscellaneousLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('miscellaneousLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getLogoutMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('logoutMenuItem');
+	 }
+
+	/**
+	 * @return MoufLoginController
+	 */
+	 public static function getLogin() {
+	 	return MoufManager::getMoufManager()->getInstance('login');
+	 }
+
+	/**
+	 * @return HtmlString
+	 */
+	 public static function getLoginWelcomeMessage() {
+	 	return MoufManager::getMoufManager()->getInstance('loginWelcomeMessage');
+	 }
+
+	/**
 	 * @return SplashMenuItem
 	 */
 	 public static function getFineAdminLabelMenuItem() {
@@ -1099,6 +1402,13 @@ class MoufAdmin {
 	 */
 	 public static function getSplashApacheConfig() {
 	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
+	 }
+
+	/**
+	 * @return PackageServiceController
+	 */
+	 public static function getPackagesService() {
+	 	return MoufManager::getMoufManager()->getInstance('packagesService');
 	 }
 
 }

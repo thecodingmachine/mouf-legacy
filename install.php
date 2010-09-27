@@ -101,6 +101,31 @@ if (!file_exists("../config.php")) {
 	file_put_contents("../config.php", $moufConfig);
 }
 
+// Finally 3 :), let's generate the MoufUsers.php file:
+if (!file_exists("../MoufUsers.php")) {
+	$moufConfig = "<?php
+	/**
+	 * This contains the users allowed to access the Mouf framework.
+	 */
+	\$users[".var_export(install_userinput_to_plainstring($_REQUEST['login']), true)."] = array('password'=>".var_export(sha1(install_userinput_to_plainstring($_REQUEST['password'])), true).", 'options'=>null);
+	
+	?>";
+	
+	file_put_contents("../MoufUsers.php", $moufConfig);
+}
+
+function install_userinput_to_plainstring($str) {
+	if (get_magic_quotes_gpc()==1)
+	{
+		$str = stripslashes($str);
+		// Rajouter les slashes soumis par l'utilisateur
+		//$str = str_replace('\\', '\\\\', $str);
+		return $str;
+	}
+	else
+		return $str;
+}
+
 
 header("Location: ".$uri."/");
 

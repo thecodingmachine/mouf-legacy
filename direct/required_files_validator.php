@@ -1,6 +1,10 @@
 <?php
 require_once('../../MoufUniversalParameters.php');
 
+// Note: checking rights is done after loading the required files because we need to open the session
+// and only after can we check if it was not loaded before loading it ourselves...
+require_once 'utils/check_rights.php';
+
 // This validator calls the "analyze_includes" file and returns the result adapted to the display of a validator (JSON format).
 
 $url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/analyze_includes.php";

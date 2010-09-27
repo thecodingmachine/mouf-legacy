@@ -315,7 +315,7 @@ class MoufManager {
 	 */
 	public function removeComponent($instanceName) {
 		// OLD
-		unset($this->declaredComponents[$instanceName]);
+		/*unset($this->declaredComponents[$instanceName]);
 		unset($this->objectInstances[$instanceName]);
 		unset($this->declaredProperties[$instanceName]);
 		unset($this->declaredSetterProperties[$instanceName]);
@@ -369,7 +369,7 @@ class MoufManager {
 					}
 				}
 			}
-		}
+		}*/
 		
 		// NEW
 		unset($this->declaredInstances[$instanceName]);

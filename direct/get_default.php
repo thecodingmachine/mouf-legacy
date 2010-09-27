@@ -4,6 +4,7 @@
  */
 
 require_once '../../Mouf.php';
+require_once 'utils/check_rights.php';
 
 // FIXME; moyen secure ça!
 $instance = new $_REQUEST["class"]();

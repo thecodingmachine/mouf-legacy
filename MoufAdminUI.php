@@ -8,5 +8,6 @@ require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/controllers/Edit
 require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/ValidatorDescriptor.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashAdmin.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/controllers/admin/SplashAdminApacheConfigureController.php';
+require_once dirname(__FILE__).'/../plugins/security/userservice/1.0/MoufUserServiceValidators.php';
 
 ?>

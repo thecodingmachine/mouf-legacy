@@ -1,13 +1,14 @@
 <?php
-// FIXME: it is absolutely very important that this file is protected!
-// We are returning the entire config of the app to anyone.
-// This is a serious security hazard.
 
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	$fileName = dirname(__FILE__)."/../../config.php";
 } else {
 	$fileName = dirname(__FILE__)."/../../mouf/config.php";
 }
+
+// Note: checking rights is done after loading the required files because we need to open the session
+// and only after can we check if it was not loaded before loading it ourselves...
+require_once 'utils/check_rights.php';
 
 
 $constants_list = null;

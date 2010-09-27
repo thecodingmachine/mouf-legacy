@@ -71,6 +71,7 @@ class PackageController extends Controller {
 	 * Displays the list of component files
 	 * 
 	 * @Action
+	 * @Logged
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 * @param string $validation The validation message to display (either null, or enable or disable).
 	 * @param array<string> $packageList The array of packages enabled or disabled.
@@ -128,6 +129,7 @@ class PackageController extends Controller {
 	 * Action that is run to enable a package.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $name The path to the package.xml file relative to the plugins directory.
 	 * @param string $selfedit
 	 * @param string $confirm
@@ -173,6 +175,7 @@ class PackageController extends Controller {
 	 * Action that is run to disable a package.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $name The path to the package.xml file relative to the plugins directory.
 	 * @param string $selfedit
 	 * @param string $confirm
@@ -257,6 +260,7 @@ class PackageController extends Controller {
 	 * Action that is run to upgrade/downgrade a package.
 	 *
 	 * @Action
+	 * @Logged
 	 * @param string $name The path to the package.xml file relative to the plugins directory.
 	 * @param string $selfedit
 	 * @param string $confirm

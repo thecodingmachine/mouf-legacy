@@ -36,6 +36,7 @@ class ComponentsController extends Controller {
 	 * Displays the list of component files
 	 * 
 	 * @Action
+	 * @Logged
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 */
 	public function defaultAction($selfedit = "false") {
@@ -60,6 +61,7 @@ class ComponentsController extends Controller {
 	 * Saves the list of files to be edited
 	 * 
 	 * @Action
+	 * @Logged
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 */
 	public function save($files = array(), $selfedit = "false") {

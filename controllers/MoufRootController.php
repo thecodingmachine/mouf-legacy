@@ -10,6 +10,7 @@ class MoufRootController extends Controller {
 	 * The default action will redirect to the MoufController defaultAction.
 	 *
 	 * @Action
+	 * @Logged
 	 */
 	public function defaultAction() {
 		header("Location: ".ROOT_URL."mouf/validate/");

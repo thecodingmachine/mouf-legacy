@@ -20,6 +20,7 @@ class MoufDisplayGraphController extends AbstractMoufInstanceController {
 	 * Displays the dependency graph around the component passed in parameter.
 	 * 
 	 * @Action
+	 * @Logged
 	 *
 	 * @param string $name
 	 * @param string $selfedit
