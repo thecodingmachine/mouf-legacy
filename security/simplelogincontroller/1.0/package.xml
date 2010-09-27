@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>SimpleLoginController</displayName>
+	<shortDescription>This package contains a simple Splash controller to log into an application.
+	The controller can display a simple form with username/password choice, and has actions to login/logout the application.
+	</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/todo</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>security</group>
+			<name>userservice</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>mvc</group>
+			<name>splash</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>SimpleLoginController.php</require>
+	</requires>
+</package>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>UserFileDao</displayName>
+	<shortDescription>This package contains an implementation of a UserDao, that stores the application users in a simple PHP file.
+	It can be used together with the MoufUserService to provide easy access management to an application.
+	Since the users are stored in a PHP file, this very special DAO does not require a database!
+	</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/todo.html</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>security</group>
+			<name>userservice</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>UserFileBean.php</require>
+		<require>UserFileDaoException.php</require>
+		<require>UserFileDao.php</require>
+	</requires>
+</package>

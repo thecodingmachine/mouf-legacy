@@ -50,6 +50,16 @@ class MoufUserService implements UserServiceInterface {
 	 * @var array<AuthenticationListenerInterface>
 	 */
 	public $authenticationListeners;
+
+	/**
+	 * In case you have several Mouf applications using the UserService running on the same server, in the same domain, you
+	 * should use a different session prefix for each application in order to avoid "melting" the sessions.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $sessionPrefix;
 	
 	/**
 	 * Logs the user using the provided login and password.
@@ -68,8 +78,8 @@ class MoufUserService implements UserServiceInterface {
 		$user = $this->userDao->getUserByCredentials($login, $password);
 		if ($user != null) {
 			$this->log->trace("User '".$user->getLogin()."' logs in.");
-			$_SESSION['MoufUserId'] = $user->getId();
-			$_SESSION['MoufUserLogin'] = $user->getLogin();
+			$_SESSION[$this->sessionPrefix.'MoufUserId'] = $user->getId();
+			$_SESSION[$this->sessionPrefix.'MoufUserLogin'] = $user->getLogin();
 			
 			if (is_array($this->authenticationListeners)) {
 				foreach ($this->authenticationListeners as $listener) {
@@ -103,8 +113,8 @@ class MoufUserService implements UserServiceInterface {
 			throw new UserServiceException("Unable to find user whose login is ".$login);
 		}
 		$this->log->trace("User '".$user->getLogin()."' logs in, without providing a password.");
-		$_SESSION['MoufUserId'] = $user->getId();
-		$_SESSION['MoufUserLogin'] = $user->getLogin();
+		$_SESSION[$this->sessionPrefix.'MoufUserId'] = $user->getId();
+		$_SESSION[$this->sessionPrefix.'MoufUserLogin'] = $user->getLogin();
 		
 		if (is_array($this->authenticationListeners)) {
 			foreach ($this->authenticationListeners as $listener) {
@@ -129,7 +139,7 @@ class MoufUserService implements UserServiceInterface {
 	 * @return boolean
 	 */
 	public function isLogged() {
-		if (isset($_SESSION['MoufUserId'])) {
+		if (isset($_SESSION[$this->sessionPrefix.'MoufUserId'])) {
 			return true;
 		} else {
 			return false;
@@ -152,16 +162,16 @@ class MoufUserService implements UserServiceInterface {
 	 *
 	 */
 	public function logoff() {
-		if (isset($_SESSION['MoufUserLogin'])) {
+		if (isset($_SESSION[$this->sessionPrefix.'MoufUserLogin'])) {
 			if (is_array($this->authenticationListeners)) {
 				foreach ($this->authenticationListeners as $listener) {
 					$listener->beforeLogOut($this);
 				}
 			}
 			
-			$this->log->trace("User ".$_SESSION['MoufUserLogin']." logs out.");
-			unset($_SESSION['MoufUserId']);
-			unset($_SESSION['MoufUserLogin']);
+			$this->log->trace("User ".$_SESSION[$this->sessionPrefix.'MoufUserLogin']." logs out.");
+			unset($_SESSION[$this->sessionPrefix.'MoufUserId']);
+			unset($_SESSION[$this->sessionPrefix.'MoufUserLogin']);
 		}
 	}
 	
@@ -171,8 +181,8 @@ class MoufUserService implements UserServiceInterface {
 	 * @return string
 	 */
 	public function getUserId() {
-		if (isset($_SESSION['MoufUserId']))
-			return $_SESSION['MoufUserId'];
+		if (isset($_SESSION[$this->sessionPrefix.'MoufUserId']))
+			return $_SESSION[$this->sessionPrefix.'MoufUserId'];
 		else
 			return null; 
 	}
@@ -183,8 +193,8 @@ class MoufUserService implements UserServiceInterface {
 	 * @return string
 	 */
 	public function getUserLogin() {
-		if (isset($_SESSION['MoufUserLogin']))
-			return $_SESSION['MoufUserLogin'];
+		if (isset($_SESSION[$this->sessionPrefix.'MoufUserLogin']))
+			return $_SESSION[$this->sessionPrefix.'MoufUserLogin'];
 		else
 			return null; 
 	}
@@ -195,8 +205,8 @@ class MoufUserService implements UserServiceInterface {
 	 * return UserInterface
 	 */
 	public function getLoggedUser() {
-		if (isset($_SESSION['MoufUserId'])) {
-			return $this->userDao->getUserById($_SESSION['MoufUserId']);
+		if (isset($_SESSION[$this->sessionPrefix.'MoufUserId'])) {
+			return $this->userDao->getUserById($_SESSION[$this->sessionPrefix.'MoufUserId']);
 		} else {
 			return null;
 		}

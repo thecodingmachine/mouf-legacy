@@ -21,4 +21,7 @@
 		<require>UserServiceInterface.php</require>
 		<require>MoufUserService.php</require>
 	</requires>
+	<adminRequires>
+		<require>MoufUserServiceValidators.php</require>
+	</adminRequires>	
 </package>

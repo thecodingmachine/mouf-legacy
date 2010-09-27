@@ -2,7 +2,6 @@
 /**
  * This page generates the DAOS (via direct access)
  * 
- * TODO: protect the access to admins only!!!!
  */
 require_once 'utils/dao_generator.php';
 
@@ -14,6 +13,11 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	require_once '../../../../MoufUniversalParameters.php';
 	require_once '../../../../mouf/MoufAdmin.php';
 }
+
+// Note: checking rights is done after loading the required files because we need to open the session
+// and only after can we check if it was not loaded before loading it ourselves...
+require_once '../../../../mouf/direct/utils/check_rights.php';
+
 
 $tdbmServiceInstanceName = $_REQUEST["name"];
 $tdbmService = MoufManager::getMoufManager()->getInstance($tdbmServiceInstanceName);
