@@ -853,7 +853,7 @@ class DB_Connection {
 	 *
 	 */
 	public function rollback() {
-		// TODO: since we are rolling back, we should remove anything in DBM_Object::$new_objects
+		// TODO: since we are rolling back, we should remove anything in DBM_Object::$tosave_objects
 		// instead of inserting in order to roll back.
 		DBM_Object::completeSave();
 		$result = $this->db->rollback();
@@ -949,7 +949,7 @@ class DBM_Object {
 	static private $objects;
 
 	/// Table of new objects not yet inserted in database.
-	static private $new_objects;
+	static private $tosave_objects;
 
 	/// Table of constraints that that table applies on another table n the form [this table][this column]=XXX
 	//static private $external_constraint;
@@ -1199,7 +1199,7 @@ class DBM_Object {
 			}
 		}
 
-		DBM_Object::$new_objects[] = $object;
+		DBM_Object::$tosave_objects[] = $object;
 
 		return $object;
 	}
@@ -1561,7 +1561,10 @@ class DBM_Object {
 		/*if ($var == $this->getPrimaryKey() && isset($this->db_row[$var]))
 			throw new DB_Exception("Error! Changing primary key value is forbidden.");*/
 		$this->db_row[$var] = $value;
-		$this->db_modified_state = true;
+		if ($this->db_modified_state == false) {
+			$this->db_modified_state = true;
+			self::$tosave_objects[] = $this;
+		}
 		// Unset the error since something has changed (Insert or Update could work this time).
 		$this->db_onerror = false;
 	}
@@ -1627,11 +1630,11 @@ class DBM_Object {
 				}
 			}
 
-			// Let's remove this object from the $new_objects static table.
-			foreach (DBM_Object::$new_objects as $id=>$object) {
+			// Let's remove this object from the $tosave_objects static table.
+			foreach (DBM_Object::$tosave_objects as $id=>$object) {
 				if ($object == $this)
 				{
-					unset(DBM_Object::$new_objects[$id]);
+					unset(DBM_Object::$tosave_objects[$id]);
 					break;
 				}
 			}
@@ -1709,6 +1712,14 @@ class DBM_Object {
 				trigger_error($e->getMessage(), E_USER_ERROR);
 			}
 
+			// Let's remove this object from the $tosave_objects static table.
+			foreach (DBM_Object::$tosave_objects as $id=>$object) {
+				if ($object == $this)
+				{
+					unset(DBM_Object::$tosave_objects[$id]);
+					break;
+				}
+			}
 			$this->db_modified_state = false;
 		}
 	}
@@ -1755,9 +1766,9 @@ class DBM_Object {
 	 */
 	static function completeSave() {
 		
-		if (is_array(DBM_Object::$new_objects))
+		if (is_array(DBM_Object::$tosave_objects))
 		{
-			foreach (DBM_Object::$new_objects as $key=>$object)
+			foreach (DBM_Object::$tosave_objects as $key=>$object)
 			{
 				if (!$object->db_onerror && $object->db_autosave)
 				{
@@ -1766,7 +1777,7 @@ class DBM_Object {
 			}
 		}
 		
-		if (is_array(DBM_Object::$objects))
+		/*if (is_array(DBM_Object::$objects))
 		{
 			foreach (DBM_Object::$objects as $table)
 			{
@@ -1781,18 +1792,8 @@ class DBM_Object {
 					}
 				}
 			}
-			
-			// Now, all the new objects should be added to the list of existing objects.
-			// FIXME: We need to put the newobject into the object table.
-			// To do this, we need the ID!!!!!!
-			/*foreach ($saved_new_objects as $object) {
-				if (!is_array(DBM_Object::$objects[$object->db_table_name])) {
-					DBM_Object::$objects[$object->db_table_name] = array();
-				}
-				DBM_Object::$objects[$object->db_table_name][$object->]
-			}*/
-			
-		}
+
+		}*/
 		
 	}
 	
