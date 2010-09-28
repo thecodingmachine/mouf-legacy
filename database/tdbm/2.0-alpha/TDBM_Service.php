@@ -1598,7 +1598,7 @@ class TDBM_Service {
 	 * @param TDBM_Object $myObject
 	 */
 	public function _addToToSaveObjectList(TDBM_Object $myObject) {
-		$this->tosave_objects[] == $myObject;
+		$this->tosave_objects[] = $myObject;
 	}
 	
 }
