@@ -4,6 +4,8 @@
 Currently, it seems that no accounts are defined for this application because Mouf cannot find the "MoufUsers.php" file.</p>
 
 <p>In order to create that file, the easiest way is to trigger a new installation of Mouf. The install process will
-create the MoufUsers.php file automatically, and will not delete anything. In order to do this, you just need to delete the 
-<code>".htaccess"</code> that is present <b>in the <code>"mouf"</code> subdirectory</b> of your web application.
-Then, <a href="<?php echo ROOT_URL."mouf/" ?>">restart the install process</a>.</p> 
+create the MoufUsers.php file automatically, and will not delete anything. In order to do this:</p>
+<ol>
+<li>Delete the <code>".htaccess"</code> that is present <b>in the <code>"mouf"</code> subdirectory</b> of your web application.</li>
+<li><a href="<?php echo ROOT_URL."mouf/" ?>">Restart the install process</a>.</li>
+</ol>
