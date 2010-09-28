@@ -33,7 +33,7 @@ class TdbmController extends AbstractMoufInstanceController {
 	public function generate($name, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
 		$this->initController($name, $selfedit);
 		
-		$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."plugins/database/tdbm/2.0-alpha/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".$daofactoryclassname;
+		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/database/tdbm/2.0-alpha/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".$daofactoryclassname;
 		$response = self::performRequest($url);
 		
 		/*if (trim($response) != "") {

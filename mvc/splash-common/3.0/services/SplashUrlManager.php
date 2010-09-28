@@ -18,7 +18,7 @@ class SplashUrlManager {
 	}
 	
 	private static function getUrlsByProxy($selfEdit) {
-		$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/mvc/splash-common/3.0/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
+		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/mvc/splash-common/3.0/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
 
 		$response = self::performRequest($url);
 
