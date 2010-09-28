@@ -319,7 +319,10 @@ class TDBM_Object {
 		/*if ($var == $this->getPrimaryKey() && isset($this->db_row[$var]))
 			throw new TDBM_Exception("Error! Changing primary key value is forbidden.");*/
 		$this->db_row[$var] = $value;
-		$this->db_modified_state = true;
+		if ($this->db_modified_state == false) {
+			$this->db_modified_state = true;
+			$this->tdbmService->_addToToSaveObjectList($this);
+		}
 		// Unset the error since something has changed (Insert or Update could work this time).
 		$this->db_onerror = false;
 	}
@@ -386,7 +389,7 @@ class TDBM_Object {
 			}
 
 			// Let's remove this object from the $new_objects static table.
-			$this->tdbmService->_removeFromNewObjectList($this);
+			$this->tdbmService->_removeFromToSaveObjectList($this);
 
 			// If there is only one column for the primary key, and if it has not been filled, let's find it.
 			// We assume this is the biggest ID in the database
@@ -460,6 +463,9 @@ class TDBM_Object {
 				trigger_error($e->getMessage(), E_USER_ERROR);
 			}
 
+			// Let's remove this object from the $new_objects static table.
+			$this->tdbmService->_removeFromToSaveObjectList($this);
+			
 			$this->db_modified_state = false;
 		}
 	}

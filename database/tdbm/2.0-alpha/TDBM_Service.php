@@ -89,8 +89,8 @@ class TDBM_Service {
 	 */
 	private $objects;
 
-	/// Table of new objects not yet inserted in database.
-	private $new_objects;
+	/// Table of new objects not yet inserted in database or objects modified that must be saved.
+	private $tosave_objects;
 
 	/// Table of constraints that that table applies on another table n the form [this table][this column]=XXX
 	//private $external_constraint;
@@ -372,7 +372,7 @@ class TDBM_Service {
 			}
 		}
 
-		$this->new_objects[] = $object;
+		$this->_addToToSaveObjectList($object);
 
 		return $object;
 	}
@@ -514,9 +514,9 @@ class TDBM_Service {
 	 */
 	function completeSave() {
 		
-		if (is_array($this->new_objects))
+		if (is_array($this->tosave_objects))
 		{
-			foreach ($this->new_objects as $key=>$object)
+			foreach ($this->tosave_objects as $key=>$object)
 			{
 				if (!$object->db_onerror && $object->db_autosave)
 				{
@@ -544,7 +544,7 @@ class TDBM_Service {
 			// Now, all the new objects should be added to the list of existing objects.
 			// FIXME: We need to put the newobject into the object table.
 			// To do this, we need the ID!!!!!!
-			/*foreach ($saved_new_objects as $object) {
+			/*foreach ($saved_tosave_objects as $object) {
 				if (!is_array($this->objects[$object->_getDbTableName()])) {
 					$this->objects[$object->_getDbTableName()] = array();
 				}
@@ -1576,19 +1576,31 @@ class TDBM_Service {
 	/**
 	 * This is an internal function, you should not use it in your application.
 	 * This is used internally by TDBM to remove the object from the list of objects that have been
-	 * created but not saved yet.
+	 * created/updated but not saved yet.
 	 * 
 	 * @param TDBM_Object $myObject
 	 */
-	public function _removeFromNewObjectList(TDBM_Object $myObject) {
-		foreach ($this->new_objects as $id=>$object) {
+	public function _removeFromToSaveObjectList(TDBM_Object $myObject) {
+		foreach ($this->tosave_objects as $id=>$object) {
 			if ($object == $myObject)
 			{
-				unset($this->new_objects[$id]);
+				unset($this->tosave_objects[$id]);
 				break;
 			}
 		}
 	}
+
+	/**
+	 * This is an internal function, you should not use it in your application.
+	 * This is used internally by TDBM to add an object to the list of objects that have been
+	 * created/updated but not saved yet.
+	 * 
+	 * @param TDBM_Object $myObject
+	 */
+	public function _addToToSaveObjectList(TDBM_Object $myObject) {
+		$this->tosave_objects[] == $myObject;
+	}
+	
 }
 
 TDBM_Service::$script_start_up_time = microtime(true);
