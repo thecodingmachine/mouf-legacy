@@ -30,10 +30,26 @@ class TdbmController extends AbstractMoufInstanceController {
 	 * @param $name
 	 * @param $selfedit
 	 */
-	public function generate($name, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
+	public function generate($name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
 		$this->initController($name, $selfedit);
+
+		// Remove first and last slash in directories.
+		if (strpos($daodirectory, "/") === 0 || strpos($daodirectory, "\\") === 0) {
+			$daodirectory = substr($daodirectory, 1);
+		}
+		if (strpos($daodirectory, "/") === strlen($daodirectory)-1 || strpos($daodirectory, "\\") === strlen($daodirectory)-1) {
+			$daodirectory = substr($daodirectory, 0, strlen($daodirectory)-1);
+		}
+		if (strpos($beandirectory, "/") === 0 || strpos($beandirectory, "\\") === 0) {
+			$beandirectory = substr($beandirectory, 1);
+		}
+		if (strpos($beandirectory, "/") === strlen($beandirectory)-1 || strpos($beandirectory, "\\") === strlen($beandirectory)-1) {
+			$beandirectory = substr($beandirectory, 0, strlen($beandirectory)-1);
+		}
 		
-		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/database/tdbm/2.0-alpha/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".$daofactoryclassname;
+		
+		
+		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/database/tdbm/2.0-alpha/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory);
 		$response = self::performRequest($url);
 		
 		/*if (trim($response) != "") {
@@ -50,7 +66,7 @@ class TdbmController extends AbstractMoufInstanceController {
 		
 		foreach ($xmlRoot->table as $table) {
 			$daoName = TDBMDaoGenerator::getDaoNameFromTableName($table);
-			$this->moufManager->addRegisteredComponentFile("dao/".$daoName.".php");
+			$this->moufManager->addRegisteredComponentFile($daodirectory."/".$daoName.".php");
 
 			$instanceName = TDBMDaoGenerator::toVariableName($daoName);
 			$this->moufManager->declareComponent($instanceName, $daoName);
@@ -59,7 +75,7 @@ class TdbmController extends AbstractMoufInstanceController {
 			$this->moufManager->bindComponentViaSetter($daofactoryinstancename, "set".$daoName, $instanceName);
 		}
 		
-		$this->moufManager->addRegisteredComponentFile("dao/".$daofactoryclassname.".php");
+		$this->moufManager->addRegisteredComponentFile($daodirectory."/".$daofactoryclassname.".php");
 		
 		$this->moufManager->rewriteMouf();
 		

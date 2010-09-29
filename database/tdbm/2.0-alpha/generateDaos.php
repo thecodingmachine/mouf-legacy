@@ -24,8 +24,11 @@ $tdbmService = MoufManager::getMoufManager()->getInstance($tdbmServiceInstanceNa
 
 $daoFactoryClassName = $_REQUEST["daofactoryclassname"];
 
+$daodirectory = $_REQUEST["daodirectory"];
+$beandirectory = $_REQUEST["beandirectory"]; 
+
 $dbConnection = $tdbmService->dbConnection;
-$daoGenerator = new TDBMDaoGenerator($dbConnection, $daoFactoryClassName);
+$daoGenerator = new TDBMDaoGenerator($dbConnection, $daoFactoryClassName, $daodirectory, $beandirectory);
 $xml = $daoGenerator->generateAllDaosAndBeans();
 echo $xml->asXml();
 
