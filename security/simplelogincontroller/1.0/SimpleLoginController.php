@@ -147,7 +147,6 @@ class SimpleLoginController extends Controller {
 		$this->redirecturl = $redirect;
 		$this->login = $login;
 		
-		$this->template->setTitle(iMsg("login.title"));
 		$this->template->addContentFile(dirname(__FILE__)."/views/login.php", $this);
 		$this->template->draw();
 	}
