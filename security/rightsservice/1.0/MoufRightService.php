@@ -53,15 +53,44 @@ class MoufRightService implements RightsServiceInterface, AuthenticationListener
 	public $errorPageUrl;
 	
 	/**
+	 * The rights for the current user (mapping the $_SESSION rights), but unserialized for better performance access.
+	 * 
+	 * @var array<string, RightInterface>
+	 */
+	public $currentUserRights = array();
+	
+	/**
+	 * In case you have several Mouf applications using the RightService running on the same server, in the same domain, you
+	 * should use a different session prefix for each application in order to avoid "melting" the sessions.
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $sessionPrefix;
+	
+	/**
 	 * Stores the rights of the current user in session.
 	 */
 	private function storeRightsInSession() {
 		$rights = $this->rightsDao->getRightsForUser($this->userService->getUserId());
 		$rightsAssoc = array();
 		foreach ($rights as $right) {
-			$rightsAssoc[$right->getName()] = $right;
+			// Note: we store the serialized version of the right instead of the right itself in session.
+			// This is because in some cases (e.g. Drupal integration), the session will be loaded
+			// before the class is loaded.
+			$rightsAssoc[$right->getName()] = serialize($right);
+			$this->currentUserRights[$right->getName()] = $right;
 		}
-		$_SESSION[self::$RIGHTS_SESSION_NAME] = $rightsAssoc;
+		$_SESSION[$this->sessionPrefix.self::$RIGHTS_SESSION_NAME] = $rightsAssoc;
+	}
+	
+	/**
+	 * Loads the rights from the session.
+	 */
+	private function loadRightsFromSession() {
+		foreach ($_SESSION[$this->sessionPrefix.self::$RIGHTS_SESSION_NAME] as $name=>$serializedRight) {
+			$this->currentUserRights[$name] = unserialize($serializedRight);
+		}
 	}
 	
 	/**
@@ -80,14 +109,14 @@ class MoufRightService implements RightsServiceInterface, AuthenticationListener
 			return false;
 		}
 		
-		if (!isset($_SESSION[self::$RIGHTS_SESSION_NAME])) {			
+		if (!isset($_SESSION[$this->sessionPrefix.self::$RIGHTS_SESSION_NAME])) {			
 			$this->storeRightsInSession();
+		} else {
+			$this->loadRightsFromSession();
 		}
-		
-		$rights = $_SESSION[self::$RIGHTS_SESSION_NAME];
-		
-		if (isset($rights[$right])) {
-			if ($rights[$right]->hasScope($scope)) {
+
+		if (isset($this->currentUserRights[$right])) {
+			if ($this->currentUserRights[$right]->hasScope($scope)) {
 				return true;
 			}
 		}
@@ -121,7 +150,8 @@ class MoufRightService implements RightsServiceInterface, AuthenticationListener
 	 *
 	 */
 	public function flushRightsCache() {
-		unset($_SESSION[self::$RIGHTS_SESSION_NAME]);
+		unset($_SESSION[$this->sessionPrefix.self::$RIGHTS_SESSION_NAME]);
+		$this->currentUserRights = array();
 	}
 	
 	/**
