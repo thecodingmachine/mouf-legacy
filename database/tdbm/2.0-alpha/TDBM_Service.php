@@ -302,7 +302,10 @@ class TDBM_Service {
 
 		if ($className == null) {
 			$obj = new TDBM_Object($this, $table_name, $id);
-		} else {
+		} else {			
+			if (!is_subclass_of($className, "TDBM_Object")) {
+				throw new TDBM_Exception("Error while calling TDBM_Service->getObject: The class ".$className." should extend TDBM_Object.");
+			}
 			$obj = new $className($this, $table_name, $id);
 		}
 		$this->objects[$table_name][$id] = $obj;
@@ -344,6 +347,9 @@ class TDBM_Service {
 		if ($className == null) {
 			$object = new TDBM_Object($this, $table_name);
 		} else {
+			if (!is_subclass_of($className, "TDBM_Object")) {
+				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The class ".$className." should extend TDBM_Object.");
+			}
 			$object = new $className($this, $table_name);
 		}
 
@@ -483,6 +489,9 @@ class TDBM_Service {
 				if ($className == null) {
 					$obj = new TDBM_Object($this, $table_name, $id);
 				} elseif (is_string($className)) {
+					if (!is_subclass_of($className, "TDBM_Object")) {
+						throw new TDBM_Exception("Error while calling TDBM: The class ".$className." should extend TDBM_Object.");
+					}			
 					$obj = new $className($this, $table_name, $id);
 				} else {
 					throw new DB_Exception("Error while casting DBM_Object to class, the parameter passed is not a string. Value passed: ".$className);
