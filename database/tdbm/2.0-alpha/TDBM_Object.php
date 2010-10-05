@@ -111,12 +111,14 @@ class TDBM_Object {
 		$this->db_connection = $this->tdbmService->getConnection();
 		$this->db_table_name = $table_name;
 		$this->TDBM_Object_id = $id;
-		$this->db_modified_state = false;
 		$this->db_onerror = false;
-		if ($id !== false)
+		if ($id !== false) {
 			$this->TDBM_Object_state = "not loaded";
-		else
+			$this->db_modified_state = false;		
+		} else {
 			$this->TDBM_Object_state = "new";
+			$this->db_modified_state = true;
+		}
 		
 		$this->db_autosave = $this->tdbmService->getDefaultAutoSaveMode();
 	}

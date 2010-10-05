@@ -1225,16 +1225,18 @@ class DBM_Object {
 		$this->db_connection = $db_connection;
 		$this->db_table_name = $table_name;
 		$this->DBM_Object_id = $id;
-		$this->db_modified_state = false;
 		$this->db_onerror = false;
-		if ($id !== false)
+		if ($id !== false) {
 			$this->DBM_Object_state = "not loaded";
-		else
+			$this->db_modified_state = false;
+		} else {
 			$this->DBM_Object_state = "new";
+			$this->db_modified_state = true;
+		}
 		
 		$this->db_autosave = self::$autosave_default;
 	}
-
+		
 	/**
 	 * Returns true if the object will save automatically, false if an explicit call to save() is required.
 	 *
