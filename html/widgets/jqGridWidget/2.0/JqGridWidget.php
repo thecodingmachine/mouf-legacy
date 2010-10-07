@@ -72,6 +72,14 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	public $nbRowPerPageList = array(10,20,30);
 	
 	/**
+	 * The page number to display at load time.
+	 * If set to null, the first page is displayed.
+	 * 
+	 * @var int
+	 */
+	public $pageNo = null;
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
@@ -123,8 +131,11 @@ jQuery(document).ready(function(){';
     datatype: 'xml',
     mtype: 'GET',
     ".$this->getColumnsDefinition()."
-    pager: '#".$pagerId."',
-    rowNum:$nbRowPerPage,
+    pager: '#".$pagerId."',";
+    if (!empty($this->pageNo)) {
+		echo "	page: ".$this->pageNo.",";
+    }
+    echo "rowNum:$nbRowPerPage,
     height:$this->height,
     rowList:[$strNbRowPerPageList],";
 	if ($this->datasource instanceOf OrderableDataSourceInterface) {
