@@ -80,6 +80,25 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	public $pageNo = null;
 	
 	/**
+	 * Set if the state of the page should be preserved or not.
+	 * If true, the session name should be set.
+	 * @var bool
+	 */
+	public $keepState = false;
+	
+	/**
+	 * The session name is used to preserve the state of the page when it is refreshed.(page number, sort column, ...)
+	 * The $keepState variable should be set to true in order to preserve the state.
+	 * If no session name given, the state won't be preserved.
+	 * This value must be unique.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $sessionName = null;
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
@@ -88,7 +107,6 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 		if ($this->displayCondition != null && $this->displayCondition->isOk($this) == false) {
 			return;
 		}
-		
 		self::$number++; 
 		
 		if ($this->tableId == null) {
@@ -132,11 +150,17 @@ jQuery(document).ready(function(){';
     mtype: 'GET',
     ".$this->getColumnsDefinition()."
     pager: '#".$pagerId."',";
-    if (!empty($this->pageNo)) {
-		echo "	page: ".$this->pageNo.",";
+	if (!empty($this->pageNo)) {
+		echo "page: ".$this->pageNo.",";
+    }else if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_page"])){
+    	echo "page: ".$_SESSION[$this->sessionName."_page"].",";
     }
-    echo "rowNum:$nbRowPerPage,
-    height:$this->height,
+    if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_rows"])){
+    	echo "rowNum :".$_SESSION[$this->sessionName."_rows"].",";
+    }else{
+    	echo "rowNum :".$nbRowPerPage.",";
+    }
+    echo "height:$this->height,
     rowList:[$strNbRowPerPageList],";
 	if ($this->datasource instanceOf OrderableDataSourceInterface) {
 		$orderColumns = $this->datasource->getOrderColumns();
@@ -145,8 +169,16 @@ jQuery(document).ready(function(){';
 			if (count($orderColumns) != count($orderSorts)) {
 				throw new Exception("In datasource, the orderColumns and orders properties must have the same number of elements.");
 			}
-    		echo "sortname: '".$orderColumns[0]->getName()."',
-    			sortorder: '".$orderSorts[0]."',";
+			if (!empty($orderColumns[0]->getName())){
+	    		echo "sortname: '".$orderColumns[0]->getName()."',";
+		    }else if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_sidx"])){
+		    	echo "sortname: '".$_SESSION[$this->sessionName."_sidx"]."',";
+		    }
+			if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_sord"])){
+		    	echo "sortorder: '".$_SESSION[$this->sessionName."_sord"]."',";
+		    }else{
+		    	echo "sortorder: '".$orderSorts[0]."',";
+		    }
 		}
 	}
     echo "viewrecords: true,";
@@ -223,6 +255,12 @@ jQuery(document).ready(function(){';
 			$this->datasource->setOrderColumns(array($this->datasource->getColumn($sidx)));
 			$this->datasource->setOrders(array($sord));
 		}
+		
+		// Save the state in case the page is refreshed
+		$_SESSION[$this->sessionName."_page"] = $page;
+		$_SESSION[$this->sessionName."_rows"] = $rows;
+		$_SESSION[$this->sessionName."_sidx"] = $sidx;
+		$_SESSION[$this->sessionName."_sord"] = $sord;
 		
 		// to the url parameter are added 4 parameters as described in colModel
 		// we should get these parameters to construct the needed query

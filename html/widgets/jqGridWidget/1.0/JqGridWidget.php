@@ -84,6 +84,25 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	public $rowNum = 20;
 	
 	/**
+	 * Set if the state of the page should be preserved or not.
+	 * If true, the session name should be set.
+	 * @var bool
+	 */
+	public $keepState = false;
+	
+	/**
+	 * The session name is used to preserve the state of the page when it is refreshed.(page number, sort column, ...)
+	 * The $keepState variable should be set to true in order to preserve the state.
+	 * If no session name given, the state won't be preserved.
+	 * This value must be unique.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $sessionName = null;
+	
+	/**
 	 * The page number to display at load time.
 	 * If set to null, the first page is displayed.
 	 * 
@@ -93,6 +112,8 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 	
 	/**
 	 * Renders the object in HTML.
+	 * We use the value in session if it exists and if keepState variable is set to TRUE
+	 * for page, rowNum, sortname and sortorder
 	 * The Html is echoed directly into the output.
 	 *
 	 */
@@ -100,9 +121,7 @@ class JqGridWidget extends DataGrid implements HtmlElementInterface {
 		if ($this->displayCondition != null && $this->displayCondition->isOk($this) == false) {
 			return;
 		}
-		
 		self::$number++; 
-		
 		if ($this->tableId == null) {
 			$tableId = "moufJqGridTableNumber".self::$number;
 		} else {
@@ -134,14 +153,28 @@ jQuery(document).ready(function(){';
     ".$this->getColumnsDefinition()."
     pager: '#".$pagerId."',";
     if (!empty($this->pageNo)) {
-		echo "	page: ".$this->pageNo.",";
+		echo "page: ".$this->pageNo.",";
+    }else if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_page"])){
+    	echo "page: ".$_SESSION[$this->sessionName."_page"].",";
     }
-    echo "height:$this->height,
-    rowNum:$this->rowNum,
-    rowList:[10,20,30,50,100],
-    sortname: '".$this->defaultSortColumn."',
-    sortorder: '".$this->defaultSortOrder."',
-    viewrecords: true,";
+    echo "height:$this->height,";
+    if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_rows"])){
+    	echo "rowNum :".$_SESSION[$this->sessionName."_rows"].",";
+    }else{
+    	echo "rowNum :".$this->rowNum.",";
+    }
+    echo "rowList: [10,20,30,50,100],";
+    if (!empty($this->defaultSortColumn)){
+    	echo "sortname: '".$this->defaultSortColumn."',";
+    }else if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_sidx"])){
+    	echo "sortname: '".$_SESSION[$this->sessionName."_sidx"]."',";
+    }
+    if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_sord"])){
+    	echo "sortorder: '".$_SESSION[$this->sessionName."_sord"]."',";
+    }else{
+    	echo "sortorder: '".$this->defaultSortOrder."',";
+    }
+    echo "viewrecords: true,";
 		if (!empty($this->caption)) {
     		echo "caption: '".$this->caption."',";
 		}
@@ -254,6 +287,12 @@ jQuery(document).ready(function(){';
 		if ($this->idColumn == null) {
 			throw new Exception('Error while displaying a datagrid: the property "idColumn" must be set.');
 		}
+		
+		// Save the state in case the page is refreshed
+		$_SESSION[$this->sessionName."_page"] = $page;
+		$_SESSION[$this->sessionName."_rows"] = $rows;
+		$_SESSION[$this->sessionName."_sidx"] = $sidx;
+		$_SESSION[$this->sessionName."_sord"] = $sord;
 		
 		$this->datasource->setOrderColumn($sidx);
 		$this->datasource->setOrder($sord);
