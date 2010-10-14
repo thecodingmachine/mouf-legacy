@@ -87,7 +87,7 @@ class StaticDataSource extends ArrayObject implements XajaDataSourceInterface, O
 	 * @param string $order
 	 */
 	public function setOrder($order) {
-		$this->order = $order;
+		$this->order = strtoupper($order);
 		$this->sort();
 	}
 	
@@ -108,9 +108,9 @@ class StaticDataSource extends ArrayObject implements XajaDataSourceInterface, O
 		$orderColumn = $this->orderColumn;
 		if (is_numeric($x1->$orderColumn) && is_numeric($x2->$orderColumn)) {
 			if ($order == "ASC") {
-				return $x2->$orderColumn - $x1->$orderColumn;
-			} else {
 				return $x1->$orderColumn - $x2->$orderColumn;
+			} else {
+				return $x2->$orderColumn - $x1->$orderColumn;
 			}
 		} else {
 			if ($order == "ASC") {
