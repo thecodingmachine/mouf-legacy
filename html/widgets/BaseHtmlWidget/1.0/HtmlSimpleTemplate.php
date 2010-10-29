@@ -5,7 +5,7 @@
  * @author David
  * @Component
  */
-class HtmlSimpleTemplate implements HtmlElementInterface {
+class HtmlSimpleTemplate extends AbstractHtmlElement {
 	
 	/**
 	 * The base element (template) in which we will insert additional elements.
@@ -43,7 +43,7 @@ class HtmlSimpleTemplate implements HtmlElementInterface {
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	public function toHtml() {
+	public function toHtmlElement() {
 		echo $this->getHtml();
 	}
 	

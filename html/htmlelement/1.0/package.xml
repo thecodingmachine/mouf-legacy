@@ -4,6 +4,13 @@
 	<shortDescription>The base objects that can be used to build a web-page.</shortDescription>
 	<docUrl></docUrl>
 	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>conditioninterface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 	<requires>
 		<require>Scopable.php</require>
 		<require>HtmlElementInterface.php</require>

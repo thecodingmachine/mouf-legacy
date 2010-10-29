@@ -5,7 +5,7 @@
  *
  * @Component
  */
-class HtmlHiddenInputWidget implements HtmlElementInterface {
+class HtmlHiddenInputWidget extends AbstractHtmlElement {
 
 	/**
 	 * The id of the attribute to be used (if any).
@@ -45,7 +45,7 @@ class HtmlHiddenInputWidget implements HtmlElementInterface {
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
 		
 		echo "<input type='hidden'";
 		if ($this->id) {

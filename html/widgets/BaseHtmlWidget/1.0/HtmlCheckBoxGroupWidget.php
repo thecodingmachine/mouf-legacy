@@ -71,7 +71,7 @@ class HtmlCheckBoxGroupWidget extends AbstractHtmlInputWidget {
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
 		
 		echo "<label>\n";
 		if ($this->enableI18nLabel) {
@@ -123,6 +123,10 @@ class HtmlCheckBoxGroupWidget extends AbstractHtmlInputWidget {
 			echo "<input type='checkbox' name='".plainstring_to_htmlprotected($name)."[]' value='".plainstring_to_htmlprotected($key)."'";
 			if ($this->css) {
 				echo " class='".plainstring_to_htmlprotected($this->css)."'";
+			}
+		
+			if ($this->disabled) {
+				echo ' disabled="disabled"';
 			}
 			
 			if ($defaultSelect != false) {

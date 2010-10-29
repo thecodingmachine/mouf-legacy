@@ -32,6 +32,7 @@
 		</dependency>
 	</dependencies>
 	<requires>
+		<require>AbstractHtmlElement.php</require>
 		<require>AbstractHtmlInputWidget.php</require>
 		<require>HtmlSelectWidget.php</require>
 		<require>HtmlTextInputWidget.php</require>
@@ -43,5 +44,7 @@
 		<require>HtmlButtonWidget.php</require>
 		<require>HtmlI18nString.php</require>
 		<require>HtmlSimpleTemplate.php</require>
+		<require>HtmlContent.php</require>
+		<require>HtmlDivTag.php</require>
 	</requires>
 </package>

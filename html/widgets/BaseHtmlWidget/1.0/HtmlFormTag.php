@@ -6,7 +6,7 @@
  *
  * @Component
  */
-class HtmlFormTag implements HtmlElementInterface {
+class HtmlFormTag extends AbstractHtmlElement {
 
 	/**
 	 * The id of the attribute to be used (if any).
@@ -61,18 +61,40 @@ class HtmlFormTag implements HtmlElementInterface {
 	 * @var string
 	 */
 	public $layoutMode;
+
+	/**
+	 * The CSS classes to apply to the form (if any).
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $cssClass;
+	
+	/**
+	 * Whether we should enable by default jQuery Validation Engine on this form.
+	 * Note: jQuery Validation Engine Javascript must be available in the page for this feature to work.
+	 * 
+	 * @Property
+	 * @var bool
+	 */
+	public $enableValidationEngine;
 	
 	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
+		static $counter = 0;
+		$counter++;
 		
 		echo "<form ";
 		if ($this->id) {
-			echo " id='".plainstring_to_htmlprotected($this->id)."'";
+			$id = $this->id;
+		} else {
+			$id = "htmlformwidget_".$counter;
 		}
+		echo " id='".plainstring_to_htmlprotected($id)."'";
 		if ($this->name) {
 			echo " name='".plainstring_to_htmlprotected($this->name)."' ";
 		}
@@ -81,8 +103,10 @@ class HtmlFormTag implements HtmlElementInterface {
 		} else {
 			echo " action='".plainstring_to_htmlprotected($_SERVER['REQUEST_URI'])."' ";
 		}
+		if ($this->cssClass) {
+			echo " class='".plainstring_to_htmlprotected($this->cssClass)."'";
+		}
 		echo " method='".plainstring_to_htmlprotected($this->method)."'>\n";
-
 		if ($this->layoutMode == 'list') {
 			echo "<ol>\n";
 		}
@@ -101,6 +125,16 @@ class HtmlFormTag implements HtmlElementInterface {
 		}
 		
 		echo "</form>\n";
+		
+		if ($this->enableValidationEngine) {
+?>
+<script type="text/javascript">
+$(document).ready(function() {
+ 	$("#<?php echo $id ?>").validationEngine()
+})
+</script>
+<?php 
+		}
 		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();

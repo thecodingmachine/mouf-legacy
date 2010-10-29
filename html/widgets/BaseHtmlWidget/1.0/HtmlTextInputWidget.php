@@ -27,7 +27,7 @@ class HtmlTextInputWidget extends AbstractHtmlInputWidget {
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
 		self::$count++;
 		$id = $this->id;
 		if (!$id) {
@@ -51,10 +51,18 @@ class HtmlTextInputWidget extends AbstractHtmlInputWidget {
 			}
 			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
 		}
-
+	
+		if ($this->disabled) {
+			echo ' disabled="disabled"';
+		}
+		
 		$defaultSelect = null;
 		if ($this->selectDefaultFromRequest) {
 			$defaultSelect = get($this->name, "string", false, null);
+		}
+		
+		if ($this->disabled) {
+			echo ' disabled="disabled"';
 		}
 		
 		if ($defaultSelect !== null) {

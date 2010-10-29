@@ -14,5 +14,10 @@
 		<require>AndCondition.php</require>
 		<require>OrCondition.php</require>
 		<require>NotCondition.php</require>
+		<require>TrueCondition.php</require>
+		<require>FalseCondition.php</require>
 	</requires>
+	<externalComponentRequires>
+		<require>ConditionsExternalComponent.php</require>
+	</externalComponentRequires>
 </package>

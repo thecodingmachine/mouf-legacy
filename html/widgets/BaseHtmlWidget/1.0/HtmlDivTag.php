@@ -1,12 +1,12 @@
 <?php
 
 /**
- * This class represent a simple HTML list (unordered ul tag or ordered ol tag).
- * The list can of course contain any element.
+ * This class represent a simple HTML div.
+ * The div can of course contain any element.
  *
  * @Component
  */
-class HtmlListTag extends AbstractHtmlElement {
+class HtmlDivTag extends AbstractHtmlElement {
 
 	/**
 	 * The id of the attribute to be used (if any).
@@ -25,22 +25,20 @@ class HtmlListTag extends AbstractHtmlElement {
 	public $name;
 		
 	/**
-	 * The HTML fields (or any kind of HTML) this list is made of.
+	 * The CSS classes to apply to the div (if any).
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $cssClass;
+	
+	/**
+	 * The HTML elements this div is made of.
 	 *
 	 * @Property
 	 * @var array<HtmlElementInterface>
 	 */
-	public $htmlFields = array();
-	
-	/**
-	 * The kind of list to display (can be ordered or unordered)
-	 *
-	 * @Property
-	 * @OneOf("ul","ol")
-	 * @OneOfText("Unordered","Ordered")
-	 * @var string
-	 */
-	public $layoutMode = "ul";
+	public $content = array();
 	
 	/**
 	 * Renders the object in HTML.
@@ -49,11 +47,11 @@ class HtmlListTag extends AbstractHtmlElement {
 	 */
 	function toHtmlElement() {
 		
-		if ($this->layoutMode == 'ul') {
-			echo "<ul ";
-		} else {
-			echo "<ol ";
+		if ($this->displayCondition != null && !$this->displayCondition->isOk($this)) {
+			return "";
 		}
+		
+		echo "<div ";
 		
 		if ($this->id) {
 			echo " id='".plainstring_to_htmlprotected($this->id)."'";
@@ -61,19 +59,16 @@ class HtmlListTag extends AbstractHtmlElement {
 		if ($this->name) {
 			echo " name='".plainstring_to_htmlprotected($this->name)."' ";
 		}
+		if ($this->cssClass) {
+			echo " class='".plainstring_to_htmlprotected($this->cssClass)."' ";
+		}
 		echo ">\n";
 		
-		foreach ($this->htmlFields as $elem) {
+		foreach ($this->content as $elem) {
 			/* @var $elem HtmlElementInterface); */
-			echo "<li>\n";
 			$elem->toHtml();
-			echo "</li>\n";
 		}
-		if ($this->layoutMode == 'ul') {
-			echo "</ul>";
-		} else {
-			echo "</ol>";
-		}
+		echo "</div>";
 						
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();

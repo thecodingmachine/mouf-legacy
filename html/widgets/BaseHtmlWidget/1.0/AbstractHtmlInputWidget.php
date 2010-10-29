@@ -4,7 +4,7 @@
  * This class is a base class representing HTML widgets.
  *
  */
-abstract class AbstractHtmlInputWidget implements HtmlElementInterface {
+abstract class AbstractHtmlInputWidget extends AbstractHtmlElement {
 	
 	/**
 	 * The label of the widget.
@@ -64,4 +64,12 @@ abstract class AbstractHtmlInputWidget implements HtmlElementInterface {
 	 * @var boolean
 	 */
 	public $enableI18nLabel;
+	
+	/**
+	 * Whether the field should be disabled or not (whether we should add disable='true' in the list of attributes).
+	 * 
+	 * @Property
+	 * @var bool
+	 */
+	public $disabled = false;
 };

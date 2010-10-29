@@ -5,7 +5,7 @@
  *
  * @Component
  */
-class HtmlButtonWidget implements HtmlElementInterface {
+class HtmlButtonWidget extends AbstractHtmlElement {
 	
 	/**
 	 * The label of the button.
@@ -79,7 +79,7 @@ class HtmlButtonWidget implements HtmlElementInterface {
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
 		
 		echo "<button type='".$this->type."'";
 		if ($this->id) {

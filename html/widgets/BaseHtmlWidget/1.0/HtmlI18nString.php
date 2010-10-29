@@ -4,7 +4,7 @@
  *
  * @Component
  */
-class HtmlI18nString implements HtmlElementInterface {
+class HtmlI18nString extends AbstractHtmlElement {
 	
 	/**
 	 * The name of the HTML i18n string that will be embedded in the container.
@@ -15,7 +15,7 @@ class HtmlI18nString implements HtmlElementInterface {
 	 */
 	public $htmlString;
 	
-	public function toHtml() {
+	public function toHtmlElement() {
 		eMsg($this->htmlString); 
 	}
 }

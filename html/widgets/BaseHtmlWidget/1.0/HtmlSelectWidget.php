@@ -89,11 +89,20 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 	public $enableI18nDefaultValue;
 	
 	/**
+	 * The selected value.
+	 * This is honored except if the request contains a value.
+	 * In this case, the value from the request is used instead.
+	 * 
+	 * @var string
+	 */
+	public $selectedValue;
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
 		self::$count++;
 		$id = $this->id;
 		if (!$id) {
@@ -117,6 +126,11 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 			}
 			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
 		}
+	
+		if ($this->disabled) {
+			echo ' disabled="disabled"';
+		}
+		
 		echo " name='".plainstring_to_htmlprotected($this->name)."'>\n";
 
 		if ($this->hasDefaultValue) {
@@ -153,7 +167,10 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 		if ($this->selectDefaultFromRequest) {
 			$defaultSelect = get($this->name, "string", false, null);
 		}
-		
+		if ($defaultSelect == null && $this->selectedValue != null) {
+			$defaultSelect = $this->selectedValue;
+		}
+	
 		foreach ($values as $key=>$value) {
 			echo "<option value='".plainstring_to_htmlprotected($key)."'";
 			if ($defaultSelect != null && $key == $defaultSelect) {

@@ -19,7 +19,7 @@ class HtmlPasswordInputWidget extends AbstractHtmlInputWidget {
 	 * The Html is echoed directly into the output.
 	 *
 	 */
-	function toHtml() {
+	function toHtmlElement() {
 		self::$count++;
 		$id = $this->id;
 		if (!$id) {
@@ -44,6 +44,10 @@ class HtmlPasswordInputWidget extends AbstractHtmlInputWidget {
 			echo " class='".$requiredClass.plainstring_to_htmlprotected($this->css)."'";
 		}
 
+		if ($this->disabled) {
+			echo ' disabled="disabled"';
+		}
+		
 		echo " name='".plainstring_to_htmlprotected($this->name)."' />\n";
 
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
