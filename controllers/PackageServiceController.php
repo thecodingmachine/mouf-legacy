@@ -54,14 +54,9 @@ class PackageServiceController extends Controller {
 		
 		$this->moufPackageRoot = $packageManager->getOrderedPackagesList();
 		
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		$result = $this->moufPackageRoot->getSimplifiedArray();
-		echo "toto";
+		$result = $this->moufPackageRoot->getJsonArray();
 		
-		
+		echo json_encode($result);
 	}
 	
 	public function comparePackageGroup(MoufPackage $package1, MoufPackage $package2) {

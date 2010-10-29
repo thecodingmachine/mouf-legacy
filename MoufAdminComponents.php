@@ -41,6 +41,9 @@ require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/J
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/JQueryUIExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
 
+$moufManager->setAllVariables(array (
+));
+
 $moufManager->addComponentInstances(array (
   'splash' => 
   array (
@@ -1037,6 +1040,15 @@ $moufManager->addComponentInstances(array (
     'class' => 'PackageServiceController',
     'external' => false,
   ),
+  'repositories' => 
+  array (
+    'class' => 'RepositorySourceController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+    ),
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
@@ -1051,6 +1063,7 @@ $moufManager->registerComponent('controllers/ConfigController.php');
 $moufManager->registerComponent('controllers/MoufValidatorController.php');
 $moufManager->registerComponent('controllers/MoufLoginController.php');
 $moufManager->registerComponent('controllers/PackageServiceController.php');
+$moufManager->registerComponent('controllers/RepositorySourceController.php');
 $moufManager->registerComponent('load.php');
 
 unset($moufManager);
@@ -1349,6 +1362,20 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return PackageServiceController
+	 */
+	 public static function getPackagesService() {
+	 	return MoufManager::getMoufManager()->getInstance('packagesService');
+	 }
+
+	/**
+	 * @return RepositorySourceController
+	 */
+	 public static function getRepositories() {
+	 	return MoufManager::getMoufManager()->getInstance('repositories');
+	 }
+
+	/**
 	 * @return SplashMenuItem
 	 */
 	 public static function getFineAdminLabelMenuItem() {
@@ -1402,13 +1429,6 @@ class MoufAdmin {
 	 */
 	 public static function getSplashApacheConfig() {
 	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
-	 }
-
-	/**
-	 * @return PackageServiceController
-	 */
-	 public static function getPackagesService() {
-	 	return MoufManager::getMoufManager()->getInstance('packagesService');
 	 }
 
 }

@@ -182,6 +182,22 @@ class MoufDependencyDescriptor {
 		}
 	}
 	
+	/**
+	 * Returns a PHP array that describes the package.
+	 * 
+	 * The structure of the array is:
+	 * 	array("version" => string, "name"=> string, "group"=>string)
+	 * 
+	 * return array<string, string>
+	 */
+	public function getJsonArray() {
+		$array = array("version"=>$this->version,
+			"name"=>$this->name,
+			"group"=>$this->group);
+
+		return $array;		
+	}
+	
 }
 
 ?>

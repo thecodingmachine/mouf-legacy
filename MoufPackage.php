@@ -267,6 +267,32 @@ class MoufPackage {
 	public function getAdminRequiredFiles() {
 		return $this->adminRequires;
 	}
+
+	/**
+	 * Returns a PHP array that describes the package.
+	 * The array does not contain all available information, only enough information to display the list of packages in the Mouf interface.
+	 * 
+	 * The structure of the array is:
+	 * 	array("displayName" => string, "shortDescription"=> string, "docUrl"=>string, "logoPath"=>string, "dependencies"=>array<dependencyDescriptorArray>)
+	 * 
+	 * return array<string, MoufPackage>
+	 */
+	public function getJsonArray() {
+		$array = array("displayName"=>$this->displayName,
+			"shortDescription"=>$this->shortDescription,
+			"docUrl"=>$this->docUrl,
+			"logoPath"=>$this->logoPath);
+
+		if (!empty($this->dependencies)) {
+			$array['dependencies'] = array();
+			foreach ($this->dependencies as $dependency) {
+				/* @var $dependency MoufPackageDescriptor */
+				$array['dependencies'][] = $dependency->getJsonArray();
+			}
+		}
+		
+		return $array;		
+	}
 	
 }
 ?>

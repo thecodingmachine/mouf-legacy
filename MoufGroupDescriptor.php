@@ -73,6 +73,7 @@ class MoufGroupDescriptor {
 		if (!empty($this->packages)) {
 			$array['packages'] = array();
 			foreach ($this->packages as $name => $package) {
+				/* @var $package MoufPackageVersionsContainer */
 				$array['packages'][$name] = $package->getJsonArray();
 			}
 		}

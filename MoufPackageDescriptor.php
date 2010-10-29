@@ -191,5 +191,6 @@ class MoufPackageDescriptor {
 		
 		return 0;
 	}
+	
 }
 ?>

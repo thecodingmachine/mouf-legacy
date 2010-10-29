@@ -192,6 +192,14 @@ class MoufManager {
 	private $packagesList = array();
 	
 	/**
+	 * A list of variables that are stored in Mouf. Variables can contain anything, and are used by some modules for different
+	 * purposes. For instance, the list of repositories is stored as a variables, etc...
+	 * 
+	 * @var array<string, mixed>
+	 */
+	private $variables = array();
+	
+	/**
 	 * The name of the file that contains the components declarations
 	 *
 	 * @var string
@@ -1042,6 +1050,9 @@ class MoufManager {
 		}
 		fwrite($fp, "\n");
 
+		// Import all variables
+		fwrite($fp, "\$moufManager->setAllVariables(".var_export($this->variables, true).");\n");
+		fwrite($fp, "\n");
 		
 		// Declare all components in one instruction
 		$internalDeclaredInstances = array();
@@ -1639,5 +1650,50 @@ class ".$this->mainClassName." {
 		return $this->registeredComponents;
 	}
 	
+	/**
+	 * Returns the value of a variable (or null if the variable is not set).
+	 * Variables can contain anything, and are used by some modules for different
+	 * purposes. For instance, the list of repositories is stored as a variables, etc...
+	 * 
+	 * @param string $name
+	 */
+	public function getVariable($name) {
+		if (isset($this->variables[$name])) {
+			return $this->variables[$name];
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns whether the variable is set or not.
+	 * 
+	 * @param string $name
+	 */
+	public function issetVariable($name) {
+		return isset($this->variables[$name]);
+	}
+	
+	
+	/**
+	 * Sets the value of a variable.
+	 * Variables can contain anything, and are used by some modules for different
+	 * purposes. For instance, the list of repositories is stored as a variables, etc...
+	 * 
+	 * @param string $name
+	 */
+	public function setVariable($name, $value) {
+		$this->variables[$name] = $value;
+	}
+	
+	/**
+	 * Sets all the variables, at once.
+	 * Used at load time to initialize all variables. 
+	 * 
+	 * @param array $variables
+	 */
+	public function setAllVariables(array $variables) {
+		$this->variables = $variables;
+	}
 }
 ?>

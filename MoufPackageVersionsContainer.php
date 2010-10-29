@@ -33,16 +33,25 @@ class MoufPackageVersionsContainer {
 		$this->packages[$package->getDescriptor()->getVersion()] = $package;
 	}
 
+	/**
+	 * Returns a PHP array that describes the packages versions.
+	 * The array does not contain all available information, only enough information to display the list of packages in the Mouf interface.
+	 * 
+	 * The structure of the array is:
+	 * 	array(version => package)
+	 * 
+	 * return array<string, MoufPackage>
+	 */
 	public function getJsonArray() {
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		throw new Exception ("Not implemented yet!");
+		$array = array();
+		if (!empty($this->packages)) {
+			foreach ($this->packages as $version => $package) {
+				/* @var $package MoufPackage */
+				$array[$version] = $package->getJsonArray();
+			}
+		}
+
+		return $array;		
 	}
 	
 }
