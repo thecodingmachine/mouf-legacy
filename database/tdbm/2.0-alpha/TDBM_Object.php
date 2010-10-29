@@ -294,6 +294,21 @@ class TDBM_Object {
 		return $this->db_row[$var];
 	}
 
+	/**
+	 * Returns true if a column is set, false otherwise.
+	 * 
+	 * @param string $var
+	 * @return boolean
+	 */
+	public function __isset($var) {
+		$this->dbLoadIfNotLoaded();
+
+		// Let's only deal with lower case.
+		$var = $this->db_connection->toStandardcaseColumn($var);
+		
+		return isset($this->db_row[$var]);
+	}
+	
 	public function __set($var, $value) {
 		$this->dbLoadIfNotLoaded();
 
