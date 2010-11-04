@@ -9,7 +9,12 @@ require_once dirname(__FILE__).'/../utils/dao_generator.php';
  */
 class TdbmController extends AbstractMoufInstanceController {
 	
-		
+	
+	protected $daoDirectory;
+	protected $beanDirectory;
+	protected $daoFactoryName;
+	protected $daoFactoryInstanceName;
+	
 	/**
 	 * Admin page used to enable or disable label edition.
 	 *
@@ -18,6 +23,23 @@ class TdbmController extends AbstractMoufInstanceController {
 	 */
 	public function defaultAction($name, $selfedit="false") {
 		$this->initController($name, $selfedit);
+		
+		$this->daoDirectory = $this->moufManager->getVariable("tdbmDefaultDaoDirectory");
+		$this->beanDirectory = $this->moufManager->getVariable("tdbmDefaultBeanDirectory");
+		$this->daoFactoryName = $this->moufManager->getVariable("tdbmDefaultDaoFactoryName");
+		$this->daoFactoryInstanceName = $this->moufManager->getVariable("tdbmDefaultDaoFactoryInstanceName");
+		if ($this->daoDirectory == null) {
+			$this->daoDirectory = "dao";
+		}
+		if ($this->beanDirectory == null) {
+			$this->beanDirectory = "dao/beans";
+		}
+		if ($this->daoFactoryName == null) {
+			$this->daoFactoryName = "DaoFactory";
+		}
+		if ($this->daoFactoryInstanceName == null) {
+			$this->daoFactoryInstanceName = "daoFactory";
+		}
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../views/tdbmGenerate.php", $this);
 		$this->template->draw();
@@ -33,6 +55,11 @@ class TdbmController extends AbstractMoufInstanceController {
 	public function generate($name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
 		$this->initController($name, $selfedit);
 
+		$this->moufManager->setVariable("tdbmDefaultDaoDirectory", $daodirectory);
+		$this->moufManager->setVariable("tdbmDefaultBeanDirectory", $beandirectory);
+		$this->moufManager->setVariable("tdbmDefaultDaoFactoryName", $daofactoryclassname);
+		$this->moufManager->setVariable("tdbmDefaultDaoFactoryInstanceName", $daofactoryinstancename);
+		
 		// Remove first and last slash in directories.
 		if (strpos($daodirectory, "/") === 0 || strpos($daodirectory, "\\") === 0) {
 			$daodirectory = substr($daodirectory, 1);
