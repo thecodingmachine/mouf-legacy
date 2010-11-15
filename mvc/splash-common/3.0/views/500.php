@@ -3,7 +3,7 @@
 function FiveOO(ApplicationException $exception, $debug_mode=false) {
 		?>
 	<div>
-	<h1 class="admindeo"><?php eMsg("error.500.title"); ?></h1>
+	<h1 class="admindeo">An error occured<?php //eMsg("error.500.title"); ?></h1>
 	</div>
 	<div class="vertical-gap"></div>
 	<div class="vertical-gap"></div>
