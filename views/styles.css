@@ -195,6 +195,10 @@ div.constant {
 	margin-bottom: 5px;
 }
 
+div.constant label {
+	width:250px;
+}
+
 table.grid {
 	width: 100%;
 }
