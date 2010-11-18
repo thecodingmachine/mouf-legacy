@@ -24,18 +24,31 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	}
 
 	public function handleException (Exception $e) {
-		self::getLogger()->error($e);
+		$logger = self::getLogger();
+		if ($logger != null) {
+			self::getLogger()->error($e);
+		}
 
 		$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
 
 		if (!headers_sent()) {
 			$template = self::getTemplate();
 			if($e instanceof ApplicationException ) {
-				$template->addContentFunction("FiveOO",$e,$debug);
+				if ($template != null) {
+					$template->addContentFunction("FiveOO",$e,$debug);
+				} else {
+					FiveOO($e,$debug);
+				}
 			}else {
-				$template->addContentFunction("UnhandledException",$e,$debug);
+				if ($template != null) {
+					$template->addContentFunction("UnhandledException",$e,$debug);
+				} else {
+					UnhandledException($e, $debug);
+				}
 			}
-			$template->draw();
+			if ($template != null) {
+				$template->draw();
+			}
 		} else {
 			UnhandledException($e,$debug);
 		}
@@ -50,14 +63,22 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 			$text .= "<div class='info'>".$message.'</div>';
 		}
 
-		self::getLogger()->info("404 : ".$message);
+		$logger = self::getLogger();
+		if ($logger != null) {
+			$logger->info("404 : ".$message);
+		}
+		
 
 		header("HTTP/1.0 404 Not Found");
 		$template = self::getTemplate();
-		$template->addContentFunction("FourOFour",$text)
-				 ->setTitle("404 - Not Found");
-
-		$template->draw();
+		if ($template != null) {
+			$template->addContentFunction("FourOFour",$text)
+					 ->setTitle("404 - Not Found");
+			$template->draw();
+		} else {
+			FourOFour($text);
+		}
+		
 	}
 
 	/**
@@ -195,12 +216,17 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	/**
 	 * Returns the default template used in Splash.
 	 * This can be configured in the "splash" instance.
+	 * Returns null if the "splash" instance does not exist.
 	 *
 	 * @return TemplateInterface
 	 */
 	public static function getTemplate() {
-		$template = MoufManager::getMoufManager()->getInstance("splash")->defaultTemplate;
-		return $template;
+		if (MoufManager::getMoufManager()->instanceExists("splash")) {
+			$template = MoufManager::getMoufManager()->getInstance("splash")->defaultTemplate;
+			return $template;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -215,11 +241,16 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	/**
 	 * Returns an instance of the logger used by default in Splash.
 	 * This logger can be configured in the "splash" instance.
+	 * Note: in Drusplash, there is no such "splash" instance. Therefore, null will be returned.
 	 * 
 	 * @return LogInterface
 	 */
 	public static function getLogger() {
-		return MoufManager::getMoufManager()->getInstance("splash")->log;
+		if (MoufManager::getMoufManager()->instanceExists("splash")) {
+			return MoufManager::getMoufManager()->getInstance("splash")->log;
+		} else {
+			return null;
+		}
 	}
 	
 	/**

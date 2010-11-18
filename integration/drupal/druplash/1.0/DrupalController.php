@@ -228,8 +228,10 @@ abstract class DrupalController extends Controller {
 			}
 		}else {
 			// "Method Not Found";
-			$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
-			self::FourOFour("404.wrong.method", $debug);
+			//$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
+			// FIXME: $debug non disponible car "splash" instance n'exite pas dans Drupal
+			//self::FourOFour("404.wrong.method", $debug);
+			self::FourOFour("404.wrong.method", true);
 			exit;
 		}
 		
