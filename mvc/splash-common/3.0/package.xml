@@ -41,6 +41,7 @@
 		<require>utils/annotations/AnnotationException.php</require>
 		<require>utils/annotations/paramAnnotation.php</require>
 		<require>utils/annotations/URLAnnotation.php</require>
+		<require>utils/annotations/TitleAnnotation.php</require>
 		<require>utils/ExceptionUtils.php</require>
 		
 	</requires>

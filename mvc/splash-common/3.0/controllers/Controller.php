@@ -267,7 +267,18 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 		
 		foreach ($refClass->getMethods() as $refMethod) {
 			/* @var $refMethod MoufReflectionMethod */
-
+			$title = null;
+			// Now, let's check the "Title" annotation (note: we do not support multiple title annotations for the same method)
+			if ($refMethod->hasAnnotation('Title')) {
+				$titles = $refMethod->getAnnotations('Title');
+				if (count($titles)>1) {
+					throw new ApplicationException("Only one @Title annotation allowed per method.");
+				}
+				/* @var $titleAnnotation TitleAnnotation */
+				$titleAnnotation = $titles[0];
+				$title = $titleAnnotation->getTitle();
+			}
+			
 			// First, let's check the "Action" annotation	
 			if ($refMethod->hasAnnotation('Action')) {
 				$methodName = $refMethod->getName(); 
@@ -276,7 +287,7 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				} else {
 					$url = $moufManager->findInstanceName($this)."/".$methodName;
 				}
-				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $refMethod->getDocCommentWithoutAnnotations());
+				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations());
 			}
 
 			// Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)
@@ -288,7 +299,7 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 					$url = trim($url, "/");
 				}
 				
-				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $refMethod->getDocCommentWithoutAnnotations());
+				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations());
 			}
 			
 		}
