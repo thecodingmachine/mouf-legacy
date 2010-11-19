@@ -62,14 +62,18 @@ class ApplicationException extends Exception {
 	 * @return string Returns the title, internationalized
 	 */
 	public function getI18Title() {
-		return call_user_func_array("iMsg", array_merge(array($this->title), $this->title_array));
+		// FIXME: internationalization enabled
+		return $this->title;
+		//return call_user_func_array("iMsg", array_merge(array($this->title), $this->title_array));
 	}
 
 	/**
 	 * @return string Returns the message, internationalized
 	 */
 	public function getI18Message() {
-		return call_user_func_array("iMsg", array_merge(array($this->getMessage()), $this->message_array));
+		// FIXME: internationalization enabled
+		return $this->getMessage();
+		//return call_user_func_array("iMsg", array_merge(array($this->getMessage()), $this->message_array));
 	}
 }
 ?>

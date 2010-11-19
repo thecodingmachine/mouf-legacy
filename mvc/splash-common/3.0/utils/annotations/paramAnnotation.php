@@ -261,15 +261,15 @@ class paramAnnotation //extends stubAbstractAnnotation implements stubAnnotation
     }
 
     private function getArgs() {
-		$redirect_uri = $_SERVER['REDIRECT_URL'];
-		$pos = strpos($redirect_uri, ROOT_URL);
-		$action = substr($redirect_uri, $pos+strlen(ROOT_URL));
+		$request_uri = $_SERVER['REQUEST_URI'];
+		$pos = strpos($request_uri, ROOT_URL);
+		$action = substr($request_uri, $pos+strlen(ROOT_URL));
 
 		$array = explode("/", $action);
 		$args = array();
 
-		array_shift($array);
-		array_shift($array);
+		//array_shift($array);
+		//array_shift($array);
 
 		$i=0;
 		foreach ($array as $arg) {
