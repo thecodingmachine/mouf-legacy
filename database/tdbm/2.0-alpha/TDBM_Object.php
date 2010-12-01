@@ -261,27 +261,9 @@ class TDBM_Object {
 				return null;
 			}
 
-			// Let's try to be accurate in error reporting. Let's try to find the column.
-
-			$columns = array_keys($this->db_row);
-
-			// Let's compute the lenvenstein distance and keep the smallest one in $smallest.
-			$smallest = 99999999;
-			$distance_column = array();
-
-			foreach ($columns as $current_column) {
-				$distance = levenshtein($var, $current_column);
-				$distance_column[$current_column]=$distance;
-				if ($distance<$smallest)
-				$smallest = $distance;
-			}
-
-			$result_array = array();
-			foreach ($distance_column as $column => $distance) {
-				if ($smallest == $distance)
-				$result_array[] = $column;
-			}
-
+			// Let's try to be accurate in error reporting. The checkColumnExist returns an array of closest matches.
+			$result_array = $column_exist;
+			
 			if (count($result_array)==1)
 			$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant this column: '".$result_array[0]."'";
 			else

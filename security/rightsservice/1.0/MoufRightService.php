@@ -53,6 +53,21 @@ class MoufRightService implements RightsServiceInterface, AuthenticationListener
 	public $errorPageUrl;
 	
 	/**
+	 * When the user is redirected to a 403 page, the URL he tried to access
+	 * is appended to the 403 page. You can customize the 
+	 * name of the URL parameter for the redirect.
+	 * 
+	 * For instance, if $redirectParameter = "redir", then your
+	 * redirection URL might look like:
+	 * 	http://[myserver]/[myapp]/403.php?redir=%2F[myapp]%2F[my]%2F[page]%2F
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $redirectParameter = "redirect";
+	
+	/**
 	 * The rights for the current user (mapping the $_SESSION rights), but unserialized for better performance access.
 	 * 
 	 * @var array<string, RightInterface>
@@ -182,11 +197,11 @@ class MoufRightService implements RightsServiceInterface, AuthenticationListener
 	public function redirectNotAuthorized($right, $scope = null) {
 		if (!$this->isAllowed($right, $scope)) {
 			if ($scope == null) {
-				$this->log->info("User ".$this->userService->getUserLogin()." was denied access because it does not have the right ".$right.".");
+				$this->log->info("User ".$this->userService->getUserLogin()." was denied access because he does not have the right ".$right.".");
 			} else {
-				$this->log->info("User ".$this->userService->getUserLogin()." was denied access because it does not have the right ".$right." on the required scope.");
+				$this->log->info("User ".$this->userService->getUserLogin()." was denied access because he does not have the right ".$right." on the required scope.");
 			}
-			header("Location:".ROOT_URL.$this->errorPageUrl."/?redirect=".urlencode($_SERVER['REQUEST_URI']));
+			header("Location:".ROOT_URL.$this->errorPageUrl."/?".$this->redirectParameter."=".urlencode($_SERVER['REQUEST_URI']));
 			exit;
 		}
 	}

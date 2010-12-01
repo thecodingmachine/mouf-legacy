@@ -435,7 +435,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		}
 
 		foreach ($data as $current_column) {
-			if ($this->toStandardcaseColumn($current_column['COLUMN_NAME'])==$column_name)
+			if ($this->toStandardcaseColumn($current_column['column_name'])==$column_name)
 			return true;
 		}
 
@@ -446,8 +446,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		$distance_column = array();
 
 		foreach ($data as $current_column) {
-			$distance = levenshtein($column_name, $current_column['COLUMN_NAME']);
-			$distance_column[$current_column['COLUMN_NAME']]=$distance;
+			$distance = levenshtein($column_name, $current_column['column_name']);
+			$distance_column[$current_column['column_name']]=$distance;
 			if ($distance<$smallest)
 			$smallest = $distance;
 		}
