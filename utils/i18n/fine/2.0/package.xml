@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Fine</displayName>
+	<shortDescription>Fine is an internationalisation package. It will help you provide applications that
+	support several languages. FINE means: Fine is not english :). Translation is performed using PHP
+	mapping files, but you will have a nice graphical interface in the Mouf framework to write your own
+	translated messages.</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/i18n/using_fine.html</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>getvars</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<!-- 
+		<require>MessageFile.php</require>
+		<require>LanguageUtils.php</require>
+	 	-->
+		<require>FineMessageFile.php</require>
+		<require>language/LanguageDetectionInterface.php</require>
+		<require>language/BrowserLanguageDetection.php</require>
+		<require>language/DomainLanguageDetection.php</require>
+		<require>translate/LanguageTranslationInterface.php</require>
+		<require>translate/FinePHPArrayTranslationService.php</require>
+		<require>msgFunctions.php</require>
+	</requires>
+	<externalComponentRequires>
+		<!-- <require></require> -->
+	</externalComponentRequires>
+	<adminRequires>
+		<require>FineAdmin.php</require>
+		<require>controllers/EditLabelController.php</require>
+		<require>ValidatorDescriptor.php</require>
+	</adminRequires>	
+</package>
