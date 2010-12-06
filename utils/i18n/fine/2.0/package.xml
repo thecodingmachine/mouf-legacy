@@ -28,7 +28,7 @@
 		<require>msgFunctions.php</require>
 	</requires>
 	<externalComponentRequires>
-		<!-- <require></require> -->
+		<require>FineExternalComponents.php</require>
 	</externalComponentRequires>
 	<adminRequires>
 		<require>FineAdmin.php</require>

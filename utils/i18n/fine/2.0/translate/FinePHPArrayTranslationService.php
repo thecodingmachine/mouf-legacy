@@ -58,6 +58,8 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 */
 	private $myInstanceName;
 	
+	private $language = null;
+	
 	/**
 	 * Retrieve the translation of code or message.
 	 * Check in the $msg variable if the key exist to return the value. If this message doesn't exist, it return a link to edit it.
@@ -65,15 +67,23 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * @see plugins/utils/i18n/fine/2.0/translate/LanguageTranslationInterface::getTranslation()
 	 */
 	public function getTranslation($message) {
-		$language = $this->languageDetection->getLanguage();
-		
+		if($this->language === null) {
+			if($this->languageDetection)
+				$this->language = $this->languageDetection->getLanguage();
+			elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
+				$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
+			else {
+				$this->languageDetection = new BrowserLanguageDetection();
+				$this->language = $this->languageDetection->getLanguage();
+			}
+		}
 		if($this->msg_edition_mode === null)
 			$this->msg_edition_mode = isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])?$_SESSION["FINE_MESSAGE_EDITION_MODE"]:false;
 
 		$args = func_get_args();
 	
 		if($this->msg === null)
-			$this->retrieveMessages($language);
+			$this->retrieveMessages($this->language);
 		
 		if (isset($this->msg[$message])) {
 			$value = $this->msg[$message];
@@ -106,12 +116,21 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * @see plugins/utils/i18n/fine/2.0/translate/LanguageTranslationInterface::getTranslation()
 	 */
 	public function getTranslationNoEditMode($message) {
-		$language = $this->languageDetection->getLanguage();
+		if($this->language === null) {
+			if($this->languageDetection)
+				$this->language = $this->languageDetection->getLanguage();
+			elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
+				$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
+			else {
+				$this->languageDetection = new BrowserLanguageDetection();
+				$this->language = $this->languageDetection->getLanguage();
+			}
+		}
 
 		$args = func_get_args();
 	
 		if($this->msg === null)
-			$this->retrieveMessages($language);
+			$this->retrieveMessages($this->language);
 		
 		if (isset($this->msg[$message])) {
 			$value = $this->msg[$message];

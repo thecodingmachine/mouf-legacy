@@ -60,7 +60,44 @@ function iMsgNoEdit($key) {
  * @param string $key
  * @param ... string Parameters of variable elements in the translation. These elements are wrote {0} for the first, {1} for the second ...
  */
-function enMsgNoEdit($key){
+function eMsgNoEdit($key){
 	$args = func_get_args();
 	echo call_user_func_array("iMsgNoEdit", $args);
+}
+
+
+/**
+ * Return the translation of the month.  
+ * 
+ * @param int $month Number of the month
+ * @return string
+ */
+function fine_get_month($month) {
+	$month = (int)$month;
+	
+	return fine_get_common_service("month.".$month);
+}
+
+/**
+ * Return date format like dd/mm/yy or mm/dd/yy
+ * 
+ * @return string
+ */
+function fine_get_dateformat_php_short() {
+	return fine_get_common_service("date.format.php.short");
+}
+
+/**
+ * Return the translation for a key with the commonService instance. The resource is stored in the plugin
+ * 
+ * @return string
+ */
+function fine_get_common_service($key) {
+	static $commonService = null;
+
+	if ($commonService == null) {
+		/* @var $commonService LanguageTranslationInterface */
+		$commonService = MoufManager::getMoufManager()->getInstance("fineCommonTranslationService");
+	}
+	return $commonService->getTranslationNoEditMode($key);
 }
