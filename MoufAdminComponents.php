@@ -239,7 +239,8 @@ $moufManager->addComponentInstances(array (
         8 => 'viewInstancesMenuItem',
         9 => 'newInstanceMenuItem',
         10 => 'miscellaneousLabelMenuItem',
-        11 => 'logoutMenuItem',
+        11 => 'phpInfoMenuItem',
+        12 => 'logoutMenuItem',
       ),
     ),
   ),
@@ -1049,6 +1050,51 @@ $moufManager->addComponentInstances(array (
       'template' => 'moufTemplate',
     ),
   ),
+  'phpInfoMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Display PHP Info',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/phpInfo',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'phpInfo' => 
+  array (
+    'class' => 'PhpInfoController',
+    'external' => false,
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
@@ -1064,6 +1110,7 @@ $moufManager->registerComponent('controllers/MoufValidatorController.php');
 $moufManager->registerComponent('controllers/MoufLoginController.php');
 $moufManager->registerComponent('controllers/PackageServiceController.php');
 $moufManager->registerComponent('controllers/RepositorySourceController.php');
+$moufManager->registerComponent('controllers/PhpInfoController.php');
 $moufManager->registerComponent('load.php');
 
 unset($moufManager);
@@ -1378,6 +1425,13 @@ class MoufAdmin {
 	/**
 	 * @return SplashMenuItem
 	 */
+	 public static function getPhpInfoMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('phpInfoMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
 	 public static function getFineAdminLabelMenuItem() {
 	 	return MoufManager::getMoufManager()->getInstance('fineAdminLabelMenuItem');
 	 }
@@ -1429,6 +1483,13 @@ class MoufAdmin {
 	 */
 	 public static function getSplashApacheConfig() {
 	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
+	 }
+
+	/**
+	 * @return PhpInfoController
+	 */
+	 public static function getPhpInfo() {
+	 	return MoufManager::getMoufManager()->getInstance('phpInfo');
 	 }
 
 }
