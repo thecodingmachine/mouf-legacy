@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Drupal Fine Bridge - Utility classes to use Drupal I18N in FINE</displayName>
+	<shortDescription>This module features utility classes to use FINE when you are using
+	Druplash: DrupalLanguageDetection will let you use the language detection feature of Drupal.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=2.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>DrupalLanguageDetection.php</require>
+	</requires>
+</package>
