@@ -1,18 +1,19 @@
 <?php
 
 /**
- * This class represents a mail to be sent using a Mailer class extending the MailerInterface.
- * + it has special features to add a text mail for any HTML mail that has not been provided the text mail.
+ * This class represents an error mail to be sent by the Error Mail logger.
+ * It must be configured with recipients and senders to be successfully sent.
  * 
  * Note: default encoding for the mail is UTF-8 if not specified.
  * 
  * @Component
  */
-class Mail implements MailInterface {
+class ErrorMail implements MailInterface {
 	
 	private $bodyText;
 	private $bodyHtml;
 	private $title;
+	
 	private $from;
 	private $toRecipients = array();
 	private $ccRecipients = array();
@@ -37,7 +38,6 @@ class Mail implements MailInterface {
 	/**
 	 * The mail text body.
 	 *
-	 * @Property
 	 * @param string $bodyText
 	 */
 	function setBodyText($bodyText) {
@@ -56,7 +56,6 @@ class Mail implements MailInterface {
 	/**
 	 * The mail html body.
 	 *
-	 * @Property
 	 * @param string $bodyHtml
 	 */
 	function setBodyHtml($bodyHtml) {
@@ -75,7 +74,6 @@ class Mail implements MailInterface {
 	/**
 	 * The mail title.
 	 *
-	 * @Property
 	 * @param string $title
 	 */
 	function setTitle($title) {
