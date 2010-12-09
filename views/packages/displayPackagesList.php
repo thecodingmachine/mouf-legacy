@@ -3,7 +3,7 @@
 
 <?php 
 if ($this->validationMsg != null) {
-	echo '<div class="success">';
+	echo '<div class="good">';
 	if ($this->validationMsg == "enable") {
 		echo "Packages successfully enabled: ";
 	} else {
@@ -14,7 +14,7 @@ if ($this->validationMsg != null) {
 ?>
 	<script type="text/javascript">
 	setTimeout(function() {
-		jQuery('.success').fadeOut(3000);
+		jQuery('.good').fadeOut(3000);
 	}, 7000);
 	</script>
 <?php 
