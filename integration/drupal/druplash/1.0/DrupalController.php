@@ -27,6 +27,14 @@ abstract class DrupalController extends Controller {
 	protected $content = array();
 	
 	/**
+	 * Whether the current request is an Ajax request (value = true),
+	 * a normal request (value = false), or undecided (value = null).
+	 * 
+	 * @var bool
+	 */
+	private $isAjax = null;
+	
+	/**
 	 * Adds some content to the main panel by calling the function passed in parameter.
 	 * @return SplashTemplate
 	 */
@@ -216,7 +224,9 @@ abstract class DrupalController extends Controller {
 				$this->afterActionExecute($filters);
 				
 				// If @DrupalAjax is set, we must echo the result, instead of returning it. This way, Drupal will not theme the output.
-				if ($refMethod->hasAnnotation('DrupalAjax') == true) {
+				if ($this->isAjax === false) {
+					return $result;
+				} elseif ($refMethod->hasAnnotation('DrupalAjax') == true || $this->isAjax === true) {
 					echo $result;
 				} else {
 					return $result;
@@ -254,5 +264,20 @@ abstract class DrupalController extends Controller {
 			UnhandledException($e,$debug);
 		}
 		return ob_get_clean();
+	}
+	
+	/**
+	 * Sets whether a page is displayed as an Ajax response (so without the theme), or as a normal page.
+	 * Note: instead of using this method, we recommand using the @DrupalAjax annotation.
+	 * 
+	 * Pass "true" as a parameter to display the content directly.
+	 * Pass "false" as a parameter to display the page normally (with the theme).
+	 * Pass "null" to let the @DrupalAjax annotation decide.
+	 * 
+	 * 
+	 * @param boolean $ajax
+	 */
+	public function setAjaxStatus($ajax) {
+		$this->isAjax = $ajax;
 	}
 }
