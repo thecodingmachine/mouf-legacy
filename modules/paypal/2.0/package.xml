@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Paypal Integration</displayName>
+	<shortDescription>This package provides a set of classes that can be used to easily integrate with Paypal instant payment, Paypal subscriptions and IPN mechanism.</shortDescription>
+	<docUrl>../../plugins/modules/paypal/2.0/doc/index.html</docUrl>
+	<logo>https://www.paypal.com/en_US/i/logo/PayPal_mark_60x38.gif</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>tdbm</name>
+			<version>>=2.0-alpha</version>
+		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>getvars</name>
+			<version>>=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>PaypalService.php</require>
+	</requires>
+</package>
