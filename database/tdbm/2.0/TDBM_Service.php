@@ -286,7 +286,7 @@ class TDBM_Service {
 	 */
 	public function getObject($table_name, $filters, $className = null, $lazy_loading = false) {
 		
-		if (is_array($filters) or $filters instanceof TDBM_FilterInterface) {
+		if (is_array($filters) || $filters instanceof TDBM_FilterInterface) {
 			$isFilterBag = false;
 			if (is_array($filters)) {
 				// Is this a multiple primary key or a filter bag?
@@ -313,7 +313,7 @@ class TDBM_Service {
 				return $objects[0];
 			}
 		}
-		
+		$id = $filters;
 		if ($this->dbConnection == null) {
 			throw new TDBM_Exception("Error while calling TdbmService->getObject(): No connection has been established on the database!");
 		}

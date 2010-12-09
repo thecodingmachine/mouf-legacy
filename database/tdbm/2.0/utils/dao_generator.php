@@ -250,7 +250,7 @@ class $baseClassName extends TDBM_Object
 	 * @return '.$referencedBeanName.'
 	 */
 	public function '.$getterName.'() {
-		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].', "'.$referencedBeanName.'");
+		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].', "'.$referencedBeanName.'", true);
 	}
 	
 	/**
