@@ -25,6 +25,7 @@ $msginstancename = $_REQUEST["msginstancename"];
 $key = $_REQUEST["key"];
 $label = $_REQUEST["label"];
 $language = $_REQUEST["language"];
+$delete = $_REQUEST["delete"];
 if (get_magic_quotes_gpc()==1)
 {
 	$key = stripslashes($key);
@@ -36,8 +37,11 @@ if (get_magic_quotes_gpc()==1)
 $translationService = MoufManager::getMoufManager()->getInstance($msginstancename);
 /* @var $translationService FinePHPArrayTranslationService */
 
-$messageFile = $translationService->getMessageFileForLanguage($language);
-$messageFile->setMessage($key, $label);
+$messageFile = $translationService->getMessageLanguageForLanguage($language);
+if($delete)
+	$messageFile->deleteMessage($key);
+else
+	$messageFile->setMessage($key, $label);
 $messageFile->save();
 
 

@@ -23,6 +23,11 @@ if($saved) {
 	<?php } ?>
 
 	<p>Label for key '<?php echo $key ?>' in language <?php echo $language ?>:</p>
+	<?php 
+	if($label == "" && !is_null($label)) {
+		echo "<img src='".ROOT_URL."plugins/utils/icons/crystalproject/1.0/actions/agt_update_critical.png' alt='warning' title='Empty text'/> Caution label is set but empty";
+	}
+	?>
 	<input type="hidden" name="key" value="<?php echo plainstring_to_htmlprotected($key) ?>" />
 	<input type="hidden" name="msginstancename" value="<?php echo plainstring_to_htmlprotected($msgInstanceName) ?>" />
 	<input type="hidden" name="selfedit" value="<?php echo plainstring_to_htmlprotected($selfedit) ?>" />
@@ -30,6 +35,7 @@ if($saved) {
 	<input type="hidden" name="backto" value="<?php echo plainstring_to_htmlprotected($backto) ?>" />
 	<!--<input type="text" name="label" value="<?php echo plainstring_to_htmlprotected($label) ?>" size="80" /><br/>-->
 	<textarea name="label" rows="5" cols="80"><?php echo plainstring_to_htmlprotected($label) ?></textarea><br/>
+	<input type="checkbox" name="delete" value="delete" /> Delete the translation<br />
 	<input type="submit" name="save" value="Save" />
 	<?php if ($backto != null) { ?>
 	<input type="submit" name="back" value="Back to application" />

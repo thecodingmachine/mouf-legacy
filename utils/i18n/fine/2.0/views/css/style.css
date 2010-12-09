@@ -1,0 +1,11 @@
+table#fine_missingLabel th.language_title {
+	width: 30px;
+}
+
+table#fine_missingLabel td.language {
+	text-align: center;
+}
+
+table#fin_searchlabel th {
+	background-color: #CCCCCC;
+}

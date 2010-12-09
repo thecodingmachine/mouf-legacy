@@ -22,9 +22,11 @@ if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
 }
 
 $msginstancename = $_REQUEST["msginstancename"];
+$language = $_REQUEST["language"];
 if (get_magic_quotes_gpc()==1)
 {
 	$msginstancename = stripslashes($msginstancename);
+	$language = stripslashes($language);
 }
 
 
@@ -32,6 +34,8 @@ $translationService = MoufManager::getMoufManager()->getInstance($msginstancenam
 /* @var $translationService FinePHPArrayTranslationService */
 
 $translationService->loadAllMessages();
+
+
 
 // The array of messages by message, then by language:
 // array(message_key => array(language => message))
@@ -42,9 +46,10 @@ $keys = $translationService->getAllKeys();
 $languages = $translationService->getSupportedLanguages();
 
 foreach ($keys as $key) {
-	$msgs[$key] = $translationService->getMessageForAllLanguages($key);
+	$msgs[$key] = $translationService->getMessageForAllLanguages($key, $language);
 }
 
+ksort($msgs);
 $response = array("languages"=>$languages, "msgs"=>$msgs);
 
 if ($encode == "php") {
