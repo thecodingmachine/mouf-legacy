@@ -18,7 +18,7 @@ class FixedLanguageDetection implements LanguageDetectionInterface {
 	 * @Compulsory
 	 * @var string
 	 */
-	private $language = "default";
+	public $language = "default";
 	
 	/**
 	 * Returns the language to use.
