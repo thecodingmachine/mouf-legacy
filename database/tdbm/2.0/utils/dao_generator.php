@@ -416,13 +416,16 @@ class $baseClassName
 	}
 	
 	/**
-	 * Get $beanClassName specified by its ID
+	 * Get $beanClassName specified by its ID (its primary key)
+	 * If the primary key does not exist, an exception is thrown.
 	 *
 	 * @param string \$id
+	 * @param boolean \$lazyLoading If set to true, the object will not be loaded right away. Instead, it will be loaded when you first try to access a method of the object.
 	 * @return $beanClassName
+	 * @throws TDBM_Exception
 	 */
-	public function get".$tableCamel."ById(\$id) {
-		return \$this->tdbmService->getObject('$tableName', \$id, '$beanClassName');
+	public function get".$tableCamel."ById(\$id, \$lazyLoading = false) {
+		return \$this->tdbmService->getObject('$tableName', \$id, '$beanClassName', \$lazyLoading);
 	}
 	
 	/**
@@ -432,6 +435,29 @@ class $baseClassName
 	 */
 	public function delete".$tableCamel."(\$obj) {
 		\$this->tdbmService->deleteObject(\$obj);
+	}
+	
+	/**
+	 * Get a list of $beanClassName specified by its filters.
+	 *
+	 * @param mixed \$filterBag The filter bag (see TDBM_Service::getObjects for complete description)
+	 * @param mixed \$orderbyBag The order bag (see TDBM_Service::getObjects for complete description)
+	 * @param integer \$from The offset
+	 * @param integer \$limit The maximum number of rows returned
+	 * @return array<$beanClassName>
+	 */
+	protected function get".$tableCamel."ListByFilter(\$filterBag=null, \$orderbyBag=null, \$from=null, \$limit=null) {
+		return \$this->tdbmService->getObjects('$tableName', \$filterBag, \$orderbyBag, \$from, \$limit, '$beanClassName');
+	}
+
+	/**
+	 * Get a single $beanClassName specified by its filters.
+	 *
+	 * @param mixed \$filterBag The filter bag (see TDBM_Service::getObjects for complete description)
+	 * @return $beanClassName
+	 */
+	protected function get".$tableCamel."ByFilter(\$filterBag=null) {
+		return \$this->tdbmService->getObject('$tableName', \$filterBag, '$beanClassName');
 	}
 }
 ?>";

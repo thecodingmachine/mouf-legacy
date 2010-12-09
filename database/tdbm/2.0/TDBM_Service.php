@@ -19,6 +19,7 @@
 
 require_once 'TDBM_Exception.php';
 require_once 'TDBM_AmbiguityException.php';
+require_once 'TDBM_DuplicateRowException.php';
 require_once 'TDBM_DisplayNode.php';
 require_once 'TDBM_Object.php';
 require_once 'TDBM_ObjectArray.php';
@@ -243,47 +244,84 @@ class TDBM_Service {
 	}
 	
 	/**
-	 * Returns the DBM_Object associated to the row "$id" of the table "$table_name".
+	 * Returns a TDBM_Object associated from table "$table_name".
+	 * If the $filters parameter is an int/string, the object returned will be the object whose primary key = $filters.
+	 * $filters can also be a set of TDBM_Filters (see the getObjects method for more details).
 	 *
 	 * For instance, if there is a table 'users', with a primary key on column 'user_id' and a column 'user_name', then
-	 * 			$user = DBM_Object::getObject('users',1);
+	 * 			$user = $tdbmService->getObject('users',1);
 	 * 			echo $user->name;
 	 * will return the name of the user whose user_id is one.
 	 *
 	 * If a table has a primary key over several columns, you should pass to $id an array containing the the value of the various columns.
 	 * For instance:
-	 * 			$group = DBM_Object::getObject('groups',array(1,2));
+	 * 			$group = $tdbmService->getObject('groups',array(1,2));
 	 *
-	 * Note that DBM_Object performs caching for you. If you get twice the same object, the reference of the object you will get
+	 * Note that TDBM_Object performs caching for you. If you get twice the same object, the reference of the object you will get
 	 * will be the same.
 	 *
 	 * For instance:
-	 * 			$user1 = DBM_Object::getObject('users',1);
-	 * 			$user2 = DBM_Object::getObject('users',1);
+	 * 			$user1 = $tdbmService->getObject('users',1);
+	 * 			$user2 = $tdbmService->getObject('users',1);
 	 * 			$user1->name = 'John Doe';
 	 * 			echo $user2->name;
 	 * will return 'John Doe'.
 	 * 
-	 * Also, you can specify the return class for the object (provided the return class extends DBM_Object).
+	 * You can use filters instead of passing the primary key. For instance:
+	 * 			$user = $tdbmService->getObject('users',new TDBM_EqualFilter('users', 'login', 'jdoe'));
+	 * This will return the user whose login is 'jdoe'.
+	 * Please note that if 2 users have the jdoe login in database, the method will throw a TDBM_DuplicateRowException.
+	 * 
+	 * Also, you can specify the return class for the object (provided the return class extends TDBM_Object).
 	 * For instance:
-	 *  	$user = DBM_Object::getObject('users',1,'User');
-	 * will return an object from the "User" class. The "User" class must extend the "DBM_Object" class.
+	 *  	$user = $tdbmService->getObject('users',1,'User');
+	 * will return an object from the "User" class. The "User" class must extend the "TDBM_Object" class.
 	 * Please be sure not to override any method or any property unless you perfectly know what you are doing!
 	 *
 	 * @param string $table_name The name of the table we retrieve an object from.
-	 * @param mixed $id The id of the object (the value of the primary key).
-	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
-	 * @return DBM_Object
+	 * @param mixed $filters If the filter is a string/integer, it will be considered as the id of the object (the value of the primary key). Otherwise, it can be a filter bag (see the filterbag parameter of the getObjects method for more details about filter bags)
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the TDBM_Object class. If none is specified, a TDBM_Object instance will be returned.
+	 * @param boolean $lazy_loading If set to true, and if the primary key is passed in parameter of getObject, the object will not be queried in database. It will be queried when you first try to access a column. If at that time the object cannot be found in database, an exception will be thrown.
+	 * @return TDBM_Object
 	 */
-	public function getObject($table_name, $id, $className = null) {
+	public function getObject($table_name, $filters, $className = null, $lazy_loading = false) {
+		
+		if (is_array($filters) or $filters instanceof TDBM_FilterInterface) {
+			$isFilterBag = false;
+			if (is_array($filters)) {
+				// Is this a multiple primary key or a filter bag?
+				// Let's have a look at the first item of the array to decide.
+				foreach ($filters as $filter) {
+					if (is_array($filter) || $filter instanceof TDBM_FilterInterface) {
+						$isFilterBag = true;
+					}
+					break;
+				}
+			} else {
+				$isFilterBag = true;
+			}
+			
+			if ($isFilterBag == true) {
+				// If a filter bag was passer in parameter, let's perform a getObjects.
+				$objects = $this->getObjects($table_name, $filters, null, null, null, $className);
+				if (count($objects) == 0) {
+					return null;
+				} elseif (count($objects) > 1) {
+					throw new TDBM_DuplicateRowException("Error while querying an object for table '$table_name': ".count($objects)." rows have been returned, but we should have received at most one.");
+				}
+				// Return the first and only object.
+				return $objects[0];
+			}
+		}
+		
 		if ($this->dbConnection == null) {
-			throw new TDBM_Exception("Error while calling TDBM_Object::getObject(): No connection has been established on the database!");
+			throw new TDBM_Exception("Error while calling TdbmService->getObject(): No connection has been established on the database!");
 		}
 		$table_name = $this->dbConnection->toStandardcase($table_name);
 
 		// If the ID is null, let's throw an exception
 		if ($id === null) {
-			throw new TDBM_Exception("The ID you passed to TDBM_Object::getObject is null for the object of type '$table_name'. Objects primary keys cannot be null.");
+			throw new TDBM_Exception("The ID you passed to TdbmService->getObject is null for the object of type '$table_name'. Objects primary keys cannot be null.");
 		}
 
 		// If the primary key is split over many columns, the IDs are passed in an array. Let's serialize this array to store it.
@@ -308,9 +346,15 @@ class TDBM_Service {
 			}
 			$obj = new $className($this, $table_name, $id);
 		}
-		$this->objects[$table_name][$id] = $obj;
+
+		if ($lazy_loading == false) {
+			// If we are not doing lazy loading, let's load the object:
+			$obj->_dbLoadIfNotLoaded();
+		}
 		
-		return $this->objects[$table_name][$id];
+		$this->objects[$table_name][$id] = $obj;		
+		
+		return $obj;
 	}
 
 	/**
@@ -324,7 +368,7 @@ class TDBM_Service {
 	 *
 	 * @param string $table_name
 	 * @param boolean $auto_assign_id
-	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the TDBM_Object class. If none is specified, a TDBM_Object instance will be returned.
 	 * @return TDBM_Object
 	 */
 	public function getNewObject($table_name, $auto_assign_id=true, $className = null) {
@@ -446,7 +490,7 @@ class TDBM_Service {
 	 * @param string $sql The SQL of the query
 	 * @param integer $from The offset
 	 * @param integer $limit The maximum number of objects returned
-	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the TDBM_Object class. If none is specified, a TDBM_Object instance will be returned.
 	 * @return TDBM_ObjectArray The result set of the query as a TDBM_ObjectArray (an array of TDBM_Objects with special properties)
 	 */
 	public function getObjectsFromSQL($table_name, $sql, $from=null, $limit=null, $className=null) {
@@ -494,7 +538,7 @@ class TDBM_Service {
 					}			
 					$obj = new $className($this, $table_name, $id);
 				} else {
-					throw new DB_Exception("Error while casting DBM_Object to class, the parameter passed is not a string. Value passed: ".$className);
+					throw new DB_Exception("Error while casting TDBM_Object to class, the parameter passed is not a string. Value passed: ".$className);
 				}
 				$this->objects[$table_name][$id] = $obj;
 				$this->objects[$table_name][$id]->loadFromRow($row);
@@ -1040,11 +1084,11 @@ class TDBM_Service {
 	 * 		This object models a single column in a database.
 	 *
 	 * @param string $table_name The name of the table queried
-	 * @param unknown_type $filter_bag The filter bag (see above for complete description)
-	 * @param unknown_type $orderby_bag The order bag (see above for complete description)
+	 * @param mixed $filter_bag The filter bag (see above for complete description)
+	 * @param mixed $orderby_bag The order bag (see above for complete description)
 	 * @param integer $from The offset
 	 * @param integer $limit The maximum number of rows returned
-	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the TDBM_Object class. If none is specified, a TDBM_Object instance will be returned.
 	 * @param unknown_type $hint_path Hints to get the path for the query (expert parameter, you should leave it to null).
 	 * @return TDBM_ObjectArray A TDBM_ObjectArray containing the resulting objects of the query.
 	 */
@@ -1139,7 +1183,7 @@ class TDBM_Service {
 	 * @param unknown_type $orderby_bag The order bag (see above for complete description)
 	 * @param integer $from The offset
 	 * @param integer $limit The maximum number of rows returned
-	 * @param string $className Optional: The name of the class to instanciate. This class must extend the DBM_Object class. If none is specified, a DBM_Object instance will be returned.
+	 * @param string $className Optional: The name of the class to instanciate. This class must extend the TDBM_Object class. If none is specified, a TDBM_Object instance will be returned.
 	 * @param unknown_type $hint_path Hints to get the path for the query (expert parameter, you should leave it to null).
 	 * @return TDBM_ObjectArray A TDBM_ObjectArray containing the resulting objects of the query.
 	 */

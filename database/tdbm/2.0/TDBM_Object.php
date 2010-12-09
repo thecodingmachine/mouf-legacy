@@ -199,12 +199,13 @@ class TDBM_Object {
 	}
 
 	/**
+	 * This is an internal method. You should not call this method yourself. The TDBM library will do it for you.
 	 * If the object is in state 'not loaded', this method performs a query in database to load the object.
 	 *
 	 * A TDBM_Exception is thrown is no object can be retrieved (for instance, if the primary key specified
 	 * cannot be found).
 	 */
-	private function dbLoadIfNotLoaded() {
+	public function _dbLoadIfNotLoaded() {
 		if ($this->TDBM_Object_state == "not loaded")
 		{
 			// Let's first get the primary keys
@@ -245,7 +246,7 @@ class TDBM_Object {
 	}
 
 	public function __get($var) {
-		$this->dbLoadIfNotLoaded();
+		$this->_dbLoadIfNotLoaded();
 
 		// Let's only deal with lower case.
 		$var = $this->db_connection->toStandardcaseColumn($var);
@@ -283,7 +284,7 @@ class TDBM_Object {
 	 * @return boolean
 	 */
 	public function __isset($var) {
-		$this->dbLoadIfNotLoaded();
+		$this->_dbLoadIfNotLoaded();
 
 		// Let's only deal with lower case.
 		$var = $this->db_connection->toStandardcaseColumn($var);
@@ -292,7 +293,7 @@ class TDBM_Object {
 	}
 	
 	public function __set($var, $value) {
-		$this->dbLoadIfNotLoaded();
+		$this->_dbLoadIfNotLoaded();
 
 		// Let's only deal with lower case.
 		$var = $this->db_connection->toStandardcaseColumn($var);

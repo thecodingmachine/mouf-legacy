@@ -12,7 +12,7 @@ require_once $baseDir.'/plugins/database/dbconnection/1.0/Mouf_DBConnection.php'
 require_once $baseDir.'/plugins/database/dbconnection/1.0/DB_MySqlConnection.php';
 require_once $baseDir.'/plugins/database/dbconnection/1.0/DB_PgSqlConnection.php';
 require_once $baseDir.'/plugins/database/dbconnection/1.0/DB_CachedConnection.php';
-require_once $baseDir.'/plugins/database/tdbm/2.0-alpha/TDBM_Service.php';
+require_once $baseDir.'/plugins/database/tdbm/2.0/TDBM_Service.php';
 require_once $baseDir.'/plugins/utils/cache/cache-interface/1.0/CacheInterface.php';
 require_once $baseDir.'/plugins/utils/cache/session-cache/1.0/SessionCache.php';
 require_once $baseDir.'/plugins/utils/log/log_interface/1.0/LogInterface.php';
