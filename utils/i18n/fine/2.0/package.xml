@@ -20,14 +20,12 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<!-- 
-		<require>MessageFile.php</require>
-		<require>LanguageUtils.php</require>
-	 	-->
 		<require>FineMessageLanguage.php</require>
 		<require>language/LanguageDetectionInterface.php</require>
 		<require>language/BrowserLanguageDetection.php</require>
 		<require>language/DomainLanguageDetection.php</require>
+		<require>language/FixedLanguageDetection.php</require>
+		<require>language/CascadingLanguageDetection.php</require>
 		<require>translate/LanguageTranslationInterface.php</require>
 		<require>translate/FinePHPArrayTranslationService.php</require>
 		<require>msgFunctions.php</require>
