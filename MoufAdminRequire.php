@@ -44,6 +44,8 @@ require_once $localFilePath.'/../plugins/security/simplelogincontroller/1.0/Simp
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';
 require_once $localFilePath.'/validator/MoufBasicValidationProvider.php';
+require_once $localFilePath.'/MoufSearchable.php';
+require_once $localFilePath.'/MoufSearchService.php';
 require_once $localFilePath.'/controllers/MoufController.php';
 require_once $localFilePath.'/controllers/MoufRootController.php';
 require_once $localFilePath.'/controllers/ComponentsController.php';
@@ -56,6 +58,7 @@ require_once $localFilePath.'/controllers/MoufLoginController.php';
 require_once $localFilePath.'/controllers/PackageServiceController.php';
 require_once $localFilePath.'/controllers/RepositorySourceController.php';
 require_once $localFilePath.'/controllers/PhpInfoController.php';
+require_once $localFilePath.'/controllers/SearchController.php';
 require_once $localFilePath.'/load.php';
 
 ?>

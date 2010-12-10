@@ -1,8 +1,17 @@
+<?php /* @var $this SearchController */
+if (empty($this->instancesByPackage)) {
+	echo "<p>No instances found<p>";
+} elseif ($this->query) {
+?>
+<h1>Instances list found</h1>
+<?php 
+} else {
+?>
 <h1>Available component instances</h1>
+<?php 
+}
 
-<?php
-
-if (!empty($this->inErrorInstances)) {
+if (!$this->ajax && !empty($this->inErrorInstances)) {
 	echo "<div class='error'>";
 	echo "The following instances are erroneous. They are pointing to a class that no longer exist. You should delete those to avoid any problem.<br/><ul>";
 	foreach ($this->inErrorInstances as $instanceName=>$className) {

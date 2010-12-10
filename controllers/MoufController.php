@@ -14,7 +14,7 @@ require_once(dirname(__FILE__)."/../CanvasWriter.php");
  *
  * @Component
  */
-class MoufController extends Controller {
+class MoufController extends Controller implements MoufSearchable {
 
 	public $instanceName;
 	public $className;
@@ -54,8 +54,15 @@ class MoufController extends Controller {
 	public $inErrorInstances;
 	
 	/**
+	 * The search query, or null if all instances must be displayed.
+	 * 
+	 * @var string
+	 */
+	protected $query;
+	
+	/**
 	 * Redirects the user to the right controller.
-	 * This canb e the detail controller, or any other controller, depending on the @ExtendedAction annotation.
+	 * This can be the detail controller, or any other controller, depending on the @ExtendedAction annotation.
 	 * 
 	 * @Action
 	 * @Logged
@@ -93,13 +100,21 @@ class MoufController extends Controller {
 	}
 	
 	/**
-	 * Lists all the components available, sorted by "package" (directory of the class).
+	 * Whether the call was performed using ajax or not.
+	 * 
+	 * @var boolean
+	 */
+	protected $ajax = false;
+	
+	/**
+	 * Lists all the instances available, sorted by "package" (directory of the class).
 	 * 
 	 * @Action
 	 * @Logged
 	 */
-	public function defaultAction($selfedit = "false") {
+	public function defaultAction($selfedit = "false", $query = null) {
 		$this->selfedit = $selfedit;
+		$this->query = $query;
 
 		if ($selfedit == "true") {
 			$this->moufManager = MoufManager::getMoufManager();
@@ -177,8 +192,46 @@ class MoufController extends Controller {
 		
 		$this->instancesByPackage = $instancesByPackage;
 		
-		$this->template->addContentFile(dirname(__FILE__)."/../views/listComponentsByDirectory.php", $this);
-		$this->template->draw();
+		// Let's apply the filter, if any:
+		if ($query) {
+			foreach ($this->instancesByPackage as $package=>$instanceByClass) {
+				$keepPackage = false;
+				if (stripos($package, $query) !== false) {
+					$keepPackage = true;					
+				}
+				foreach ($instanceByClass as $class=>$myInstanceList) {
+					$keepClass = false;
+					if (stripos($class, $query) !== false) {
+						$keepClass = true;					
+					}
+					foreach ($myInstanceList as $key=>$instanceName) {
+						$keepInstance = false;
+						if (stripos($instanceName, $query) !== false) {
+							$keepInstance = true;					
+						}
+						if (stripos($instanceList[$instanceName], $query) !== false) {
+							$keepInstance = true;					
+						}
+						if (!$keepPackage && !$keepClass && !$keepInstance) {
+							unset($this->instancesByPackage[$package][$class][$key]);
+						}
+					}
+					if (empty($this->instancesByPackage[$package][$class])) {
+						unset($this->instancesByPackage[$package][$class]);
+					}
+				}
+				if (empty($this->instancesByPackage[$package])) {
+					unset($this->instancesByPackage[$package]);
+				}
+			}
+		}
+		
+		if ($this->ajax) {
+			$this->loadFile(dirname(__FILE__)."/../views/listComponentsByDirectory.php");
+		} else {
+			$this->template->addContentFile(dirname(__FILE__)."/../views/listComponentsByDirectory.php", $this);
+			$this->template->draw();
+		}
 	}
 	
 	/**
@@ -251,5 +304,28 @@ class MoufController extends Controller {
 		$this->displayComponent($instanceName, $selfedit);
 	}
 	
+	/**
+	 * Outputs HTML that will be displayed in the search result screen.
+	 * If there are no results, this should not return anything.
+	 * 
+	 * @Action
+	 * @param string $query The full-text search query performed.
+	 * @param string $selfedit Whether we are in self-edit mode or not.
+	 * @return string The HTML to be displayed.
+	 */
+	public function search($query, $selfedit = "false") {
+		$this->ajax = true;
+		$this->defaultAction($selfedit, $query);
+	}
+	
+	/**
+	 * Returns the name of the search module.
+	 * This name in displayed when the search is pending.
+	 * 
+	 * @return string
+	 */
+	public function getSearchModuleName() {
+		return "instances list";
+	}
 }
 ?>

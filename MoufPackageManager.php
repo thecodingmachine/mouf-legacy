@@ -4,6 +4,7 @@ require_once 'MoufPackage.php';
 require_once 'MoufGroupDescriptor.php';
 require_once 'MoufPackageVersionsContainer.php';
 require_once 'MoufIncompatiblePackageException.php';
+require_once 'MoufPackageNotFoundException.php';
 
 class MoufPackageManager {
 	
@@ -229,8 +230,11 @@ class MoufPackageManager {
 			if ($foundCorrectVersion == false) {
 				// If we are here, we failed finding a compatible version...
 				// Let's throw an exception.
-				
-				throw new MoufIncompatiblePackageException($group, $name, null, $dependency->getVersion(), false);
+				if (empty($versions->packages)) {
+					throw new MoufPackageNotFoundException($package->getDescriptor()->getGroup(), $package->getDescriptor()->getName(), $dependency->getGroup(), $dependency->getName(), $dependency->getVersion());
+				} else {
+					throw new MoufIncompatiblePackageException($package->getDescriptor()->getGroup(), $package->getDescriptor()->getName(), $dependency->getGroup(), $dependency->getName(), $dependency->getVersion());
+				}
 			}
 			
 		}

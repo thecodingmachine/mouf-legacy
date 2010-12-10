@@ -42,20 +42,25 @@ $moufDeclaredClassesByFiles = array();
 
 // Ok, now, we can start including our files.
 foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
-	require_once $mouf_base_path.$registeredFile;
-
-	$moufFile=null;
-	$moufLine=null;
-	$isSent = headers_sent($moufFile, $moufLine);
+	if (file_exists($mouf_base_path.$registeredFile)) {
+		require_once $mouf_base_path.$registeredFile;
 	
-	if ($isSent) {
-		$moufResponse = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
+		$moufFile=null;
+		$moufLine=null;
+		$isSent = headers_sent($moufFile, $moufLine);
+		
+		if ($isSent) {
+			$moufResponse = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
+			break;
+		}
+		
+		$moufDeclaredClassesNew = get_declared_classes();
+		$moufDeclaredClassesByFiles[$registeredFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
+		$moufDeclaredClasses = $moufDeclaredClassesNew;
+	} else {
+		$moufResponse = array("errorType"=>"filedoesnotexist", "errorMsg"=>"Error! Included file '".$registeredFile."' does not exist.");
 		break;
 	}
-	
-	$moufDeclaredClassesNew = get_declared_classes();
-	$moufDeclaredClassesByFiles[$registeredFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
-	$moufDeclaredClasses = $moufDeclaredClassesNew;
 }
 
 // Unique ID that is unlikely to be in the bottom of the message

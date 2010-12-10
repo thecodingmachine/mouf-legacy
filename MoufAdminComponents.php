@@ -126,19 +126,35 @@ $moufManager->addComponentInstances(array (
   array (
     'class' => 'SplashTemplate',
     'external' => false,
+    'fieldBinds' => 
+    array (
+      'head' => 
+      array (
+        0 => 'prototype',
+        1 => 'jQuery',
+        2 => 'jqueryui',
+        3 => 'jqueryFileTree',
+        4 => 'jquery-autogrow-1.2.2',
+      ),
+      'left' => 
+      array (
+        0 => 'searchBox',
+        1 => 'actionMenu',
+      ),
+    ),
     'fieldProperties' => 
     array (
-      'title' => 
+      'logoImg' => 
       array (
-        'value' => 'Mouf - Build your website',
+        'value' => 'mouf/views/images/MoufLogo.png',
         'type' => 'string',
         'metadata' => 
         array (
         ),
       ),
-      'logoImg' => 
+      'title' => 
       array (
-        'value' => 'mouf/views/images/MoufLogo.png',
+        'value' => 'Mouf - Build your website',
         'type' => 'string',
         'metadata' => 
         array (
@@ -154,21 +170,6 @@ $moufManager->addComponentInstances(array (
         'metadata' => 
         array (
         ),
-      ),
-    ),
-    'fieldBinds' => 
-    array (
-      'head' => 
-      array (
-        0 => 'prototype',
-        1 => 'jQuery',
-        2 => 'jqueryui',
-        3 => 'jqueryFileTree',
-        4 => 'jquery-autogrow-1.2.2',
-      ),
-      'left' => 
-      array (
-        0 => 'actionMenu',
       ),
     ),
   ),
@@ -1095,10 +1096,58 @@ $moufManager->addComponentInstances(array (
     'class' => 'PhpInfoController',
     'external' => false,
   ),
+  'search' => 
+  array (
+    'class' => 'SearchController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+      'searchService' => 'searchService',
+    ),
+  ),
+  'searchService' => 
+  array (
+    'class' => 'MoufSearchService',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'searchableServices' => 
+      array (
+        0 => 'mouf',
+      ),
+    ),
+  ),
+  'searchBox' => 
+  array (
+    'class' => 'HtmlFromFile',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'fileName' => 
+      array (
+        'value' => 'mouf/views/search/searchbox.php',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'relativeToRootPath' => 
+      array (
+        'value' => true,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
 $moufManager->registerComponent('validator/MoufBasicValidationProvider.php');
+$moufManager->registerComponent('MoufSearchable.php');
+$moufManager->registerComponent('MoufSearchService.php');
 $moufManager->registerComponent('controllers/MoufController.php');
 $moufManager->registerComponent('controllers/MoufRootController.php');
 $moufManager->registerComponent('controllers/ComponentsController.php');
@@ -1111,6 +1160,7 @@ $moufManager->registerComponent('controllers/MoufLoginController.php');
 $moufManager->registerComponent('controllers/PackageServiceController.php');
 $moufManager->registerComponent('controllers/RepositorySourceController.php');
 $moufManager->registerComponent('controllers/PhpInfoController.php');
+$moufManager->registerComponent('controllers/SearchController.php');
 $moufManager->registerComponent('load.php');
 
 unset($moufManager);
@@ -1430,6 +1480,34 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return PhpInfoController
+	 */
+	 public static function getPhpInfo() {
+	 	return MoufManager::getMoufManager()->getInstance('phpInfo');
+	 }
+
+	/**
+	 * @return SearchController
+	 */
+	 public static function getSearch() {
+	 	return MoufManager::getMoufManager()->getInstance('search');
+	 }
+
+	/**
+	 * @return MoufSearchService
+	 */
+	 public static function getSearchService() {
+	 	return MoufManager::getMoufManager()->getInstance('searchService');
+	 }
+
+	/**
+	 * @return HtmlFromFile
+	 */
+	 public static function getSearchBox() {
+	 	return MoufManager::getMoufManager()->getInstance('searchBox');
+	 }
+
+	/**
 	 * @return SplashMenuItem
 	 */
 	 public static function getFineAdminLabelMenuItem() {
@@ -1483,13 +1561,6 @@ class MoufAdmin {
 	 */
 	 public static function getSplashApacheConfig() {
 	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
-	 }
-
-	/**
-	 * @return PhpInfoController
-	 */
-	 public static function getPhpInfo() {
-	 	return MoufManager::getMoufManager()->getInstance('phpInfo');
 	 }
 
 }

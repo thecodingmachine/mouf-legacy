@@ -100,7 +100,7 @@ class MoufReflectionProxy {
 	 * Returns an empty array if everything is fine, or an array like this if there is an error:
 	 * 	array("errorType"=>"crash", "errorMsg"=>"txt");
 	 * 
-	 * errorTypes can be "crash" or "outputStarted"
+	 * errorTypes can be "crash" or "outputStarted" or "filedoesnotexist"
 	 * 
 	 * @param string $selfEdit
 	 * @throws Exception
