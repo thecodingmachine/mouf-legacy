@@ -86,7 +86,9 @@ class PaypalService {
 			"for_auction",
 			"auction_closing_date",
 			"auction_multi_item",
-			"auction_buyer_id");
+			"auction_buyer_id",
+			"transaction_subject",
+			"protection_eligibility");
 
 
 	/**
@@ -170,17 +172,18 @@ class PaypalService {
 		//$payment->paypal_exchange_rate
 		//$payment->paypal_payment_gross
 		//$payment->paypal_payment_fee
-		//$payment->paypal_first_name
-		//$payment->paypal_last_name
+		$payment->paypal_first_name = $request->firstName;
+		$payment->paypal_last_name = $request->lastName;
 		//$payment->paypal_payer_business_name
+		// TODO: how to map address1, address2?
 		//$payment->paypal_address_name
 		//$payment->paypal_address_street
-		//$payment->paypal_address_city
-		//$payment->paypal_address_state
-		//$payment->paypal_address_zip
-		//$payment->paypal_address_country
+		$payment->paypal_address_city = $request->city;
+		$payment->paypal_address_state = $request->state;
+		$payment->paypal_address_zip = $request->zip;
+		$payment->paypal_address_country = $request->countryAddress;
 		//$payment->paypal_address_status
-		//$payment->paypal_payer_email
+		$payment->paypal_payer_email = $request->email;
 		//$payment->paypal_payer_id
 		//$payment->paypal_payer_status
 		//$payment->paypal_payment_type
@@ -399,7 +402,7 @@ class PaypalService {
 		$txn_id = get("txn_id");
 		// Txn_id can be null sometimes (for instance for a subscription signup...)
 		if ($txn_id != null) {
-			$ipn_response = $this->tdbmService->getObjects("paypal_ipn_responses", array(new DBM_EqualFilter("paypal_ipn_responses", "hackattempt", 0), new DBM_EqualFilter("paypal_ipn_responses", "paypal_txn_id", $txn_id)));
+			$ipn_response = $this->tdbmService->getObjects("paypal_ipn_responses", array(new TDBM_EqualFilter("paypal_ipn_responses", "hackattempt", 0), new TDBM_EqualFilter("paypal_ipn_responses", "paypal_txn_id", $txn_id)));
 			if (count($ipn_response) != 0) {
 				// The transaction was already processed.
 				$this->log->warn("Received a transaction from IPN with txn_id ".get("txn_id").". We already processed that transaction. It will be ignored.");
@@ -431,7 +434,7 @@ class PaypalService {
 	 */
 	private function checkIpnInputAndCallEventHandlers(PaypalIpnResponse $paypalIpnResponse) {
 		// First step: can we find the matching payment in the table?
-		$payment = $this->tdbmService->getObjects("paypal_payments", new DBM_EqualFilter("paypal_payments", "paypal_custom", $paypalIpnResponse->custom));
+		$payment = $this->tdbmService->getObjects("paypal_payments", new TDBM_EqualFilter("paypal_payments", "paypal_custom", $paypalIpnResponse->custom));
 
 		if (count($payment) == 0) {
 			$this->log->info("Entering onPaymentNotFound event handlers");

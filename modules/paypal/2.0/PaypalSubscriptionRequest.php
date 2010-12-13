@@ -42,7 +42,19 @@ class PaypalSubscriptionRequest extends AbstractPaypalPaymentRequest {
 				"currencyCode"=>"currency_code",
 				"modify"=>"modify",
 				"country"=>"lc",
-				"pageStyle"=>"page_style"
+				"pageStyle"=>"page_style",
+		 		"address1"=>"address1",
+			 	"address2"=>"address2",
+			 	"city"=>"city",
+			 	"countryAddress"=>"country",
+		 		"email"=>"email",
+			 	"firstName"=>"first_name",
+			 	"lastName"=>"last_name",
+			 	"nightPhoneA"=>"night_phone_a",
+			 	"nightPhoneB"=>"night_phone_b",
+			 	"nightPhoneB"=>"night_phone_c",
+			 	"state"=>"state",
+			 	"zip"=>"zip"
 				)
 		 );
 	}
@@ -371,6 +383,104 @@ class PaypalSubscriptionRequest extends AbstractPaypalPaymentRequest {
 	 * @Property
 	 */
 	public $country;
+
+	/**
+	 * Street (1 of 2 fields)
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $address1;
+	
+	/**
+	 * Street (2 of 2 fields)
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $address2;
+	
+	/**
+	 * City
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $city;
+	
+	/**
+	 * Sets shipping and billing country.
+	 * For allowable values, see Countries and Regions Supported by PayPal.
+	 * 	https://cms.paypal.com/us/cgi-bin/?&cmd=_render-content&content_ID=developer/e_howto_api_nvp_country_codes
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $countryAddress;
+	
+	/**
+	 * Email address
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $email;
+	
+	/**
+	 * First name
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $firstName;
+	
+	/**
+	 * Last name
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $lastName;
+	
+	/**
+	 * The area code for U.S. phone numbers, or the country code for phone numbers outside the U.S. This will prepopulate the payer’s home phone number.
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $nightPhoneA;
+	
+	/**
+	 * The three-digit prefix for U.S. phone numbers, or the entire phone number for phone numbers outside the U.S., excluding country code. This will prepopulate the payer’s home phone number.
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $nightPhoneB;
+	
+	/**
+	 * The four-digit phone number for U.S. phone numbers. This will prepopulate the payer’s home phone number.
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $nightPhoneC;
+	
+	/**
+	 * State; use Official U.S. Postal Service Abbreviations.
+	 * 	http://www.usps.com/ncsc/lookups/abbreviations.html#states
+	 * @var string
+	 * @Property
+	 */
+	public $state;
+
+	/**
+	 * Postal code
+	 * 
+	 * @var string
+	 * @Property
+	 */
+	public $zip;
 	
 	/**
 	 * Returns an array associating the Paypal name to the value stored in the object.
