@@ -29,6 +29,15 @@ class FixedLanguageDetection implements LanguageDetectionInterface {
 	public function getLanguage() {
 		return $this->language;
 	}
+	
+	/**
+	 * Sets the language to use.
+	 * 
+	 * @param string $language
+	 */
+	public function setLanguage($language) {
+		$this->language = $language;
+	}
 }
 
 ?>
