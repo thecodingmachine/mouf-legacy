@@ -14,7 +14,6 @@ interface MoufSearchable {
 	 * @Action
 	 * @param string $query The full-text search query performed.
 	 * @param string $selfedit Whether we are in self-edit mode or not.
-	 * @return string The HTML to be displayed.
 	 */
 	public function search($query, $selfedit = "false");
 	

@@ -3,7 +3,7 @@ if (empty($this->instancesByPackage)) {
 	echo "<p>No instances found<p>";
 } elseif ($this->query) {
 ?>
-<h1>Instances list found</h1>
+<h2>Instances list found</h2>
 <?php 
 } else {
 ?>
