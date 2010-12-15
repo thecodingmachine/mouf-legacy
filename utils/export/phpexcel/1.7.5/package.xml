@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>PHPExcel</displayName>
+	<shortDescription>PHPExcel Project providing a set of classes for the PHP programming language,
+	which allow you to write to and read from different file formats, like Excel 2007, PDF, HTML...
+	This project is built around Microsoft's OpenXML standard and PHP.
+	</shortDescription>
+	<docUrl>http://phpexcel.codeplex.com/documentation</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+	<externalComponentRequires>
+	</externalComponentRequires>
+	<adminRequires>
+		<require>PHPExcel/IOFactory.php</require>
+	</adminRequires>	
+</package>
