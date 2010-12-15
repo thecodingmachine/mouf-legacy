@@ -169,7 +169,7 @@ jQuery(document).ready(function(){';
 			if (count($orderColumns) != count($orderSorts)) {
 				throw new Exception("In datasource, the orderColumns and orders properties must have the same number of elements.");
 			}
-			if (!empty($orderColumns[0]->getName())){
+			if ($orderColumns[0]->getName() != null && $orderColumns[0]->getName() != ""){
 	    		echo "sortname: '".$orderColumns[0]->getName()."',";
 		    }else if ($this->keepState == TRUE && isset($_SESSION[$this->sessionName."_sidx"])){
 		    	echo "sortname: '".$_SESSION[$this->sessionName."_sidx"]."',";
