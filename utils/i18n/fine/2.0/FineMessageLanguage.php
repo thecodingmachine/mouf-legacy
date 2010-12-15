@@ -58,7 +58,7 @@ class FineMessageLanguage {
 	 */
 	public function save() {
 		ksort($this->msg);
-
+		
 		$this->deleteFile($this->language);
 		
 		if($this->language == "default")
@@ -132,6 +132,17 @@ class FineMessageLanguage {
 		$this->msg[$key] = $message;
 	}
 
+	/**
+	 * Sets messages
+	 */
+	public function setMessages($translations) {
+		
+		foreach ($translations as $key => $message) {
+			if($message)
+				$this->msg[$key] = $message;
+		}
+	}
+	
 	/**
 	 * Returns a message for the key $key.
 	 */

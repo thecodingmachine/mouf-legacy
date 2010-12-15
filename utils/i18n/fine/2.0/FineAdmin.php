@@ -29,11 +29,20 @@ MoufManager::getMoufManager()->setParameter('fineMissingLabelsMenuItem', 'propag
   0 => 'selfedit',
 ));
 
+MoufManager::getMoufManager()->declareComponent('fineImportCSVMenuItem', 'SplashMenuItem', true);
+MoufManager::getMoufManager()->setParameter('fineImportCSVMenuItem', 'menuText', 'Import/Export');
+MoufManager::getMoufManager()->setParameter('fineImportCSVMenuItem', 'menuLink', 'mouf/editLabels/excelimport');
+MoufManager::getMoufManager()->setParameter('fineImportCSVMenuItem', 'menuCssClass', '');
+MoufManager::getMoufManager()->setParameter('fineImportCSVMenuItem', 'propagatedUrlParameters', array (
+  0 => 'selfedit',
+));
+
 $actionMenu = MoufManager::getMoufManager()->getInstance("actionMenu");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("fineAdminLabelMenuItem");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("fineSupportedLanguagesMenuItem");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("fineEnableDisableMenuItem");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("fineMissingLabelsMenuItem");
+$actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("fineImportCSVMenuItem");
 
 
 // Controller declaration

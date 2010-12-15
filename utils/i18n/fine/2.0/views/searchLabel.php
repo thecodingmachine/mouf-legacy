@@ -1,4 +1,8 @@
-
+<style type="text/css">
+	table#fin_searchlabel th {
+		background-color: #CCCCCC;
+	}
+</style>
 <form action="searchLabel" style="float:right;">
 	<input type="hidden" name="backto" value="<?php echo plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels?name=".$this->msgInstanceName."&selfedit=".$this->selfedit); ?>" />
 	<input type="hidden" name="msginstancename" value="<?php echo plainstring_to_htmlprotected($this->msgInstanceName); ?>" />

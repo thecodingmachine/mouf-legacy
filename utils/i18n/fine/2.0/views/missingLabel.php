@@ -32,8 +32,8 @@ foreach ($this->languages as $language) {
 <button type="submit">Add</button>
 </p>
 </form>
-
-<table id="fine_missingLabel" style="clear: both">
+<div style="clear: both"><a href="ExcelExport">Export csv</a></div>
+<table id="fine_missingLabel">
 	<thead>
 	<tr>
 		<th>Key</th>

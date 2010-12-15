@@ -14,6 +14,11 @@
 			<version>>=1.0</version>
 		</dependency>
 		<dependency>
+			<group>utils/export</group>
+			<name>phpexport</name>
+			<version>1.5.7</version>
+		</dependency>
+		<dependency>
 			<group>utils/icons</group>
 			<name>famfamfam</name>
 			<version>1.3</version>
@@ -37,5 +42,6 @@
 		<require>FineAdmin.php</require>
 		<require>controllers/EditLabelController.php</require>
 		<require>ValidatorDescriptor.php</require>
+		<require>RegisterSearchModule.php</require>		
 	</adminRequires>	
 </package>
