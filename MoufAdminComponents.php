@@ -112,6 +112,17 @@ $moufManager->addComponentInstances(array (
   array (
     'class' => 'ErrorLogLogger',
     'external' => false,
+    'fieldProperties' => 
+    array (
+      'level' => 
+      array (
+        'value' => '4',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
   ),
   'mouf' => 
   array (

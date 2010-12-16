@@ -1245,14 +1245,14 @@ class ".$this->mainClassName." {
 		return $instancesArray;
 		
 		// Old
-		$instancesArray = array();
+		/*$instancesArray = array();
 		foreach ($this->declaredComponents as $instanceName=>$className) {
 			$obj = new $className();
 			if (is_a($obj, $instanceType)) {
 				$instancesArray[] = $instanceName;
 			}
 		}
-		return $instancesArray;
+		return $instancesArray;*/
 	}
 	
 	/**
