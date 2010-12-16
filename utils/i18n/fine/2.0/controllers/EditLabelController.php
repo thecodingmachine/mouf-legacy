@@ -153,20 +153,9 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	public function addSupportedLanguage($language, $name = "translationService", $selfedit="false") {
 		$this->addTranslationLanguageFromService(($selfedit == "true"), $name, $language);
-		/*LanguageUtils::loadAllMessages();
-		$this->languages = LanguageUtils::getSupportedLanguages();
-		
-		if (array_search($language, $this->languages) === false) {
-			LanguageUtils::createLanguageFile($language);
-		}*/
 		
 		// Once more to reaload languages list
 		$this->supportedLanguages($name, $selfedit);
-		/*LanguageUtils::loadAllMessages();
-		$this->languages = LanguageUtils::getSupportedLanguages();
-		
-		$this->template->addContentFile(dirname(__FILE__)."/../views/supportedLanguages.php", $this);
-		$this->template->draw();*/
 	}
 
 	
@@ -399,7 +388,6 @@ class EditLabelController extends Controller implements MoufSearchable {
 						"selfedit" => (($selfEdit)?"true":"false"),
 						"language" => $language,
 						"translations" => serialize($translations));
-		error_log(var_export($post, true));
 		$response = self::performRequest($url, $post);
 
 		$obj = unserialize($response);
