@@ -43,9 +43,10 @@ class SmtpMailService implements MailServiceInterface {
 	
 	/**
 	 * The authentication mode.
+	 * Can be one of: "", "plain", "login", "crammd5"
 	 *
 	 * @Property
-	 * @OneOf("plain", "login", "crammd5")
+	 * //@OneOf("plain", "login", "crammd5")
 	 * @var string
 	 */
 	public $auth;

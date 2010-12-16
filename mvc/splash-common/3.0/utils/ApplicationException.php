@@ -63,7 +63,7 @@ class ApplicationException extends Exception {
 	 */
 	public function getI18Title() {
 		// FIXME: internationalization enabled
-		return $this->title;
+		return $this->title."-".explode('/', $this->title_array);
 		//return call_user_func_array("iMsg", array_merge(array($this->title), $this->title_array));
 	}
 
@@ -72,7 +72,7 @@ class ApplicationException extends Exception {
 	 */
 	public function getI18Message() {
 		// FIXME: internationalization enabled
-		return $this->getMessage();
+		return $this->getMessage()."-".explode('/', $this->message_array);;
 		//return call_user_func_array("iMsg", array_merge(array($this->getMessage()), $this->message_array));
 	}
 }

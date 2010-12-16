@@ -48,36 +48,36 @@ class MailLogger implements LogInterface {
 	
 	public function trace($string, Exception $e=null) {
 		if($this->level<=self::$TRACE) {
-			self::logMessage("TRACE", $string, $e);
+			$this->logMessage("TRACE", $string, $e);
 		}
 	}
 	public function debug($string, Exception $e=null) {
 		if($this->level<=self::$DEBUG) {
-			self::logMessage("DEBUG", $string, $e);
+			$this->logMessage("DEBUG", $string, $e);
 		}
 	}
 	public function info($string, Exception $e=null) {
 		if($this->level<=self::$INFO) {
-			self::logMessage("INFO", $string, $e);
+			$this->logMessage("INFO", $string, $e);
 		}
 	}
 	public function warn($string, Exception $e=null) {
 		if($this->level<=self::$WARN) {
-			self::logMessage("WARN", $string, $e);
+			$this->logMessage("WARN", $string, $e);
 		}
 	}
 	public function error($string, Exception $e=null) {
 		if($this->level<=self::$ERROR) {
-			self::logMessage("ERROR", $string, $e);
+			$this->logMessage("ERROR", $string, $e);
 		}
 	}
 	public function fatal($string, Exception $e=null) {
 		if($this->level<=self::$FATAL) {
-			self::logMessage("FATAL", $string, $e);
+			$this->logMessage("FATAL", $string, $e);
 		}
 	}
 
-	private static function logMessage($level, $string, $e=null) {
+	private function logMessage($level, $string, $e=null) {
 		
 		$this->mail->setTitle("An error occured in your application. Error level: ".$level);
 				

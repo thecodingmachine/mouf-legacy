@@ -297,9 +297,11 @@ class Mail implements MailInterface {
         }
        
         /**///finalize keep tag
-        for($i=0;$i<count($k);$i++){
-            $s = str_replace('[{(' . $k[$i],'<' . $k[$i],$s);
-            $s = str_replace('[{(/' . $k[$i],'</' . $k[$i],$s);
+        if (isset($k)) {
+	        for($i=0;$i<count($k);$i++){
+	            $s = str_replace('[{(' . $k[$i],'<' . $k[$i],$s);
+	            $s = str_replace('[{(/' . $k[$i],'</' . $k[$i],$s);
+	        }
         }
        
         return trim($s);

@@ -43,7 +43,7 @@ $jsonObj = array();
 
 if (empty($missingDefaultKeys)) {
         $jsonObj['code'] = "ok";
-        $jsonObj['html'] = "Default translatation is available for all messages.";
+        $jsonObj['html'] = "Default translation is available for all messages.";
 } else {
         $jsonObj['code'] = "warn";
         $html = "";

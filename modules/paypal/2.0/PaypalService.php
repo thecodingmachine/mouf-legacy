@@ -213,6 +213,7 @@ class PaypalService {
 		$payment->paypal_invoice = $request->invoice;
 		$payment->paypal_tax = $request->tax;
 		//$payment->save();
+		// TODO: not really working. We should maybe remove paypal_custom.
 		$payment->paypal_custom = $payment->id;
 
 		$payment->save();
@@ -434,9 +435,10 @@ class PaypalService {
 	 */
 	private function checkIpnInputAndCallEventHandlers(PaypalIpnResponse $paypalIpnResponse) {
 		// First step: can we find the matching payment in the table?
-		$payment = $this->tdbmService->getObjects("paypal_payments", new TDBM_EqualFilter("paypal_payments", "paypal_custom", $paypalIpnResponse->custom));
-
-		if (count($payment) == 0) {
+		try {
+			$payment = $this->tdbmService->getObject("paypal_payments", $paypalIpnResponse->custom);
+		} catch (TDBM_Exception $e) {
+			$this->log->info("Unable to find paypal_payments with id ".$paypalIpnResponse->custom, $e);
 			$this->log->info("Entering onPaymentNotFound event handlers");
 			// We cannot find a payment matching the IPN request!
 			// So we probably received some money, but we cannot bind it to a payment.
@@ -450,22 +452,37 @@ class PaypalService {
 			}
 			return false;
 		}
-
-		if (count($payment) > 1) {
-			$msg = "There is more than one payment that has the ID ".$paypalIpnResponse->custom."! This should never happen! The adminsitrator should investigate this problem!";
-			foreach ($this->eventHandlers as $eventHandler) {
-				try {
-					$eventHandler->onUndefinedError($msg);
-				} catch (Exception $e) {
-					// Let's log the errors in the handlers and continue
-					$this->log->error("An exception was thrown while calling a onUndefinedError method: ".get_class($e).". Message:".$e->getMessage());
-				}
-					
-			}
-			return false;
-		}
-
-		$payment = $payment[0];
+		
+//		if (count($payment) == 0) {
+//			$this->log->info("Entering onPaymentNotFound event handlers");
+//			// We cannot find a payment matching the IPN request!
+//			// So we probably received some money, but we cannot bind it to a payment.
+//			foreach ($this->eventHandlers as $eventHandler) {
+//				try {
+//					$eventHandler->onPaymentNotFound($paypalIpnResponse);
+//				} catch (Exception $e) {
+//					// Let's log the errors in the handlers and continue
+//					$this->log->error("An exception was thrown while calling a onPaymentNotFound method: ".get_class($e).". Message:".$e->getMessage());
+//				}
+//			}
+//			return false;
+//		}
+//
+//		if (count($payment) > 1) {
+//			$msg = "There is more than one payment that has the ID ".$paypalIpnResponse->custom."! This should never happen! The adminsitrator should investigate this problem!";
+//			foreach ($this->eventHandlers as $eventHandler) {
+//				try {
+//					$eventHandler->onUndefinedError($msg);
+//				} catch (Exception $e) {
+//					// Let's log the errors in the handlers and continue
+//					$this->log->error("An exception was thrown while calling a onUndefinedError method: ".get_class($e).". Message:".$e->getMessage());
+//				}
+//					
+//			}
+//			return false;
+//		}
+//
+//		$payment = $payment[0];
 
 		// We successfully matched the IPN to a payment in database.
 		// Now, let's compare the IPN and the database value, and let's see if wa have a match.
@@ -486,9 +503,12 @@ class PaypalService {
 			// The paypal_custom number is not necessarily the same for a modify!
 			// Indeed, we don't know for sure if the user will not modify another subscription (if the user has several subscriptions)
 			// Using "modify" should in fact be avoided if possible!
-			if ($paypalIpnResponse->txn_type == "subscr_signup") {
+			// Actually, from PaypalService 2.0, paypal_custom is no more filled.
+			// Since paypal_custom = id, there is no need to fill it anyway.
+			/*if ($paypalIpnResponse->txn_type == "subscr_signup") {
 				$basicCompareArray["paypal_custom"] = "custom";
-			}
+			}*/
+			
 			$error_fields = array();
 
 			foreach ($basicCompareArray as $paymentKey => $ipnKey) {
@@ -518,8 +538,8 @@ class PaypalService {
 			}
 
 			if (count($error_fields)>0) {
-				error_log("IPN   ".var_export($paypalIpnResponse, true));
-				error_log("Database   ".var_export($payment, true));
+				//error_log("IPN   ".var_export($paypalIpnResponse, true));
+				//error_log("Database   ".var_export($payment, true));
 				$paypalPayment = $this->getPaypalPaymentFromDbObject($payment);
 				foreach ($this->eventHandlers as $eventHandler) {
 					try {

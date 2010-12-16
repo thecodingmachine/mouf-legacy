@@ -23,12 +23,16 @@ class DrupalLanguageDetection implements LanguageDetectionInterface {
 	
 	/**
 	 * Returns the language used in Drupal.
+	 * If Drupal is not loaded, returns "default".
 	 * 
 	 * @see plugins/utils/i18n/fine/2.0/language/LanguageDetectionInterface::getLanguage()
 	 * @return string
 	 */
 	public function getLanguage() {
 		global $language;
+		if (!isset($language) || !isset($language->language)) {
+			return "default";
+		}
 		$lang = $language->language;
 		if ($this->englishAsDefault && $lang=="en") {
 			$lang = "default";
