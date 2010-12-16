@@ -26,5 +26,6 @@
 	<adminRequires>
 		<require>controllers/TaskManagerController.php</require>
 		<require>TaskManagerAdmin.php</require>
+		<require>ValidatorDescriptor.php</require>
 	</adminRequires>	
 </package>

@@ -61,20 +61,20 @@ class TaskManager {
 			$nextDate = date("c", $date);
 		}
 		
-		$query = "INSERT INTO ".$tableName." (instance_name, params, status, created_date, last_try_date, next_try_date, nbtries, last_output)
+		$query = "INSERT INTO ".$this->tableName." (instance_name, params, status, created_date, last_try_date, next_try_date, nbtries, last_output)
 			VALUES (".$this->dbConnection->quoteSmart($instanceName).",
 					 ".$this->dbConnection->quoteSmart($serializedParams).", 
 					 'todo', 
 					 ".$this->dbConnection->quoteSmart($now).", 
 					 null, 
-					 ".$this->dbConnection->quoteSmart(next_try_date).",
+					 ".$this->dbConnection->quoteSmart($nextDate).",
 					 0, 
 					 null);";
 		
 		// TODO: are we sure we return the right task?
 		$this->dbConnection->beginTransaction();
 		$this->dbConnection->exec($query);
-		$taskId = $this->dbConnection->getInsertId($tableName, 'id');
+		$taskId = $this->dbConnection->getInsertId($this->tableName, 'id');
 		$this->dbConnection->commit();
 		$task = $this->getTask($taskId);
 		
@@ -92,7 +92,7 @@ class TaskManager {
 	 * @return Task
 	 */
 	public function getTask($id) {
-		$query = "SELECT id, instance_name, params, status, created_date, last_try_date, next_try_date, nbtries, last_output FROM tasks WHERE id = '".$this->dbConnection->quoteSmart($id)."'";
+		$query = "SELECT id, instance_name, params, status, created_date, last_try_date, next_try_date, nbtries, last_output FROM ".$this->tableName." WHERE id = ".$this->dbConnection->quoteSmart($id);
 		
 		$results = $this->dbConnection->getAll($query);
 		$result = $results[0];
@@ -125,14 +125,14 @@ class TaskManager {
 	 */
 	protected function saveTask(Task $task) {
 		$serializedParams = serialize($task->getParams());
-		$query = "UPDATE tasks SET instance_name = ".$this->dbConnection->quoteSmart($task->getTaskProcessorName()).",
+		$query = "UPDATE ".$this->tableName." SET instance_name = ".$this->dbConnection->quoteSmart($task->getTaskProcessorName()).",
 					params = ".$this->dbConnection->quoteSmart($serializedParams).",
 					status = ".$this->dbConnection->quoteSmart($task->getStatus()).",
-					last_try_date = ".$this->dbConnection->quoteSmart($task->getgetLastTryDate()).",
+					last_try_date = ".$this->dbConnection->quoteSmart($task->getLastTryDate()).",
 					next_try_date = ".$this->dbConnection->quoteSmart($task->getNextTryDate()).",
 					nbtries = '".$task->getNbTries()."',
 					last_output = ".$this->dbConnection->quoteSmart($task->getLastOutput())."
-					WHERE id = ".$this->dbConnection->quoteSmart($id);
+					WHERE id = ".$this->dbConnection->quoteSmart($task->getId());
 		
 		$this->dbConnection->exec($query);		
 	}
@@ -143,7 +143,7 @@ class TaskManager {
 	 * @param Task $task
 	 */
 	private function runTask(Task $task) {
-		$this->logger->trace("Running task task  '".$task->id."' with task processor '".$task->getTaskProcessorName()."'");
+		$this->logger->trace("Running task '".$task->getId()."' with task processor '".$task->getTaskProcessorName()."'");
 		ob_start();
 		
 		/* @var $taskProcessor TaskProcessorInterface */
@@ -190,6 +190,85 @@ class TaskManager {
 	}
 	
 	/**
+	 * Returns the Exception Backtrace as a text string.
+	 *
+	 * @param unknown_type $backtrace
+	 * @return unknown
+	 */
+	static private function getTextBackTrace($backtrace) {
+		$str = '';
+
+		foreach ($backtrace as $step) {
+			if ($step['function']!='getTextBackTrace' && $step['function']!='handle_error')
+			{
+				if (isset($step['file']) && isset($step['line'])) {
+					$str .= "In ".$step['file'] . " at line ".$step['line'].": ";
+				}
+				if (isset($step['class']) && isset($step['type']) && isset($step['function'])) {			
+					$str .= $step['class'].$step['type'].$step['function'].'(';
+				}
+
+				if (is_array($step['args'])) {
+					$drawn = false;
+					$params = '';
+					foreach ( $step['args'] as $param)
+					{
+						$params .= self::getPhpVariableAsText($param);
+						//$params .= var_export($param, true);
+						$params .= ', ';
+						$drawn = true;
+					}
+					$str .= $params;
+					if ($drawn == true)
+					$str = substr($str, 0, strlen($str)-2);
+				}
+				$str .= ')';
+				$str .= "\n";
+			}
+		}
+
+		return $str;
+	}
+	
+	/**
+	 * Used by the debug function to display a nice view of the parameters.
+	 *
+	 * @param unknown_type $var
+	 * @return unknown
+	 */
+	private static function getPhpVariableAsText($var) {
+		if( is_string( $var ) )
+		return( '"'.str_replace( array("\x00", "\x0a", "\x0d", "\x1a", "\x09"), array('\0', '\n', '\r', '\Z', '\t'), $var ).'"' );
+		else if( is_int( $var ) || is_float( $var ) )
+		{
+			return( $var );
+		}
+		else if( is_bool( $var ) )
+		{
+			if( $var )
+			return( 'true' );
+			else
+			return( 'false' );
+		}
+		else if( is_array( $var ) )
+		{
+			$result = 'array( ';
+			$comma = '';
+			foreach( $var as $key => $val )
+			{
+				$result .= $comma.self::getPhpVariableAsText( $key ).' => '.self::getPhpVariableAsText( $val );
+				$comma = ', ';
+			}
+			$result .= ' )';
+			return( $result );
+		}
+
+		elseif (is_object($var)) return "Object ".get_class($var);
+		elseif(is_resource($var)) return "Resource ".get_resource_type($var);
+		return "Unknown type variable";
+	}
+	
+	/**
 	 * Runs all tasks that are awaiting to be run.
 	 */
 	public function runAllTasks() {
@@ -210,13 +289,26 @@ class TaskManager {
 		$array = array();
 		$now = date('c', time());
 		$query = "SELECT id, instance_name, params, status, created_date, last_try_date, next_try_date, nbtries, last_output 
-			FROM tasks WHERE (status = 'todo' OR status='retrying') AND next_try_date <= ".$this->dbConnection->quoteSmart($now);
+			FROM ".$this->tableName." WHERE (status = 'todo' OR status='retrying') AND next_try_date <= ".$this->dbConnection->quoteSmart($now);
 		$results = $this->dbConnection->getAll($query);
 		
 		foreach ($results as $result) {
 			$array[] = $this->getTaskFromRow($result);
 		}
 		return $array;
+	}
+	
+	/**
+	 * Returns the number of tasks that have been tried, that are in error, and that will be retried later.
+	 * 
+	 * @return int
+	 */
+	public function getNbTasksInError() {
+		$now = date('c', time());
+		$query = "SELECT count(1) 
+			FROM ".$this->tableName." WHERE status='retrying' AND next_try_date <= ".$this->dbConnection->quoteSmart($now);
+		$result = $this->dbConnection->getOne($query);
+		return $result;
 	}
 	
 	/**

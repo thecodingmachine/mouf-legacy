@@ -6,8 +6,8 @@ CREATE TABLE `tasks` (
 `created_date` DATETIME NOT NULL ,
 `last_try_date` DATETIME NULL ,
 `next_try_date` DATETIME NULL ,
-`nbtries` INT NOT NULL,
-`last_output` TEXT NOT NULL
+`nbtries` INT NULL,
+`last_output` TEXT NULL
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_unicode_ci COMMENT = 'The lists of tasks to be performed (or that have been performed)';
 
 ALTER TABLE `tasks` ADD INDEX ( `next_try_date` , `last_try_date` ) ;

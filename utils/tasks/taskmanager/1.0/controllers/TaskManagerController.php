@@ -7,6 +7,8 @@
  */
 class TaskManagerController extends Controller {
 
+	protected $selfedit;
+	
 	/**
 	 * The default template to use for this controller (will be the mouf template)
 	 *
@@ -36,10 +38,24 @@ class TaskManagerController extends Controller {
 	 * @Logged
 	 */
 	public function viewAwaitingTasks($selfedit="false") {
-		$this->awaitingTasks = $this->getAwaitingTasksFromService($selfedit=="true");
+		$this->selfedit = $selfedit;
+		$this->awaitingTasks = self::getAwaitingTasksFromService($selfedit=="true");
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../views/awaitingTasks.php", $this);
 		$this->template->draw();
+	}
+	
+	/**
+	 * Admin page used to enable or disable label edition.
+	 *
+	 * @Action
+	 * @Logged
+	 */
+	public function deleteTask($id, $taskmanager, $selfedit="false") {
+		$this->selfedit = $selfedit;
+		self::deleteTaskFromService($id, $taskmanager, $selfedit=="true");
+		
+		$this->viewAwaitingTasks($selfedit);
 	}
 	
 	/**
@@ -62,6 +78,32 @@ class TaskManagerController extends Controller {
 		}
 		
 		return $obj;
+	}
+	
+	/**
+	 * Deletes a task from the list.
+	 * 
+	 * @param int $id
+	 * @param bool $selfEdit
+	 * //@return boolean
+	 * @throws Exception
+	 */
+	protected static function deleteTaskFromService($id, $taskmanager, $selfEdit) {
+		$id = (int) $id;
+		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/utils/tasks/taskmanager/1.0/direct/delete_task.php?id=$id&taskmanager=".urlencode($taskmanager)."&selfedit=".(($selfEdit)?"true":"false");
+		 
+		$response = self::performRequest($url);
+
+		if (!empty($response)) {
+			throw new Exception("An error occured while deletin a task:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
+		}
+		/*$obj = unserialize($response);
+		
+		if ($obj === false) {
+			throw new Exception("Unable to unserialize message:\n".$response."\n<br/>URL in error: <a href='".plainstring_to_htmlprotected($url)."'>".plainstring_to_htmlprotected($url)."</a>");
+		}
+		
+		return $obj;*/
 	}
 	
 	private static function performRequest($url) {

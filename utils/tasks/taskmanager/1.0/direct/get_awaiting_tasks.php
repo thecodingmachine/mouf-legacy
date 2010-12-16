@@ -45,7 +45,9 @@ foreach ($instanceNames as $instanceName) {
 		/* @var $task Task */
 		$taskProcessor = $moufManager->getInstance($task->getTaskProcessorName());
 		/* @var $taskProcessor TaskProcessorInterface */
+		ob_start();
 		$name = $taskProcessor->getTaskName($task);
+		ob_end_clean();
 		
 		$result[$instanceName][] = array('id'=>$task->getId(),
 			'taskProcessorName'=>$task->getTaskProcessorName(),
