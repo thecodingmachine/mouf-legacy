@@ -487,7 +487,8 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 			if($tmp)
 	 				$return[$key] = $tmp;
 	 		} elseif(!is_object($item)) {
-	 			if (preg_match("/^.*".$regex.".*$/", $this->stripAccents($item))) {
+	 			//if (preg_match("/^.*".$regex.".*$/", $this->stripAccents($item))) {
+	 			if (preg_match("/".$regex."/i", $this->stripAccents($item))) {
 	                $return[$key] = $item;
 	           	}
 	 		}
