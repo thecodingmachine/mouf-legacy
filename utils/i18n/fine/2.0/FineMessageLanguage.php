@@ -58,7 +58,7 @@ class FineMessageLanguage {
 	 */
 	public function save() {
 		ksort($this->msg);
-		
+
 		$this->deleteFile($this->language);
 		
 		if($this->language == "default")
@@ -122,6 +122,10 @@ class FineMessageLanguage {
 				$exception->setMessage("unable.to.write.file.text", $this->file);
 				throw $exception;
 			}
+		} else {
+			// Empties the file
+			$fp = fopen($file, "w");
+			fclose($fp);
 		}
 	}
 	

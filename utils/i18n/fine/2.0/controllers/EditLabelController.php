@@ -518,8 +518,8 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 * @return string
 	 */
 	private function stripRegexMetaChars($string) {
-		return str_replace(array('\\', '#', '!', '^', '$', '(', ')', '[', ']', '{', '}', '|', '?', '+', '*', '.'),
-							array('\\\\', '\#', '\!', '\^', '\$', '\(', '\)', '\[', '\]', '\{', '\}', '\|', '\?', '\+', '\*', '\.'), $string);
+		return str_replace(array('\\', '#', '!', '^', '$', '(', ')', '[', ']', '{', '}', '|', '?', '+', '*', '.', '/'),
+							array('\\\\', '\#', '\!', '\^', '\$', '\(', '\)', '\[', '\]', '\{', '\}', '\|', '\?', '\+', '\*', '\.', '\/'), $string);
 	}
 }
 
