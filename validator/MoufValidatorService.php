@@ -43,7 +43,7 @@ class MoufValidatorService implements HtmlElementInterface {
 
 			jQuery.ajaxSetup({
 			  "error":function() {   
-				jQuery('#validator'+validatorNb).html("<div class='error'>Unable to run validator</div>");
+				jQuery('#validator'+validatorNb).html("<div class='error'>Unable to run '"+name+"'</div>");
 			}});	
 			jQuery.getJSON("<?php echo ROOT_URL ?>"+url, null, function(json){
 				if (json.code == "ok") {
