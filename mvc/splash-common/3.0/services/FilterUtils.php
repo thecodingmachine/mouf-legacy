@@ -32,10 +32,25 @@ class FilterUtils {
 			$parentsArray[] = $parentClass;
 			$parentClass = $parentClass->getParentClass();
 		}
+		
+		$moufManager = MoufManager::getMoufManager();
 
 		// Start with the most parent class and goes to the target class:
 		for ($i=count($parentsArray)-1; $i>=0; $i--) {
-			foreach (self::$filtersList as $filterName) {
+			$class = $parentsArray[$i];
+			/* @var $class MoufReflectionClass */
+			$annotations = $class->getAllAnnotations();
+			
+			foreach ($annotations as $annotationName=>$annotationArray) {
+				foreach ($annotationArray as $annotation) {
+					if ($annotation instanceof AbstractFilter) {
+						$annotation->setMetaData($controller, $refMethod);
+						$filterArray[] = $annotation;
+					}
+				}
+			}
+			
+			/*foreach (self::$filtersList as $filterName) {
 				if ($parentsArray[$i]->hasAnnotation($filterName)) {
 					//$filterArray[$filter] = $parentsArray[$i]->getAnnotation($filter);
 					//$filterArray[$filter]->setMetaData($controller, $refMethod);
@@ -57,11 +72,11 @@ class FilterUtils {
 					}
 					
 				}
-			}
+			}*/
 		}
 
 		// Continue with the method (and eventually override class parameters)
-		foreach (self::$filtersList as $filterName) {
+		/*foreach (self::$filtersList as $filterName) {
 			if ($refMethod->hasAnnotation($filterName)) {
 				//$filterArray[$filter] = $refMethod->getAnnotation($filter);
 				//$filterArray[$filter]->setMetaData($controller, $refMethod);
@@ -80,6 +95,17 @@ class FilterUtils {
 					
 					$filter->setMetaData($controller, $refMethod);
 					$filterArray[] = $filter;
+				}
+			}
+		}*/
+		
+		$annotations = $refMethod->getAllAnnotations();
+			
+		foreach ($annotations as $annotationName=>$annotationArray) {
+			foreach ($annotationArray as $annotation) {
+				if ($annotation instanceof AbstractFilter) {
+					$annotation->setMetaData($controller, $refMethod);
+					$filterArray[] = $annotation;
 				}
 			}
 		}

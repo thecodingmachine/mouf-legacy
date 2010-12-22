@@ -1,19 +1,30 @@
 <?php
 
-FilterUtils::registerFilter("RequireHttps");
+//FilterUtils::registerFilter("RequireHttps");
 
 /**
  * Filter that requires the use of HTTPS (if enabled in the conf)
- * By passing @RequireHttps("yes"), an Exception is thrown if the action is called in HTTP.
+ * By passing @RequireHttps("force"), an Exception is thrown if the action is called in HTTP.
  * By passing @RequireHttps("no"), no test is performed.
  * By passing @RequireHttps("redirect"), the call is redirected to HTTPS. Does only work with GET requests.
+ * 
+ * @Component
  */
-class RequireHttpsAnnotation extends AbstractFilter
+class RequireHttpsAnnotation extends AbstractFilter implements MoufAnnotationInterface
 {
 	
-	public function __construct($value) {
-		if (strpos($value, "yes") !== false) {
-			$this->value = "yes";
+	/**
+	 * Set this property to false if your web server does not have HTTPS support.
+	 * When this property is set to false, all RequireHttps annotations are disabled. 
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $supportsHttps = true;
+	
+	public function setValue($value) {
+		if (strpos($value, "force") !== false) {
+			$this->value = "force";
 		} else if (strpos($value, "no") !== false) {
 			$this->value = "no";
 		} else if (strpos($value, "redirect") !== false) {
@@ -23,7 +34,7 @@ class RequireHttpsAnnotation extends AbstractFilter
 		if ($this->value == null) {
 			throw new ApplicationException("annotation.requirehttps.error", "annotation.requirehttps.novalue");
 		}
-		if ($this->value != "yes" && $this->value != "no" && $this->value != "redirect") {
+		if ($this->value != "force" && $this->value != "no" && $this->value != "redirect") {
 			throw new ApplicationException("annotation.requirehttps.error", "annotation.requirehttps.invalidvalue");
 		}
 	}
@@ -41,9 +52,9 @@ class RequireHttpsAnnotation extends AbstractFilter
 	 * Function to be called before the action.
 	 */
 	public function beforeAction() {
-		$use_https = MoufManager::getMoufManager()->getInstance('splash')->supportsHttps;
+		$use_https = $this->supportsHttps;
 		if ($use_https) {
-			if ($this->value == "yes") {
+			if ($this->value == "force") {
 				if (!isset($_SERVER['HTTPS'])) {
 					throw new ApplicationException("annotation.requirehttps.requiresssl.title", "annotation.requirehttps.requiresssl.text");
 				}
