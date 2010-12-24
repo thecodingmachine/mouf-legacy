@@ -18,10 +18,12 @@ class DomainLanguageDetection implements LanguageDetectionInterface {
 	 * @return string Language code store in array
 	 */
 	public function getLanguage() {
-		$domain = $_SERVER["SERVER_NAME"];
-		// Evol it's false, check subdomain www or without www
-		if(isset($this->domains[$domain])) {
-			return $this->domains[$domain];
+		if(isset($_SERVER["SERVER_NAME"])) {
+			$domain = $_SERVER["SERVER_NAME"];
+			// Evol it's false, check subdomain www or without www
+			if(isset($this->domains[$domain])) {
+				return $this->domains[$domain];
+			}
 		}
 		return "default";
 	}
