@@ -332,7 +332,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	protected static function getAllMessagesFromService($selfEdit, $msgInstanceName = "translationService", $language = null) {
 
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/i18n/fine/2.0/direct/get_all_messages.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&language=".$language;
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.0/direct/get_all_messages.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&language=".$language;
 		
 		$response = self::performRequest($url);
 
@@ -356,7 +356,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	protected static function getAllTranslationsForMessageFromService($selfEdit, $msgInstanceName, $key) {
 
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/i18n/fine/2.0/direct/get_message_translations.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&key=".urlencode($key);
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.0/direct/get_message_translations.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&key=".urlencode($key);
 		
 		$response = self::performRequest($url);
 
@@ -382,7 +382,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	protected static function setTranslationsForMessageFromService($selfEdit, $msgInstanceName, $language, $translations) {
 
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/i18n/fine/2.0/direct/set_messages_translation.php";
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.0/direct/set_messages_translation.php";
 		
 		$post = array("msginstancename" => $msgInstanceName,
 						"selfedit" => (($selfEdit)?"true":"false"),
@@ -413,7 +413,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	protected static function setTranslationForMessageFromService($selfEdit, $msgInstanceName, $key, $label, $language, $delete) {
 
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/i18n/fine/2.0/direct/set_message_translation.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&key=".urlencode($key)."&label=".urlencode($label)."&language=".urlencode($language)."&delete=".urlencode($delete);
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.0/direct/set_message_translation.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&key=".urlencode($key)."&label=".urlencode($label)."&language=".urlencode($language)."&delete=".urlencode($delete);
 		 
 		$response = self::performRequest($url);
 
@@ -437,7 +437,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	protected static function addTranslationLanguageFromService($selfEdit, $msgInstanceName, $language) {
 
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/i18n/fine/2.0/direct/create_language_file.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&language=".urlencode($language);
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.0/direct/create_language_file.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&language=".urlencode($language);
 		 
 		$response = self::performRequest($url);
 

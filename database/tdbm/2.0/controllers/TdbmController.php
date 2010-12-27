@@ -76,7 +76,7 @@ class TdbmController extends AbstractMoufInstanceController {
 		
 		
 		
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/database/tdbm/2.0/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory);
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/database/tdbm/2.0/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory);
 		$response = self::performRequest($url);
 		
 		/*if (trim($response) != "") {

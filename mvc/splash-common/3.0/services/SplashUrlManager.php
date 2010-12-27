@@ -18,7 +18,7 @@ class SplashUrlManager {
 	}
 	
 	private static function getUrlsByProxy($selfEdit) {
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/mvc/splash-common/3.0/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/mvc/splash-common/3.0/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
 
 		$response = self::performRequest($url);
 
