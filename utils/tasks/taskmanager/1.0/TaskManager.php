@@ -49,6 +49,7 @@ class TaskManager {
 	 * @param TaskProcessorInterface $taskProcessor
 	 * @param mixed $params
 	 * @param timestamp $date
+	 * @return Task
 	 */
 	public function createTask(TaskProcessorInterface $taskProcessor, $params, $date = null) {
 		$instanceName = MoufManager::getMoufManager()->findInstanceName($taskProcessor);
