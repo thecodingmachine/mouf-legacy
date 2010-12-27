@@ -36,11 +36,8 @@ class MoufReflectionProxy {
 		} else {
 			$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
 		}*/
-		if (isset($_SERVER['HTTPS'])) {
-			$url = "http://127.0.0.1".ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
-		} else {
-			$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
-		}
+		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		
 		$response = self::performRequest($url);
 
 		$obj = unserialize($response);
