@@ -31,8 +31,16 @@ class MoufReflectionProxy {
 	 * @return array<string>
 	 */
 	public static function getInstances($baseClass, $selfEdit) {
-		$url = $_SERVER['SERVER_PROTOCOL']."://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
-	
+		/*if ($_SERVER['SERVER_PROTOCOL'] == 'https') {
+			$url = "http://127.0.0.1".ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		} else {
+			$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		}*/
+		if (isset($_SERVER['HTTPS'])) {
+			$url = "http://127.0.0.1".ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		} else {
+			$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		}
 		$response = self::performRequest($url);
 
 		$obj = unserialize($response);
