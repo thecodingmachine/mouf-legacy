@@ -7,7 +7,7 @@ require_once 'utils/check_rights.php';
 
 // This validator calls the "analyze_includes" file and returns the result adapted to the display of a validator (JSON format).
 
-$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/analyze_includes.php";
+$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/analyze_includes.php";
 
 if (isset($_REQUEST['selfedit'])) {
 	$url .= "?selfedit=".$_REQUEST['selfedit'];

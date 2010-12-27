@@ -17,7 +17,7 @@ class MoufReflectionProxy {
 	 * @return MoufXmlReflectionClass
 	 */
 	public static function getClass($className, $selfEdit) {
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_class.php?class=".$className."&selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_class.php?class=".$className."&selfedit=".(($selfEdit)?"true":"false");
 
 		$response = self::performRequest($url);
 		
@@ -34,9 +34,9 @@ class MoufReflectionProxy {
 		/*if ($_SERVER['SERVER_PROTOCOL'] == 'https') {
 			$url = "http://127.0.0.1".ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
 		} else {
-			$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+			$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
 		}*/
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
 		
 		$response = self::performRequest($url);
 
@@ -50,7 +50,7 @@ class MoufReflectionProxy {
 	}
 	
 	public static function getComponentsList($selfEdit) {
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_components_list.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_components_list.php?selfedit=".(($selfEdit)?"true":"false");
 
 		$response = self::performRequest($url);
 
@@ -65,7 +65,7 @@ class MoufReflectionProxy {
 	}
 	
 	public static function getEnhancedComponentsList($selfEdit) {
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_enhanced_components_list.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_enhanced_components_list.php?selfedit=".(($selfEdit)?"true":"false");
 
 		$response = self::performRequest($url);
 
@@ -87,7 +87,7 @@ class MoufReflectionProxy {
 	 */
 	public static function getConfigConstants($selfEdit) {
 
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/get_defined_constants.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_defined_constants.php?selfedit=".(($selfEdit)?"true":"false");
 		
 		$response = self::performRequest($url);
 
@@ -111,7 +111,7 @@ class MoufReflectionProxy {
 	 * @throws Exception
 	 */
 	public static function analyzeIncludes($selfEdit) {
-		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."mouf/direct/analyze_includes.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/analyze_includes.php?selfedit=".(($selfEdit)?"true":"false");
 		
 		$response = self::performRequest($url);
 
@@ -191,11 +191,11 @@ class MoufReflectionProxy {
 		return $response;
 	}
 	
-	public static function mouf_get_local_url_to_project(){
+	public static function getLocalUrlToProject(){
 		if (isset($_SERVER['HTTPS'])) {
 			$url = "http://127.0.0.1".ROOT_URL;
 		} else {
-			$url = MoufReflectionProxy::mouf_get_local_url_to_project();
+			$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL;
 		}
 		return $url;
 	}
