@@ -76,7 +76,7 @@ class TdbmController extends AbstractMoufInstanceController {
 		
 		
 		
-		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/database/tdbm/2.0/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory);
+		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/database/tdbm/2.0/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory);
 		$response = self::performRequest($url);
 		
 		/*if (trim($response) != "") {

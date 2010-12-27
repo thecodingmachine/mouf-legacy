@@ -67,7 +67,7 @@ class TaskManagerController extends Controller {
 	 */
 	protected static function getAwaitingTasksFromService($selfEdit) {
 
-		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/utils/tasks/taskmanager/1.0/direct/get_awaiting_tasks.php?selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/tasks/taskmanager/1.0/direct/get_awaiting_tasks.php?selfedit=".(($selfEdit)?"true":"false");
 		 
 		$response = self::performRequest($url);
 
@@ -90,7 +90,7 @@ class TaskManagerController extends Controller {
 	 */
 	protected static function deleteTaskFromService($id, $taskmanager, $selfEdit) {
 		$id = (int) $id;
-		$url = "http://127.0.0.1:".$_SERVER['SERVER_PORT'].ROOT_URL."plugins/utils/tasks/taskmanager/1.0/direct/delete_task.php?id=$id&taskmanager=".urlencode($taskmanager)."&selfedit=".(($selfEdit)?"true":"false");
+		$url = MoufReflectionProxy::mouf_get_local_url_to_project()."plugins/utils/tasks/taskmanager/1.0/direct/delete_task.php?id=$id&taskmanager=".urlencode($taskmanager)."&selfedit=".(($selfEdit)?"true":"false");
 		 
 		$response = self::performRequest($url);
 
