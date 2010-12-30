@@ -22,4 +22,8 @@
 		<require>DataSourceDBColumn.php</require>
 		<require>SqlDataSource.php</require>
 	</requires>
+	<adminRequires>
+		<require>SqlDatasourceAdmin.php</require>
+		<require>controllers/MoufDatasourceInstanceController.php</require>
+	</adminRequires>	
 </package>

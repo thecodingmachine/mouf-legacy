@@ -29,6 +29,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * datasource comes from a SQL request.
  *
  * @Component
+ * @ExtendedAction {"name":"Generate column beans", "url":"mouf/datasourceadmin/", "default":false}
  */
 class SqlDataSource extends DynamicDataSource {
 	
@@ -59,6 +60,18 @@ class SqlDataSource extends DynamicDataSource {
 	public function setSql($sql) {
 		$this->sql = $sql;
 		$this->rows = null;
+	}
+	
+	/**
+	 * Builds and returns the request that will be loaded.
+	 * Parameters are replaced, order statement is added, etc...
+	 * 
+	 * @return string
+	 */
+	public function getRequest() {
+		$sql = $this->fillParameters($this->sql);
+		$sql .= $this->getOrderStatement();
+		return $sql;
 	}
 	
 	/**
