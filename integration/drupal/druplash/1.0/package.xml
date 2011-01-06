@@ -17,7 +17,7 @@
 		<require>DrupalDynamicBlockInterface.php</require>
 		<require>DrupalDynamicBlock.php</require>
 	</requires>
-	<adminRequires>
+	<!--<adminRequires>
 		<require>drupalBootstrap.php</require>
-	</adminRequires>
+	</adminRequires>-->
 </package>
