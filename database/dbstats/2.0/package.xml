@@ -17,7 +17,7 @@
 		<require>DB_Stats_Query.php</require>
 	</requires>
 	<adminRequires>
-		<require>Db_Stats_Admin.php</require>
+		<require>DB_Stats_Admin.php</require>
 		<require>controllers/DbStatsController.php</require>
 		<require>DB_Stats_ValidatorDescriptor.php</require>
 	</adminRequires>
