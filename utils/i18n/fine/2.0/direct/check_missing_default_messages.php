@@ -18,6 +18,8 @@ require_once '../../../../../../mouf/direct/utils/check_rights.php';
 $moufManager = MoufManager::getMoufManager();
 $instances = $moufManager->findInstances("FinePHPArrayTranslationService");
 
+$missingDefaultKeys = array();
+
 foreach ($instances as $instanceName) {
 	$translationService = $moufManager->getInstance($instanceName);
 	/* @var $translationService FinePHPArrayTranslationService */
@@ -28,8 +30,6 @@ foreach ($instances as $instanceName) {
 	// array(message_key => array(language => message))
 	
 	$keys = $translationService->getAllKeys();
-	
-	$missingDefaultKeys = array();
 	
 	foreach ($keys as $key) {
 		$msgs = $translationService->getMessageForAllLanguages($key);

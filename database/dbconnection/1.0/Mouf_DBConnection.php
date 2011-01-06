@@ -384,6 +384,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * This function is used in case an exception is thrown to try to help the user find which table he wants.
 	 *
 	 * @param string $table_name name of the table to find
+	 * @return mixed
 	 */
 	function checkTableExist($table_name) {
 		if ($this->isTableExist($table_name)) {
