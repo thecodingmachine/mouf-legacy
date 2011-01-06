@@ -95,7 +95,7 @@ class DB_Stats_Query {
 		}
 		
 		$sql .= implode(" AND ", $filterArr);
-		echo $sql."\n";
+		//echo $sql."\n";
 		return $this->dbStats->dbConnection->getAll($sql);
 	}
 }

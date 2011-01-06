@@ -27,6 +27,15 @@ abstract class DB_StatFilter {
 	}
 	
 	/**
+	 * Default constructor.
+	 * 
+	 * @param string $columnName The column to filter upon
+	 */
+	public function __construct($columnName=null) {
+		$this->columnName = $columnName;
+	}
+	
+	/**
 	 * Returns the SQL filter used by the query.
 	 *
 	 * @param Mouf_DBConnection $dbConnection

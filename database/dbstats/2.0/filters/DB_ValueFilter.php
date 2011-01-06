@@ -34,5 +34,16 @@ class DB_ValueFilter extends DB_StatFilter {
 	public function getSqlFilter(Mouf_DBConnection $dbConnection) {
 		return $this->columnName." = ".$dbConnection->quoteSmart($this->value);
 	}
+	
+	/**
+	 * Default constructor.
+	 * 
+	 * @param string $columnName The column to filter upon
+	 * @param string $value The value to filter
+	 */
+	public function __construct($columnName=null, $value=null) {
+		parent::__construct($columnName);
+		$this->value = $value;
+	}
 }
 ?>
