@@ -49,6 +49,11 @@ chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FI
 		<?php 
 		}
 		?>
+		<p>If after running the commands above and refreshing this page, you are still seeing this page, you might want to consider one of the following troubleshooting advices:</p>
+		<ul>
+			<li>If you are running SELinux: be sure that the directories are parts of the SELinux Apache context. <a href="http://wiki.centos.org/HowTos/SELinux">Get more info about SELinux</a></li>
+			<li>If you are running Plesk and virtual domains: in Plesk, in your domain settings, you might want to switch "PHP Support" from "Apache module" to "FastCGI application".</li>
+		</ul>
 	</body>
 </html>
 <?php
