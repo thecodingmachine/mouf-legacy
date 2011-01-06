@@ -26,8 +26,12 @@ if (!is_writable(dirname(__FILE__)) || !is_writable(dirname(__FILE__)."/..")) {
 		<p>In order to run Mouf, you will first need to change the permissions on the web directory so that the Apache user can write into it.
 		Especially, you should check that those 2 directories can be written into:</p>
 		<ul>
-			<li><?php echo realpath(dirname(__FILE__)."/..") ?></li>
-			<li><?php echo realpath(dirname(__FILE__)) ?></li>
+			<?php if(!is_writable(dirname(__FILE__)."/..")) {?>
+				<li><?php echo realpath(dirname(__FILE__)."/..") ?></li>
+			<?php }
+			if(!is_writable(dirname(__FILE__))) {?>
+				<li><?php echo realpath(dirname(__FILE__)) ?></li>
+			<?php }?>
 		</ul>
 		<?php if (function_exists("posix_getpwuid")) {
 			$processUser = posix_getpwuid(posix_geteuid());
@@ -35,8 +39,12 @@ if (!is_writable(dirname(__FILE__)) || !is_writable(dirname(__FILE__)."/..")) {
 		?>
 			<p>You can try these commands:</p>
 			<pre>
+			<?php if(!is_writable(dirname(__FILE__)."/..")) {?>
 chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)."/..") ?><br/>
-chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__)) ?>
+			<?php }
+			if(!is_writable(dirname(__FILE__))) {?>
+chown <?php echo $processUserName.":".$processUserName." ".realpath(dirname(__FILE__));
+			}?>
 </pre>
 		<?php 
 		}
