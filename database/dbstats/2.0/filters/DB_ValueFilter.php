@@ -1,0 +1,38 @@
+<?php
+
+require_once 'DB_StatFilter.php';
+
+/**
+ * The filter that filters a column on a specific value.
+ *
+ * @Component
+ */
+class DB_ValueFilter extends DB_StatFilter {
+	
+	/**
+	 * The value to filter on.
+	 *
+	 * @var mixed
+	 */
+	public $value;
+	
+	/**
+	 * Sets the value to filter on.
+	 *
+	 * @param mixed $value
+	 */
+	public function setValue($value) {
+		$this->value = $value;
+	}
+	
+	/**
+	 * Returns the SQL filter used by the query (for instance: year='2006'). 
+	 *
+	 * @param Mouf_DBConnection $dbConnection
+	 * @return string
+	 */
+	public function getSqlFilter(Mouf_DBConnection $dbConnection) {
+		return $this->columnName." = ".$dbConnection->quoteSmart($this->value);
+	}
+}
+?>
