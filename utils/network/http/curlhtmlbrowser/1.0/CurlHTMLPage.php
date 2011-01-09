@@ -36,9 +36,17 @@ class CurlHTMLPage {
 	 */
 	private $domXPath;
 	
-	public function __construct($text, $info) {
+	/**
+	 * The URL that was accessed to generate this page.
+	 * 
+	 * @var string
+	 */
+	private $url;
+	
+	public function __construct($text, $info, $url) {
 		$this->text = $text;
 		$this->info = $info;
+		$this->url = $url;
 	}
 	
 	/**
@@ -57,7 +65,8 @@ class CurlHTMLPage {
 	public function getHTMLDocObject() {
 		if ($this->htmlDoc == null) {
 			$this->htmlDoc = new DOMDocument();
-			$this->htmlDoc->loadHTML($this->text);
+			// TODO: sauvegarder les warning et les afficher quelque part (dans les logs?)
+			@$this->htmlDoc->loadHTML($this->text);
 		}
 		return $this->htmlDoc;
 	}
@@ -82,4 +91,12 @@ class CurlHTMLPage {
 		return $this->getHTMLDOMXPath()->query($query);
 	}
 	
+	/**
+	 * Returns the page's URL.
+	 * 
+	 * @return string
+	 */
+	public function getPageUrl() {
+		return $this->url;
+	}
 }

@@ -11,5 +11,8 @@
 	<requires>
 		<require>CurlHTMLBrowser.php</require>
 		<require>CurlHTMLPage.php</require>
+		<require>CurlHTMLBrowserException.php</require>
+		<require>CurlHTMLBrowser404Exception.php</require>
+		<require>CurlHTMLBrowser500Exception.php</require>
 	</requires>
 </package>
