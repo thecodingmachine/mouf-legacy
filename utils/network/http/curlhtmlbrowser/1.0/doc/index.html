@@ -25,6 +25,15 @@ echo $page->getHTML();
 $value = $page->xpathQuery("//input[@name='login']")->item(0)->getAttribute("value");
 </pre>
 
+You can of course pass parameters to your query, or perform POSTs instead of GETs call:
+
+<pre>// Perform a POST query
+$page = $browser->query("http://www.exemple.com/login", "post", 
+			array("login"   =>"mylogin",
+				  "password"=>"mypassword"
+			));
+</p>
+
 <h2>Why not using cURL directly?</h2>
 
 <p>The CurlHTMLBrowser class is based on cURL, but it will ease you from several common pains you have to handle manually.
