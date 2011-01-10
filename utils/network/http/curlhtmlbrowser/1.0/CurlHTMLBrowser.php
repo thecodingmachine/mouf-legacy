@@ -178,7 +178,7 @@ class CurlHTMLBrowser {
 	// @param	mixed			Same as the first argument
 	// @param	int				A bitmask of binary or'ed HTTP_URL constants (Optional)CURL_HTTP_URL_REPLACE is the default
 	// @param	array			If set, it will be filled with the parts of the composed url like parse_url() would return 
-	function http_build_url($url, $parts=array(), $flags=CURL_HTTP_URL_REPLACE, &$new_url=false)
+	private function http_build_url($url, $parts=array(), $flags=CURL_HTTP_URL_REPLACE, &$new_url=false)
 	{
 		$keys = array('user','pass','port','path','query','fragment');
 		
