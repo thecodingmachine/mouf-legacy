@@ -54,6 +54,36 @@ class MoufGroupDescriptor {
 	}
 	
 	/**
+	 * Returns true if the group contains the package container passed in parameter.
+	 * False otherwise.
+	 * 
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasPackageContainer($name) {
+		if (!isset($this->packages[$name])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Returns true if the group contains the subgroup passed in parameter.
+	 * False otherwise.
+	 * 
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasSubgroup($name) {
+		if (!isset($this->subGroups[$name])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * Returns a PHP array that describes the group.
 	 * The array does not contain all available information, only enough information to display the list of packages in the Mouf interface.
 	 * 
@@ -78,6 +108,32 @@ class MoufGroupDescriptor {
 			}
 		}
 		return $array;		
+	}
+	
+	/**
+	 * Returns a MoufGroupDescriptor from a PHP array describing the group.
+	 * Note: since the PHP array does not contain all the available information, the object will be incomplete.
+	 * However, it has enough information to display the list of packages available for download.
+	 * 
+	 * The structure of the array is:
+	 * 	array("subGroups" => array('subGroupName' => subGroupArray, 'packages' => array('packageName', packageArray)
+	 * 
+	 * @param array $array
+	 * @return MoufGroupDescriptor
+	 */
+	public static function fromJsonArray(array $array, MoufRepository $repository, $parentGroup = "") {
+		$moufGroupDescriptor = new MoufGroupDescriptor();
+		if (isset($array['subgroups'])) {
+			foreach ($array['subgroups'] as $name => $subgrouparray) {
+				$moufGroupDescriptor->subGroups[$name] = self::fromJsonArray($subgrouparray, $repository, $parentGroup."/".$name);
+			}
+		}
+		if (isset($array['packages'])) {
+			foreach ($array['packages'] as $name => $package) {
+				$moufGroupDescriptor->packages[$name] = MoufPackageVersionsContainer::fromJsonArray($package, $parentGroup, $name, $repository);
+			}
+		}
+		return $moufGroupDescriptor;
 	}
 }
 

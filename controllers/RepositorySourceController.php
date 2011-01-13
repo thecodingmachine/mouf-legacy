@@ -113,7 +113,7 @@ class RepositorySourceController extends Controller {
 	 * @param unknown_type $id
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only)
 	 */
-	public function save($name, $url, $id=null, $selfedit = "false") {
+	public function save($name, $url, $delete = null, $save = null, $id=null, $selfedit = "false") {
 		$this->selfedit = $selfedit;
 		$this->repositoryId = $id;
 		
@@ -125,10 +125,14 @@ class RepositorySourceController extends Controller {
 		
 		$this->repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
 		
-		if ($id !== null) {
-			$this->repositoryUrls[$id] = array("name"=>$name, "url"=>$url);
-		} else {
-			$this->repositoryUrls[] = array("name"=>$name, "url"=>$url);
+		if (!empty($delete)) {
+			unset($this->repositoryUrls[$id]);
+		} else {		
+			if ($id !== null) {
+				$this->repositoryUrls[$id] = array("name"=>$name, "url"=>$url);
+			} else {
+				$this->repositoryUrls[] = array("name"=>$name, "url"=>$url);
+			}
 		}
 		
 		$this->moufManager->setVariable("repositoryUrls", $this->repositoryUrls);

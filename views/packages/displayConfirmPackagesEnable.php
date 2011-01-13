@@ -14,6 +14,9 @@
 		if ($this->package->getDocUrl()) {
 			echo "Documentation URL: <a href='".htmlentities($this->package->getDocUrl())."'>".$this->package->getDocUrl()."</a>";
 		}
+		if ($this->package->getCurrentLocation() != null) {
+			echo "<br/>This package will be downloaded from repository '".plainstring_to_htmlprotected($this->package->getCurrentLocation()->getName())."'";
+		}
 		echo "</div>";
 	}	
 	echo "</div></div>";
@@ -39,6 +42,9 @@ foreach ($this->moufDependencies as $package) {
 		}
 		if ($package->getDocUrl()) {
 			echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
+		}
+		if ($package->getCurrentLocation() != null) {
+			echo "<br/>This package will be downloaded from repository '".plainstring_to_htmlprotected($package->getCurrentLocation()->getName())."'";
 		}
 		echo "</div>";
 	}

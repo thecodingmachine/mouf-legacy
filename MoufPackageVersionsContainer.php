@@ -54,6 +54,26 @@ class MoufPackageVersionsContainer {
 		return $array;		
 	}
 	
+	/**
+	 * Returns a MoufPackageVersionsContainer from a PHP array describing the versions container.
+	 * Note: since the PHP array does not contain all the available information, the object will be incomplete.
+	 * However, it has enough information to display the list of packages available for download.
+	 * 
+	 * The structure of the array is:
+	 * 	array(version => package)
+	 * 
+	 * @param array $packages
+	 * @return MoufPackageVersionsContainer
+	 */
+	public static function fromJsonArray(array $packages, $groupName, $packageName, MoufRepository $repository) {
+		$moufVersionsContainer = new MoufPackageVersionsContainer();
+		if (!empty($packages)) {
+			foreach ($packages as $version => $package) {
+				$moufVersionsContainer->packages[$version] = MoufPackage::fromJsonArray($package, $groupName, $packageName, $version, $repository);
+			}
+		}
+		return $moufVersionsContainer;
+	}
 }
 
 ?>

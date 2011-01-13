@@ -34,6 +34,8 @@ $moufManager->addPackageByXmlFile('security/userservice/1.0/package.xml');
 $moufManager->addPackageByXmlFile('security/userservice-splash/1.0/package.xml');
 $moufManager->addPackageByXmlFile('security/userfiledao/1.0/package.xml');
 $moufManager->addPackageByXmlFile('security/simplelogincontroller/1.0/package.xml');
+$moufManager->addPackageByXmlFile('utils/cache/cache-interface/1.0/package.xml');
+$moufManager->addPackageByXmlFile('utils/cache/file-cache/1.1/package.xml');
 
 require dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
@@ -1062,6 +1064,61 @@ $moufManager->addComponentInstances(array (
       'template' => 'moufTemplate',
     ),
   ),
+  'packagetransfer' => 
+  array (
+    'class' => 'PackageDownloadController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'template' => 'moufTemplate',
+      'packageDownloadService' => 'packageDownloadService',
+    ),
+  ),
+  'repositoryCache' => 
+  array (
+    'class' => 'FileCache',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'log' => 'errorLogger',
+    ),
+    'fieldProperties' => 
+    array (
+      'defaultTimeToLive' => 
+      array (
+        'value' => '3600',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'cacheDirectory' => 
+      array (
+        'value' => 'moufRepositoriesCache/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'relativeToSystemTempDirectory' => 
+      array (
+        'value' => true,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'packageDownloadService' => 
+  array (
+    'class' => 'MoufPackageDownloadService',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'cacheService' => 'repositoryCache',
+    ),
+  ),
   'phpInfoMenuItem' => 
   array (
     'class' => 'SplashMenuItem',
@@ -1157,6 +1214,7 @@ $moufManager->addComponentInstances(array (
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
 $moufManager->registerComponent('validator/MoufBasicValidationProvider.php');
+$moufManager->registerComponent('controllers/DisplayPackageListInterface.php');
 $moufManager->registerComponent('MoufSearchable.php');
 $moufManager->registerComponent('MoufSearchService.php');
 $moufManager->registerComponent('controllers/MoufController.php');
@@ -1170,6 +1228,9 @@ $moufManager->registerComponent('controllers/MoufValidatorController.php');
 $moufManager->registerComponent('controllers/MoufLoginController.php');
 $moufManager->registerComponent('controllers/PackageServiceController.php');
 $moufManager->registerComponent('controllers/RepositorySourceController.php');
+$moufManager->registerComponent('controllers/PackageDownloadController.php');
+$moufManager->registerComponent('MoufPackageDownloadService.php');
+$moufManager->registerComponent('MoufRepository.php');
 $moufManager->registerComponent('controllers/PhpInfoController.php');
 $moufManager->registerComponent('controllers/SearchController.php');
 $moufManager->registerComponent('load.php');
@@ -1481,6 +1542,27 @@ class MoufAdmin {
 	 */
 	 public static function getRepositories() {
 	 	return MoufManager::getMoufManager()->getInstance('repositories');
+	 }
+
+	/**
+	 * @return PackageDownloadController
+	 */
+	 public static function getPackagetransfer() {
+	 	return MoufManager::getMoufManager()->getInstance('packagetransfer');
+	 }
+
+	/**
+	 * @return FileCache
+	 */
+	 public static function getRepositoryCache() {
+	 	return MoufManager::getMoufManager()->getInstance('repositoryCache');
+	 }
+
+	/**
+	 * @return MoufPackageDownloadService
+	 */
+	 public static function getPackageDownloadService() {
+	 	return MoufManager::getMoufManager()->getInstance('packageDownloadService');
 	 }
 
 	/**

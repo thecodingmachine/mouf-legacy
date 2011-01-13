@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * This service is in charge of getting the list of packages from a repository and uploading/downloading content to/from the repository.
+ * 
+ * @Component
+ */
+class MoufPackageDownloadService {
+	
+	/**
+	 * The Cache service to use to put the repositories in cache.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var CacheInterface
+	 */
+	public $cacheService;
+	
+	private $moufManager;
+	
+	/**
+	 * Sets the MoufManager for this instance.
+	 * 
+	 * @param MoufManager $moufManager
+	 */
+	public function setMoufManager(MoufManager $moufManager) {
+		$this->moufManager = $moufManager;
+	}
+	
+	/**
+	 * Retrieves the package list from the repository, and puts it in cache, so we can get it again quicker.
+	 * 
+	 * @param MoufRepository $repository
+	 * @param bool $bypassCache Whether we should bypass the cache and download the repository anyway... or not.
+	 * @return MoufGroupDescriptor
+	 */
+	public function getPackageListFromRepository(MoufRepository $repository, $bypassCache=false) {
+		if (!$bypassCache) {
+			$groupDescriptor = $this->cacheService->get("mouf_repositories.".$repository->getUrl());
+		} else {
+			$groupDescriptor = null;
+		}
+		
+		if ($groupDescriptor == null) {
+			$groupDescriptor = $this->downloadPackageListFromRepository($repository);
+			$this->cacheService->set("mouf_repositories.".$repository->getUrl(), $groupDescriptor);
+		}
+		return $groupDescriptor;
+	}
+	
+	/**
+	 * Retrieves the package list from the repository.
+	 * 
+	 * @param MoufRepository $repository
+	 * @return MoufGroupDescriptor
+	 */
+	private function downloadPackageListFromRepository(MoufRepository $repository) {
+		$url = $repository->getUrl();
+		
+		// preparation de l'envoi
+		$ch = curl_init();
+		if (strrpos($url, "/") !== strlen($url)-1) {
+			$url .= "/";
+		}
+		$url .= "packagesService";
+		curl_setopt( $ch, CURLOPT_URL, $url);
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
+		curl_setopt( $ch, CURLOPT_POST, FALSE );
+		
+		$response = curl_exec( $ch );
+		
+		if( curl_error($ch) ) { 
+			throw new Exception("An error occured: ".curl_error($ch));
+		}
+		curl_close( $ch );
+		
+		// Parse the JSON
+		$phpArray = json_decode($response, true);
+		
+		if ($phpArray == null) {
+			throw new MoufException("Error while decoding response from server. Message received: ".$response);
+		}
+		
+		return MoufGroupDescriptor::fromJsonArray($phpArray, $repository);
+		
+	}
+
+	private $repositories;
+	
+	/**
+	 * Returns the list of repositories.
+	 * 
+	 * @return array<MoufRepository>
+	 */
+	public function getRepositories() {
+		if ($this->repositories == null) {
+			$repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
+			
+			$this->repositories = array();
+			foreach ($repositoryUrls as $id=>$repositoryUrlArray) {
+				$this->repositories[] = new MoufRepository($id, $repositoryUrlArray['name'], $repositoryUrlArray['url'], $this);
+			}
+		}
+		return $this->repositories;
+	}
+	
+	/**
+	 * Returns the repository at the requested URL.
+	 * 
+	 * @return MoufRepository
+	 */
+	public function getRepository($url) {
+
+		if (!$this->moufManager->issetVariable("repositoryUrls")) {
+			return;	
+		}
+
+		// Let's perform a basic check to be sure we are allowed to download.
+		$repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
+		$found = false;
+		foreach ($repositoryUrls as $id=>$arr) {
+			if ($arr['url'] == $url) {
+				$repository = new MoufRepository($id, $arr['name'], $arr['url'], $this);
+				return $repository;
+			}
+		}
+		
+		throw new MoufException("The URL '$url' is not part of the repository list.");
+	}
+}
+
+?>

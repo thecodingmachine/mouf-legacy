@@ -6,7 +6,7 @@ require_once dirname(__FILE__)."/../MoufPackageManager.php";
  *
  * @Component
  */
-class PackageController extends Controller {
+class PackageController extends Controller implements DisplayPackageListInterface {
 
 	public $selfedit;
 	
@@ -287,5 +287,43 @@ class PackageController extends Controller {
 			return false;
 		}
 	}
+	
+	/**
+	 * Display the rows of buttons below the package list.
+	 * 
+	 * @param MoufPackage $package The package to display
+	 * @param string $enabledVersion The version of that package that is currently enabled, if any.
+	 */
+	function displayPackageActions(MoufPackage $package, $enabledVersion) {
+		$packageXmlPath = $package->getDescriptor()->getPackageXmlPath();
+		$isPackageEnabled = $this->moufManager->isPackageEnabled($packageXmlPath);
+		
+		
+		if ($enabledVersion !== false && $enabledVersion != $package->getDescriptor()->getVersion()) {
+			echo "<form action='upgradePackage' method='POST'>";
+			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			if (MoufPackageDescriptor::compareVersionNumber($package->getDescriptor()->getVersion(), $enabledVersion) > 0) {
+				echo "<button>Upgrade to this package</button>";
+			} else {
+				echo "<button>Downgrade to this package</button>";
+			}
+			echo "</form>";
+		} else if (!$isPackageEnabled) {
+			echo "<form action='enablePackage' method='POST'>";
+			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			echo "<button>Enable</button>";
+			echo "</form>";
+		} else {
+			echo "<form action='disablePackage' method='POST'>";
+			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			echo "<button>Disable</button>";
+			echo "</form>";
+		}
+		
+	}
+	
 }
 ?>

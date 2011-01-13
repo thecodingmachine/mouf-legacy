@@ -17,5 +17,8 @@
 <input type="text" name="url" value="<?php if ($this->repositoryId !== null) echo plainstring_to_htmlprotected($this->repositoryUrls[$this->repositoryId]["url"]) ?>" />
 </div>
 
-<button>Save</button>
+<?php if ($this->repositoryId !== null) { ?>
+<button type="submit" name="delete" value="on">Delete</button>
+<?php } ?>
+<button type="submit" name="save" value="on">Save</button>
 </form>

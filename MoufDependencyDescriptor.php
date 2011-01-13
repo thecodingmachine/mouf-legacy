@@ -38,6 +38,25 @@ class MoufDependencyDescriptor {
 	private $group;
 	
 	/**
+	 * The minimum revision number of the package.
+	 * 
+	 * @var int
+	 */
+	private $revision;
+	
+	/**
+	 * The URL of the repository this package can be found in.
+	 * Please note this does not mean the package will be downloaded from that repository.
+	 * It means that if the package is not found in the available repositories, the user does not have that repository, he will be proposed to
+	 * add it to its repositories before continuing.
+	 * On the other hand, if the package is available straight away from existing repositories,
+	 * this value will be ignored.
+	 * 
+	 * @var string
+	 */
+	private $repository;
+	
+	/**
 	 * Initializes the object.
 	 * Note: the version can be a string in this form:
 	 * 	2.0 		=> Version must be equal to 2.0
@@ -57,10 +76,12 @@ class MoufDependencyDescriptor {
 	 * @param string $name
 	 * @param string $version
 	 */
-	public function __construct($group, $name, $version) {
+	public function __construct($group, $name, $version, $revision = 0, $repository = null) {
 		$this->version = $version;
 		$this->name = $name;
 		$this->group = $group;
+		$this->revision = $revision;
+		$this->repository = $repository;
 		
 		$tokens = array();
 		
@@ -131,6 +152,29 @@ class MoufDependencyDescriptor {
 	}
 	
 	/**
+	 * Returns the minimum revision number of the package
+	 *
+	 * @return int
+	 */
+	public function getMinimumRevision() {
+		return $this->revision;
+	}
+	
+	/**
+	 * Returns the URL of the repository this package can be found in.
+	 * Please note this does not mean the package will be downloaded from that repository.
+	 * It means that if the package is not found in the available repositories, the user does not have that repository, he will be proposed to
+	 * add it to its repositories before continuing.
+	 * On the other hand, if the package is available straight away from existing repositories,
+	 * this value will be ignored.
+	 * 
+	 * @return string
+	 */
+	public function getRepository() {
+		return $this->repository;
+	}
+	
+	/**
 	 * Checks if the version passed in parameter is compatible with the dependency requirements.
 	 * 
 	 * @param $v2 The version to match to the dependency.
@@ -174,28 +218,43 @@ class MoufDependencyDescriptor {
 	 * 
 	 * @param MoufPackageDescriptor $moufPackageDescriptor
 	 */
-	public function isCompatible(MoufPackageDescriptor $moufPackageDescriptor) {
+	/*public function isCompatible(MoufPackageDescriptor $moufPackageDescriptor) {
 		if ($moufPackageDescriptor->getGroup() == $this->group && $moufPackageDescriptor->getName() == $this->name && $this->isCompatibleWithVersion($moufPackageDescriptor->getVersion())) {
 			return true;
 		} else {
 			return false;
 		}
-	}
+	}*/
 	
 	/**
 	 * Returns a PHP array that describes the package.
 	 * 
 	 * The structure of the array is:
-	 * 	array("version" => string, "name"=> string, "group"=>string)
+	 * 	array("version" => string, "name"=> string, "group"=>string, "revision"=>int, "repository"=>string)
 	 * 
 	 * return array<string, string>
 	 */
 	public function getJsonArray() {
 		$array = array("version"=>$this->version,
 			"name"=>$this->name,
-			"group"=>$this->group);
+			"group"=>$this->group,
+			"revision"=>$this->revision,
+			"repository"=>$this->repository);
 
 		return $array;		
+	}
+	
+	/**
+	 * Returns a MoufDependencyDescriptor from a PHP array describing the package dependency descriptor.
+	 * 
+	 * The structure of the array is:
+	 * 	array("version" => string, "name"=> string, "group"=>string, "revision"=>int, "repository"=>string)
+	 * 
+	 * @param array $array
+	 * @return MoufDependencyDescriptor
+	 */
+	public static function fromJsonArray($array) {
+		return new MoufDependencyDescriptor($array['group'], $array['name'], $array['version'], $array['revision'], $array['repository']);
 	}
 	
 }

@@ -40,10 +40,13 @@ require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileBean.p
 require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileDaoException.php';
 require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileDao.php';
 require_once $localFilePath.'/../plugins/security/simplelogincontroller/1.0/SimpleLoginController.php';
+require_once $localFilePath.'/../plugins/utils/cache/cache-interface/1.0/CacheInterface.php';
+require_once $localFilePath.'/../plugins/utils/cache/file-cache/1.1/FileCache.php';
 
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';
 require_once $localFilePath.'/validator/MoufBasicValidationProvider.php';
+require_once $localFilePath.'/controllers/DisplayPackageListInterface.php';
 require_once $localFilePath.'/MoufSearchable.php';
 require_once $localFilePath.'/MoufSearchService.php';
 require_once $localFilePath.'/controllers/MoufController.php';
@@ -57,6 +60,9 @@ require_once $localFilePath.'/controllers/MoufValidatorController.php';
 require_once $localFilePath.'/controllers/MoufLoginController.php';
 require_once $localFilePath.'/controllers/PackageServiceController.php';
 require_once $localFilePath.'/controllers/RepositorySourceController.php';
+require_once $localFilePath.'/controllers/PackageDownloadController.php';
+require_once $localFilePath.'/MoufPackageDownloadService.php';
+require_once $localFilePath.'/MoufRepository.php';
 require_once $localFilePath.'/controllers/PhpInfoController.php';
 require_once $localFilePath.'/controllers/SearchController.php';
 require_once $localFilePath.'/load.php';

@@ -53,6 +53,28 @@ class MoufPackage {
 	 */
 	private $logoPath;
 	
+	/**
+	 * The revision number for this package.
+	 * A revision number is an integer that identifies a version of the package.
+	 * Unlike the version number, all packages with the same revision number should provide the same set of features.
+	 * Basically, if you fix a bug in a package, rather than making a new version, you can make a new revision (by
+	 * increasing the revision number).
+	 * The Mouf UI provides ways to auto-update packages to the latest revision number, while updates to a new
+	 * version must be done manually.
+	 * 
+	 * @var int
+	 */
+	private $revision;
+
+	/**
+	 * Where the package currently is.
+	 * If "null", this is local, if set to a string, this is the repository the package is in.
+	 * 
+	 * Please not this is NOT the place the package was downloaded from.
+	 * 
+	 * @var MoufRepository
+	 */
+	private $currentLocation;
 	
 	/**
 	 * The package descriptor for this package (group, name and version number)
@@ -136,14 +158,22 @@ class MoufPackage {
 		$this->shortDescription = (string)$this->packageSimpleXml->shortDescription;
 		$this->docUrl = (string)$this->packageSimpleXml->docUrl;
 		$this->logoPath = (string)$this->packageSimpleXml->logo;
+		$this->revision = (string)$this->packageSimpleXml->revision;
 		
+		if ($this->revision == null) {
+			$this->revision = 0;
+		}
+		if (!is_numeric($this->revision)) {
+			throw new MoufException("The revision number for package {$this->displayName} must be an integer.");
+		}
 		
 		
 		$depList = array();
 		$dependencies = $this->packageSimpleXml->dependencies;
 		if ($dependencies) {
 			foreach ($dependencies->dependency as $dependencyXml) {
-				$depList[] = new MoufDependencyDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version);
+				$revision = (int) $dependencyXml->revision or 0;
+				$depList[] = new MoufDependencyDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version, $revision, (string)$dependencyXml->repository);
 			}
 		}
 		$this->dependencies = $depList;
@@ -224,6 +254,15 @@ class MoufPackage {
 	}
 	
 	/**
+	 * Returns the revision number for the package.
+	 * 
+	 * @return int
+	 */
+	public function getRevision() {
+		return $this->revision;
+	}
+	
+	/**
 	 * Returns the package directory, relatives to the plugin directory.
 	 *
 	 * @return string
@@ -269,6 +308,18 @@ class MoufPackage {
 	}
 
 	/**
+	 * Returns where the package currently is.
+	 * If "null", this is local, if set to a string, this is the repository the package is in.
+	 * 
+	 * Please not this is NOT the place the package was downloaded from.
+	 * 
+	 * @return MoufRepository
+	 */
+	public function getCurrentLocation() {
+		return $this->currentLocation;
+	}
+	
+	/**
 	 * Returns a PHP array that describes the package.
 	 * The array does not contain all available information, only enough information to display the list of packages in the Mouf interface.
 	 * 
@@ -281,7 +332,8 @@ class MoufPackage {
 		$array = array("displayName"=>$this->displayName,
 			"shortDescription"=>$this->shortDescription,
 			"docUrl"=>$this->docUrl,
-			"logoPath"=>$this->logoPath);
+			"logoPath"=>$this->logoPath,
+			"revision"=>$this->revision);
 
 		if (!empty($this->dependencies)) {
 			$array['dependencies'] = array();
@@ -293,6 +345,36 @@ class MoufPackage {
 		
 		return $array;		
 	}
-	
+
+	/**
+	 * Returns a MoufPackage from a PHP array describing the package.
+	 * Note: since the PHP array does not contain all the available information, the object will be incomplete.
+	 * However, it has enough information to display the list of packages available for download.
+	 * 
+	 * The structure of the array is:
+	 * 	array("displayName" => string, "shortDescription"=> string, "docUrl"=>string, "logoPath"=>string, "dependencies"=>array<dependencyDescriptorArray>)
+	 * 
+	 * @param array $array
+	 * @return MoufPackage
+	 */
+	public static function fromJsonArray($array, $groupName, $packageName, $version, MoufRepository $repository) {
+		$moufPackage = new MoufPackage();
+		$moufPackage->displayName = $array['displayName'];
+		$moufPackage->shortDescription = $array['shortDescription'];
+		$moufPackage->docUrl = $array['docUrl'];
+		$moufPackage->logoPath = $array['logoPath'];
+		$moufPackage->revision = $array['revision'];
+		$moufPackage->packageDir = ".".$groupName."/".$packageName."/".$version;
+		$moufPackage->currentLocation = $repository;
+		
+		$moufPackage->packageDescriptor = new MoufPackageDescriptor($groupName, $packageName, $version);
+		
+		if (!empty($array['dependencies'])) {
+			foreach ($array['dependencies'] as $dependency) {
+				$moufPackage->dependencies[] = MoufDependencyDescriptor::fromJsonArray($dependency);
+			}
+		}
+		return $moufPackage;
+	}
 }
 ?>
