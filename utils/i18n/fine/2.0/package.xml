@@ -16,7 +16,7 @@
 		<dependency>
 			<group>utils/export</group>
 			<name>phpexport</name>
-			<version>1.5.7</version>
+			<version>1.7.5</version>
 		</dependency>
 		<dependency>
 			<group>utils/icons</group>
