@@ -230,3 +230,32 @@ div.loading {
 div.validator {
 	margin-bottom: 5px;
 }
+
+
+#installProcess > div {
+	width: 700px;
+	min-height: 20px;
+	border: 1px solid #cccccc;
+	background-color: #eeeeee;
+	clear:both;
+	margin-bottom: 2px;
+	padding-left: 20px;
+	background-repeat: no-repeat;
+	background-position: 2px 2px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#installProcess > div.todo {
+	background-image: url("images/ajax-loader.gif");
+}
+
+#installProcess > div.done {
+	background-image: url("images/tick.png");
+}
+
+#installProcess > div.error {
+	background-image: url("images/cross.png");
+}
+

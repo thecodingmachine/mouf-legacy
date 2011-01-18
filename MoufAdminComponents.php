@@ -14,6 +14,12 @@ $moufManager->getConfigManager()->setConstantsDefinitionArray(array (
     'comment' => 'If you set this variable to true, your Mouf installation will act as a repository: it will allow other Mouf installations to download any package available.
 By default, this is behaviour is disabled.',
   ),
+  'UPLOAD_REPOSITORY' => 
+  array (
+    'defaultValue' => false,
+    'type' => 'bool',
+    'comment' => 'If true, the repository will accept package upload. When a package is requested for download, it will send the uploaded version (it will not ZIP the package each time), so this setting should be set to FALSE on a developer machine, and only to TRUE on a repository.',
+  ),
 ));
 
 $moufManager->addPackageByXmlFile('utils/log/log_interface/1.0/package.xml');
@@ -514,6 +520,7 @@ $moufManager->addComponentInstances(array (
     'fieldBinds' => 
     array (
       'template' => 'moufTemplate',
+      'multiStepActionService' => 'installService',
     ),
   ),
   'instance' => 
@@ -1210,6 +1217,84 @@ $moufManager->addComponentInstances(array (
       ),
     ),
   ),
+  'installService' => 
+  array (
+    'class' => 'MultiStepActionService',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'actionsStoreFile' => 
+      array (
+        'value' => 'moufRunningActions.php',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'install' => 
+  array (
+    'class' => 'InstallController',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'multiStepActionService' => 'installService',
+      'template' => 'moufInstallTemplate',
+    ),
+  ),
+  'enablePackageAction' => 
+  array (
+    'class' => 'EnablePackageAction',
+    'external' => false,
+  ),
+  'downloadPackageAction' => 
+  array (
+    'class' => 'DownloadPackageAction',
+    'external' => false,
+  ),
+  'moufInstallTemplate' => 
+  array (
+    'class' => 'SplashTemplate',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'head' => 
+      array (
+        0 => 'jQuery',
+      ),
+    ),
+    'fieldProperties' => 
+    array (
+      'logoImg' => 
+      array (
+        'value' => 'mouf/views/images/MoufLogo.png',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'title' => 
+      array (
+        'value' => 'Mouf - Build your website',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'css_files' => 
+      array (
+        'value' => 
+        array (
+          0 => 'mouf/views/styles.css',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
@@ -1217,6 +1302,12 @@ $moufManager->registerComponent('validator/MoufBasicValidationProvider.php');
 $moufManager->registerComponent('controllers/DisplayPackageListInterface.php');
 $moufManager->registerComponent('MoufSearchable.php');
 $moufManager->registerComponent('MoufSearchService.php');
+$moufManager->registerComponent('actions/MoufActionDescriptor.php');
+$moufManager->registerComponent('actions/MoufActionProvider.php');
+$moufManager->registerComponent('actions/DownloadPackageAction.php');
+$moufManager->registerComponent('actions/EnablePackageAction.php');
+$moufManager->registerComponent('actions/MultiStepActionService.php');
+$moufManager->registerComponent('actions/InstallController.php');
 $moufManager->registerComponent('controllers/MoufController.php');
 $moufManager->registerComponent('controllers/MoufRootController.php');
 $moufManager->registerComponent('controllers/ComponentsController.php');
@@ -1598,6 +1689,41 @@ class MoufAdmin {
 	 */
 	 public static function getSearchBox() {
 	 	return MoufManager::getMoufManager()->getInstance('searchBox');
+	 }
+
+	/**
+	 * @return MultiStepActionService
+	 */
+	 public static function getInstallService() {
+	 	return MoufManager::getMoufManager()->getInstance('installService');
+	 }
+
+	/**
+	 * @return InstallController
+	 */
+	 public static function getInstall() {
+	 	return MoufManager::getMoufManager()->getInstance('install');
+	 }
+
+	/**
+	 * @return EnablePackageAction
+	 */
+	 public static function getEnablePackageAction() {
+	 	return MoufManager::getMoufManager()->getInstance('enablePackageAction');
+	 }
+
+	/**
+	 * @return DownloadPackageAction
+	 */
+	 public static function getDownloadPackageAction() {
+	 	return MoufManager::getMoufManager()->getInstance('downloadPackageAction');
+	 }
+
+	/**
+	 * @return SplashTemplate
+	 */
+	 public static function getMoufInstallTemplate() {
+	 	return MoufManager::getMoufManager()->getInstance('moufInstallTemplate');
 	 }
 
 	/**

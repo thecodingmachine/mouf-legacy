@@ -10,3 +10,7 @@
  * By default, this is behaviour is disabled.
  */
 define('ACT_AS_REPOSITORY', true);
+/**
+ * If true, the repository will accept package upload. When a package is requested for download, it will send the uploaded version (it will not ZIP the package each time), so this setting should be set to FALSE on a developer machine, and only to TRUE on a repository.
+ */
+define('UPLOAD_REPOSITORY', false);

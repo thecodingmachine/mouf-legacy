@@ -17,6 +17,7 @@ class MoufPackageDownloadService {
 	public $cacheService;
 	
 	private $moufManager;
+	private $moufPackageManager;
 	
 	/**
 	 * Sets the MoufManager for this instance.
@@ -126,6 +127,48 @@ class MoufPackageDownloadService {
 		}
 		
 		throw new MoufException("The URL '$url' is not part of the repository list.");
+	}
+	
+	/**
+	 * Downloads a package and installs it in the plugins directory.
+	 * 
+	 * @param MoufRepository $repository
+	 * @param string $group
+	 * @param string $name
+	 * @param string $version
+	 */
+	public function downloadAndUnpackPackage(MoufRepository $repository, $group, $name, $version) {
+		$this->packageManager = new MoufPackageManager();
+		 
+		// Create a temporary file (that will be deleted at the end of the extract process).
+		$fileName = tempnam(sys_get_temp_dir(), "moufpackage");
+		$fp = fopen($fileName, "w");
+		
+		// preparation de l'envoi
+		$ch = curl_init();
+		if (strrpos($url, "/") !== strlen($url)-1) {
+			$url .= "/";
+		}
+		$url .= "packagesService/download?group=".urlencode($group)."&name=".urlencode($name)."&version=".urlencode($version);
+		curl_setopt( $ch, CURLOPT_URL, $url);
+		curl_setopt( $ch, CURLOPT_POST, FALSE );
+		/**
+		 * Ask cURL to write the contents to a file
+		 */
+		curl_setopt($ch, CURLOPT_FILE, $fp);
+		
+		curl_exec( $ch );
+		
+		if( curl_error($ch) ) { 
+			throw new Exception("An error occured: ".curl_error($ch));
+		}
+		curl_close( $ch );
+		
+		fclose($fp);
+
+		$this->packageManager->unpackPackage(new MoufPackageDescriptor($group, $name, $version), $fileName);
+
+		unlink($fileName);
 	}
 }
 

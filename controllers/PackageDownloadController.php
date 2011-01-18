@@ -118,7 +118,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			
 			if ($localPackage->getRevision() < $package->getRevision()) {
 				echo "<div class='warning'>An updated revision of the package is available. You are using revision {$localPackage->getRevision()}. Revision {$package->getRevision()} is available to download.</div>";
-				echo "<form action='downloadPackage' method='POST'>";
+				echo "<form action='".ROOT_URL."mouf/packages/enablePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
 				echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
 				echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
@@ -133,7 +133,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			}
 			
 			if ($enabledVersion !== false && $enabledVersion != $package->getDescriptor()->getVersion()) {
-				echo "<form action='upgradePackage' method='POST'>";
+				echo "<form action='".ROOT_URL."mouf/packages/upgradePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
 				echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
 				if (MoufPackageDescriptor::compareVersionNumber($package->getDescriptor()->getVersion(), $enabledVersion) > 0) {
@@ -145,11 +145,13 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			} else if (!$isPackageEnabled) {
 				echo "<form action='enablePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-				echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+				echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+				echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
+				echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
 				echo "<button>Enable</button>";
 				echo "</form>";
 			} else {
-				echo "<form action='disablePackage' method='POST'>";
+				echo "<form action='".ROOT_URL."mouf/packages/disablePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
 				echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
 				echo "<button>Disable</button>";
@@ -157,9 +159,13 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			}
 				
 		} else {
-			echo "<form action='downloadPackage' method='POST'>";
+			echo "<form action='".ROOT_URL."mouf/packages/enablePackage' method='POST'>";
 			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			//echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
+			echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
+			echo "<input type='hidden' name='origin' value='".htmlentities($package->getCurrentLocation()->getUrl())."' />";
 			echo "<button>Download package</button>";
 			echo "</form>";
 		}
@@ -169,69 +175,6 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 	
 	protected $package;
 	
-	/**
-	 * Triggers the download and enables the package.
-	 *
-	 * @Action
-	 * @Logged
-	 * @param string $name The path to the package.xml file.
-	 */
-	function downloadPackage($group, $name, $version, $origin, $selfedit = "false") {
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-		
-		// Downloadpackage et enablepackage sont foncièrement identiques.
-		// Il faudrait les "merger" en une seule fonction.
-		// La complexité vient du fait que enablePackage prend un filename (en xxx/package.xml).
-		// Il va falloir l'adapter pour que la fonction prenne "group", "name", "version" à la place.
-		// Ensuite, ça devrait être "relativement" facile.
-		// Il suffira de regarder l'origine des packages, et de les downloader avant installation, tout simplement.
-		
-		$this->selfedit = $selfedit;
-		
-		if ($selfedit == "true") {
-			$this->moufManager = MoufManager::getMoufManager();
-		} else {
-			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
-		}
-		
-		$this->packageDownloadService->setMoufManager($this->moufManager);
-		
-		$repository = $this->packageDownloadService->getRepository($url);
-		$this->package = $repository->getPackage($group, $name, $version);
-				
-		$this->moufDependencies = $packageManager->getDependencies($this->package, $this->moufManager);
-				
-		if (!empty($this->moufDependencies) && $confirm=="false") {
-			$this->template->addContentFile("views/packages/displayConfirmPackagesEnable.php", $this);
-			$this->template->draw();
-		} else {
-			
-			if (!array_search($this->package, $this->moufDependencies)) {
-				$this->moufDependencies[] = $this->package;
-			}
-			
-			foreach ($this->moufDependencies as $dependency) {
-				$this->moufManager->addPackageByXmlFile($dependency->getDescriptor()->getPackageXmlPath());
-			}
-			$this->moufManager->rewriteMouf();
-			
-			$url = "Location: ".ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";
-			foreach ($this->moufDependencies as $moufDependency) {
-				$url.= "&packageList[]=".$moufDependency->getDescriptor()->getPackageDirectory();
-			}
-			header($url);	
-		}
-		
-	}
 	
 }
 ?>

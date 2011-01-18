@@ -137,7 +137,7 @@ class MoufPackageManager {
 	 * @return MoufPackage
 	 */
 	public function getPackageByDefinition($group, $name, $version) {
-		return $this->getPackage($group.'/'.$name.'/'.$version);
+		return $this->getPackage($group.'/'.$name.'/'.$version.'/package.xml');
 	}
 	
 	/**
@@ -271,34 +271,38 @@ class MoufPackageManager {
 				foreach ($repositories as $repository) {
 					/* @var $repository MoufRepository  */
 					
-					// Let's get all the LOCAL versions available, and see if one version matches the dependency requirements.
+					// Let's get all the REMOTE versions available for current explored repository, and see if one version matches the dependency requirements.
 					$versions = $repository->getVersionsForPackage($dependency->getGroup(), $dependency->getName());
 					// Note: the $versions are sorted in reverse order, which is exactly what we need.
 					if (!empty($versions->packages)) {
 						$packageFound = true;
-					}			
-					foreach ($versions->packages as $version=>$myPackage) {
-						/* @var $myPackage MoufPackage */
-						
-						// Let's test each version.
-						if ($dependency->isCompatibleWithVersion($version)) {
-							// We found a compatible version! Yeah!
-							$newPackageDependencies = $packageDependencies;
-
-							$toAddPackage = $versions->getPackage($version);
-							$newPackageDependencies[] = $toAddPackage;
+					}
+					if ($versions != null) {
+						foreach ($versions->packages as $version=>$myPackage) {
+							/* @var $myPackage MoufPackage */
 							
-							// Let's recurse
-							try {
-								$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList, $packageDownloadService);
-							} catch (MoufIncompatiblePackageException $ex) {
-								// If there is a problem, we try the next version. 
-								continue;
+							// Let's test each version.
+							if ($dependency->isCompatibleWithVersion($version)) {
+								// We found a compatible version! Yeah!
+								$newPackageDependencies = $packageDependencies;
+	
+								$toAddPackage = $versions->getPackage($version);
+								
+								// Let's recurse
+								try {
+									$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList, $packageDownloadService);
+								} catch (MoufIncompatiblePackageException $ex) {
+									// If there is a problem, we try the next version.
+									$encounteredExceptions[] = $ex; 
+									continue;
+								}
+	
+								$newPackageDependencies[] = $toAddPackage;
+								
+								// If there is no problem, we go to the next dependency for the package $package.
+								$foundCorrectVersion = true;
+								break;
 							}
-							
-							// If there is no problem, we go to the next dependency for the package $package.
-							$foundCorrectVersion = true;
-							break;
 						}
 					}
 					if ($foundCorrectVersion) {
@@ -594,32 +598,47 @@ class MoufPackageManager {
 	}
 	
 	/**
+	 * Returns the default path where we usually path the ZIP file package.
+	 * 
+	 * @param MoufPackage $moufPackage
+	 * @return string The path to the ZIP file.
+	 */
+	public function getZipFilePath(MoufPackage $moufPackage) {
+		$packageDir = ROOT_PATH.$moufPackage->getPackageDirectory();
+		$zipFileName = $moufPackage->getDescriptor()->getName()."-".$moufPackage->getDescriptor()->getVersion().".zip";
+		return $packageDir.'/../'.$zipFileName;
+	}
+	
+	/**
 	 * Compresses the package into a ZIP file.
 	 * The ZIP file is installed in the group/package directory. 
 	 * 
 	 * @param MoufPackage $moufPackage
 	 * @throws MoufException
+	 * @return string The name of the generated file.
 	 */
 	public function compressPackage(MoufPackage $moufPackage) {
 		
 		$packageDir = ROOT_PATH.$moufPackage->getPackageDirectory();
 		
 		//echo $packageDir;
+						
+		//$zipFileName = $moufPackage->getDescriptor()->getName()."-".$moufPackage->getDescriptor()->getVersion().".zip";
+		$zipFilePath = $this->getZipFilePath($moufPackage);
 		
+		
+		if (file_exists($zipFilePath)) {
+			unlink($zipFilePath);
+		}
+
 		$oldcwd = getcwd();
 		chdir($packageDir);
 		
 		// create object
 		$zip = new ZipArchive();
 		
-		$zipFileName = $moufPackage->getDescriptor()->getName()."-".$moufPackage->getDescriptor()->getVersion().".zip";
-		
-		if (file_exists($packageDir.'/../'.$zipFileName)) {
-			unlink($packageDir.'/../'.$zipFileName);
-		}
-		
 		// open output file for writing
-		if ($zip->open($packageDir.'/../'.$zipFileName, ZIPARCHIVE::CREATE) !== TRUE) {
+		if ($zip->open($zipFilePath, ZIPARCHIVE::CREATE) !== TRUE) {
 		    throw new MoufException("Could not create the ZIP file");
 		}
 
@@ -628,8 +647,11 @@ class MoufPackageManager {
 		// close and save archive
 		$zip->close();
 		
+		$fileName = realpath($zipFilePath);
+		
 		chdir($oldcwd);
-						
+		
+		return $fileName;
 	}
 	
 	private function recurseAddDir(ZipArchive $zip, $currentDir) {

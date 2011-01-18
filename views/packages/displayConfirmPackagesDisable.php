@@ -64,7 +64,9 @@ foreach ($this->toDeleteInstance as $instanceName=>$className) {
 $packageXmlPath = $this->package->getDescriptor()->getPackageXmlPath();
 echo "<form action='disablePackage' method='POST'>";
 echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+echo "<input type='hidden' name='group' value='".htmlentities($this->package->getDescriptor()->getGroup())."' />";
+echo "<input type='hidden' name='name' value='".htmlentities($this->package->getDescriptor()->getName())."' />";
+echo "<input type='hidden' name='version' value='".htmlentities($this->package->getDescriptor()->getVersion())."' />";
 echo "<input type='hidden' name='confirm' value='true' />";
 echo "<button>Disable all listed packages</button>";
 echo "</form>";

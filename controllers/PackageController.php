@@ -27,6 +27,15 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	public $template;
 	
 	/**
+	 * The service that will take actions to be performed to install.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var MultiStepActionService
+	 */
+	public $multiStepActionService;
+	
+	/**
 	 * The package to enable/disable.
 	 *
 	 * @var MoufPackage
@@ -134,7 +143,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 * @param string $selfedit
 	 * @param string $confirm
 	 */
-	public function enablePackage($name, $selfedit = "false", $confirm="false") {
+	public function enablePackage($group, $name, $version, $selfedit = "false", $confirm="false", $origin = null) {
 		// First, let's find the list of depending packages.
 		$this->selfedit = $selfedit;
 		if ($selfedit == "true") {
@@ -144,7 +153,15 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		}
 	
 		$packageManager = new MoufPackageManager();
-		$this->package = $packageManager->getPackage($name);
+		
+		if ($origin == null) {
+			$this->package = $packageManager->getPackageByDefinition($group, $name, $version);
+		} else {
+			// TODO: move $packageDownloadService as a property
+			$packageDownloadService = MoufAdmin::getPackageDownloadService();
+			$this->package = $packageDownloadService->getRepository($origin)->getPackage($group, $name, $version);
+		}
+		
 		//$this->moufDependencies = $packageManager->getDependencies($this->package);
 		$this->moufDependencies = $packageManager->getDependencies($this->package, $this->moufManager);
 		//var_dump($this->moufDependencies); exit;
@@ -158,16 +175,38 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 				$this->moufDependencies[] = $this->package;
 			}
 			
-			foreach ($this->moufDependencies as $dependency) {
+			/*foreach ($this->moufDependencies as $dependency) {
 				$this->moufManager->addPackageByXmlFile($dependency->getDescriptor()->getPackageXmlPath());
 			}
-			$this->moufManager->rewriteMouf();
+			$this->moufManager->rewriteMouf();*/
+			foreach ($this->moufDependencies as $dependency) {
+				/* @var $dependency MoufPackage */
+				if ($dependency->getCurrentLocation() != null) {
+					$repository = $dependency->getCurrentLocation();
+					$this->multiStepActionService->addAction("downloadPackageAction", array(
+							"repositoryUrl"=>$repository->getUrl(),
+							"group"=>$dependency->getDescriptor()->getGroup(),
+							"name"=>$dependency->getDescriptor()->getName(),
+							"version"=>$dependency->getDescriptor()->getVersion()
+							), $selfedit == "true");
+				}
+				$this->multiStepActionService->addAction("enablePackageAction", array(
+							"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath()), $selfedit == "true");
+			}
 			
-			$url = "Location: ".ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";
+			$url = ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";
+			$msg = "Packages successfully enabled: ";
+			$msgArr = array();
 			foreach ($this->moufDependencies as $moufDependency) {
 				$url.= "&packageList[]=".$moufDependency->getDescriptor()->getPackageDirectory();
+				$msgArr[] = $moufDependency->getDescriptor()->getPackageDirectory();
 			}
-			header($url);	
+			$msg .= implode(", ", $msgArr);
+			$this->multiStepActionService->setFinalUrlRedirect($url);
+			$this->multiStepActionService->setConfirmationMessage($msg);
+						
+			$this->multiStepActionService->executeActions($selfedit == "true");
+			//header($url);	
 		}
 	}
 	
@@ -180,7 +219,8 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 * @param string $selfedit
 	 * @param string $confirm
 	 */
-	public function disablePackage($name, $selfedit = "false", $confirm="false") {
+	public function disablePackage($group, $name, $version, $selfedit = "false", $confirm="false") {
+
 		// First, let's find the list of depending packages.
 		$this->selfedit = $selfedit;
 		if ($selfedit == "true") {
@@ -190,7 +230,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		}
 	
 		$packageManager = new MoufPackageManager();
-		$this->package = $packageManager->getPackage($name);
+		$this->package = $packageManager->getPackageByDefinition($group, $name, $version);
 		//$this->moufDependencies = $packageManager->getDependencies($this->package);
 		
 		$this->moufDependencies = $packageManager->getInstalledPackagesUsingThisPackage($this->package, $this->moufManager);
@@ -265,7 +305,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 * @param string $selfedit
 	 * @param string $confirm
 	 */
-	public function upgradePackage($name, $selfedit = "false", $confirm="false") {
+	public function upgradePackage($group, $name, $version, $selfedit = "false", $confirm="false") {
 		throw new Exception("Sorry, upgrading packages is not supported yet.");
 	}
 	
@@ -302,7 +342,10 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		if ($enabledVersion !== false && $enabledVersion != $package->getDescriptor()->getVersion()) {
 			echo "<form action='upgradePackage' method='POST'>";
 			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			//echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
+			echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
 			if (MoufPackageDescriptor::compareVersionNumber($package->getDescriptor()->getVersion(), $enabledVersion) > 0) {
 				echo "<button>Upgrade to this package</button>";
 			} else {
@@ -312,13 +355,19 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		} else if (!$isPackageEnabled) {
 			echo "<form action='enablePackage' method='POST'>";
 			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
+			echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
+			//echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
 			echo "<button>Enable</button>";
 			echo "</form>";
 		} else {
 			echo "<form action='disablePackage' method='POST'>";
 			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-			echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
+			echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
+			echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";		
+			//echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
 			echo "<button>Disable</button>";
 			echo "</form>";
 		}

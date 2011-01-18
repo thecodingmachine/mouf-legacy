@@ -74,5 +74,32 @@ class PackageServiceController extends Controller {
 			return $cmp;
 	}
 	
+	/**
+	 * Sends a ZIP version of the package.
+	 * 
+	 * @Action
+	 * @param string $group
+	 * @param string $name
+	 * @param string $version
+	 */
+	public function download($group, $name, $version) {
+		if (ACT_AS_REPOSITORY != true) {
+			$array = array("error"=>"The Mouf instance you are trying to access does not allow remote access.");
+			echo json_encode($array);
+			exit;
+		}
+		$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
+		$packageManager = new MoufPackageManager();
+		
+		// TODO zip
+		$package = $packageManager->getPackageByDefinition($group, $name, $version);
+		$zipFilePath = $packageManager->getZipFilePath($package);
+		
+		if (!file_exists($zipFilePath) || !UPLOAD_REPOSITORY) {
+			$zipFilePath = $packageManager->compressPackage($moufPackage);
+		}
+		
+		readfile($zipFilePath);
+	}
 }
 ?>
