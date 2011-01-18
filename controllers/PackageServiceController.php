@@ -91,12 +91,11 @@ class PackageServiceController extends Controller {
 		$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		$packageManager = new MoufPackageManager();
 		
-		// TODO zip
 		$package = $packageManager->getPackageByDefinition($group, $name, $version);
 		$zipFilePath = $packageManager->getZipFilePath($package);
 		
 		if (!file_exists($zipFilePath) || !UPLOAD_REPOSITORY) {
-			$zipFilePath = $packageManager->compressPackage($moufPackage);
+			$zipFilePath = $packageManager->compressPackage($package);
 		}
 		
 		readfile($zipFilePath);
