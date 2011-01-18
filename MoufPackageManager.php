@@ -604,7 +604,7 @@ class MoufPackageManager {
 	 * @return string The path to the ZIP file.
 	 */
 	public function getZipFilePath(MoufPackage $moufPackage) {
-		$packageDir = ROOT_PATH.$moufPackage->getPackageDirectory();
+		$packageDir = ROOT_PATH."plugins/".$moufPackage->getPackageDirectory();
 		$zipFileName = $moufPackage->getDescriptor()->getName()."-".$moufPackage->getDescriptor()->getVersion().".zip";
 		return $packageDir.'/../'.$zipFileName;
 	}
@@ -619,15 +619,17 @@ class MoufPackageManager {
 	 */
 	public function compressPackage(MoufPackage $moufPackage) {
 		
-		$packageDir = ROOT_PATH.$moufPackage->getPackageDirectory();
+		$packageDir = ROOT_PATH."plugins/".$moufPackage->getPackageDirectory();
 		
 		//echo $packageDir;
 						
 		//$zipFileName = $moufPackage->getDescriptor()->getName()."-".$moufPackage->getDescriptor()->getVersion().".zip";
 		$zipFilePath = $this->getZipFilePath($moufPackage);
 		
-		
 		if (file_exists($zipFilePath)) {
+			if (!is_writable($zipFilePath)) {
+				throw new MoufException("Cannot delete ZIP file ".$zipFilePath);
+			}
 			unlink($zipFilePath);
 		}
 
@@ -636,6 +638,11 @@ class MoufPackageManager {
 		
 		// create object
 		$zip = new ZipArchive();
+		
+		$dirname = dirname($zipFilePath);
+		if (!is_writable($dirname)) {
+			throw new MoufException("Cannot create ZIP file in directory ".$dirname.". Please check the directory rights.");
+		}
 		
 		// open output file for writing
 		if ($zip->open($zipFilePath, ZIPARCHIVE::CREATE) !== TRUE) {
