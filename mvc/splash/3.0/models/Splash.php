@@ -120,7 +120,7 @@ class Splash {
 
 		$pos = strpos($redirect_uri, $this->splashUrlPrefix);
 		if ($pos === FALSE) {
-			throw new Exception('Error: the prefix of the web application "'.$this->splashUrlPrefix.'" was not found in the URL. The application must be misconfigured.');
+			throw new Exception('Error: the prefix of the web application "'.$this->splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your MoufUniversalParameters.php file at the root of your project.');
 		}
 
 		$tailing_url = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
