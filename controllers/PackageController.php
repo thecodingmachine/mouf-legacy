@@ -159,6 +159,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		} else {
 			// TODO: move $packageDownloadService as a property
 			$packageDownloadService = MoufAdmin::getPackageDownloadService();
+			$packageDownloadService->setMoufManager($this->moufManager);
 			$this->package = $packageDownloadService->getRepository($origin)->getPackage($group, $name, $version);
 		}
 		

@@ -61,7 +61,7 @@ class MoufGroupDescriptor {
 	 * @return bool
 	 */
 	public function hasPackageContainer($name) {
-		if (!isset($this->packages[$name])) {
+		if (isset($this->packages[$name])) {
 			return true;
 		} else {
 			return false;
@@ -76,7 +76,7 @@ class MoufGroupDescriptor {
 	 * @return bool
 	 */
 	public function hasSubgroup($name) {
-		if (!isset($this->subGroups[$name])) {
+		if (isset($this->subGroups[$name])) {
 			return true;
 		} else {
 			return false;

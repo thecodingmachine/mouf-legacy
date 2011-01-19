@@ -108,8 +108,8 @@ class MoufRepository  {
 	 * @return MoufPackage
 	 */
 	public function getPackage($group, $name, $version) {
-		$groupDirs = split($group, "/");
-		if ($groupDirs[0] == ".") {
+		$groupDirs = split("/", $group);
+		if ($groupDirs[0] == "." || $groupDirs[0] == "") {
 			array_shift($groupDirs);
 		}
 		
@@ -122,7 +122,7 @@ class MoufRepository  {
 			$currentGroup = $currentGroup->getGroup($groupDir);
 		}
 
-		if (!$currentGroup->hasPackageContainer()) {
+		if (!$currentGroup->hasPackageContainer($name)) {
 			return null;
 		}
 		$packageContainer = $currentGroup->getPackageContainer($name);
