@@ -293,10 +293,10 @@ class EditLabelController extends Controller implements MoufSearchable {
 		$this->selfedit = $selfedit;
 		
 		if($query) {
+			$regex = $this->stripRegexMetaChars($this->stripAccents($query));
 			foreach ($instances as $instance) {
 				$array = $this->getAllMessagesFromService(($selfedit == "true"), $instance, null);
 
-				$regex = $this->stripRegexMetaChars($this->stripAccents($query));
 				$this->results[$instance] = $this->regex_search_array($array["msgs"], $regex);
 			}
 			$this->error = false;
@@ -518,8 +518,9 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 * @return string
 	 */
 	private function stripRegexMetaChars($string) {
-		return str_replace(array('\\', '#', '!', '^', '$', '(', ')', '[', ']', '{', '}', '|', '?', '+', '*', '.', '/'),
-							array('\\\\', '\#', '\!', '\^', '\$', '\(', '\)', '\[', '\]', '\{', '\}', '\|', '\?', '\+', '\*', '\.', '\/'), $string);
+		return str_replace(array('\\', '!', '^', '$', '(', ')', '[', ']', '{', '}', '|', '?', '+', '*', '.', '/', '&#039;', '#'),
+						array('\\\\', '\!', '\^', '\$', '\(', '\)', '\[', '\]', '\{', '\}', '\|', '\?', '\+', '\*', '\.', '\/', '\\\'', '\#"'),
+						$string);
 	}
 }
 
