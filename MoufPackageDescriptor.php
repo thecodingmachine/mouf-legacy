@@ -49,7 +49,9 @@ class MoufPackageDescriptor {
 		$tmpGroup = dirname($tmpDir);
 		if (strpos($tmpGroup, "./") === 0) {
 			$group = substr($tmpGroup, 2);
-		} else {
+		} elseif (strpos($tmpGroup, "/") === 0) {
+			$group = substr($tmpGroup, 1);
+		}else {
 			$group = $tmpGroup;
 		}
 		
