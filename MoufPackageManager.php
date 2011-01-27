@@ -709,6 +709,21 @@ class MoufPackageManager {
 		if ($zip->open($fileName) !== TRUE) {
 		    throw new MoufException("Could not open the ZIP file '".$fileName."'");
 		}
+		
+		if (!is_dir(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/")) {
+			// Let's build the directory
+			$oldumask = umask(0);
+			$success = mkdir(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/", 0777, true);
+			umask($oldumask);
+			if (!$success) {
+				throw new MoufException("Unable to create directory ".ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/");
+			}
+		}
+		
+		if (!is_writable(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/")) {
+			throw new MoufException("Unable to write in directory ".ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/");
+		}
+		
 
 	    $res = $zip->extractTo(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/");
 		if (!$res) {

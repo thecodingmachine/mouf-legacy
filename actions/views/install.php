@@ -1,6 +1,8 @@
 <?php /* @var $this InstallController */ ?>
 <h1>Installation in progress, please wait...</h1>
 
+<div id="errorZone">
+</div>
 <div id="installProcess">
 <?php 
 include 'displaySteps.php';
@@ -9,8 +11,8 @@ include 'displaySteps.php';
 <script type="text/javascript">
 jQuery(document).ready(function() {
 	jQuery.ajaxSetup({
-	  "error":function() {   
-		jQuery('#installProcess').html("<div class='error'>An error occured in the install process.</div>");
+	  "error":function(xmlHttpRequest) {   
+		jQuery('#errorZone').append("<div class='error'>An error occured in the install process. Error message:<br/><pre>"+xmlHttpRequest.responseText+"</pre></div>");
 	}});
 	var performNextStep = function() {
 		jQuery.getJSON("<?php echo ROOT_URL ?>mouf/install/nextstep", null, function(json){

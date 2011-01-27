@@ -3,7 +3,16 @@
 foreach ($this->actionsList as $actionDescriptor) {
 	/* @var $actionDescriptor MoufActionDescriptor */
 	try {
-		echo "<div class='".$actionDescriptor->status."'>".$actionDescriptor->getName()."</div>";
+		if ($actionDescriptor->status != "error") {
+			echo "<div class='".$actionDescriptor->status."'>".$actionDescriptor->getName()."</div>";
+		} else {
+			echo "<div class='".$actionDescriptor->status."'>";
+			echo "Error: ".$actionDescriptor->getName()."<br/>";
+			if ($this->exception != null) {
+				UnhandledException($this->exception, true);
+			}
+			echo "</div>";
+		}
 	} catch (MoufInstanceNotFoundException $e) {
 		// If we can't find the action provider, maybe it is not installed yet.
 		// Let's just not display the name.

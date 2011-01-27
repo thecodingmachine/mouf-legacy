@@ -35,6 +35,12 @@ class InstallController extends Controller {
 	protected $done;
 	
 	/**
+	 * The exception thrown while running the action, if any.
+	 * @var unknown_type
+	 */
+	protected $exception;
+	
+	/**
 	 * Displays the page that runs the actions of the MultiStepActionService.
 	 * 
 	 * @Action
@@ -55,11 +61,12 @@ class InstallController extends Controller {
 	 */
 	public function nextstep() {
 		$this->done = false;
+		$html = "";
 		if ($this->multiStepActionService->hasRemainingAction()) {
 			try {
 				$this->multiStepActionService->executeNextAction();
 			} catch (Exception $e) {
-				
+				$this->exception = $e;
 			}
 			if (!$this->multiStepActionService->hasRemainingAction()) {
 				$this->done = true;
@@ -78,7 +85,12 @@ class InstallController extends Controller {
 		$html = ob_get_contents();
 		ob_end_clean();
 		
-		echo json_encode(array("code"=>($this->done?"finished":"continue"), "html"=>$html));
+		if ($this->exception) {	
+			echo json_encode(array("code"=>"error", "html"=>$html));
+		} else {
+			echo json_encode(array("code"=>($this->done?"finished":"continue"), "html"=>$html));
+		}
+		
 		// TODO: prévoir un message "OK" à la fin du process (avant le redirect, éventuellement).
 	}
 }

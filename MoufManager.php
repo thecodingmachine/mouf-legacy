@@ -1631,7 +1631,7 @@ class ".$this->mainClassName." {
 	 */
 	public function getFilesListRequiredByPackages() {
 		$files = array();
-		$packageManager = new MoufPackageManager(dirname(__FILE__).'/../plugins');
+		$packageManager = new MoufPackageManager($this->getFullPathToPluginsDirectory());
 		foreach ($this->packagesList as $fileName) {
 			$package = $packageManager->getPackage($fileName);
 			foreach ($package->getRequiredFiles() as $requiredFile) {
@@ -1639,6 +1639,23 @@ class ".$this->mainClassName." {
 			}
 		}
 		return $files;
+	}
+	
+	/**
+	 * This function performs a check to see if all packages that we are referencing are indeed available.
+	 * If not, the function returns an array with the list of missing packages (as packages descriptor).
+	 * 
+	 * @return array<MoufPackageDescriptor>
+	 */
+	public function getMissingPackages() {
+		$pluginsDir = $this->getFullPathToPluginsDirectory();
+		$missingPackages = array();
+		foreach ($this->packagesList as $packageFile) {
+			if (!is_readable($pluginsDir."/".$packageFile)) {
+				$missingPackages[] = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($packageFile);
+			}
+		}
+		return $missingPackages;
 	}
 	
 	/**

@@ -111,6 +111,11 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			$locallyAvailable = true;
 		}
 		
+		$group = $package->getDescriptor()->getGroup();
+		if (strpos($group, "/") === 0) {
+			$group = substr($group, 1);
+		}
+		
 		if ($locallyAvailable) {
 			// Ok, the package is downloaded, but is it the latest revision?
 			$localPackage = new MoufPackage();
@@ -120,7 +125,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 				echo "<div class='warning'>An updated revision of the package is available. You are using revision {$localPackage->getRevision()}. Revision {$package->getRevision()} is available to download.</div>";
 				echo "<form action='".ROOT_URL."mouf/packages/enablePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-				echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+				echo "<input type='hidden' name='group' value='".htmlentities($group)."' />";
 				echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
 				echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
 				echo "<input type='hidden' name='origin' value='".htmlentities($package->getCurrentLocation()->getUrl())."' />";
@@ -145,7 +150,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			} else if (!$isPackageEnabled) {
 				echo "<form action='enablePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
-				echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+				echo "<input type='hidden' name='group' value='".htmlentities($group)."' />";
 				echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
 				echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
 				echo "<button>Enable</button>";
@@ -162,7 +167,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			echo "<form action='".ROOT_URL."mouf/packages/enablePackage' method='POST'>";
 			echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
 			//echo "<input type='hidden' name='name' value='".htmlentities($packageXmlPath)."' />";
-			echo "<input type='hidden' name='group' value='".htmlentities($package->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='group' value='".htmlentities($group)."' />";
 			echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
 			echo "<input type='hidden' name='version' value='".htmlentities($package->getDescriptor()->getVersion())."' />";
 			echo "<input type='hidden' name='origin' value='".htmlentities($package->getCurrentLocation()->getUrl())."' />";

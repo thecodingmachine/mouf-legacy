@@ -29,12 +29,20 @@ class DownloadPackageAction implements MoufActionProviderInterface {
 		}
 		$this->packageDownloadService->setMoufManager($moufManager);
 		
-		$respositoryUrl = $actionDescriptor->params['repositoryUrl'];
+		$repositoryUrl = $actionDescriptor->params['repositoryUrl'];
 		$group = $actionDescriptor->params['group'];
+		if (strpos($group, "/") === 0) {
+			$group = substr($group, 1);
+		}
 		$name = $actionDescriptor->params['name'];
 		$version = $actionDescriptor->params['version'];
 		
-		$repository = $this->packageDownloadService->getRepository($respositoryUrl);
+		$repository = $this->packageDownloadService->getRepository($repositoryUrl);
+		
+		if ($repository == null) {
+			throw new MoufException("Unable to find repository pointing to URL ".$repositoryUrl);
+		}
+		
 		$this->packageDownloadService->downloadAndUnpackPackage($repository, $group, $name, $version);
 	}
 	

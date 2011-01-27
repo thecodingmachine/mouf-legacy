@@ -83,6 +83,10 @@ class MoufDependencyDescriptor {
 		$this->revision = $revision;
 		$this->repository = $repository;
 		
+		if (strpos($name, "/") !== false) {
+			throw new MoufException("In a package.xml file, you cannot declare a dependency with a name that contains a '/'. Package whose name is ".$name." (group: $group, version: $version) is not a valid dependency.");
+		}
+		
 		$tokens = array();
 		
 		// Let's split the spaces

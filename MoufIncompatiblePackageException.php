@@ -45,6 +45,7 @@ class MoufProblemInDependencyPackageException extends MoufException {
 			}
 			$msg .= "</ul>\n";
 		}
+		
 		parent::__construct($msg, 0);
 	}	
 }

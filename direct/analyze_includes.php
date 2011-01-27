@@ -32,34 +32,48 @@ require_once '../MoufPackageManager.php';
 require_once 'utils/check_rights.php';
 
 
-foreach (MoufManager::getMoufManager()->getFilesListRequiredByPackages() as $packageFile) {
-	require_once ROOT_PATH.$packageFile;
-}
-
 $moufResponse = array();
-$moufDeclaredClasses = get_declared_classes();
-$moufDeclaredClassesByFiles = array();
 
-// Ok, now, we can start including our files.
-foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
-	if (file_exists($mouf_base_path.$registeredFile)) {
-		require_once $mouf_base_path.$registeredFile;
+
+$missingPackages = MoufManager::getMoufManager()->getMissingPackages();
+if ($missingPackages) {
+	$html = "<p>One or more packages are supposed to be included, but cannot be found on the server:</p><ul>";
+	foreach ($missingPackages as $packageDescriptor) {
+		/* @var $packageDescriptor MoufPackageDescriptor */
+		$html .= "<li>Missing package <b>".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()." (version ".$packageDescriptor->getVersion().")</b>. Please download this package.</li>";
+	}
+	$html .= "</ul>";
+	$moufResponse = array("errorType"=>"packagedoesnotexist", "errorMsg"=>$html);
+} else  {
+
+	foreach (MoufManager::getMoufManager()->getFilesListRequiredByPackages() as $packageFile) {
+		require_once ROOT_PATH.$packageFile;
+	}
 	
-		$moufFile=null;
-		$moufLine=null;
-		$isSent = headers_sent($moufFile, $moufLine);
+	$moufDeclaredClasses = get_declared_classes();
+	$moufDeclaredClassesByFiles = array();
+	
+	// Ok, now, we can start including our files.
+	foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
+		if (file_exists($mouf_base_path.$registeredFile)) {
+			require_once $mouf_base_path.$registeredFile;
 		
-		if ($isSent) {
-			$moufResponse = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
+			$moufFile=null;
+			$moufLine=null;
+			$isSent = headers_sent($moufFile, $moufLine);
+			
+			if ($isSent) {
+				$moufResponse = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
+				break;
+			}
+			
+			$moufDeclaredClassesNew = get_declared_classes();
+			$moufDeclaredClassesByFiles[$registeredFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
+			$moufDeclaredClasses = $moufDeclaredClassesNew;
+		} else {
+			$moufResponse = array("errorType"=>"filedoesnotexist", "errorMsg"=>"Error! Included file '".$registeredFile."' does not exist.");
 			break;
 		}
-		
-		$moufDeclaredClassesNew = get_declared_classes();
-		$moufDeclaredClassesByFiles[$registeredFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
-		$moufDeclaredClasses = $moufDeclaredClassesNew;
-	} else {
-		$moufResponse = array("errorType"=>"filedoesnotexist", "errorMsg"=>"Error! Included file '".$registeredFile."' does not exist.");
-		break;
 	}
 }
 
@@ -74,6 +88,7 @@ $encode = "php";
 if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
 	$encode = "json";
 }
+
 
 if ($encode == "php") {
 	echo serialize($moufResponse);

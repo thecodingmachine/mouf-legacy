@@ -18,7 +18,17 @@ class EnablePackageAction implements MoufActionProviderInterface {
 		} else {
 			$moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
-		$moufManager->addPackageByXmlFile($actionDescriptor->params['packageFile']);
+		
+		$fileName = $actionDescriptor->params['packageFile'];
+		if (strpos($fileName, "/") === 0) {
+			$fileName = substr($fileName, 1);
+		}
+		
+		if (!file_exists(ROOT_PATH."plugins/".$fileName)) {
+			throw new MoufException("Unable to enable package: the file plugins/".$fileName." does not exist.");
+		}
+		
+		$moufManager->addPackageByXmlFile($fileName);
 		$moufManager->rewriteMouf();
 	}
 	

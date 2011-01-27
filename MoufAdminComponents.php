@@ -252,15 +252,17 @@ $moufManager->addComponentInstances(array (
         1 => 'moufStatusMenuItem',
         2 => 'packagesLabelMenuItem',
         3 => 'managePackagesMenuItem',
-        4 => 'configLabelMenuItem',
-        5 => 'editConfigMenuItem',
-        6 => 'componentsLabelMenuItem',
-        7 => 'loadComponentsMenuItem',
-        8 => 'viewInstancesMenuItem',
-        9 => 'newInstanceMenuItem',
-        10 => 'miscellaneousLabelMenuItem',
-        11 => 'phpInfoMenuItem',
-        12 => 'logoutMenuItem',
+        4 => 'downloadPackagesMenuItem',
+        5 => 'manageRepositoriesMenuItem',
+        6 => 'configLabelMenuItem',
+        7 => 'editConfigMenuItem',
+        8 => 'componentsLabelMenuItem',
+        9 => 'loadComponentsMenuItem',
+        10 => 'viewInstancesMenuItem',
+        11 => 'newInstanceMenuItem',
+        12 => 'miscellaneousLabelMenuItem',
+        13 => 'phpInfoMenuItem',
+        14 => 'logoutMenuItem',
       ),
     ),
   ),
@@ -421,7 +423,7 @@ $moufManager->addComponentInstances(array (
     array (
       'menuText' => 
       array (
-        'value' => 'Enable/disable packages',
+        'value' => 'Enable/disable local packages',
         'type' => 'string',
         'metadata' => 
         array (
@@ -1252,6 +1254,10 @@ $moufManager->addComponentInstances(array (
   array (
     'class' => 'DownloadPackageAction',
     'external' => false,
+    'fieldBinds' => 
+    array (
+      'packageDownloadService' => 'packageDownloadService',
+    ),
   ),
   'moufInstallTemplate' => 
   array (
@@ -1287,6 +1293,92 @@ $moufManager->addComponentInstances(array (
         'value' => 
         array (
           0 => 'mouf/views/styles.css',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'downloadPackagesMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Download packages',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/packagetransfer/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'manageRepositoriesMenuItem' => 
+  array (
+    'class' => 'SplashMenuItem',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'menuText' => 
+      array (
+        'value' => 'Manage repositories',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuLink' => 
+      array (
+        'value' => 'mouf/repositories/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'menuCssClass' => 
+      array (
+        'value' => '',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
         ),
         'type' => 'string',
         'metadata' => 
@@ -1724,6 +1816,20 @@ class MoufAdmin {
 	 */
 	 public static function getMoufInstallTemplate() {
 	 	return MoufManager::getMoufManager()->getInstance('moufInstallTemplate');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getDownloadPackagesMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('downloadPackagesMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getManageRepositoriesMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('manageRepositoriesMenuItem');
 	 }
 
 	/**

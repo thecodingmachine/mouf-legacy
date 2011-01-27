@@ -144,6 +144,8 @@ class MoufPackageDownloadService {
 		$fileName = tempnam(sys_get_temp_dir(), "moufpackage");
 		$fp = fopen($fileName, "w");
 		
+		$url = $repository->getUrl();
+		
 		// preparation de l'envoi
 		$ch = curl_init();
 		if (strrpos($url, "/") !== strlen($url)-1) {
@@ -156,6 +158,7 @@ class MoufPackageDownloadService {
 		 * Ask cURL to write the contents to a file
 		 */
 		curl_setopt($ch, CURLOPT_FILE, $fp);
+		//curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
 		
 		curl_exec( $ch );
 		
@@ -166,8 +169,12 @@ class MoufPackageDownloadService {
 		
 		fclose($fp);
 
-		$this->packageManager->unpackPackage(new MoufPackageDescriptor($group, $name, $version), $fileName);
-
+		try {
+			$this->packageManager->unpackPackage(new MoufPackageDescriptor($group, $name, $version), $fileName);
+		} catch (MoufPackageUnzipException $zipException) {
+			throw new Exception("Error while unzipping ZIP file ".$fileName." that is supposed to contain the package ".$group."/".$name."/".$version.". Check the content of the file to understand what is wrong.");
+		}
+		
 		unlink($fileName);
 	}
 }
