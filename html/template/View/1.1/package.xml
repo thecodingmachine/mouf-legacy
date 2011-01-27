@@ -9,8 +9,8 @@
 	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
-			<group>html</group>
-			<name>template/BaseTemplate</name>
+			<group>html/template</group>
+			<name>BaseTemplate</name>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
