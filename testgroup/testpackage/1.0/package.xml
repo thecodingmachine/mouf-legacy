@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Test PACKAGE</displayName>
+	<shortDescription>Pourvu que ça marche!</shortDescription>
+	<docUrl>http://www.famfamfam.com/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+</package>
