@@ -203,7 +203,7 @@ class MultiStepActionService {
 	 * @param bool $selfEdit
 	 */
 	public function executeActions($selfEdit) {
-		header("Location: ".ROOT_URL."mouf/install/?selfedit=".($selfedit==true?"true":"false"));
+		header("Location: ".ROOT_URL."mouf/install/?selfedit=".($selfEdit==true?"true":"false"));
 	}
 	
 	/**

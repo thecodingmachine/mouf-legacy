@@ -98,8 +98,10 @@ class MoufPackageDownloadService {
 			$repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
 			
 			$this->repositories = array();
-			foreach ($repositoryUrls as $id=>$repositoryUrlArray) {
-				$this->repositories[] = new MoufRepository($id, $repositoryUrlArray['name'], $repositoryUrlArray['url'], $this);
+			if($repositoryUrls) {
+				foreach ($repositoryUrls as $id=>$repositoryUrlArray) {
+					$this->repositories[] = new MoufRepository($id, $repositoryUrlArray['name'], $repositoryUrlArray['url'], $this);
+				}
 			}
 		}
 		return $this->repositories;
