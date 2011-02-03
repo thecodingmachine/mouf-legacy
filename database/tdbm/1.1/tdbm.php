@@ -757,6 +757,8 @@ class DB_Connection {
 		return $result_array;
 	}
 	
+	private static $case_sensitive = null;
+	
 	/**
 	 * Returns, depending on the database system used and file system used the string passed
 	 * in parameter in lowercase or in the same case.
@@ -770,33 +772,35 @@ class DB_Connection {
 	 *
 	 */
 	function toStandardcase($string) {
-		if (isset($_SESSION['__TDBM_CACHE__']) && isset($_SESSION['__TDBM_CACHE__']['case_sensitive']))
-			$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
-		else
-			$case_sensitive = null;
-		if ($case_sensitive === null) {
-
-			if ($this->dsn["phptype"]=='pgsql') {
-				$_SESSION['__TDBM_CACHE__']['case_sensitive'] = false;
-			} else if ($this->dsn["phptype"]=='mysql') {
-				$case_sensitive_result = $this->getAll("SHOW VARIABLES WHERE Variable_name = 'lower_case_table_names'");
-
-				if (count($case_sensitive_result)==0) {
-					throw new DB_Exception('Unable to retrieve case sensitivity for your MySQL database.<br />\nPlease note only MySQL 5+ and PostGreSQL 7+ are supported.');
-				}
-				if ($case_sensitive_result[0]['Value'] == 1 || $case_sensitive_result[0]['Value'] == 2) {
+		if (self::$case_sensitive === null) {
+			if (isset($_SESSION['__TDBM_CACHE__']) && isset($_SESSION['__TDBM_CACHE__']['case_sensitive']))
+				self::$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
+			else
+				self::$case_sensitive = null;
+			if (self::$case_sensitive === null) {
+	
+				if ($this->dsn["phptype"]=='pgsql') {
 					$_SESSION['__TDBM_CACHE__']['case_sensitive'] = false;
+				} else if ($this->dsn["phptype"]=='mysql') {
+					$case_sensitive_result = $this->getAll("SHOW VARIABLES WHERE Variable_name = 'lower_case_table_names'");
+	
+					if (count($case_sensitive_result)==0) {
+						throw new DB_Exception('Unable to retrieve case sensitivity for your MySQL database.<br />\nPlease note only MySQL 5+ and PostGreSQL 7+ are supported.');
+					}
+					if ($case_sensitive_result[0]['Value'] == 1 || $case_sensitive_result[0]['Value'] == 2) {
+						$_SESSION['__TDBM_CACHE__']['case_sensitive'] = false;
+					} else {
+						$_SESSION['__TDBM_CACHE__']['case_sensitive'] = true;
+					}
 				} else {
-					$_SESSION['__TDBM_CACHE__']['case_sensitive'] = true;
+					throw new DB_Exception('Unable to retrieve case sensitivity for database type '.$this->dsn['phptype'].'<br />\nCurrently, only MySQL 5+ and PostGreSQL 7+ are supported.');
 				}
-			} else {
-				throw new DB_Exception('Unable to retrieve case sensitivity for database type '.$this->dsn['phptype'].'<br />\nCurrently, only MySQL 5+ and PostGreSQL 7+ are supported.');
+	
+				self::$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
 			}
-
-			$case_sensitive = $_SESSION['__TDBM_CACHE__']['case_sensitive'];
 		}
 
-		if ($case_sensitive) {
+		if (self::$case_sensitive) {
 			return $string;
 		} else {
 			return strtolower($string);
