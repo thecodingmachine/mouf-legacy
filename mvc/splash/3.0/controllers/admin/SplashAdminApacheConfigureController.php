@@ -50,7 +50,7 @@ class SplashAdminApacheConfigureController extends Controller {
 		#RewriteCond %{REQUEST_FILENAME} !-f
 		#RewriteCond %{REQUEST_FILENAME} !-d
 		
-		RewriteRule !((\.(js|ico|gif|jpg|png|css)$)|^plugins|^mouf) plugins/mvc/splash/2.0/splash.php";
+		RewriteRule !((\.(js|ico|gif|jpg|png|css)$)|^plugins|^mouf) plugins/mvc/splash/3.0/splash.php";
 		
 		file_put_contents(dirname(__FILE__)."/../../../../../../.htaccess", $str);
 		//var_dump("Location: ".ROOT_URL."mouf/?selfedit=".$selfedit);
