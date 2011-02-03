@@ -248,32 +248,37 @@ class TDBM_Object {
 	public function __get($var) {
 		$this->_dbLoadIfNotLoaded();
 
-		// Let's only deal with lower case.
-		$var = $this->db_connection->toStandardcaseColumn($var);
-
+		// Let's first check if the key exist.
 		if (!array_key_exists($var, $this->db_row)) {
-			// Unable to find column.... this is an error if the object has been retrieved from database.
-			// If it's a new object, well, that may not be an error after all!
-			// Let's check if the column does exist in the table
-			$column_exist = $this->db_connection->checkColumnExist($this->db_table_name, $var);
-			// If the column DOES exist, then the object is new, and therefore, we should
-			// return null.
-			if ($column_exist === true) {
-				return null;
+		
+			// The key does not exist? Does a lower case key exist?
+			// Note: we only call it after the first array_key_exists because
+			// a call to toStandardcaseColumn is quite slow in PHP.
+			$var = $this->db_connection->toStandardcaseColumn($var);
+	
+			if (!array_key_exists($var, $this->db_row)) {
+				// Unable to find column.... this is an error if the object has been retrieved from database.
+				// If it's a new object, well, that may not be an error after all!
+				// Let's check if the column does exist in the table
+				$column_exist = $this->db_connection->checkColumnExist($this->db_table_name, $var);
+				// If the column DOES exist, then the object is new, and therefore, we should
+				// return null.
+				if ($column_exist === true) {
+					return null;
+				}
+	
+				// Let's try to be accurate in error reporting. The checkColumnExist returns an array of closest matches.
+				$result_array = $column_exist;
+				
+				if (count($result_array)==1)
+				$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant this column: '".$result_array[0]."'";
+				else
+				$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant one of those columns: '".implode("', '",$result_array)."'";
+	
+	
+				throw new TDBM_Exception($str);
 			}
-
-			// Let's try to be accurate in error reporting. The checkColumnExist returns an array of closest matches.
-			$result_array = $column_exist;
-			
-			if (count($result_array)==1)
-			$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant this column: '".$result_array[0]."'";
-			else
-			$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant one of those columns: '".implode("', '",$result_array)."'";
-
-
-			throw new TDBM_Exception($str);
 		}
-			
 		return $this->db_row[$var];
 	}
 

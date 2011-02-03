@@ -181,7 +181,7 @@ class $baseClassName extends TDBM_Object
 	 * @return timestamp
 	 */
 	public function '.$columnGetterName.'(){
-		return strtotime($this->'.$column->name.');
+		return strtotime($this->__get(\''.$column->name.'\'));
 	}
 	
 	/**
@@ -191,7 +191,7 @@ class $baseClassName extends TDBM_Object
 	 * @param timestamp $'.$column->name.'
 	 */
 	public function '.$columnSetterName.'($'.$column->name.') {
-		$this->'.$column->name.' = date("Y-m-d H:i:s", $'.$column->name.');
+		$this->__set(\''.$column->name.'\', date("Y-m-d H:i:s", $'.$column->name.'));
 	}
 	
 ';
@@ -202,7 +202,7 @@ class $baseClassName extends TDBM_Object
 	 * @return string
 	 */
 	public function '.$columnGetterName.'(){
-		return $this->'.$column->name.';
+		return $this->__get(\''.$column->name.'\');
 	}
 	
 	/**
@@ -211,7 +211,7 @@ class $baseClassName extends TDBM_Object
 	 * @param string $'.$column->name.'
 	 */
 	public function '.$columnSetterName.'($'.$column->name.') {
-		$this->'.$column->name.' = $'.$column->name.';
+		$this->__set(\''.$column->name.'\', $'.$column->name.');
 	}
 	
 ';				
@@ -310,7 +310,7 @@ class $baseClassName extends TDBM_Object
 	 * @param '.$referencedBeanName.' $object
 	 */
 	public function '.$shortSetterName.'('.$referencedBeanName.' $object) {
-		$this->'.$array["col1"].' = $object->'.$array["col2"].';
+		$this->__set(\''.$array["col1"].'\', $object->__get(\''.$array["col2"].'\'));
 	}
 	
 ';
