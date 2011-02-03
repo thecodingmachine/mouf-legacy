@@ -20,10 +20,16 @@
 
 /**
  * Instances of this class represent an object that is bound to a row in a database table.
+ * You access access the rows using there name, as a property of an object, or as a table.
+ * For instance:
+ * 	<code>$tdbmObject->myrow</code>
+ * or
+ * 	<code>$tdbmObject['myrow']</code>
+ * are both valid.
  * 
  * @author David Negrier
  */
-class TDBM_Object {
+class TDBM_Object implements ArrayAccess, Iterator {
 
 	/**
 	 * The service this object is bound to.
@@ -550,6 +556,80 @@ class TDBM_Object {
 	public function _getStatus() {
 		return $this->TDBM_Object_state;
 	}
+	
+		/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 * @param string $value
+	 */
+	public function offsetSet($offset, $value) {
+		$this->__set($offset, $value);
+    }
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 */
+    public function offsetExists($offset) {
+    	$this->dbLoadIfNotLoaded();
+        return isset($this->db_row[$offset]);
+    }
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 */
+    public function offsetUnset($offset) {
+		$this->__set($offset, null);
+    }
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 */
+    public function offsetGet($offset) {
+        return $this->__get($offset);
+    }
+	
+	private $_validIterator = false;
+	/**
+	 * Implements iterator behaviour for our object (so we can each column).
+	 */
+	public function rewind() {
+    	$this->dbLoadIfNotLoaded();
+		if (count($this->db_row)>0) {
+			$this->_validIterator = true;
+		} else {
+			$this->_validIterator = false;
+		}
+		reset($this->db_row);
+	}
+	/**
+	 * Implements iterator behaviour for our object (so we can each column).
+	 */
+	public function next() {
+		$val = next($this->db_row);
+		$this->_validIterator = !($val === false);
+	}
+	/**
+	 * Implements iterator behaviour for our object (so we can each column).
+	 */
+	public function key() {
+		return key($this->db_row);
+	}
+	/**
+	 * Implements iterator behaviour for our object (so we can each column).
+	 */
+	public function current() {
+		return current($this->db_row);
+	}
+	/**
+	 * Implements iterator behaviour for our object (so we can each column).
+	 */
+	public function valid() {
+		return $this->_validIterator;
+	}	
 }
 
 
