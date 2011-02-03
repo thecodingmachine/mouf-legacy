@@ -926,7 +926,7 @@ class DB_Connection {
 }
 
 
-class DBM_Object {
+class DBM_Object implements ArrayAccess, Iterator {
 
 	static private $table_descs;
 
@@ -1489,48 +1489,51 @@ class DBM_Object {
 	public function __get($var) {
 		$this->dbLoadIfNotLoaded();
 
-		// Let's only deal with lower case.
-		$var = $this->db_connection->toStandardcaseColumn($var);
+		if (!isset($this->db_row[$var])) {
 
-		if (!array_key_exists($var, $this->db_row)) {
-			// Unable to find column.... this is an error if the object has been retrieved from database.
-			// If it's a new object, well, that may not be an error after all!
-			// Let's check if the column does exist in the table
-			$column_exist = $this->db_connection->checkColumnExist($this->db_table_name, $var);
-			// If the column DOES exist, then the object is new, and therefore, we should
-			// return null.
-			if ($column_exist === true) {
-				return null;
+			// Let's only deal with lower case.
+			$var = $this->db_connection->toStandardcaseColumn($var);
+	
+			if (!isset($this->db_row[$var])) {
+				// Unable to find column.... this is an error if the object has been retrieved from database.
+				// If it's a new object, well, that may not be an error after all!
+				// Let's check if the column does exist in the table
+				$column_exist = $this->db_connection->checkColumnExist($this->db_table_name, $var);
+				// If the column DOES exist, then the object is new, and therefore, we should
+				// return null.
+				if ($column_exist === true) {
+					return null;
+				}
+	
+				// Let's try to be accurate in error reporting. Let's try to find the column.
+	
+				$columns = array_keys($this->db_row);
+	
+				// Let's compute the lenvenstein distance and keep the smallest one in $smallest.
+				$smallest = 99999999;
+				$distance_column = array();
+	
+				foreach ($columns as $current_column) {
+					$distance = levenshtein($var, $current_column);
+					$distance_column[$current_column]=$distance;
+					if ($distance<$smallest)
+					$smallest = $distance;
+				}
+	
+				$result_array = array();
+				foreach ($distance_column as $column => $distance) {
+					if ($smallest == $distance)
+					$result_array[] = $column;
+				}
+	
+				if (count($result_array)==1)
+				$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant this column: '".$result_array[0]."'";
+				else
+				$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant one of those columns: '".implode("', '",$result_array)."'";
+	
+	
+				throw new DB_Exception($str);
 			}
-
-			// Let's try to be accurate in error reporting. Let's try to find the column.
-
-			$columns = array_keys($this->db_row);
-
-			// Let's compute the lenvenstein distance and keep the smallest one in $smallest.
-			$smallest = 99999999;
-			$distance_column = array();
-
-			foreach ($columns as $current_column) {
-				$distance = levenshtein($var, $current_column);
-				$distance_column[$current_column]=$distance;
-				if ($distance<$smallest)
-				$smallest = $distance;
-			}
-
-			$result_array = array();
-			foreach ($distance_column as $column => $distance) {
-				if ($smallest == $distance)
-				$result_array[] = $column;
-			}
-
-			if (count($result_array)==1)
-			$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant this column: '".$result_array[0]."'";
-			else
-			$str = "Could not find column \"$var\" in table \"$this->db_table_name\". Maybe you meant one of those columns: '".implode("', '",$result_array)."'";
-
-
-			throw new DB_Exception($str);
 		}
 			
 		return $this->db_row[$var];
@@ -3108,6 +3111,65 @@ class DBM_Object {
 
 		return $str;
 
+	}
+	
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 * @param string $value
+	 */
+	public function offsetSet($offset, $value) {
+		$this->__set($offset, $value);
+    }
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 */
+    public function offsetExists($offset) {
+    	$this->dbLoadIfNotLoaded();
+        return isset($this->db_row[$offset]);
+    }
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 */
+    public function offsetUnset($offset) {
+		$this->__set($offset, null);
+    }
+	/**
+	 * Implements array behaviour for our object.
+	 * 
+	 * @param string $offset
+	 */
+    public function offsetGet($offset) {
+        return $this->__get($offset);
+    }
+	
+	private $valid = false;
+	public function rewind() {
+    	$this->dbLoadIfNotLoaded();
+		if (count($this->db_row)>0) {
+			$this->valid = true;
+		} else {
+			$this->valid = false;
+		}
+		reset($this->db_row);
+	}
+	public function next() {
+		$val = next($this->db_row);
+		$this->valid = !($val === false);
+	}
+	public function key() {
+		return key($this->db_row);
+	}
+	public function current() {
+		return current($this->db_row);
+	}
+	public function valid() {
+		return $this->valid;
 	}
 }
 
