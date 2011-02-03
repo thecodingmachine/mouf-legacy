@@ -468,11 +468,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * For instance, with a PgSQL database, you will always get a lowercase string.
 	 * On MySQL, it will depend the system used. By default, on Windows, it should return a lowercase string
 	 * while on Linux, it will return the same string.
-	 * The database setting is retrieved only once and stored in session to avoid unnecessary database calls.
 	 *
-	 * TODO: change the session mecanism so we can use 2 different databases. Right now, they should have the same
-	 * case sensitivity settings, which is not good.
-	 *
+	 * @see DB_ConnectionInterface::toStandardcase()
+	 * @param $string string String to put in lowercase if the database is case insensitive.
+	 * @return bool
 	 */
 	function toStandardcase($string) {
 		$caseSensitive = $this->isCaseSensitive();
