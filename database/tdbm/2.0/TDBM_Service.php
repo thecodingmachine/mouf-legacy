@@ -391,6 +391,9 @@ class TDBM_Service {
 		if ($className == null) {
 			$object = new TDBM_Object($this, $table_name);
 		} else {
+			if (!is_string($className)) {
+				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The third parameter should be a string representing a class name to instantiate.");
+			}
 			if (!is_subclass_of($className, "TDBM_Object")) {
 				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The class ".$className." should extend TDBM_Object.");
 			}
