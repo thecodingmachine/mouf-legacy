@@ -274,7 +274,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return array<string>
 	 */
 	public function getListOfTables($ignoreSequences = true) {
-		$str = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = ".$this->quoteSmart($this->dbname)." ;";
+		$str = "SELECT table_name FROM information_schema.TABLES WHERE table_schema = ".$this->quoteSmart($this->dbname)." AND table_type = 'BASE TABLE';";
 
 		$res = $this->getAll($str);
 		$array = array();

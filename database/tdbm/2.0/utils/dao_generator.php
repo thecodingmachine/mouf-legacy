@@ -611,7 +611,7 @@ class $this->daoFactoryClassName
 	
 	/**
 	 * Transforms a string to camelCase (except the first letter will be uppercase too).
-	 * Underscores are removed and the first letter after the underscore is uppercased.
+	 * Underscores and spaces are removed and the first letter after the underscore is uppercased.
 	 * 
 	 * @param $str string
 	 * @return string
@@ -619,10 +619,13 @@ class $this->daoFactoryClassName
 	public static function toCamelCase($str) {
 		$str = strtoupper(substr($str,0,1)).substr($str,1);
 		while (true) {
-			if (strpos($str, "_") === false)
+			if (strpos($str, "_") === false && strpos($str, " ") === false)
 				break;
 				
 			$pos = strpos($str, "_");
+			if ($pos === false) {
+				$pos = strpos($str, " ");
+			}
 			$before = substr($str,0,$pos);
 			$after = substr($str,$pos+1);
 			$str = $before.strtoupper(substr($after,0,1)).substr($after,1);
