@@ -220,19 +220,19 @@ class TDBM_Object implements ArrayAccess, Iterator {
 			$object_id = $this->TDBM_Object_id;
 			// If there is only one primary key:
 			if (count($pk_table)==1) {
-				$sql_where = $pk_table[0]."=".$this->db_connection->quoteSmart($this->TDBM_Object_id);
+				$sql_where = $this->db_connection->escapeDBItem($pk_table[0])."=".$this->db_connection->quoteSmart($this->TDBM_Object_id);
 			} else {
 				$ids = unserialize($object_id);
 				$i=0;
 				$sql_where_array = array();
 				foreach ($pk_table as $pk) {
-					$sql_where_array[] = $pk."=".$this->db_connection->quoteSmart($ids[$i]);
+					$sql_where_array[] = $this->db_connection->escapeDBItem($pk)."=".$this->db_connection->quoteSmart($ids[$i]);
 					$i++;
 				}
 				$sql_where = implode(" AND ",$sql_where_array);
 			}
 
-			$sql = "SELECT * FROM ".$this->db_table_name." WHERE ".$sql_where;
+			$sql = "SELECT * FROM ".$this->db_connection->escapeDBItem($this->db_table_name)." WHERE ".$sql_where;
 			$result = $this->db_connection->query($sql);
 
 
@@ -367,9 +367,10 @@ class TDBM_Object implements ArrayAccess, Iterator {
 				else
 				trigger_error($msg, E_USER_ERROR);
 			}
-
-
-			$sql = 'INSERT INTO '.$this->db_table_name.' ('.implode(',', array_keys($this->db_row)).') VALUES (';
+			
+			$sql = 'INSERT INTO '.$this->db_connection->escapeDBItem($this->db_table_name).
+					' ('.implode(",", array_map(array($this->dbConnection, "escapeDBItem"), array_keys($this->db_row))).')
+					 VALUES (';
 
 			$first = true;
 			foreach ($this->db_row as $key=>$value) {
@@ -442,29 +443,28 @@ class TDBM_Object implements ArrayAccess, Iterator {
 			$object_id = $this->TDBM_Object_id;
 			// If there is only one primary key:
 			if (count($pk_table)==1) {
-				$sql_where = $pk_table[0]."=".$this->db_connection->quoteSmart($this->TDBM_Object_id);
+				$sql_where = $this->db_connection->escapeDBItem($pk_table[0])."=".$this->db_connection->quoteSmart($this->TDBM_Object_id);
 			} else {
 				$ids = unserialize($object_id);
 				$i=0;
 				$sql_where_array = array();
 				foreach ($pk_table as $pk) {
-					$sql_where_array[] = $pk."=".$this->db_connection->quoteSmart($ids[$i]);
+					$sql_where_array[] = $this->db_connection->escapeDBItem($pk)."=".$this->db_connection->quoteSmart($ids[$i]);
 					$i++;
 				}
 				$sql_where = implode(" AND ",$sql_where_array);
 			}
 
-			$sql = 'UPDATE '.$this->db_table_name.' SET ';
+			$sql = 'UPDATE '.$this->db_connection->escapeDBItem($this->db_table_name).' SET ';
 
 			$first = true;
 			foreach ($this->db_row as $key=>$value) {
 				if (!$first)
 				$sql .= ',';
-				$sql .= "$key = ".$this->db_connection->quoteSmart($value);
+				$sql .= $this->db_connection->escapeDBItem($key)." = ".$this->db_connection->quoteSmart($value);
 				$first=false;
 			}
 			$sql .= ' WHERE '.$sql_where/*$primary_key."='".$this->db_row[$primary_key]."'"*/;
-
 			try {
 				$this->db_connection->exec($sql);
 			} catch (TDBM_Exception $e) {

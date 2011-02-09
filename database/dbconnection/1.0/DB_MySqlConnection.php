@@ -668,7 +668,16 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 				return "string";
 		}
 	}
-    
+	
+	/**
+	 * Escape the table name and column name with the special char that depends of database type
+	 * 
+	 * @param $string string
+	 * @return string
+	 */
+	public function escapeDBItem($string) {
+		return '`'.$string.'`';
+	}
 }
 
 

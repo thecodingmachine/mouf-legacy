@@ -579,5 +579,15 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	public function getUnderlyingType($type) {
 		return $this->dbConnection->getUnderlyingType($type);
 	}
+	
+	/**
+	 * Escape the table name and column name with the special char that depends of database type
+	 * 
+	 * @param $string string
+	 * @return string
+	 */
+	public function escapeDBItem($string) {
+		return $this->dbConnection->escapeDBItem($string);
+	}
 }
 ?>

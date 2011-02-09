@@ -409,7 +409,7 @@ class TDBM_Service {
 				// If $id == 1, it is likely that the sequence was just created.
 				// However, there might be already some data in the database. We will check the biggest ID in the table.
 				if ($id == 1) {
-					$sql = "SELECT MAX(".$pk_table[0].") AS maxkey FROM ".$root_table;
+					$sql = "SELECT MAX(".$this->dbConnection->escapeDBItem($pk_table[0]).") AS maxkey FROM ".$root_table;
 					$res = $this->dbConnection->getAll($sql);
 					// NOTE: this will work only if the ID is an integer!
 					$newid = $res[0]['maxkey'] + 1;
@@ -444,20 +444,20 @@ class TDBM_Service {
 			$object_id = $object->TDBM_Object_id;
 			// If there is only one primary key:
 			if (count($pk_table)==1) {
-				$sql_where = $pk_table[0]."=".$this->dbConnection->quoteSmart($object->TDBM_Object_id);
+				$sql_where = $this->dbConnection->escapeDBItem($pk_table[0])."=".$this->dbConnection->quoteSmart($object->TDBM_Object_id);
 			} else {
 				$ids = unserialize($object_id);
 				$i=0;
 				$sql_where_array = array();
 				foreach ($pk_table as $pk) {
-					$sql_where_array[] = $pk."=".$this->dbConnection->quoteSmart($ids[$i]);
+					$sql_where_array[] = $this->dbConnection->escapeDBItem($pk)."=".$this->dbConnection->quoteSmart($ids[$i]);
 					$i++;
 				}
 				$sql_where = implode(" AND ",$sql_where_array);
 			}
 
 
-			$sql = 'DELETE FROM '.$object->_getDbTableName().' WHERE '.$sql_where/*.$primary_key."='".plainstring_to_dbprotected($object->TDBM_Object_id)."'"*/;
+			$sql = 'DELETE FROM '.$this->dbConnection->escapeDBItem($object->_getDbTableName()).' WHERE '.$sql_where/*.$primary_key."='".plainstring_to_dbprotected($object->TDBM_Object_id)."'"*/;
 			$result = $this->dbConnection->exec($sql);
 
 			if ($result != 1)
@@ -1358,7 +1358,7 @@ class TDBM_Service {
 			return $result;
 		}
 
-		$sql = "SELECT DISTINCT $table_name.* $orderby_column_statement FROM $sql";
+		$sql = "SELECT DISTINCT ".$this->dbConnection->escapeDBItem($table_name).".* $orderby_column_statement FROM $sql";
 
 		$where_clause = $filter->toSql($this->dbConnection);
 		if ($where_clause != '')
