@@ -1271,8 +1271,8 @@ class TDBM_Service {
 				$col2 = $constraint['col1'];
 				$col1 = $constraint['col2'];
 					
-				$sql = "($sql LEFT JOIN ".$table2." ON
-				$table1.$col1=$table2.$col2)";
+				$sql = "($sql LEFT JOIN ".$this->dbConnection->escapeDBItem($table2)." ON
+				".$this->dbConnection->escapeDBItem($table1).".".$this->dbConnection->escapeDBItem($col1)."=".$this->dbConnection->escapeDBItem($table2).".".$this->dbConnection->escapeDBItem($col2).")";
 			}
 		}
 
@@ -1285,12 +1285,19 @@ class TDBM_Service {
 			// Mais comment gÃ©rer Ã§a sans plomber les perfs et en utilisant le path fourni?????
 
 			$path = $this->cache['paths'][$table_name][$target_table_table];
-			/*echo 'beuuuh';
+			/*
+			echo 'beuuuh';
 			 var_dump($needed_table_array_for_orderby);
-			 var_dump($path);*/
+			 var_dump($path);
+			 var_dump($target_table_table);
+			 */
+			/**********************************
+			 * Modifier par Marc de *1 vers 1*
+			 * (sur les conseils de David !)
+			 */
 			$is_ok = true;
 			foreach ($path as $step) {
-				if ($step["type"]=="*1") {
+				if ($step["type"]=="1*") {
 					$is_ok = false;
 					break;
 				}

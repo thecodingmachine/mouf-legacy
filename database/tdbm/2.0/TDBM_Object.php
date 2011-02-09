@@ -369,7 +369,7 @@ class TDBM_Object implements ArrayAccess, Iterator {
 			}
 			
 			$sql = 'INSERT INTO '.$this->db_connection->escapeDBItem($this->db_table_name).
-					' ('.implode(",", array_map(array($this->dbConnection, "escapeDBItem"), array_keys($this->db_row))).')
+					' ('.implode(",", array_map(array($this->db_connection, "escapeDBItem"), array_keys($this->db_row))).')
 					 VALUES (';
 
 			$first = true;
