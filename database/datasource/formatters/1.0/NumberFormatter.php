@@ -43,8 +43,25 @@ class NumberFormatter implements FormatterInterface {
 	 * @param string $value
 	 */
 	public function format($value) {
-		return number_format($value, $this->decimalPlaces, $this->decimalSeparator, $this->thousandsSeparator);
+		return self::numberFormat($value, $this->decimalPlaces, $this->decimalSeparator, $this->thousandsSeparator);
 	}
 	
+	/**
+	 * Apply a number_format with many chacacters for separator
+	 * 
+	 * @param string $number Source number
+	 * @param string $decimal number of decimal
+	 * @param string $dec_sep Decimal separator
+	 * @param string $th_sep Thousand separator
+	 */
+	static public function numberFormat($number, $decimal, $dec_sep = null, $th_sep = null) {
+		if($dec_sep || $th_sep) {
+			$numberFormat = number_format($number, $decimal, $dec_sep, "%");
+			$numberFormat = str_replace("%", $th_sep, $numberFormat);
+		}
+		else
+			$numberFormat = number_format($number, $decimal);
+		return $numberFormat;
+	}
 }
 ?>

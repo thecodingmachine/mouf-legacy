@@ -15,7 +15,7 @@ class HtmlFromFunction implements HtmlElementInterface {
 	 *
 	 * @Property
 	 * @Compulsory 
-	 * @var callback
+	 * @var string
 	 */
 	public $functionPointer;
 	

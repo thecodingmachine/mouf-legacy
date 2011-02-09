@@ -70,6 +70,11 @@ class MoufUserService implements UserServiceInterface {
 	 * @return boolean.
 	 */
 	public function login($login, $password) {
+		// Is a session mechanism available?
+		if (!session_id()) {
+			throw new MoufException("The session must be initialized before trying to login. Please use session_start().");
+		}
+		
 		// First, if we are logged, let's unlog the user.
 		if ($this->isLogged()) {
 			$this->logoff();

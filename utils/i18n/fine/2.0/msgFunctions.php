@@ -78,6 +78,19 @@ function fine_get_month($month) {
 	return fine_get_common_service("month.".$month);
 }
 
+
+/**
+ * Return the translation of the day.  
+ * 
+ * @param int $day Number of the day, 0 for sunday, 7 for saturday
+ * @return string
+ */
+function fine_get_day($day) {
+	$day = (int)$day;
+	
+	return fine_get_common_service("day.".$day);
+}
+
 /**
  * Return date format like dd/mm/yy or mm/dd/yy
  * 
