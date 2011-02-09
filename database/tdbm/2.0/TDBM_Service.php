@@ -1471,9 +1471,9 @@ class TDBM_Service {
 		// 4-2, let's take all the objects out of the orderby bag, and let's make objects from them
 		$orderby_bag2 = array();
 		foreach ($orderby_bag as $thing) {
-			if (is_a($thing,'DBM_OrderBySQLString')) {
+			if (is_a($thing,'TDBM_OrderBySQLString')) {
 				$orderby_bag2[] = $thing;
-			} elseif (is_a($thing,'DBM_OrderByColumn')) {
+			} elseif (is_a($thing,'TDBM_OrderByColumn')) {
 				$orderby_bag2[] = $thing;
 			} elseif (is_string($thing)) {
 				$orderby_bag2[] = new TDBM_OrderBySQLString($thing);
