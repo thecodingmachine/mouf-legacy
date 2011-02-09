@@ -572,7 +572,7 @@ class TDBM_Object implements ArrayAccess, Iterator {
 	 * @param string $offset
 	 */
     public function offsetExists($offset) {
-    	$this->dbLoadIfNotLoaded();
+    	$this->_dbLoadIfNotLoaded();
         return isset($this->db_row[$offset]);
     }
 	/**
@@ -597,7 +597,7 @@ class TDBM_Object implements ArrayAccess, Iterator {
 	 * Implements iterator behaviour for our object (so we can each column).
 	 */
 	public function rewind() {
-    	$this->dbLoadIfNotLoaded();
+    	$this->_dbLoadIfNotLoaded();
 		if (count($this->db_row)>0) {
 			$this->_validIterator = true;
 		} else {

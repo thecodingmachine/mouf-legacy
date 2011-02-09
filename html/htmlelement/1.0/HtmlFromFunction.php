@@ -29,6 +29,9 @@ class HtmlFromFunction implements HtmlElementInterface {
 	
 	
 	public function toHtml() {
+		if ($this->parameters == false) {
+			$this->parameters = array();
+		}
 		call_user_func_array($this->functionPointer, $this->parameters);
 	}
 }

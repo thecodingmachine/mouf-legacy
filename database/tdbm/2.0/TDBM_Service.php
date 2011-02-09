@@ -940,13 +940,13 @@ class TDBM_Service {
 			$already_done = false;
 			foreach ($path as $previous_constraint)
 			{
-				if ($previous_constraint['type']=='1*' && $current_table == $previous_constraint["table2"] && $col2 == $previous_constraint["col2"])
+				if ($previous_constraint['type']=='1*' && $current_table == $previous_constraint["table2"] && $col2 == $previous_constraint["col2"] && $table1 == $previous_constraint["table1"] && $col1 == $previous_constraint["col1"])
 				{
 					//echo "YOUHOU1! $current_table $col2";
 					$already_done = true;
 					break;
 				}
-				elseif ($previous_constraint['type']=='*1' && $current_table == $previous_constraint["table1"] && $col2 == $previous_constraint["col1"])
+				elseif ($previous_constraint['type']=='*1' && $current_table == $previous_constraint["table1"] && $col2 == $previous_constraint["col1"] && $table1 == $previous_constraint["table2"] && $col1 == $previous_constraint["col2"])
 				{
 					//echo "YOUHOU2! $current_table $col2";
 					$already_done = true;
