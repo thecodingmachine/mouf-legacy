@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package>
 	<displayName>RightsService-Splash integration</displayName>
-	<shortDescription>This package contains a set of class to bind the Splash MVC framework (v2)
+	<shortDescription>This package contains a set of class to bind the Splash MVC framework (>=v2)
 	with the RightsService component. It features: a @RequiresRight annotation to restrict access to
 	logged users only.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/splash_annotations.html</docUrl>
@@ -15,7 +15,7 @@
 		<dependency>
 			<group>mvc</group>
 			<name>splash</name>
-			<version>2.0</version>
+			<version>>=2.0</version>
 		</dependency>
 	</dependencies>
 	<requires>
