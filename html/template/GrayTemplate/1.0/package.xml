@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Gray Template</displayName>
+	<shortDescription>This package contains a neutral template gray.
+	The content is automatically adjusted to the website page to use all the width.
+	Anyway, you can use this component as a model if you like.</shortDescription>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html/template</group>
+			<name>BaseTemplate</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>GrayTemplate.php</require>
+		<require>GrayMenu.php</require>
+		<require>GrayMenuItem.php</require>
+	</requires>
+</package>
