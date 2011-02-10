@@ -6,7 +6,7 @@
  * (because it could be a request from Mouf itself via Curl, and therefore not logged).
  */
 
-if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '::1') {
+if ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR'] /*|| $_SERVER['REMOTE_ADDR'] == '::1'*/) {
 	return;
 }
 
