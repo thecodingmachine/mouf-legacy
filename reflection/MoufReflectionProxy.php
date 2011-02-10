@@ -192,8 +192,6 @@ class MoufReflectionProxy {
 	}
 	
 	public static function getLocalUrlToProject(){
-		// TODO: vérifier que si $_SERVER['SERVER_NAME'] != "localhost", le check_rights.php
-		// ne bloque pas...
 		if (isset($_SERVER['HTTPS'])) {
 			$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL;
 		} else {
