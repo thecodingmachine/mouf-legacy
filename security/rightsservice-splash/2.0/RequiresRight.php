@@ -71,9 +71,9 @@ class RequiresRightAnnotation extends AbstractFilter
 			$rightsService = MoufManager::getMoufManager()->getInstance($instanceName);
 		} catch (MoufInstanceNotFoundException $e) {
 			if (!empty($this->name))
-				throw new MoufException("Error using the @RequiresRight annotation: unable to find the RightsService instance named: ".$this->value, $e);
+				throw new MoufException("Error using the @RequiresRight annotation: unable to find the RightsService instance named: ".$this->value, null, $e);
 			else
-				throw new MoufException("Error using the @RequiresRight annotation: by default, this annotation requires a component named 'rightsService', and that extends the RightsServiceInterface interface.", $e);
+				throw new MoufException("Error using the @RequiresRight annotation: by default, this annotation requires a component named 'rightsService', and that extends the RightsServiceInterface interface.", null, $e);
 		}
 		
 		$rightsService->redirectNotAuthorized($this->name);
