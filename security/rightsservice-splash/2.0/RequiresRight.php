@@ -44,7 +44,8 @@ class RequiresRightAnnotation extends AbstractFilter
 		}
 
 		$this->name = trim($splitParamsArray['name'], '"\'');
-		$this->instanceName = $splitParamsArray['instance'];
+		if(isset($splitParamsArray['instance']))
+			$this->instanceName = $splitParamsArray['instance'];
 	}
 	
 	/**
