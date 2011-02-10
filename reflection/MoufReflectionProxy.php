@@ -31,11 +31,6 @@ class MoufReflectionProxy {
 	 * @return array<string>
 	 */
 	public static function getInstances($baseClass, $selfEdit) {
-		/*if ($_SERVER['SERVER_PROTOCOL'] == 'https') {
-			$url = "http://127.0.0.1".ROOT_URL."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
-		} else {
-			$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
-		}*/
 		$url = MoufReflectionProxy::getLocalUrlToProject()."mouf/direct/get_instances.php?class=".$baseClass."&selfedit=".(($selfEdit)?"true":"false");
 		
 		$response = self::performRequest($url);
