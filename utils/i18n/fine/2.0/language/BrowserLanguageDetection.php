@@ -49,7 +49,9 @@ class BrowserLanguageDetection implements LanguageDetectionInterface {
 		}
 		// sorting the list by coefficient desc
 		krsort($accepted);
-		$this->language = $accepted[0]['code'];
+		if (isset($accepted[0])) {
+			$this->language = $accepted[0]['code'];
+		}
 		
 		return $this->language;
 	}
