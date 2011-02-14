@@ -25,7 +25,7 @@ if($saved) {
 	<p>Label for key '<?php echo $key ?>' in language <?php echo $language ?>:</p>
 	<?php 
 	if($label == "" && !is_null($label)) {
-		echo "<img src='".ROOT_URL."plugins/utils/icons/crystalproject/1.0/actions/agt_update_critical.png' alt='warning' title='Empty text'/> Caution label is set but empty";
+		echo "<img src='".ROOT_URL."plugins/utils/icons/crystalproject/1.0/actions/agt_update_critical.png' alt='warning' title='Empty text'/> Caution label is set but empty<br />";
 	}
 	?>
 	<input type="hidden" name="key" value="<?php echo plainstring_to_htmlprotected($key) ?>" />
