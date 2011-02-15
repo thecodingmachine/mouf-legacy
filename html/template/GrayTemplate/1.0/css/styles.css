@@ -101,7 +101,7 @@ div.warning {
 	color:#222200;
 	padding:5px 5px 5px 26px;
 	border:1px solid #F0C020;
-	background-image: url("images/warning.png");
+	background-image: url("../images/warning.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
@@ -110,7 +110,7 @@ div.error {
 	color:#220000;
 	padding:5px 5px 5px 26px;
 	border:1px solid #F03010;
-	background-image: url("images/exclamation.png");
+	background-image: url("../images/exclamation.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
@@ -119,7 +119,7 @@ div.good {
 	color:#002200;
 	padding:5px 5px 5px 26px;
 	border:1px solid #10F030;
-	background-image: url("images/good.png");
+	background-image: url("../images/good.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
@@ -128,7 +128,7 @@ div.bad {
 	color:#220000;
 	padding:5px 5px 5px 26px;
 	border:1px solid #F03010;
-	background-image: url("images/bad.png");
+	background-image: url("../images/bad.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
@@ -137,7 +137,7 @@ div.star {
 	color:#222200;
 	padding:5px 5px 5px 26px;
 	border:1px solid #F0C020;
-	background-image: url("images/star.png");
+	background-image: url("../images/star.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
@@ -146,7 +146,7 @@ div.note {
 	color:#111111;
 	padding:5px 5px 5px 26px;
 	/*border:1px solid #999999;*/
-	background-image: url("images/note.png");
+	background-image: url("../images/note.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
@@ -155,7 +155,7 @@ div.zoom {
 	color:#111111;
 	padding:5px 5px 5px 26px;
 	/*border:1px solid #999999;*/
-	background-image: url("images/zoom.png");
+	background-image: url("../images/zoom.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
