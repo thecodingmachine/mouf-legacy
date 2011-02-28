@@ -19,8 +19,13 @@ class Druplash {
 			// remove trailing slash
 			$url = rtrim($url, "/");
 			
+			$title = 'Action '.$urlCallback->methodName.' for controller '.$urlCallback->controllerInstanceName;
+			if ($urlCallback->title !== null) {
+				$title = $urlCallback->title ;
+			}
+			
 			$items[$url] = array(
-			    'title' => 'Action '.$urlCallback->methodName.' for controller '.$urlCallback->controllerInstanceName,
+			    'title' => $title,
 			    'page callback' => 'druplash_execute_action',
 			    'access arguments' => array('access content'),
 				'page arguments' => array($urlCallback->controllerInstanceName, $urlCallback->methodName),
