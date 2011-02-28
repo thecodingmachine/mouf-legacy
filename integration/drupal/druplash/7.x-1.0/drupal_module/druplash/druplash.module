@@ -13,73 +13,7 @@ function druplash_perm() {
  */
 function druplash_menu() {
 	// Let's find the Drupal Controllers.
-	return Druplash::getDrupalMenus();	
-	
-  /*$items['admin/settings/druplash'] = array(
-    'title' => t('druplash management'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('druplash_admin'),
-    'access arguments' => array('access admin druplash'),
-    'file' => 'druplash.admin.inc',
-  );*/
-  /*$items['admin/settings/druplash'] = array(
-    'title' => t('druplash management'),
-    'page callback' => 'druplash_nodes_instances_list',
-    'file' => 'druplash.admin.inc',
-    'access arguments' => array('access admin druplash'),
-  );
-  $items['admin/settings/druplash/main'] = array(
-    'title' => t('raydee nodes'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-  $items['admin/settings/druplash/synchronize'] = array(
-    'title' => t('Additionnal info'),
-  	'page callback' => 'drupal_get_form',
-    'page arguments' => array('druplash_synchronize_to_drupal'),
-    'access arguments' => array('access admin druplash'),
-    'type' => MENU_CALLBACK,
-    'file' => 'druplash.admin.inc',
-  );*/
-  /*$items['admin/settings/druplash/additional'] = array(
-    'title' => t('Additionnal info'),
-    'page callback' => 'druplash_info_list',
-    'access arguments' => array('access admin druplash'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 1,
-    'file' => 'druplash.admin.inc',
-  );
-  
-  $items['admin/settings/druplash/additional/list'] = array(
-    'title' => t('List'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-  $items['admin/settings/druplash/additional/add'] = array(
-    'title' => t('Add field'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('druplash_info_add', 'add'),
-    'access arguments' => array('access admin druplash'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => 1,
-    'file' => 'druplash.admin.inc',
-  );
-  $items['admin/settings/druplash/additional/edit/%'] = array(
-    'title' => t('Edit field'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('druplash_info_add', 'edit', 5),
-    'access arguments' => array('access admin druplash'),
-    'type' => MENU_CALLBACK,
-    'file' => 'druplash.admin.inc',
-  );
-  $items['admin/settings/druplash/additional/delete/%'] = array(
-    'title' => t('Delete field'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('druplash_info_delete', 5),
-    'access arguments' => array('access admin druplash'),
-    'type' => MENU_CALLBACK,
-    'file' => 'druplash.admin.inc',
-  );*/
-  
-  //return $items;
+	return Druplash::getDrupalMenus();
 }
 
 function druplash_execute_action($instanceName, $actionName) {
@@ -88,20 +22,15 @@ function druplash_execute_action($instanceName, $actionName) {
 
 /**
  * The hook called to dynamically add blocks to Drupal.
- * 
- * @param $op
- * @param $delta
- * @param $edit
  */
-function druplash_block($op = 'list', $delta = 0, $edit = array()) {
-	if ($op == 'list') {
-		return Druplash::getDrupalBlocks();
-	} elseif ($op == 'configure') {
-		// Do nothing
-	} elseif ($op == 'save') {
-		// Do nothing
-	} elseif ($op == 'view') {
-		return Druplash::getDrupalBlock($delta);
-	}
+function druplash_block_info() {
+	return Druplash::getDrupalBlocks();
+}
+
+/**
+ * The hook called to dynamically get the content of a block.
+ */
+function druplash_block_view($delta = '') {
+	return Druplash::getDrupalBlock($delta);
 }
 ?>
