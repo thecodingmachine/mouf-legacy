@@ -12,6 +12,8 @@ class Druplash {
 	public static function getDrupalMenus() {
 		$urlsList = SplashUrlManager::getUrlsList(false);
 		
+		$items = array();
+		
 		foreach ($urlsList as $urlCallback) {
 			/* @var $urlCallback SplashCallback */
 			
@@ -57,7 +59,7 @@ class Druplash {
 	public static function getDrupalBlocks() {
 		$moufManager = MoufManager::getMoufManager();
 		
-		$instanceNames = MoufReflectionProxy::getInstances("DrupalDynamicBlockInterface", $selfedit);
+		$instanceNames = MoufReflectionProxy::getInstances("DrupalDynamicBlockInterface", false);
 		
 		$blocks = array();
 		
