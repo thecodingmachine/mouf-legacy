@@ -175,7 +175,6 @@ class DrupalDynamicBlock implements DrupalDynamicBlockInterface, Scopable {
 	/**
 	 * Returns the body of the block.
 	 * 
-	 * @Property
 	 * @var string
 	 */
 	public function getContent() {
