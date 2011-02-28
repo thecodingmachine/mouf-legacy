@@ -31,7 +31,7 @@ class Druplash {
 			    'page callback' => 'druplash_execute_action',
 			    'access arguments' => array('access content'),
 				'page arguments' => array($urlCallback->controllerInstanceName, $urlCallback->methodName),
-			    'type' => MENU_CALLBACK
+			    'type' => MENU_VISIBLE_IN_BREADCRUMB
 			);
 			
 		}
