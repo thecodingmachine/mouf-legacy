@@ -50,7 +50,10 @@ foreach ($keys as $key) {
 }
 
 ksort($msgs);
-$response = array("languages"=>$languages, "msgs"=>$msgs);
+
+
+$missing = $translationService->getAllKeysMissing();
+$response = array("languages"=>$languages, "msgs"=>$msgs, "missing" => $missing);
 
 if ($encode == "php") {
 	echo serialize($response);

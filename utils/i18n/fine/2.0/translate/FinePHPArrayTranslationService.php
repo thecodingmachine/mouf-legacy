@@ -18,11 +18,18 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	private $languageDetection = null;
 	
 	/**
-	 * Detection language object
+	 * Store all message
 	 * 
-	 * @var LanguageDetectionInterface
+	 * @var array
 	 */
 	private $msg = null;
+	
+	/**
+	 * Store all missing message (not reference by the user)
+	 * 
+	 * @var FineMessageLanguage
+	 */
+	private $msg_missing = null;
 	
 	/**
 	 * Set the path file of resources message. This file contain an array variable named $msg. The key is the code or message id, the value is translation.
@@ -41,6 +48,13 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * @var boolean
 	 */
 	private $msg_edition_mode = null;
+	
+	/**
+	 * Store the auto mode from the session
+	 * 
+	 * @var boolean
+	 */
+	private $msg_auto_mode = null;
 	
 	/**
 	 * Save the object of LanguageDetectionInterface. This class retrieve the language code detected
@@ -72,42 +86,9 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * @see plugins/utils/i18n/fine/2.0/translate/LanguageTranslationInterface::getTranslation()
 	 */
 	public function getTranslation($message) {
-		if($this->language === null) {
-			if($this->languageDetection)
-				$this->language = $this->languageDetection->getLanguage();
-			elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
-				$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
-			else {
-				$this->languageDetection = new BrowserLanguageDetection();
-				$this->language = $this->languageDetection->getLanguage();
-			}
-		}
-		if($this->msg_edition_mode === null)
-			$this->msg_edition_mode = isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])?$_SESSION["FINE_MESSAGE_EDITION_MODE"]:false;
-
-		$args = func_get_args();
-	
-		//Load the main file
-		if($this->msg === null)
-			$this->retrieveMessages($this->language);
-			
-		//If the translation is not in the main file, load the custom file associated to the message
-		if(!isset($this->msg[$message]))
-			$this->retrieveCustomMessages($message, $this->language);
-			
-		if (isset($this->msg[$message])) {
-			$value = $this->msg[$message];
-			for ($i=1;$i<count($args);$i++){
-				$value = str_replace('{'.($i-1).'}', plainstring_to_htmlprotected($args[$i]), $value);
-			}
-		} else {
-			$value = "???".$message;
-			for ($i=1;$i<count($args);$i++){
-				$value .= ", ".plainstring_to_htmlprotected($args[$i]);
-			}
-			$value .= "???";
-		}
-	
+		//Display the message without edition
+		$value = $this->getTranslationNoEditMode($message);
+		
 		if ($this->msg_edition_mode) {
 			if ($this->myInstanceName == null) {
 				$this->myInstanceName = MoufManager::getMoufManager()->findInstanceName($this);
@@ -140,9 +121,11 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 
 		$args = func_get_args();
 	
+		//Load the main file
 		if($this->msg === null)
 			$this->retrieveMessages($this->language);
 			
+		//If the translation is not in the main file, load the custom file associated to the message
 		if(!isset($this->msg[$message]))
 			$this->retrieveCustomMessages($message, $this->language);
 
@@ -157,8 +140,21 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 				$value .= ", ".plainstring_to_htmlprotected($args[$i]);
 			}
 			$value .= "???";
+			if($this->msg_edition_mode === null)
+				$this->msg_edition_mode = isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])?$_SESSION["FINE_MESSAGE_EDITION_MODE"]:false;
+			if ($this->msg_edition_mode) {
+				if($this->msg_auto_mode === null)
+					$this->msg_auto_mode = isset($_SESSION["FINE_MESSAGE_AUTO_MODE"])?$_SESSION["FINE_MESSAGE_AUTO_MODE"]:false;
+				if($this->msg_auto_mode) {
+					if ($this->myInstanceName == null) {
+						$this->myInstanceName = MoufManager::getMoufManager()->findInstanceName($this);
+					}
+					MoufManager::getMoufManager()->getInstance($this->myInstanceName)->getMissingTranslation($message);
+				}
+			}
 		}
 	
+		
 		return $value;
 	}
 	
@@ -215,6 +211,11 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 */
 	private $messages = array();
 	
+	/**
+	 * Object missing translation
+	 * @var FineMessageLanguage
+	 */
+	private $messages_missing = null;
 	
 	/**
 	 * Returns the language of the browser, or "default" if the language is not supported (no messages_$language.php).
@@ -276,6 +277,10 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 				}
 			}
 		}
+		
+		$messageLanguage = new FineMessageLanguage();
+		$messageLanguage->loadMissingFile(ROOT_PATH.$this->i18nMessagePath);
+		$this->messages_missing = $messageLanguage;
 	}
 
 	/**
@@ -311,6 +316,21 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	}
 
 	/**
+	 * Returns the list of all keys that have been defined in all language files.
+	 * loadAllMessages must have been called first.
+	 */
+	public function getAllKeysMissing() {
+		$all_messages = array();
+
+		// First, let's merge all the arrays in order to get all the keys:
+		foreach ($this->messages_missing as $language=>$message) {
+			$all_messages = array_merge($all_messages, $message->getAllMessages());
+		}
+
+		return $this->messages_missing->getAllMissingMessages();
+	}
+	
+	/**
 	 * Returns the list of languages loaded.
 	 */
 	public function getSupportedLanguages() {
@@ -343,7 +363,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 						throw $exception;
 					}
 				}
-			} else {			
+			} else {
 				$exception = new ApplicationException();
 				$exception->setTitle("unable.to.write.file.title", $file);
 				$exception->setMessage("unable.to.write.file.text", $file);
@@ -353,5 +373,25 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 		
 		$fp = fopen($file, "w");
 		fclose($fp);
+	}
+	
+
+	/**
+	 * Check if the message exist in the missing file
+	 * 
+	 * @param string $key
+	 * @return FineMessageLanguage
+	 */
+	public function getMissingTranslation($key) {
+		if($this->msg_missing === null) {
+			$messageLanguage = new FineMessageLanguage();
+			$messageLanguage->loadMissingFile(ROOT_PATH.$this->i18nMessagePath);
+			$this->msg_missing = $messageLanguage;
+		}
+		if($this->msg_missing->getMissingMessage($key) === null) {
+			$this->msg_missing->setMissingMessage($key);
+			$this->msg_missing->saveMissing();
+		}
+		return $this->msg_missing;
 	}
 }

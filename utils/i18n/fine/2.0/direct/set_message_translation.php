@@ -44,6 +44,9 @@ else
 	$messageFile->setMessage($key, $label);
 $messageFile->save();
 
+$messageFile = $translationService->getMissingTranslation($key);
+$messageFile->deleteMissingMessage($key);
+$messageFile->saveMissing();
 
 if ($encode == "php") {
 	echo serialize(true);

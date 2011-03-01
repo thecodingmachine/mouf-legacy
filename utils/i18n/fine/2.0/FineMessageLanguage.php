@@ -15,6 +15,11 @@ class FineMessageLanguage {
 	 * The array of messages in the folder loaded.
 	 */
 	private $msg = array();
+	
+	/**
+	 * The array of missing messages in the folder loaded.
+	 */
+	private $msg_missing = array();
 
 	
 	private $language = null;
@@ -42,15 +47,26 @@ class FineMessageLanguage {
 
 	/**
 	 * Loads all translation files
-	 * @var $folder The path to the folder to be loaded
+	 * @var $file The path to the file to be loaded
 	 */
 	public function loadOneFile($file, $language = "default") {
-		$this->folder = $folder;
-		
 		$msg = array();
 		@include($file);
 
 		$this->msg = $msg;
+	}
+	
+	/**
+	 * Loads the file for missing translation
+	 * @var $file The path to the file to be loaded
+	 */
+	public function loadMissingFile($folder) {
+		$this->folder = $folder;
+		if(file_exists($folder."missing_message.php")){
+			$msg_missing = array();
+			@include($folder."missing_message.php");
+			$this->msg_missing = $msg_missing;
+		}
 	}
 	
 	/**
@@ -59,7 +75,7 @@ class FineMessageLanguage {
 	public function save() {
 		ksort($this->msg);
 
-		$this->deleteFile($this->language);
+		$this->deleteFileForLanguage($this->language);
 		
 		if($this->language == "default")
 			$file_default = $this->folder."message.php";
@@ -96,8 +112,48 @@ class FineMessageLanguage {
 		}
 	}
 
-	private function deleteFile($language) {
+
+	/**
+	 * Saves the missing file.
+	 */
+	public function saveMissing() {
+		ksort($this->msg_missing);
+
+		$this->deleteFile($this->folder."missing_message.php");
+		
+		$file = $this->folder."missing_message.php";
+
+		$this->createFile($file);
+			
+		$this->createFile($this->folder."missing_message.php");
+		$fp = fopen($file, "w");
+		fwrite($fp, "<?php\n");
+		foreach ($this->msg_missing as $key=>$message) {
+			fwrite($fp, '$msg_missing[\''.str_replace("'","\\'", $key).'\']="";'."\n");
+		}
+		fwrite($fp, "?>\n");
+		fclose($fp);
+	}
+	
+	/**
+	 * Delete all file for a language
+	 * 
+	 * @param string $language
+	 */
+	private function deleteFileForLanguage($language) {
 		foreach (glob($this->folder."message_custom_".$language."_*.php") as $file) {
+			$this->deleteFile($file);
+		}
+	}
+	
+	/**
+	 * Delete file
+	 * 
+	 * @param string $file
+	 * @throws Exception
+	 */
+	private function deleteFile($file) {
+		if(file_exists($file)) {
 			if(!unlink($file))
 				throw new Exception("Impossible to unlink file: $file, check the file right");
 		}
@@ -148,6 +204,24 @@ class FineMessageLanguage {
 				$this->msg[$key] = $message;
 		}
 	}
+
+	/**
+	 * Sets the missing message
+	 */
+	public function setMissingMessage($key) {
+		$this->msg_missing[$key] = "";
+	}
+
+	/**
+	 * Returns a message for the key $key.
+	 */
+	public function getMissingMessage($key) {
+		if (isset($this->msg_missing[$key])) {
+			return $this->msg_missing[$key];
+		} else {
+			return null;
+		}
+	}
 	
 	/**
 	 * Returns a message for the key $key.
@@ -167,12 +241,27 @@ class FineMessageLanguage {
 		if(isset($this->msg[$key]))
 			unset($this->msg[$key]);
 	}
+
+	/**
+	 * Sets the missing message
+	 */
+	public function deleteMissingMessage($key) {
+		if(isset($this->msg_missing[$key]))
+			unset($this->msg_missing[$key]);
+	}
 	
 	/**
 	 * Returns all messages for this file.
 	 */
 	public function getAllMessages() {
 		return $this->msg;
+	}
+	
+	/**
+	 * Returns all messages for this file.
+	 */
+	public function getAllMissingMessages() {
+		return $this->msg_missing;
 	}
 }
 

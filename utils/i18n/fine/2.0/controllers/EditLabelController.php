@@ -19,6 +19,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	public $template;
 	
 	public $isMessageEditionMode = false;
+	public $isMessageAutoMode = false;
 	public $languages;
 	public $msgs;
 	public $selfedit;
@@ -42,6 +43,9 @@ class EditLabelController extends Controller implements MoufSearchable {
 		if (isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])) {
 			$this->isMessageEditionMode = true;
 		}
+		if (isset($_SESSION["FINE_MESSAGE_AUTO_MODE"])) {
+			$this->isMessageAutoMode = true;
+		}
 		$this->template->addContentFile(dirname(__FILE__)."/../views/enableDisableEdition.php", $this);
 		$this->template->draw();
 	}
@@ -52,14 +56,23 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 * @Action
 	 * //@Admin
 	 */
-	public function setMode($mode) {
+	public function setMode($mode, $auto) {
 		$editMode = ($mode=="on")?true:false;
-		//SessionUtils::setMessageEditionMode($editMode);
+
 		if ($editMode) {
 			$_SESSION["FINE_MESSAGE_EDITION_MODE"] = true;
 			$this->isMessageEditionMode = true;
 		} else {
 			unset($_SESSION["FINE_MESSAGE_EDITION_MODE"]);
+		}
+		
+		$autoMode = ($auto=="on")?true:false;
+
+		if ($autoMode) {
+			$_SESSION["FINE_MESSAGE_AUTO_MODE"] = true;
+			$this->isMessageAutoMode = true;
+		} else {
+			unset($_SESSION["FINE_MESSAGE_AUTO_MODE"]);
 		}
 
 		$this->template->addContentFile(dirname(__FILE__)."/../views/enableDisableEdition.php", $this);
@@ -120,7 +133,8 @@ class EditLabelController extends Controller implements MoufSearchable {
 		$array = $this->getAllMessagesFromService(($selfedit == "true"), $name);
 		$this->languages = $array["languages"];
 		$this->msgs = $array["msgs"];
-		
+		$this->msgs_missing = $array["missing"];
+
 		$this->template->addCssFile("plugins/utils/i18n/fine/2.0/views/css/style.css");
 		$this->template->addContentFile(dirname(__FILE__)."/../views/missingLabel.php", $this);
 		$this->template->draw();
