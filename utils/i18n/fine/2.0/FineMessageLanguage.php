@@ -97,8 +97,10 @@ class FineMessageLanguage {
 	}
 
 	private function deleteFile($language) {
-		foreach (glob($this->folder."message_custom_".$language."_*.php") as $file)
-			unlink($file);
+		foreach (glob($this->folder."message_custom_".$language."_*.php") as $file) {
+			if(!unlink($file))
+				throw new Exception("Impossible to unlink file: $file, check the file right");
+		}
 	}
 	
 	private function createFile($file) {
