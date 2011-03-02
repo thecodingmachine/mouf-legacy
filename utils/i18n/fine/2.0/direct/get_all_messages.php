@@ -22,7 +22,11 @@ if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
 }
 
 $msginstancename = $_REQUEST["msginstancename"];
-$language = $_REQUEST["language"];
+if(isset($_REQUEST["language"]))
+	$language = $_REQUEST["language"];
+else
+	$language = "default";
+	
 if (get_magic_quotes_gpc()==1)
 {
 	$msginstancename = stripslashes($msginstancename);
