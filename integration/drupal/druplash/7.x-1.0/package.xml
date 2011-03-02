@@ -10,6 +10,16 @@
 			<name>splash-common</name>
 			<version>3.0</version>
 		</dependency>
+		<dependency>
+			<group>security</group>
+			<name>rightsservice-splash</name>
+			<version>>=3.0</version>
+		</dependency>
+		<dependency>
+			<group>security</group>
+			<name>userservice-splash</name>
+			<version>>=3.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>Druplash.php</require>

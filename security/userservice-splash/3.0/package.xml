@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>UserService-Splash integration</displayName>
+	<shortDescription>This package contains a set of class to bind the Splash MVC framework (>=v2.0)
+	with the UserService component. It features: a @Logged annotation to restrict access to
+	logged users only.</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/splash_annotations.html</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>security</group>
+			<name>userservice</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>mvc</group>
+			<name>splash-common</name>
+			<version>>=3.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>Logged.php</require>
+	</requires>
+</package>
