@@ -86,5 +86,13 @@ class RequiresRightAnnotation extends AbstractFilter
 	public function afterAction() {
 
 	}
+	
+	/**
+	 * Return the name of the require right.
+	 * 
+	 */
+	public function getName() {
+		return $this->name;
+	}
 }
 ?>
