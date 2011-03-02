@@ -17,12 +17,15 @@ class SplashCallback {
 	
 	public $comment;
 	
-	public function __construct($url, $controllerInstanceName, $methodName, $title, $comment) {
+	public $fullComment;
+	
+	public function __construct($url, $controllerInstanceName, $methodName, $title, $comment, $fullComment = null) {
 		$this->url = $url;
 		$this->controllerInstanceName = $controllerInstanceName;
 		$this->methodName = $methodName;
 		$this->title = $title;
 		$this->comment = $comment;
+		$this->fullComment = $fullComment;
 	}
 }
 
