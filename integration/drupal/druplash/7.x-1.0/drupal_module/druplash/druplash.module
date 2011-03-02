@@ -7,6 +7,24 @@ function druplash_perm() {
 }
 
 /**
+ * This is the login hook for druplash.
+ * Add Mouf information in user SESSION.
+ * 
+ */
+function druplash_user_login($edit, $account) {
+	Druplash::getUserLogin($edit, $account);
+}
+
+/**
+ * This is the logout hook for druplash.
+ * Remove Mouf information in user SESSION.
+ * 
+ */
+function druplash_user_logout($account) {
+	Druplash::getUserLogout($account);
+}
+
+/**
  * This is the central hook for druplash.
  * It acts as the controller by binding the paths to the controllers actions.
  * 
