@@ -91,6 +91,37 @@ class Druplash {
 		return array('subject'=>$moufBlock->getSubject(),
 					'content'=>$moufBlock->getContent());
 	}
+	
+	/**
+	 * Set user information in Druplash SESSION.
+	 * 
+	 * @param array $edit
+	 * @param stdClass $account
+	 */
+	public static function getUserLogin($edit, $account) {
+		//TODO: an admin page will be necessary to select which user service instance to use.
+		$moufManager = MoufManager::getMoufManager();
+		if($moufManager->instanceExists('userService')) {
+			$userService = $moufManager->getInstance('userService');
+			/* @var $userService MoufUserService */
+			$userService->login($account->name, $edit['values']['pass']);
+		}
+	}
+	
+	/**
+	 * Remove user information in Druplash SESSION.
+	 * 
+	 * @param stdClass $account
+	 */
+	public static function getUserLogout($account) {
+		//TODO: an admin page will be necessary to select which user service instance to use.
+		$moufManager = MoufManager::getMoufManager();
+		if($moufManager->instanceExists('userService')) {
+			$userService = $moufManager->getInstance('userService');
+			/* @var $userService MoufUserService */
+			$userService->logoff();
+		}
+	}
 }
 
 ?>

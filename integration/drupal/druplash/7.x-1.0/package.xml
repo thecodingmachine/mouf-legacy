@@ -26,6 +26,8 @@
 		<require>DrupalController.php</require>
 		<require>DrupalDynamicBlockInterface.php</require>
 		<require>DrupalDynamicBlock.php</require>
+		<require>dao/DruplashUserDao.php</require>
+		<require>dao/bean/DruplashUserBean.php</require>
 	</requires>
 	<!--<adminRequires>
 		<require>drupalBootstrap.php</require>
