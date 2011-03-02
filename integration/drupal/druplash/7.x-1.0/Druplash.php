@@ -26,10 +26,23 @@ class Druplash {
 				$title = $urlCallback->title ;
 			}
 			
+			// Recover function filters
+			$phpDocComment = new MoufPhpDocComment($urlCallback->fullComment);
+			$requiresRightArray = $phpDocComment->getAnnotations('RequiresRight');
+			$accessArguments = array();
+			if(count($requiresRightArray)) {
+				foreach ($requiresRightArray as $requiresRight) {
+					/* @var $requiresRight RequiresRight */
+					$accessArguments[] = $requiresRight->getName();
+				}
+			} else {
+				$accessArguments[] = 'access content';
+			}
+			
 			$items[$url] = array(
 			    'title' => $title,
 			    'page callback' => 'druplash_execute_action',
-			    'access arguments' => array('access content'),
+			    'access arguments' => $accessArguments,
 				'page arguments' => array($urlCallback->controllerInstanceName, $urlCallback->methodName),
 			    'type' => MENU_VISIBLE_IN_BREADCRUMB
 			);
@@ -98,7 +111,7 @@ class Druplash {
 	 * @param array $edit
 	 * @param stdClass $account
 	 */
-	public static function getUserLogin($edit, $account) {
+	public static function onUserLogin($edit, $account) {
 		//TODO: an admin page will be necessary to select which user service instance to use.
 		$moufManager = MoufManager::getMoufManager();
 		if($moufManager->instanceExists('userService')) {
@@ -113,13 +126,32 @@ class Druplash {
 	 * 
 	 * @param stdClass $account
 	 */
-	public static function getUserLogout($account) {
+	public static function onUserLogout($account) {
 		//TODO: an admin page will be necessary to select which user service instance to use.
 		$moufManager = MoufManager::getMoufManager();
 		if($moufManager->instanceExists('userService')) {
 			$userService = $moufManager->getInstance('userService');
 			/* @var $userService MoufUserService */
 			$userService->logoff();
+		}
+	}
+	
+	/**
+	 * Returns all permissions for hook_permission.
+	 * 
+	 */
+	public static function getPermissions() {
+		//TODO: an admin page will be necessary to select which right service instance to use.
+		$moufManager = MoufManager::getMoufManager();
+		if($moufManager->instanceExists('rightsService')) {
+			$rightsService = $moufManager->getInstance('rightsService');
+			if($rightsService instanceof DruplashRightService) {
+				/* @var $rightsService DruplashRightService */
+				return $rightsService->getDrupalPermissions();
+			} else 
+				return array();
+		} else {
+			return array();
 		}
 	}
 }

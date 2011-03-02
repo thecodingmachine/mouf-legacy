@@ -27,7 +27,10 @@
 		<require>DrupalDynamicBlockInterface.php</require>
 		<require>DrupalDynamicBlock.php</require>
 		<require>dao/DruplashUserDao.php</require>
+		<require>dao/DruplashRightDao.php</require>
 		<require>dao/bean/DruplashUserBean.php</require>
+		<require>service/DruplashRightService.php</require>
+		<require>service/DruplashPermissionDescriptor.php</require>
 	</requires>
 	<!--<adminRequires>
 		<require>drupalBootstrap.php</require>
