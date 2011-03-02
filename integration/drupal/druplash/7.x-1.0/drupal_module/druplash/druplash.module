@@ -2,8 +2,8 @@
 require_once dirname(__FILE__).'/../../../../Mouf.php';
 
 
-function druplash_perm() {
-  return array('access druplash', 'access admin druplash');
+function druplash_permission() {
+	return Druplash::getPermissions();
 }
 
 /**
@@ -12,7 +12,7 @@ function druplash_perm() {
  * 
  */
 function druplash_user_login($edit, $account) {
-	Druplash::getUserLogin($edit, $account);
+	Druplash::onUserLogin($edit, $account);
 }
 
 /**
@@ -21,7 +21,7 @@ function druplash_user_login($edit, $account) {
  * 
  */
 function druplash_user_logout($account) {
-	Druplash::getUserLogout($account);
+	Druplash::onUserLogout($account);
 }
 
 /**
