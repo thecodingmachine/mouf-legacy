@@ -26,4 +26,8 @@
 		<require>MoufRightService.php</require>
 		<require>SimpleRightCondition.php</require>
 	</requires>
+	<adminRequires>
+		<require>MoufRightServiceValidators.php</require>
+	</adminRequires>	
+
 </package>
