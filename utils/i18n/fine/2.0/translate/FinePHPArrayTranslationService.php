@@ -87,7 +87,8 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 */
 	public function getTranslation($message) {
 		//Display the message without edition
-		$value = $this->getTranslationNoEditMode($message);
+		$args = func_get_args();
+		$value = call_user_func_array(array($this, "getTranslationNoEditMode"), $args);	
 		
 		if ($this->msg_edition_mode) {
 			if ($this->myInstanceName == null) {
