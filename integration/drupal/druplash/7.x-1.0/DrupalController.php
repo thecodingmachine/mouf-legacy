@@ -203,12 +203,14 @@ abstract class DrupalController extends Controller {
 			$refClass = new MoufReflectionClass(get_class($this));
 			$refMethod = $refClass->getMethod($method);    // $refMethod is an instance of stubReflectionMethod
 			//$this->getLogger()->trace("REF METHOD : ".$refMethod." // has annotation Action ? ".$refMethod->hasAnnotation('Action'));
-			if ($refMethod->hasAnnotation('Action') == false) {
-				$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
+			
+			/*if ($refMethod->hasAnnotation('Action') == false) {
+				//$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
+				//$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
 				// This is not an action. Let's go in error.
-				self::FourOFour(iMsg("controller.404.no.action", get_class($this), $method), $debug);
+				self::FourOFour(iMsg("controller.404.no.action", get_class($this), $method), true);
 				exit;
-			}
+			}*/
 
 			try {
 				$filters = FilterUtils::getFilters($refMethod, $this);

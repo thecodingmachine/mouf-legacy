@@ -62,10 +62,13 @@ class paramAnnotation //extends stubAbstractAnnotation implements stubAnnotation
 			foreach ($splitParamsStrings as $string) {
 				//$splitParamsStringsTrim[] = trim($string);
 				$equalsArr = explode('=', $string);
-				if (count($equalsArr) != 2) {
+				/*if (count($equalsArr) != 2) {
 					throw new Exception('Error while reading the @param annotation. Wrong syntax: @param '.$value);
+				}*/
+				// We must have an = sign, otherwise, let's ignore the annotation.
+				if (count($equalsArr) == 2) {
+					$splitParamsArray[trim($equalsArr[0], " \t\n\r\"'")] = trim($equalsArr[1], " \t\n\r\"'");
 				}
-				$splitParamsArray[trim($equalsArr[0], " \t\n\r\"'")] = trim($equalsArr[1], " \t\n\r\"'");
 			}
 
 			if (isset($splitParamsArray['origin'])) {

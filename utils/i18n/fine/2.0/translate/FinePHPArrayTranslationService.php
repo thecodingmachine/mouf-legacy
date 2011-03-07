@@ -99,7 +99,45 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	
 		return $value;
 	}
+
+	/**
+	 * Returns true if a translation is available for the $message key, false otherwise.
+	 * 
+	 * @param string $message Key of the message
+	 * @return bool
+	 */
+	public function hasTranslation($message) {
+		if($this->language === null) {
+			$this->initLanguage();
+		}
+		if($this->msg_edition_mode === null)
+			$this->msg_edition_mode = isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])?$_SESSION["FINE_MESSAGE_EDITION_MODE"]:false;
 	
+		//Load the main file
+		if($this->msg === null)
+			$this->retrieveMessages($this->language);
+			
+		//If the translation is not in the main file, load the custom file associated to the message
+		if(!isset($this->msg[$message]))
+			$this->retrieveCustomMessages($message, $this->language);
+		
+		if (isset($this->msg[$message])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private function initLanguage() {
+		if($this->languageDetection)
+			$this->language = $this->languageDetection->getLanguage();
+		elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
+			$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
+		else {
+			$this->languageDetection = new BrowserLanguageDetection();
+			$this->language = $this->languageDetection->getLanguage();
+		}
+	}
 
 	/**
 	 * Retrieve the translation of code or message.
@@ -110,14 +148,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 */
 	public function getTranslationNoEditMode($message) {
 		if($this->language === null) {
-			if($this->languageDetection)
-				$this->language = $this->languageDetection->getLanguage();
-			elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
-				$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
-			else {
-				$this->languageDetection = new BrowserLanguageDetection();
-				$this->language = $this->languageDetection->getLanguage();
-			}
+			$this->initLanguage();
 		}
 
 		$args = func_get_args();
