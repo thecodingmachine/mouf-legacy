@@ -1,5 +1,5 @@
 <?php
-require_once dirname(_FILE_).'/../../../../../Mouf.php';
+require_once dirname(__FILE__).'/../../../../../Mouf.php';
 
 // TODO: add support for selfedit.
 
