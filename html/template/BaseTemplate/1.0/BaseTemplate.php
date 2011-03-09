@@ -507,7 +507,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 	}
 
 	/**
-	 * Adds a css file to the list of css files loaded.
+	 * Adds a js file to the list of js files loaded.
 	 * @return BaseTemplate
 	 */
 	public function addJsFile($jsUrl) {

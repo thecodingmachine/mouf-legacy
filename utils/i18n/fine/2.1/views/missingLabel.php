@@ -1,3 +1,8 @@
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery('#fine_missingLabel').fixedtableheader();
+});
+</script> 
 <div id="missingLabelPage">
 	<form action="searchLabel" id="searchLabel">
 		<input type="hidden" name="backto" value="<?php echo plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels?name=".$this->msgInstanceName."&selfedit=".$this->selfedit); ?>" />
@@ -52,18 +57,6 @@
 		</thead>
 		<tbody>
 		<?php
-		foreach ($this->msgs_missing as $key => $msgsForKey) {
-			echo "<tr><td style='color: red'>$key</td>";
-			foreach ($this->languages as $language) {
-				echo "<td class='language'>";
-				echo "<a href='editLabel?key=".plainstring_to_htmlprotected($key)."&language=".plainstring_to_htmlprotected($language)."&backto=".urlencode(plainstring_to_htmlprotected(ROOT_URL."mouf/editLabels/missinglabels?name=".$this->msgInstanceName."&selfedit=".$this->selfedit))."&msginstancename=".plainstring_to_htmlprotected($this->msgInstanceName)."&selfedit=".plainstring_to_htmlprotected($this->selfedit)."'>";
-				echo "<img src='".ROOT_URL."plugins/utils/icons/crystalproject/1.0/actions/cancel.png' alt='No label provided' title='No label provided' />";
-				echo "</a>";
-				echo "</td>";
-			}
-			echo "</tr>";
-		}
-		
 		foreach ($this->msgs as $key => $msgsForKey) {
 			echo "<tr><td>$key</td>";
 			foreach ($this->languages as $language) {

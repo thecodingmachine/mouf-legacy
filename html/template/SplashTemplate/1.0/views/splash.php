@@ -4,8 +4,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php print $this->title ?></title>
 		<?php print $this->getCssFiles() ?>
-		<?php print $this->getJsFiles() ?>
 		<?php $this->drawArray($this->head); ?>
+		<?php print $this->getJsFiles() ?>
 
 	</head>
 	<?php
