@@ -71,7 +71,7 @@ class DateFormatter implements FormatterInterface {
     		if ($dateTime != null) {
     			return $dateTime->format($this->getDestFormat());
     		} else {
-    			return "";
+    			return null;
     		}
     	}
 		

@@ -36,6 +36,7 @@
 		<require>AbstractHtmlInputWidget.php</require>
 		<require>HtmlSelectWidget.php</require>
 		<require>HtmlTextInputWidget.php</require>
+		<require>HtmlStaticTextWidget.php</require>
 		<require>HtmlPasswordInputWidget.php</require>
 		<require>HtmlHiddenInputWidget.php</require>
 		<require>HtmlCheckBoxGroupWidget.php</require>

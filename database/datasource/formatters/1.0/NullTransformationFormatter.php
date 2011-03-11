@@ -15,8 +15,17 @@ class NullTransformationFormatter implements FormatterInterface {
 	 */
 	public $value;
 	
-	public function __construct($value=null) {
+	/**
+	 * Whether the value passed above should be translated or not.
+	 * 
+	 * @Property
+	 * @var bool
+	 */
+	public $useI18n;
+	
+	public function __construct($value=null, $useI18n=false) {
 		$this->value = $value;
+		$this->useI18n = $useI18n;
 	}
 
 	/**
@@ -26,7 +35,11 @@ class NullTransformationFormatter implements FormatterInterface {
 	 */
 	public function format($value) {
     	if ($value ===  null) {
-    		return $this->value;
+    		if (!$this->useI18n) {
+    			return $this->value;
+    		} else {
+    			return iMsg($this->value);
+    		}
     	} else {
     		return $value;
     	}
