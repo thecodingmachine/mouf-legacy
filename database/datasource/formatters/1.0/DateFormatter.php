@@ -63,6 +63,7 @@ class DateFormatter implements FormatterInterface {
 	 * @param string $value
 	 */
 	public function format($value) {
+		error_log("entry value: ".$value);
     	if ($this->sourceFormat == "timestamp") {
     		return date($this->getDestFormat(), $value);
     	} else {
