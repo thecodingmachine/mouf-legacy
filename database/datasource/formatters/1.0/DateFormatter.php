@@ -63,13 +63,13 @@ class DateFormatter implements FormatterInterface {
 	 * @param string $value
 	 */
 	public function format($value) {
-		error_log("entry value: ".$value);
-    	if ($this->sourceFormat == "timestamp") {
+		if ($this->sourceFormat == "timestamp") {
     		return date($this->getDestFormat(), $value);
     	} else {
     		$dateTime = DateTime::createFromFormat($this->sourceFormat, $value);
     		
     		if ($dateTime != null) {
+    			error_log($this->getDestFormat()." --- ".$dateTime->format($this->getDestFormat()));
     			return $dateTime->format($this->getDestFormat());
     		} else {
     			return null;
