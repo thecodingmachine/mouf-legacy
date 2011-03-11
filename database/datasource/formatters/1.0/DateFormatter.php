@@ -64,7 +64,7 @@ class DateFormatter implements FormatterInterface {
 	 */
 	public function format($value) {
     	if ($this->sourceFormat == "timestamp") {
-    		return date($this->destFormat, $value);
+    		return date($this->getDestFormat(), $value);
     	} else {
     		$dateTime = DateTime::createFromFormat($this->sourceFormat, $value);
     		
