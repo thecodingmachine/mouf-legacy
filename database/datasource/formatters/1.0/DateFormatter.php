@@ -69,7 +69,6 @@ class DateFormatter implements FormatterInterface {
     		$dateTime = DateTime::createFromFormat($this->sourceFormat, $value);
     		
     		if ($dateTime != null) {
-    			error_log($this->getDestFormat()." --- ".$dateTime->format($this->getDestFormat()));
     			return $dateTime->format($this->getDestFormat());
     		} else {
     			return null;
