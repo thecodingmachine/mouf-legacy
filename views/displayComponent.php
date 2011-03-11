@@ -24,7 +24,7 @@ function addNewDropDown(element, name, defaultValue, hasKey, defaultKey, type, i
 			str += "=&gt;";
 		}
 		str += "<a href='<?php echo ROOT_URL ?>mouf/mouf/displayComponent?name="+defaultValue+"&amp;selfedit=<?php echo $this->selfedit ?>'>"+defaultValue+"</a>";
-		str += '<a onclick="fillOptionList(\''+name+"_mouf_dropdown_select_"+dropDownCnt+'\', \''+imageId+'\', \''+varType+'\', \''+defaultValue+'\'); document.getElementById(\''+name+'_mouf_dropdown_text_'+dropDownCnt+'\').style.display=\'none\';document.getElementById(\''+name+"_mouf_dropdown_dropdown_"+dropDownCnt+'\').style.display=\'inline\';" ><img src="<?php echo ROOT_URL; ?>/mouf/views/images/pencil.png" alt="edit" /></a>';
+		str += '<a onclick="fillOptionList(\''+name+"_mouf_dropdown_select_"+dropDownCnt+'\', \''+imageId+'\', \''+varType+'\', \''+defaultValue+'\'); document.getElementById(\''+name+'_mouf_dropdown_text_'+dropDownCnt+'\').style.display=\'none\';document.getElementById(\''+name+"_mouf_dropdown_dropdown_"+dropDownCnt+'\').style.display=\'inline\';" ><img src="<?php echo ROOT_URL; ?>mouf/views/images/pencil.png" alt="edit" /></a>';
 		str += "</span>";
 		str += "<span id='"+name+"_mouf_dropdown_dropdown_"+dropDownCnt+"' style='display:none'>";
 	}
