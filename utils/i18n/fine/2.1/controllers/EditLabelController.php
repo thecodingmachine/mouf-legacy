@@ -250,7 +250,11 @@ class EditLabelController extends Controller implements MoufSearchable {
 		    				$num = 2;
 		    				$key = $objSheet->getCell("A".$num)->getValue();
 		    				while($key) {
-		    					$translations[$language][$key] = $objSheet->getCell($this->letters[$letter].$num)->getValue();
+		    					$element = $objSheet->getCell($this->letters[$letter].$num)->getValue();
+		    					if(is_object($element))
+	    							$translations[$language][$key] = $element->getPlainText();
+		    					else
+		    						$translations[$language][$key] = $element;
 		    					$num ++;
 		    					$key = $objSheet->getCell("A".$num)->getValue();
 		    				}
