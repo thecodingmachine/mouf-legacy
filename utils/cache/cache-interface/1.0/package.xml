@@ -11,4 +11,9 @@
 	<requires>
 		<require>CacheInterface.php</require>
 	</requires>
+	<adminRequires>
+		<require>admin/CacheAdmin.php</require>
+		<require>admin/controllers/PurgeCacheController.php</require>
+	</adminRequires>	
+	
 </package>
