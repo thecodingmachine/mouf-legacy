@@ -14,6 +14,11 @@ function displayCreateInstanceDialog(dropdown, propertyName, type) {
 	        options += '<option value="' + j[i] + '">' + j[i] + '</option>';
 	      }
 	      jQuery("select#instanceClassDialog").html(options);
+	      
+	      if (j.length == 0) {
+		      jQuery("#noMatchingComponent").html("You have no class with the @Component annotation that inherits/implements '"+type+"'. You should try to <a href='../packagetransfer/'>download</a>/<a href='../packages/'>enable</a> a package that provides a component implement the "+type+" class/interface.");
+		      jQuery("#noMatchingComponent").show();
+	      }
 	});
 
 	lastSelectBox = dropdown;

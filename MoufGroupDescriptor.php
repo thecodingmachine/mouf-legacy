@@ -26,16 +26,25 @@ class MoufGroupDescriptor {
 	/**
 	 * Returns the subgroup whose name is "$name".
 	 * The group is created if it does not exist.
+	 * If the group name contains slashes (if this represents a set of groups), the last subgroup will be returned.
 	 * 
 	 * @param $name
 	 * @return MoufGroupDescriptor
 	 */
 	public function getGroup($name) {
-		if (!isset($this->subGroups[$name])) {
-			$newGroup = new MoufGroupDescriptor();
-			$this->subGroups[$name] = $newGroup;
+		$names = explode("/", $name);
+		
+		$parent = $this;
+		foreach ($names as $tmpName) {
+			if (!isset($parent->subGroups[$tmpName])) {
+				$newGroup = new MoufGroupDescriptor();
+				$parent->subGroups[$tmpName] = $newGroup;
+				$parent = $newGroup;
+			} else {
+				$parent = $parent->subGroups[$tmpName];
+			}
 		}
-		return $this->subGroups[$name];
+		return $parent;
 	}
 	
 	/**

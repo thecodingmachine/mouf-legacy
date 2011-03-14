@@ -103,7 +103,7 @@ abstract class AbstractMoufInstanceController extends Controller {
 			if (!$selfedit) {
 				$selfedit = "false";
 			}
-			echo '<ul class="menu"><li><b>Referred by components:</b></li>';
+			echo '<ul class="menu"><li><b>Referred by instances:</b></li>';
 			foreach ($componentsList as $component) {
 				echo '<li><a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component).'&selfedit='.$selfedit.'">'.plainstring_to_htmlprotected($component).'</a></li>';
 			}

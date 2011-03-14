@@ -1032,9 +1032,11 @@ class MoufManager {
 		fwrite($fp, "\n");
 		
 		// Declare packages
-		foreach ($this->packagesList as $fileName) {
+		/*foreach ($this->packagesList as $fileName) {
 			fwrite($fp, "\$moufManager->addPackageByXmlFile(".var_export($fileName, true).");\n");
-		}
+		}*/
+		fwrite($fp, "\$moufManager->setPackagesByXmlFile(".var_export($this->packagesList, true).");\n");
+		
 		fwrite($fp, "\n");
 		
 		// Import external components
@@ -1513,6 +1515,61 @@ class ".$this->mainClassName." {
 	 */
 	public function addPackageByXmlFile($fileName) {
 		$this->packagesList[] = $fileName;
+	}
+	
+	/**
+	 * Adds a package by providing the path to the package.xml file.
+	 * The path is relative to the "plugins" directory.
+	 * A complete check is performed.
+	 * If another version of the package is present, the version of the package is replaced.
+	 * This function also ensures the order of the dependencies is correct. 
+	 *
+	 * @param string $fileName
+	 */
+	public function addPackageByXmlFileWithCheck($fileName) {
+		$myPackageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($fileName);
+		$packageDescriptors = array();
+		
+		// Whether the package replaces an existing package or not.
+		$replaced = false;
+		
+		foreach ($this->packagesList as $key=>$packageFileName) {
+			$packageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($packageFileName);
+			 
+			if ($packageDescriptor->getGroup() == $myPackageDescriptor->getGroup() && $packageDescriptor->getName() == $myPackageDescriptor->getName()) {
+			 	// We must replace this package!
+				$this->packagesList[$key] = $fileName;
+				$replaced = true;
+				break;
+			}
+			 
+		}
+		
+		if (!$replaced) {
+			$this->packagesList[] = $fileName;	
+		}
+		
+		// TODO: ensure the order of the dependencies is correct.
+		// FIXME: ensure the order of the dependencies is correct.
+		$this->reorderPackagesDependencies();
+	}
+	
+	/**
+	 * This function sorts the packages according to their dependency order.
+	 */
+	public function reorderPackagesDependencies() {
+		// TODO
+	}
+	
+	/**
+	 * Set the packages list all at once.
+	 * This function does not perform any verifications. It is used in MoufComponents.php to load all the
+	 * package list quickly, at once.
+	 * 
+	 * @param array $fileNameArray
+	 */
+	public function setPackagesByXmlFile($fileNameArray) {
+		$this->packagesList = $fileNameArray;
 	}
 	
 	/**

@@ -2,20 +2,34 @@
 require_once 'MoufException.php';
 /**
  * An exception thrown when enabling a new package.
- * This happens if the package to be enabled cannot be installed because of one or many problems with dependencies.
+ * This happens if the package to be enabled is not compatible with a previously installed package.
  * 
  * @author David
  */
-class MoufProblemInDependencyPackageException extends MoufException {
+class MoufIncompatiblePackageException extends MoufException {
+	/**
+	 * 
+	 * @var MoufPackage
+	 */
+	public $parentPackage;
+	/**
+	 * 
+	 * @var MoufDependencyDescriptor
+	 */
+	public $dependency;
 	
 	public $group;
 	public $name;
-	public $version;
 	/**
-	 * The list of exceptions that triggerred this exception.
-	 * @var array<Exception>
+	 * Version of the PARENT package (the package that owns the dependency that has a problem).
+	 * @var string
 	 */
-	public $exceptions;
+	public $version;
+	public $inPlaceVersion;
+	public $requestedVersion;
+	public $isInPlaceVersionInstalled;
+	public $dependencyGroup;
+	public $dependencyName;
 	
 	/**
 	 * 
@@ -27,27 +41,39 @@ class MoufProblemInDependencyPackageException extends MoufException {
 	 * @param string $requestedVersion
 	 * @param boolean $isInPlaceVersionInstalled True if the "inPlaceVersion" is currently installed, false if it is a previous dependency that is not yet installed.
 	 */
-	public function __construct($group, $name, $version, $exceptions) {
+	/*public function __construct($group, $name, $dependencyGroup, $dependencyName, $inPlaceVersion, $requestedVersion, $isInPlaceVersionInstalled) {
+		if ($isInPlaceVersionInstalled) {
+			parent::__construct("An exception occured while installing incompatible packages. The package $group/$name requires package $dependencyGroup/$dependencyName whose requested version must be $requestedVersion. Current installed version is $inPlaceVersion.", 0);
+		} else {
+			parent::__construct("An exception occured while installing incompatible packages. The package $group/$name requires package $dependencyGroup/$dependencyName whose requested version must be $requestedVersion. But a previous dependency required package version to be $inPlaceVersion. There is a compatibility issue inside the dependencies of $group/$name regarding package $dependencyGroup/$dependencyName.", 0);
+		}
 		$this->group = $group;
 		$this->name = $name;
-		$this->version = $version;
-		$this->exceptions = $exceptions;
+		$this->dependencyGroup = $dependencyGroup;
+		$this->dependencyName = $dependencyName;
+		$this->inPlaceVersion = $inPlaceVersion;
+		$this->requestedVersion = $requestedVersion;
+		$this->isInPlaceVersionInstalled = $isInPlaceVersionInstalled;
+	}*/
+
+	public function __construct(MoufPackage $parentPackage, MoufDependencyDescriptor $dependency, $inPlaceVersion, $isInPlaceVersionInstalled) {
+		$this->parentPackage = $parentPackage;
+		$this->dependency = $dependency;
 		
-		$msg = "Could not install package $group/$name/$version because of ";
-		if (count($exceptions) == 1) {
-			$msg .= " a problem with a dependency:<br/>\n";
-			$msg .= $exceptions[0]->getMessage()."<br/>\n";	
+		$this->group = $parentPackage->getDescriptor()->getGroup();
+		$this->name = $parentPackage->getDescriptor()->getName();
+		$this->version = $parentPackage->getDescriptor()->getVersion();
+		$this->dependencyGroup = $dependency->getGroup();
+		$this->dependencyName = $dependency->getName();
+		$this->inPlaceVersion = $inPlaceVersion;
+		$this->requestedVersion = $dependency->getVersion();
+		$this->isInPlaceVersionInstalled = $isInPlaceVersionInstalled;		
+		if ($isInPlaceVersionInstalled) {
+			parent::__construct("An exception occured while installing incompatible packages. The package $this->group/$this->name/$this->version requires package $this->dependencyGroup/$this->dependencyName whose requested version must be $this->requestedVersion. Current installed version is $inPlaceVersion.", 0);
 		} else {
-			$msg .= " several problems with dependencies:<br/>\n";
-			$msg .= "<ul>\n";
-			foreach ($exceptions as $exception) {
-				$msg .= "<li>".$exception->getMessage()."</li>\n";
-			}
-			$msg .= "</ul>\n";
+			parent::__construct("An exception occured while installing incompatible packages. The package $this->group/$this->name/$this->version requires package $this->dependencyGroup/$this->dependencyName whose requested version must be $this->requestedVersion. But a previous dependency required package version to be $inPlaceVersion. There is a compatibility issue inside the dependencies of $this->group/$this->name regarding package $this->dependencyGroup/$this->dependencyName.", 0);
 		}
-		
-		parent::__construct($msg, 0);
-	}	
+	}
 }
 
 ?>

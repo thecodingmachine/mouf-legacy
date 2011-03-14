@@ -459,6 +459,8 @@ foreach ($this->properties as $property) {
 	</select>
 	</div>
 	
+	<div class="error" id="noMatchingComponent" style="display:none"></div>
+	
 	<input type="button" value="Create" onclick="onCreateNewInstance(); return false;" />
 	
 </div>

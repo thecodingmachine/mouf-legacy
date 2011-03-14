@@ -64,6 +64,22 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 */
 	public $moufDependencies;
 	
+	
+	/**
+	 * The list of packages that are incompatible with the current enable/update and that should be proposed
+	 * for an updage.
+	 *
+	 * @var array<MoufPackage>
+	 */
+	protected $toProposeUpgradePackage;
+	
+	/**
+	 * The list of packages that will be upgraded in the process of the install.
+	 *
+	 * @var array<MoufPackage>
+	 */
+	protected $upgradePackageList;
+	
 	public $validationMsg;
 	public $validationPackageList;
 	
@@ -75,6 +91,12 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 * @var array<instancename, classname>
 	 */
 	public $toDeleteInstance;
+	
+	/**
+	 * 
+	 * @var MoufPackageManager
+	 */
+	public $packageManager;
 	
 	/**
 	 * Displays the list of component files
@@ -97,11 +119,11 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		$this->validationMsg = $validation;
 		$this->validationPackageList = $packageList;
 				
-		$packageManager = new MoufPackageManager();
+		$this->packageManager = new MoufPackageManager();
 		
-		$this->moufPackageRoot = $packageManager->getOrderedPackagesList();
+		$this->moufPackageRoot = $this->packageManager->getOrderedPackagesList();
 		
-		$this->moufPackageList = $packageManager->getPackagesList();
+		$this->moufPackageList = $this->packageManager->getPackagesList();
 		// Packages are almost sorted correctly.
 		// However, we should make a bit of sorting to transform this:
 		// javascript/jit
@@ -137,13 +159,19 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	/**
 	 * Action that is run to enable a package.
 	 *
+	 * Format of the $upgradeList array: array[]["group"=>xxx,"name"=>xxx,"version"=>xxx,"origin"=>xxx]
+	 *
 	 * @Action
 	 * @Logged
-	 * @param string $name The path to the package.xml file relative to the plugins directory.
+	 * @param string $group
+	 * @param string $name
+	 * @param string $version
 	 * @param string $selfedit
 	 * @param string $confirm
+	 * @param string $origin
+	 * @param array $upgradeList
 	 */
-	public function enablePackage($group, $name, $version, $selfedit = "false", $confirm="false", $origin = null) {
+	public function enablePackage($group, $name, $version, $selfedit = "false", $confirm="false", $origin = null, array $upgradeList = array()) {
 		// First, let's find the list of depending packages.
 		$this->selfedit = $selfedit;
 		if ($selfedit == "true") {
@@ -152,22 +180,72 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
 	
-		$packageManager = new MoufPackageManager();
+		$this->packageManager = new MoufPackageManager();
 		
 		if ($origin == null) {
-			$this->package = $packageManager->getPackageByDefinition($group, $name, $version);
+			$this->package = $this->packageManager->getPackageByDefinition($group, $name, $version);
 		} else {
 			// TODO: move $packageDownloadService as a property
 			$packageDownloadService = MoufAdmin::getPackageDownloadService();
 			$packageDownloadService->setMoufManager($this->moufManager);
 			$this->package = $packageDownloadService->getRepository($origin)->getPackage($group, $name, $version);
 		}
+
+		// Let's get the list of all packages that will be upgraded in the process (requested by the user).
+		$this->upgradePackageList = array();
+		foreach ($upgradeList as $upgrade) {
+			if (isset($upgrade['origin']) && $upgrade['origin'] != "") {
+				// TODO: move $packageDownloadService as a property
+				$packageDownloadService = MoufAdmin::getPackageDownloadService();
+				$packageDownloadService->setMoufManager($this->moufManager);
+				$this->upgradePackageList[$upgrade['group']."/".$upgrade['name']] = $packageDownloadService->getRepository($upgrade['origin'])->getPackage($upgrade['group'], $upgrade['name'], $upgrade['version']);
+			} else {
+				$this->upgradePackageList[$upgrade['group']."/".$upgrade['name']] = $this->packageManager->getPackageByDefinition($upgrade['group'], $upgrade['name'], $upgrade['version']);
+			}
+		}
+
+		// List of packages that should be proposed as an upgrade.
+		$this->toProposeUpgradePackage = array();
 		
-		//$this->moufDependencies = $packageManager->getDependencies($this->package);
-		$this->moufDependencies = $packageManager->getDependencies($this->package, $this->moufManager);
+		
+		// For each package that was requested to be upgraded, let's check if the packages depending on it are still compatible.
+		
+		// Let's start with the package we try to install (in case this is an upgrade)
+		$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($this->package, $this->upgradePackageList, $this->moufManager);
+		$this->toProposeUpgradePackage = array_merge($this->toProposeUpgradePackage, $toProposeUpgrade);
+		foreach ($this->upgradePackageList as $toUpgradePackage) {
+			/* @var $toUpgradePackage MoufPackage */
+			$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($toUpgradePackage, $this->upgradePackageList, $this->moufManager);
+			$this->toProposeUpgradePackage = array_merge($this->toProposeUpgradePackage, $toProposeUpgrade);		
+		}
+				
+		//$this->moufDependencies = $this->packageManager->getDependencies($this->package);
+		try {
+			$this->moufDependencies = $this->packageManager->getDependencies($this->package, $this->moufManager, $this->upgradePackageList);
+		} catch (MoufIncompatiblePackageException $ex) {
+			$this->toProposeUpgradePackage[] = $ex;
+		} catch (MoufProblemInDependencyPackageException $exProblem) {
+			foreach ($exProblem->exceptions as $exception) {
+				if ($exception instanceof MoufIncompatiblePackageException) {
+					$this->toProposeUpgradePackage[] = $exception;
+				} else {
+					throw $exProblem;
+				}
+			}
+		}
+		
+		// TODO: aggréger les MoufIncompatiblePackageException dans un objet plus intélligent.
+		// TODO: aggréger les MoufIncompatiblePackageException 
+		// TODO: aggréger les MoufIncompatiblePackageException 
+		// TODO: aggréger les MoufIncompatiblePackageException 
+		// TODO: aggréger les MoufIncompatiblePackageException 
+		// TODO: aggréger les MoufIncompatiblePackageException 
+		
+		
+		
 		//var_dump($this->moufDependencies); exit;
 				
-		if (!empty($this->moufDependencies) && $confirm=="false") {
+		if ((!empty($this->moufDependencies) && $confirm=="false") || $this->toProposeUpgradePackage) {
 			$this->template->addContentFile("views/packages/displayConfirmPackagesEnable.php", $this);
 			$this->template->draw();
 		} else {
@@ -180,6 +258,28 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 				$this->moufManager->addPackageByXmlFile($dependency->getDescriptor()->getPackageXmlPath());
 			}
 			$this->moufManager->rewriteMouf();*/
+			
+			// Upgrading goes first (TODO: check this).
+			foreach ($upgradeList as $upgradeOrder) {
+				// special case: let's not make the upgrade if this is the main package to be installed (don't do it twice).
+				if ($upgradeOrder['group'] == $group && $upgradeOrder['name'] == $name && $upgradeOrder['version'] == $version) {
+					continue;
+				}
+				
+				// Let's download if needed.
+				if ($upgradeOrder['origin'] != null && $upgradeOrder['origin'] != "") {
+					$this->multiStepActionService->addAction("downloadPackageAction", array(
+							"repositoryUrl"=>$upgradeOrder['origin'],
+							"group"=>$upgradeOrder['group'],
+							"name"=>$upgradeOrder['name'],
+							"version"=>$upgradeOrder['version']
+							), $selfedit == "true");
+				}
+				// Now, let's perform the upgrade (this is handled by the enablePackageAction action.
+				$this->multiStepActionService->addAction("enablePackageAction", array(
+							"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml"), $selfedit == "true");				
+			}
+			
 			foreach ($this->moufDependencies as $dependency) {
 				/* @var $dependency MoufPackage */
 				if ($dependency->getCurrentLocation() != null) {
@@ -230,13 +330,13 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
 	
-		$packageManager = new MoufPackageManager();
-		$this->package = $packageManager->getPackageByDefinition($group, $name, $version);
-		//$this->moufDependencies = $packageManager->getDependencies($this->package);
+		$this->packageManager = new MoufPackageManager();
+		$this->package = $this->packageManager->getPackageByDefinition($group, $name, $version);
+		//$this->moufDependencies = $this->packageManager->getDependencies($this->package);
 		
-		$this->moufDependencies = $packageManager->getInstalledPackagesUsingThisPackage($this->package, $this->moufManager);
+		$this->moufDependencies = $this->packageManager->getInstalledPackagesUsingThisPackage($this->package, $this->moufManager);
 		
-		//$dependencies = $packageManager->getChildren($this->package);
+		//$dependencies = $this->packageManager->getChildren($this->package);
 		//$this->moufDependencies = array();
 		// Let's only keep the packages that are already installed from this list:
 		/*foreach ($dependencies as $moufDependency) {
@@ -302,12 +402,16 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 *
 	 * @Action
 	 * @Logged
-	 * @param string $name The path to the package.xml file relative to the plugins directory.
+	 * @param string $group
+	 * @param string $name
+	 * @param string $version
 	 * @param string $selfedit
-	 * @param string $confirm
+	 * @param string $origin
 	 */
-	public function upgradePackage($group, $name, $version, $selfedit = "false", $confirm="false") {
-		throw new Exception("Sorry, upgrading packages is not supported yet.");
+	public function upgradePackage($group, $name, $version, $selfedit = "false", $origin = null) {
+		//throw new Exception("Sorry, upgrading packages is not supported yet.");
+		$this->enablePackage($group, $name, $version, $selfedit, "false", $origin,
+			array(0=>array("group"=>$group,"name"=>$name,"version"=>$version,"origin"=>$origin)));
 	}
 	
 	/**
@@ -373,6 +477,22 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 			echo "</form>";
 		}
 		
+	}
+
+	/**
+	 * Returns the list of versions for the package $package that are compatible with $requestedVersions.
+	 * The local and remote repositories are searched.
+	 * If a package is available in several places, it will be returned from the
+	 * local repository first, and if not found from the remote repositories, in order
+	 * of appearance.
+	 * 
+	 * @param MoufDependencyDescriptor $requestedVersions
+	 * @param MoufManager $moufManager
+	 * @throws Exception
+	 * @return array<string, MoufPackage>
+	 */
+	public function getCompatibleVersionsForPackage(MoufDependencyDescriptor $requestedVersions) {
+		return $this->packageManager->getCompatibleVersionsForPackage($requestedVersions, $this->moufManager);
 	}
 	
 }
