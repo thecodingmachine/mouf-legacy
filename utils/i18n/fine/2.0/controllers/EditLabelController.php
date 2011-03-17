@@ -258,6 +258,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 					
 					$letter = 1;
 					$language = $objSheet->getCell($this->letters[$letter]."1")->getValue();
+					$translations = array();
 					while($language) {
 						if(array_search($language, $this->languages) !== false) {
 		    				$num = 2;
@@ -275,10 +276,11 @@ class EditLabelController extends Controller implements MoufSearchable {
 						$letter ++;
 						$language = $objSheet->getCell($this->letters[$letter]."1")->getValue();
 					}
-					
-				    foreach ($translations as $lang => $translation) {
-				    	$this->setTranslationsForMessageFromService(($selfedit == "true"), $msginstancename, $lang, $translation);
-				    }
+					if($translations) {
+					    foreach ($translations as $lang => $translation) {
+					    	$this->setTranslationsForMessageFromService(($selfedit == "true"), $msginstancename, $lang, $translation);
+					    }
+					}
 				    $this->missinglabels($msginstancename, $selfedit);
 					    
 				}

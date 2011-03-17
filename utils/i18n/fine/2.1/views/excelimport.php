@@ -1,5 +1,5 @@
-<h1>Import your csv file</h1>
-<p>To have the right file, please download the csv export <a href="ExcelExport">Excel Export</a></p>
+<h1>Import your Excel file</h1>
+<p>To have the right file, please download the Excel export <a href="ExcelExport">Excel Export</a></p>
 
 <?php 
 if($this->submit) {
