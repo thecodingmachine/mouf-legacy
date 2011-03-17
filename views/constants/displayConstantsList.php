@@ -16,7 +16,7 @@ if (!empty($this->constantsList)) {
 		echo '<div class="constant">';
 		echo '<div>';
 		if ($def["defined"]) {
-			echo $def['comment']."<br/>";
+			echo nl2br($def['comment'], true)."<br/>";
 			if ($def['type'] == 'bool') {
 				echo "<em>Default value: '".($def['defaultValue']?"true":"false")."'.</em>";
 			} else {
