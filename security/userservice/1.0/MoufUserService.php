@@ -62,6 +62,22 @@ class MoufUserService implements UserServiceInterface {
 	public $sessionPrefix;
 	
 	/**
+	 * When the user tries to access a page that requires to be
+	 * logged, he is redirected the login page.
+	 * The URL he tried to access is appended to the login page. You can customize the 
+	 * name of the URL parameter for the redirect.
+	 * 
+	 * For instance, if $redirectParameter = "redir", then your
+	 * redirection URL might look like:
+	 * 	http://[myserver]/[myapp]/[$loginPageUrl]?redir=%2F[myapp]%2F[my]%2F[page]%2F
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $redirectParameter = "redirect";
+	
+	/**
 	 * Logs the user using the provided login and password.
 	 * Returns true on success, false if the user or password is incorrect.
 	 * 
@@ -158,7 +174,7 @@ class MoufUserService implements UserServiceInterface {
 	 */
 	public function redirectNotLogged() {
 		// TODO: only if GET request!
-		header("Location:".ROOT_URL.$this->loginPageUrl."/?redirect=".urlencode($_SERVER['REQUEST_URI']));
+		header("Location:".ROOT_URL.$this->loginPageUrl."?".$this->redirectParameter."=".urlencode($_SERVER['REQUEST_URI']));
 		exit;
 	}
 	
