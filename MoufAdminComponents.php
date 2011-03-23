@@ -22,26 +22,28 @@ By default, this is behaviour is disabled.',
   ),
 ));
 
-$moufManager->addPackageByXmlFile('utils/log/log_interface/1.0/package.xml');
-$moufManager->addPackageByXmlFile('html/htmlelement/1.0/package.xml');
-$moufManager->addPackageByXmlFile('html/template/BaseTemplate/1.0/package.xml');
-$moufManager->addPackageByXmlFile('html/template/SplashTemplate/1.0/package.xml');
-$moufManager->addPackageByXmlFile('utils/i18n/fine/1.0/package.xml');
-$moufManager->addPackageByXmlFile('mvc/splash/1.0/package.xml');
-$moufManager->addPackageByXmlFile('javascript/jquery/jquery/1.3.2/package.xml');
-$moufManager->addPackageByXmlFile('javascript/jquery/jquery-autogrow/1.2.2/package.xml');
-$moufManager->addPackageByXmlFile('javascript/jquery/jquery-ui/1.7.2/package.xml');
-$moufManager->addPackageByXmlFile('javascript/jquery/jqueryFileTree/1.01/package.xml');
-$moufManager->addPackageByXmlFile('utils/common/getvars/1.0/package.xml');
-$moufManager->addPackageByXmlFile('javascript/jit/1.1.2/package.xml');
-$moufManager->addPackageByXmlFile('javascript/prototype/1.6.0.1/package.xml');
-$moufManager->addPackageByXmlFile('utils/log/errorlog_logger/1.0/package.xml');
-$moufManager->addPackageByXmlFile('security/userservice/1.0/package.xml');
-$moufManager->addPackageByXmlFile('security/userservice-splash/1.0/package.xml');
-$moufManager->addPackageByXmlFile('security/userfiledao/1.0/package.xml');
-$moufManager->addPackageByXmlFile('security/simplelogincontroller/1.0/package.xml');
-$moufManager->addPackageByXmlFile('utils/cache/cache-interface/1.0/package.xml');
-$moufManager->addPackageByXmlFile('utils/cache/file-cache/1.1/package.xml');
+$moufManager->setPackagesByXmlFile(array (
+  0 => 'utils/log/log_interface/1.0/package.xml',
+  1 => 'html/htmlelement/1.0/package.xml',
+  2 => 'html/template/BaseTemplate/1.0/package.xml',
+  3 => 'html/template/SplashTemplate/1.0/package.xml',
+  4 => 'utils/i18n/fine/1.0/package.xml',
+  5 => 'mvc/splash/1.0/package.xml',
+  6 => 'javascript/jquery/jquery/1.3.2/package.xml',
+  7 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
+  8 => 'javascript/jquery/jquery-ui/1.7.2/package.xml',
+  9 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
+  10 => 'utils/common/getvars/1.0/package.xml',
+  11 => 'javascript/jit/1.1.2/package.xml',
+  12 => 'javascript/prototype/1.6.0.1/package.xml',
+  13 => 'utils/log/errorlog_logger/1.0/package.xml',
+  14 => 'security/userservice/1.0/package.xml',
+  15 => 'security/userservice-splash/1.0/package.xml',
+  16 => 'security/userfiledao/1.0/package.xml',
+  17 => 'security/simplelogincontroller/1.0/package.xml',
+  18 => 'utils/cache/cache-interface/1.0/package.xml',
+  19 => 'utils/cache/file-cache/1.1/package.xml',
+));
 
 require dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
@@ -827,7 +829,7 @@ $moufManager->addComponentInstances(array (
     array (
       'loginPageUrl' => 
       array (
-        'value' => 'mouf/login',
+        'value' => 'mouf/login/',
         'type' => 'string',
         'metadata' => 
         array (
@@ -836,6 +838,14 @@ $moufManager->addComponentInstances(array (
       'sessionPrefix' => 
       array (
         'value' => 'Mouf',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'redirectParameter' => 
+      array (
+        'value' => 'redirect',
         'type' => 'string',
         'metadata' => 
         array (

@@ -9,5 +9,7 @@ require_once dirname(__FILE__).'/../plugins/utils/i18n/fine/1.0/ValidatorDescrip
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashAdmin.php';
 require_once dirname(__FILE__).'/../plugins/mvc/splash/1.0/controllers/admin/SplashAdminApacheConfigureController.php';
 require_once dirname(__FILE__).'/../plugins/security/userservice/1.0/MoufUserServiceValidators.php';
+require_once dirname(__FILE__).'/../plugins/utils/cache/cache-interface/1.0/admin/CacheAdmin.php';
+require_once dirname(__FILE__).'/../plugins/utils/cache/cache-interface/1.0/admin/controllers/PurgeCacheController.php';
 
 ?>
