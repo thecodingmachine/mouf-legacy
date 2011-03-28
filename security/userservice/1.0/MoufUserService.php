@@ -11,7 +11,7 @@ class MoufUserService implements UserServiceInterface {
 	/**
 	 * The path to the login page, relative to the root of the application.
 	 * The path is relative to the ROOT of the web application.
-	 * It should not start with a "/" and should not end with a "/".
+	 * It should not start with a "/".
 	 *
 	 * @Property
 	 * @Compulsory
