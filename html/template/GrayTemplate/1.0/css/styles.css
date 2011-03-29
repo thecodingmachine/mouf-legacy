@@ -93,6 +93,9 @@ div#sidebar-left ul {
 	margin: 5px 0 5px 0;
 }
 
+div#sidebar-left ul ul {
+	font-size: 13px;
+}
 
 /************ Generic div **********/
 
