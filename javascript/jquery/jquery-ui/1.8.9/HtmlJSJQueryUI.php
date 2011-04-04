@@ -19,7 +19,6 @@ class HtmlJSJQueryUI implements HtmlElementInterface {
 	public $includeDefaultCss;
 	
 	public function toHtml() {
-		error_log(var_export($this->includeDefaultCss, true));
 		if ($this->includeDefaultCss) {
 			echo '<link type="text/css" href="'.ROOT_URL.'plugins/javascript/jquery/jquery-ui/1.8.9/css/'.$this->includeDefaultCss.'/jquery-ui-1.8.9.custom.css" rel="stylesheet" media="screen" />'."\n";
 		}
