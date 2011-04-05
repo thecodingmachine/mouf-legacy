@@ -117,6 +117,12 @@ div.error {
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
+.good {
+	background:#DDFFDD none repeat scroll 0 0;
+	color:#002200;
+	padding:5px 5px 5px 26px;
+	border:1px solid #10F030;
+}
 div.good {
 	background:#DDFFDD none repeat scroll 0 0;
 	color:#002200;
@@ -125,6 +131,12 @@ div.good {
 	background-image: url("../images/good.png");
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
+}
+.bad {
+	background:#FFDDDD none repeat scroll 0 0;
+	color:#220000;
+	padding:5px 5px 5px 26px;
+	border:1px solid #F03010;
 }
 div.bad {
 	background:#FFDDDD none repeat scroll 0 0;
