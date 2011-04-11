@@ -24,5 +24,10 @@
 	<adminRequires>
 		<require>DbConnectionAdmin.php</require>
 		<require>controllers/MySqlConnectionEditController.php</require>
+		<require>controllers/DbConnectionInstallController.php</require>
 	</adminRequires>
+	<install>
+		<!--  <file>direct/install.php</file>  -->
+		<url>mouf/dbconnectioninstall/</url>
+	</install>
 </package>

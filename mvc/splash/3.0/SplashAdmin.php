@@ -11,8 +11,15 @@ MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'menu
 MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'menuCssClass', '');
 MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'propagatedUrlParameters', array('selfedit'));
 
+MoufManager::getMoufManager()->declareComponent('splashGenerateService', 'SplashGenerateService', true);
+
 MoufManager::getMoufManager()->declareComponent('splashApacheConfig', 'SplashAdminApacheConfigureController', true);
 MoufManager::getMoufManager()->bindComponent('splashApacheConfig', 'template', 'moufTemplate');
+MoufManager::getMoufManager()->bindComponent('splashApacheConfig', 'splashGenerateService', 'splashGenerateService');
+
+MoufManager::getMoufManager()->declareComponent('splashinstall', 'SplashInstallController', true);
+MoufManager::getMoufManager()->bindComponent('splashinstall', 'template', 'installTemplate');
+MoufManager::getMoufManager()->bindComponent('splashinstall', 'splashGenerateService', 'splashGenerateService');
 
 MoufManager::getMoufManager()->getInstance("actionMenu")->menuItems[] = MoufManager::getMoufManager()->getInstance("splashAdminLabelMenuItem");
 MoufManager::getMoufManager()->getInstance("actionMenu")->menuItems[] = MoufManager::getMoufManager()->getInstance("splashAdminApacheConfigItem");

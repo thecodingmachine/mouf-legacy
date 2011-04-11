@@ -29,6 +29,11 @@
 	</externalComponentRequires>	
 	<adminRequires>
 		<require>SplashAdmin.php</require>
+		<require>models/SplashGenerateService.php</require>
 		<require>controllers/admin/SplashAdminApacheConfigureController.php</require>
-	</adminRequires>	
+		<require>controllers/admin/SplashInstallController.php</require>
+	</adminRequires>
+	<install>
+		<url>mouf/splashinstall/</url>
+	</install>
 </package>

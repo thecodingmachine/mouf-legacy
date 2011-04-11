@@ -17,6 +17,15 @@ class SplashAdminApacheConfigureController extends Controller {
 	public $template;
 	
 	/**
+	 * The service in charge of generating files.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var SplashGenerateService
+	 */
+	public $splashGenerateService;
+	
+	/**
 	 * Displays the config page. 
 	 *
 	 * @Action
@@ -42,20 +51,12 @@ class SplashAdminApacheConfigureController extends Controller {
 			$uri = "/";
 		}
 		
+		$this->splashGenerateService->writeHtAccess($uri);
 		
-		$str = "Options FollowSymLinks
-		RewriteEngine on
-		RewriteBase $uri
-		
-		#RewriteCond %{REQUEST_FILENAME} !-f
-		#RewriteCond %{REQUEST_FILENAME} !-d
-		
-		RewriteRule !((\.(js|ico|gif|jpg|png|css)$)|^plugins|^mouf) plugins/mvc/splash/3.0/splash.php";
-		
-		file_put_contents(dirname(__FILE__)."/../../../../../../.htaccess", $str);
-		//var_dump("Location: ".ROOT_URL."mouf/?selfedit=".$selfedit);
 		header("Location: ".ROOT_URL."mouf/?selfedit=".$selfedit);
 	}
+	
+	
 }
 
 ?>

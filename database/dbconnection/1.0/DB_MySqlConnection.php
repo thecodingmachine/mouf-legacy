@@ -5,7 +5,7 @@ require_once('Mouf_DBConnection.php');
  * A class wrapping a connection to a MySQL database through PDO, with additional goodies (introspection support)
  *
  * @Component
- * @ExtendedAction {"name":"Edit", "url":"mouf/mysqlconnectionedit/", "default":true}
+ * // @ExtendedAction {"name":"Edit", "url":"mouf/mysqlconnectionedit/", "default":true}
  */
 class DB_MySqlConnection extends Mouf_DBConnection {
 	

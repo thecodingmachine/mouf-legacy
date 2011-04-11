@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>TDBM</displayName>
+	<shortDescription>The Database Machine is a PHP ORM that requires no configuration. The object model is deduced at runtime from the 
+	database model.</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/tdbm/doc/manual.html</docUrl>
+	<logo>icon.png</logo>
+	<dependencies>
+		<dependency>
+			<group>database</group>
+			<name>dbconnection</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/cache</group>
+			<name>cache-interface</name>
+			<version>1.0</version>
+		</dependency>
+		<!-- The dependencies below are not compulsory but are used by the default install process -->
+		<dependency>
+			<group>utils/cache</group>
+			<name>no-cache</name>
+			<version>>=1.1</version>
+		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>errorlog_logger</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>TDBM_Service.php</require>
+	</requires>
+	<adminRequires>
+		<require>controllers/TdbmController.php</require>
+		<require>controllers/TdbmInstallController.php</require>
+		<require>TdbmAdmin.php</require>
+	</adminRequires>
+	<install>
+		<url>mouf/tdbminstall/</url>
+	</install>
+</package>

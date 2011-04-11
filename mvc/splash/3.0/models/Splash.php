@@ -225,7 +225,9 @@ class Splash {
 
 		$action = $this->getAction();
 		
-		$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
+		if ($this->log != null) {
+			$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
+		}
 
 		if ($controller instanceof Controller) {
 			// Let's pass everything to the controller:
