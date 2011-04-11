@@ -148,6 +148,9 @@ class MultiStepActionService {
 	 * Executes the next action to be executed.
 	 * //Any output will be considered as a warning, any exception as an error.
 	 * 
+	 * Returns the result from the action that was exectuted, or null if there was no action to execute.
+	 * 
+	 * @return MoufActionResultInterface
 	 */
 	public function executeNextAction() {
 
@@ -157,10 +160,12 @@ class MultiStepActionService {
 			if ($actionDescriptorArr["status"] == 'todo') {
 				$actionDescriptor = new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status']);
 				try {
-					$actionDescriptor->execute();
-					$this->actionsDescriptorList[$key]['status'] = "done";
-					$this->save();
-					return null;
+					$actionResult = $actionDescriptor->execute();
+					if ($actionResult->getStatus() == "done") {
+						$this->actionsDescriptorList[$key]['status'] = "done";
+						$this->save();
+					}
+					return $actionResult;
 				} catch (Exception $e) {
 					$this->actionsDescriptorList[$key]['status'] = "error";
 					$this->save();
@@ -171,6 +176,23 @@ class MultiStepActionService {
 		return null;
 	}
 	
+	/**
+	 * If the call to executeNextAction did not validate the action directly, some action needs to be taken.
+	 * At the end of those actions, a call to validateCurrentAction will validate the action.
+	 * 
+	 */
+	public function validateCurrentAction() {
+		$this->loadActionsDescriptor();
+		$array = array();
+		foreach ($this->actionsDescriptorList as $key=>$actionDescriptorArr) {
+			if ($actionDescriptorArr["status"] == 'todo') {
+				$this->actionsDescriptorList[$key]['status'] = "done";
+				$this->save();
+				return;
+			}
+		}
+		return;
+	}
 	
 	
 	/**

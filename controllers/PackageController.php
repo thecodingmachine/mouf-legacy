@@ -275,9 +275,35 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 							"version"=>$upgradeOrder['version']
 							), $selfedit == "true");
 				}
-				// Now, let's perform the upgrade (this is handled by the enablePackageAction action.
+				// Now, let's perform the upgrade (this is handled by the enablePackageAction action).
 				$this->multiStepActionService->addAction("enablePackageAction", array(
-							"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml"), $selfedit == "true");				
+							"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml"), $selfedit == "true");
+				
+				// Now, let's see if there are specific installation steps.
+				$thePackage = $this->packageManager->findPackage($upgradeOrder['group'], $upgradeOrder['name'], $upgradeOrder['version'], $this->moufManager);
+
+				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+				// WE SHOULD FIND SOMETHING MORE CLEVER TO PERFORM THE UPGRADE!!!!
+				$installSteps = $thePackage->getInstallSteps();
+				if ($installSteps) {
+					foreach ($installSteps as $installStep) {
+						if ($installStep['type'] == 'file') {
+							$this->multiStepActionService->addAction("redirectAction", array(
+								"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml",
+								"redirectUrl"=>ROOT_URL."plugins/".$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/".$installStep['file']), $selfedit == "true");
+						} elseif ($installStep['type'] == 'url') {
+							$this->multiStepActionService->addAction("redirectAction", array(
+								"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml",
+								"redirectUrl"=>ROOT_URL.$installStep['url']), $selfedit == "true");
+						} else {
+							throw new Exception("Unknown type during install process.");
+						}
+					}
+				}
 			}
 			
 			foreach ($this->moufDependencies as $dependency) {
@@ -293,6 +319,25 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 				}
 				$this->multiStepActionService->addAction("enablePackageAction", array(
 							"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath()), $selfedit == "true");
+				
+				// Now, let's see if there are specific installation steps.
+				$installSteps = $dependency->getInstallSteps();
+				if ($installSteps) {
+					foreach ($installSteps as $installStep) {
+						
+						if ($installStep['type'] == 'file') {
+							$this->multiStepActionService->addAction("redirectAction", array(
+								"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath(),
+								"redirectUrl"=>ROOT_URL."plugins/".$dependency->getDescriptor()->getGroup()."/".$dependency->getDescriptor()->getName()."/".$dependency->getDescriptor()->getVersion()."/".$installStep['file']), $selfedit == "true");
+						} elseif ($installStep['type'] == 'url') {
+							$this->multiStepActionService->addAction("redirectAction", array(
+								"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath(),
+								"redirectUrl"=>ROOT_URL.$installStep['url']), $selfedit == "true");
+						} else {
+							throw new Exception("Unknown type during install process.");
+						}
+					}
+				}
 			}
 			
 			$url = ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";

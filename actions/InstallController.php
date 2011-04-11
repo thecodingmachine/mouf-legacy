@@ -61,10 +61,11 @@ class InstallController extends Controller {
 	 */
 	public function nextstep() {
 		$this->done = false;
+		$actionResult =  null;
 		$html = "";
 		if ($this->multiStepActionService->hasRemainingAction()) {
 			try {
-				$this->multiStepActionService->executeNextAction();
+				$actionResult = $this->multiStepActionService->executeNextAction();
 			} catch (Exception $e) {
 				$this->exception = $e;
 			}
@@ -75,22 +76,43 @@ class InstallController extends Controller {
 			$this->done = true;
 		}
 		
+		$redirect = null;
+		if ($actionResult && $actionResult->getStatus() == "redirect") {
+			$redirect = $actionResult->getRedirectUrl();
+		}
+		
 		if ($this->done) {
 			$this->multiStepActionService->purgeActions();
 		}
 		
-		ob_start();
-		$this->actionsList = $this->multiStepActionService->getActionsList();
-		include dirname(__FILE__)."/views/displaySteps.php";
-		$html = ob_get_contents();
-		ob_end_clean();
+		if (!$redirect) {
+			ob_start();
+			$this->actionsList = $this->multiStepActionService->getActionsList();
+			include dirname(__FILE__)."/views/displaySteps.php";
+			$html = ob_get_contents();
+			ob_end_clean();	
+		}
 		
 		if ($this->exception) {	
 			echo json_encode(array("code"=>"error", "html"=>$html));
+		} elseif ($redirect) {
+			echo json_encode(array("code"=>"redirect", "redirect"=>$redirect));
 		} else {
 			echo json_encode(array("code"=>($this->done?"finished":"continue"), "html"=>$html));
 		}
 		
 		// TODO: prévoir un message "OK" à la fin du process (avant le redirect, éventuellement).
+	}
+	
+	/**
+	 * Splash action called at the end of an "install" action to validate the action and continue. 
+	 * 
+	 * @Action
+	 * @Logged
+	 * @param string $selfedit 
+	 */
+	public function installStepDone($selfedit = "false") {
+		$this->multiStepActionService->validateCurrentAction();
+		header("Location: .?selfedit=".$selfedit);
 	}
 }

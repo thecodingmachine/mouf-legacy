@@ -53,8 +53,12 @@ require_once $localFilePath.'/actions/MoufActionDescriptor.php';
 require_once $localFilePath.'/actions/MoufActionProvider.php';
 require_once $localFilePath.'/actions/DownloadPackageAction.php';
 require_once $localFilePath.'/actions/EnablePackageAction.php';
+require_once $localFilePath.'/actions/RedirectAction.php';
 require_once $localFilePath.'/actions/MultiStepActionService.php';
 require_once $localFilePath.'/actions/InstallController.php';
+require_once $localFilePath.'/actions/MoufActionResultInterface.php';
+require_once $localFilePath.'/actions/MoufActionRedirectResult.php';
+require_once $localFilePath.'/actions/MoufActionDoneResult.php';
 require_once $localFilePath.'/controllers/MoufController.php';
 require_once $localFilePath.'/controllers/MoufRootController.php';
 require_once $localFilePath.'/controllers/ComponentsController.php';
@@ -71,6 +75,7 @@ require_once $localFilePath.'/MoufPackageDownloadService.php';
 require_once $localFilePath.'/MoufRepository.php';
 require_once $localFilePath.'/controllers/PhpInfoController.php';
 require_once $localFilePath.'/controllers/SearchController.php';
+require_once $localFilePath.'/actions/InstallUtils.php';
 require_once $localFilePath.'/load.php';
 
 ?>

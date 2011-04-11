@@ -660,6 +660,7 @@ $moufManager->addComponentInstances(array (
       array (
         0 => 'requiredFilesValidator',
         1 => 'configCompleteValidator',
+        2 => 'installProcessValidator',
       ),
     ),
   ),
@@ -1397,6 +1398,91 @@ $moufManager->addComponentInstances(array (
       ),
     ),
   ),
+  'redirectAction' => 
+  array (
+    'class' => 'RedirectAction',
+    'external' => false,
+  ),
+  'installTemplate' => 
+  array (
+    'class' => 'SplashTemplate',
+    'external' => false,
+    'fieldBinds' => 
+    array (
+      'head' => 
+      array (
+        0 => 'jQuery',
+        1 => 'jqueryui',
+        2 => 'jqueryFileTree',
+        3 => 'jquery-autogrow-1.2.2',
+      ),
+    ),
+    'fieldProperties' => 
+    array (
+      'logoImg' => 
+      array (
+        'value' => 'mouf/views/images/MoufLogo.png',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'title' => 
+      array (
+        'value' => 'Mouf - Build your website',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'css_files' => 
+      array (
+        'value' => 
+        array (
+          0 => 'mouf/views/styles.css',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'installProcessValidator' => 
+  array (
+    'class' => 'MoufBasicValidationProvider',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'name' => 
+      array (
+        'value' => 'Installation process validator',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'url' => 
+      array (
+        'value' => 'mouf/direct/install_process_validator.php',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php');
@@ -1408,8 +1494,12 @@ $moufManager->registerComponent('actions/MoufActionDescriptor.php');
 $moufManager->registerComponent('actions/MoufActionProvider.php');
 $moufManager->registerComponent('actions/DownloadPackageAction.php');
 $moufManager->registerComponent('actions/EnablePackageAction.php');
+$moufManager->registerComponent('actions/RedirectAction.php');
 $moufManager->registerComponent('actions/MultiStepActionService.php');
 $moufManager->registerComponent('actions/InstallController.php');
+$moufManager->registerComponent('actions/MoufActionResultInterface.php');
+$moufManager->registerComponent('actions/MoufActionRedirectResult.php');
+$moufManager->registerComponent('actions/MoufActionDoneResult.php');
 $moufManager->registerComponent('controllers/MoufController.php');
 $moufManager->registerComponent('controllers/MoufRootController.php');
 $moufManager->registerComponent('controllers/ComponentsController.php');
@@ -1426,6 +1516,7 @@ $moufManager->registerComponent('MoufPackageDownloadService.php');
 $moufManager->registerComponent('MoufRepository.php');
 $moufManager->registerComponent('controllers/PhpInfoController.php');
 $moufManager->registerComponent('controllers/SearchController.php');
+$moufManager->registerComponent('actions/InstallUtils.php');
 $moufManager->registerComponent('load.php');
 
 unset($moufManager);
@@ -1843,6 +1934,27 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return RedirectAction
+	 */
+	 public static function getRedirectAction() {
+	 	return MoufManager::getMoufManager()->getInstance('redirectAction');
+	 }
+
+	/**
+	 * @return SplashTemplate
+	 */
+	 public static function getInstallTemplate() {
+	 	return MoufManager::getMoufManager()->getInstance('installTemplate');
+	 }
+
+	/**
+	 * @return MoufBasicValidationProvider
+	 */
+	 public static function getInstallProcessValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('installProcessValidator');
+	 }
+
+	/**
 	 * @return SplashMenuItem
 	 */
 	 public static function getFineAdminLabelMenuItem() {
@@ -1896,6 +2008,27 @@ class MoufAdmin {
 	 */
 	 public static function getSplashApacheConfig() {
 	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getCacheInterfaceAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('cacheInterfaceAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getCacheInterfacePurgeMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('cacheInterfacePurgeMenuItem');
+	 }
+
+	/**
+	 * @return PurgeCacheController
+	 */
+	 public static function getPurgeCaches() {
+	 	return MoufManager::getMoufManager()->getInstance('purgeCaches');
 	 }
 
 }

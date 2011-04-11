@@ -45,13 +45,14 @@ class MoufActionDescriptor {
 	/**
 	 * Runs the action!
 	 * The action should not return anything. It can throw an error in case a problem is detected.
+	 * @return MoufActionResultInterface
 	 */
 	public function execute() {
 		// An action is always executed in the MoufAdmin scope.
 		$moufManager = MoufManager::getMoufManager();
 		$actionProvider = $moufManager->getInstance($this->actionProviderName);
 		/* @var $actionProvider MoufActionProvider */
-		$actionProvider->execute($this);
+		return $actionProvider->execute($this);
 	}
 	
 	/**

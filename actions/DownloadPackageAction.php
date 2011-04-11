@@ -19,6 +19,7 @@ class DownloadPackageAction implements MoufActionProviderInterface {
 	 * Executes the action passed in parameter.
 	 * 
 	 * @param MoufActionDescriptor $actionDescriptor
+	 * @return MoufActionResultInterface
 	 */
 	public function execute(MoufActionDescriptor $actionDescriptor) {
 		
@@ -44,6 +45,8 @@ class DownloadPackageAction implements MoufActionProviderInterface {
 		}
 		
 		$this->packageDownloadService->downloadAndUnpackPackage($repository, $group, $name, $version);
+		
+		return new MoufActionDoneResult();
 	}
 	
 	/**

@@ -22,6 +22,9 @@ jQuery(document).ready(function() {
 			} else if (json.code == "continue") {
 				jQuery('#installProcess').html(json.html);
 				performNextStep();
+			} else if (json.code == "redirect") {
+				window.location.href = json.redirect;
+				return;
 			} else {
 				jQuery('#installProcess').html("<div class='error'>Unknown JSON answer</div>");
 			}

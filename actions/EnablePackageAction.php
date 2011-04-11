@@ -31,6 +31,7 @@ class EnablePackageAction implements MoufActionProviderInterface {
 		
 		$moufManager->addPackageByXmlFileWithCheck($fileName);
 		$moufManager->rewriteMouf();
+		return new MoufActionDoneResult();
 	}
 	
 	/**

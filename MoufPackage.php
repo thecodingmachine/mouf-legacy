@@ -112,6 +112,14 @@ class MoufPackage {
 	 */
 	private $adminRequires;
 	
+	/**
+	 * The list of steps that will be run during package install, relative to the package directory.
+	 * 
+	 *
+	 * @var array['type'=>'url|file', 'file'=>thefile.php, 'url'=>theurltocall]
+	 */
+	private $installSteps;
+	
 	public function __construct() {
 		
 	}
@@ -205,6 +213,33 @@ class MoufPackage {
 			}
 		}
 		$this->adminRequires = $adminRequiresList;	
+
+		/*$installFilesList = array();
+		$installFiles = $this->packageSimpleXml->installFiles;
+		if ($installFiles) {
+			foreach ($installFiles->installFile as $installFile) {
+				$installFilesList[] = (string)$installFile;
+			}
+		}
+		$this->installFiles = $installFilesList;*/
+		$installStepsList = array();
+		$installSteps = $this->packageSimpleXml->install;
+		if ($installSteps) {
+			foreach ($installSteps->children() as $step) {
+				/* @var $step SimpleXmlElement */
+				$name = $step->getName();
+				if ($name == "file") {
+					$installStepsList[] = array('file'=>(string)$step, 'type'=>'file');
+				} elseif ($name == "url") {
+					$installStepsList[] = array('url'=>(string)$step, 'type'=>'url');
+				} else {
+					throw new Exception("Invalid package.xml file. Into a install tag, there should be only file or url tags.");
+				}
+				//$installFilesList[] = (string)$installFile;
+			}
+		}
+		$this->installSteps = $installStepsList;	
+		
 	}
 	
 	/**
@@ -292,7 +327,7 @@ class MoufPackage {
 	/**
 	 * Returns the list of required files that contain declaration of external components, relative to the root of the package.
 	 *
-	 * @array<string>
+	 * @return array<string>
 	 */
 	public function getExternalComponentsRequiredFiles() {
 		return $this->externalComponentRequires;
@@ -301,7 +336,7 @@ class MoufPackage {
 	/**
 	 * Returns the list of required files for the admin, relative to the root of the package.
 	 *
-	 * @array<string>
+	 * @return array<string>
 	 */
 	public function getAdminRequiredFiles() {
 		return $this->adminRequires;
@@ -317,6 +352,16 @@ class MoufPackage {
 	 */
 	public function getCurrentLocation() {
 		return $this->currentLocation;
+	}
+	
+	/**
+	 * The list of steps that will be run during package install, relative to the package directory.
+	 * 
+	 *
+	 * @return array['type'=>'url|file', 'file'=>thefile.php, 'url'=>theurltocall]
+	 */
+	public function getInstallSteps() {
+		return $this->installSteps;
 	}
 	
 	/**

@@ -11,6 +11,7 @@ interface MoufActionProviderInterface {
 	 * Executes the action passed in parameter.
 	 * 
 	 * @param MoufActionDescriptor $actionDescriptor
+	 * @return MoufActionResultInterface
 	 */
 	function execute(MoufActionDescriptor $actionDescriptor);
 	
