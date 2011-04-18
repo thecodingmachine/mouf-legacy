@@ -14,7 +14,7 @@ if (isset($includesAnalyze["errorType"])) {
 <p>Below is the list of files that will be automatically <em>required</em> by Mouf when you include the <code>Mouf.php</code> file.
 Those files should not output directly something when included.</p>
 
-<form action="save">
+<form action="save" method="POST">
 
 <input type="hidden" name="selfedit" id="selfedit" value="<?php echo $this->selfedit; ?>" />
 
