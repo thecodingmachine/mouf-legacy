@@ -46,13 +46,30 @@ if ($missingPackages) {
 	$moufResponse = array("errorType"=>"packagedoesnotexist", "errorMsg"=>$html);
 } else  {
 
-	foreach (MoufManager::getMoufManager()->getFilesListRequiredByPackages() as $packageFile) {
-		require_once ROOT_PATH.$packageFile;
-	}
+	$moufDeclaredClassesByPackagesFiles = array();
+	$moufDeclaredFunctionsByPackagesFiles = array();
+	$moufDeclaredInterfacesByPackagesFiles = array();
 	
 	$moufDeclaredClasses = get_declared_classes();
 	$moufDeclaredFunctions = get_defined_functions();
 	$moufDeclaredInterfaces = get_declared_interfaces();
+	
+	foreach (MoufManager::getMoufManager()->getFilesListRequiredByPackages() as $packageFile) {
+		require_once ROOT_PATH.$packageFile;
+		
+		$moufDeclaredClassesNew = get_declared_classes();
+		$moufDeclaredClassesByPackagesFiles[$packageFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
+		$moufDeclaredClasses = $moufDeclaredClassesNew;
+		
+		$moufDeclaredFunctionsNew = get_defined_functions();
+		$moufDeclaredFunctionsByPackagesFiles[$packageFile] = array_diff($moufDeclaredFunctionsNew['user'], $moufDeclaredFunctions['user']);
+		$moufDeclaredFunctions = $moufDeclaredFunctionsNew;
+		
+		$moufDeclaredInterfacesNew = get_declared_interfaces();
+		$moufDeclaredInterfacesByPackagesFiles[$packageFile] = array_diff($moufDeclaredInterfacesNew, $moufDeclaredInterfaces);
+		$moufDeclaredInterfaces = $moufDeclaredInterfacesNew;
+	}
+	
 	$moufDeclaredClassesByFiles = array();
 	$moufDeclaredFunctionsByFiles = array();
 	$moufDeclaredInterfacesByFiles = array();
@@ -93,6 +110,9 @@ if ($missingPackages) {
 echo "\nX4EVDX4SEVX548DSVDXCDSF489\n";
 
 if (!isset($moufResponse['errorType'])) {
+	$moufResponse["packages"]["classes"] = $moufDeclaredClassesByPackagesFiles;
+	$moufResponse["packages"]["functions"] = $moufDeclaredFunctionsByPackagesFiles;
+	$moufResponse["packages"]["interfaces"] = $moufDeclaredInterfacesByPackagesFiles;
 	$moufResponse["classes"] = $moufDeclaredClassesByFiles;
 	$moufResponse["functions"] = $moufDeclaredFunctionsByFiles;
 	$moufResponse["interfaces"] = $moufDeclaredInterfacesByFiles;

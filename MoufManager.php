@@ -1110,23 +1110,25 @@ class ".$this->mainClassName." {
 		fclose($fp);
 		
 		// Analyze includes to manage autoloadable files.
-		$analyzeErrors = MoufReflectionProxy::analyzeIncludes(($this == self::$defaultInstance));
+		$analyzeResults = MoufReflectionProxy::analyzeIncludes(($this == self::$defaultInstance));
 		$autoloadableFiles = array();
 		$classesFiles = array();
-		foreach ($analyzeErrors["classes"] as $file => $classes) {
+		
+		// Packages
+		foreach ($analyzeResults['packages']["classes"] as $file => $classes) {
 			if($classes)
 				$autoloadableFiles[$file] = true;
 		}
-		foreach ($analyzeErrors["interfaces"] as $file => $interfaces) {
+		foreach ($analyzeResults['packages']["interfaces"] as $file => $interfaces) {
 			if($interfaces)
 				$autoloadableFiles[$file] = true;
 		}
-		foreach ($analyzeErrors["functions"] as $file => $functions) {
+		foreach ($analyzeResults['packages']["functions"] as $file => $functions) {
 			if($functions)
 				$autoloadableFiles[$file] = false;
 		}
 	
-		foreach ($analyzeErrors["classes"] as $file => $classes) {
+		foreach ($analyzeResults['packages']["classes"] as $file => $classes) {
 			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
 				foreach ($classes as $class) {
 					$classesFiles[$class] = $file;
@@ -1134,7 +1136,37 @@ class ".$this->mainClassName." {
 			}
 		}
 	
-		foreach ($analyzeErrors["interfaces"] as $file => $interfaces) {
+		foreach ($analyzeResults['packages']["interfaces"] as $file => $interfaces) {
+			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
+				foreach ($interfaces as $interface) {
+					$classesFiles[$interface] = $file;
+				}
+			}
+		}
+		
+		// Requested files
+		foreach ($analyzeResults["classes"] as $file => $classes) {
+			if($classes)
+				$autoloadableFiles[$file] = true;
+		}
+		foreach ($analyzeResults["interfaces"] as $file => $interfaces) {
+			if($interfaces)
+				$autoloadableFiles[$file] = true;
+		}
+		foreach ($analyzeResults["functions"] as $file => $functions) {
+			if($functions)
+				$autoloadableFiles[$file] = false;
+		}
+	
+		foreach ($analyzeResults["classes"] as $file => $classes) {
+			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
+				foreach ($classes as $class) {
+					$classesFiles[$class] = $file;
+				}
+			}
+		}
+	
+		foreach ($analyzeResults["interfaces"] as $file => $interfaces) {
 			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
 				foreach ($interfaces as $interface) {
 					$classesFiles[$interface] = $file;
@@ -1160,7 +1192,10 @@ class ".$this->mainClassName." {
 		foreach ($this->packagesList as $fileName) {
 			$package = $packageManager->getPackage($fileName);
 			foreach ($package->getRequiredFiles() as $requiredFile) {
-				fwrite($fp2, "require_once \$localFilePath.'/".$this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile."';\n");
+				$pathFromRootPath = $this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile;
+				if(!isset($autoloadableFiles[$pathFromRootPath]) || !$autoloadableFiles[$pathFromRootPath]) {
+					fwrite($fp2, "require_once \$localFilePath.'/".$pathFromRootPath."';\n");
+				}
 			}
 		}
 		fwrite($fp2, "\n");
@@ -1168,8 +1203,9 @@ class ".$this->mainClassName." {
 		fwrite($fp2, "// User dependencies\n");
 		
 		foreach ($this->registeredComponents as $registeredComponent) {
-			if(!isset($autoloadableFiles[$registeredComponent]) || !$autoloadableFiles[$registeredComponent])
+			if(!isset($autoloadableFiles[$registeredComponent]) || !$autoloadableFiles[$registeredComponent]) {
 				fwrite($fp2, "require_once \$localFilePath.'/$registeredComponent';\n");
+			}
 		}
 		fwrite($fp2, "\n");
 		
