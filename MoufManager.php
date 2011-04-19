@@ -236,6 +236,13 @@ class MoufManager {
 	private $pathToMouf;
 	
 	/**
+	 * A list of classes autoloadable that are stored in Mouf.
+	 * 
+	 * @var array<className, fileName>
+	 */
+	private $autoloadableClasses;
+	
+	/**
 	 * Returns the config manager (the service in charge of writing the config.php file).
 	 *
 	 * @return MoufConfigManager
@@ -1074,64 +1081,6 @@ class MoufManager {
 		}
 		fwrite($fp, "\n");
 		
-		/*foreach ($this->declaredComponents as $name=>$className) {
-			if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
-				fwrite($fp, "\$moufManager->declareComponent(".var_export($name, true).", ".var_export($className, true).");\n");
-			}
-		}
-		fwrite($fp, "\n");
-
-		foreach ($this->declaredProperties as $instanceName=>$propArray) {
-			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
-				if (is_array($propArray)) {
-					foreach ($propArray as $propName=>$propValue) {
-						fwrite($fp, "\$moufManager->setParameter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
-					}
-				}
-			}
-		}
-		fwrite($fp, "\n");
-		
-		foreach ($this->declaredSetterProperties as $instanceName=>$propArray) {
-			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
-				if (is_array($propArray)) {
-					foreach ($propArray as $propName=>$propValue) {
-						fwrite($fp, "\$moufManager->setParameterViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
-					}
-				}
-			}
-		}
-		fwrite($fp, "\n");
-		
-		foreach ($this->declaredBinds as $instanceName=>$propArray) {
-			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
-				if (is_array($propArray)) {
-					foreach ($propArray as $propName=>$propValue) {
-						if (is_array($propValue)) {
-							fwrite($fp, "\$moufManager->bindComponent(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
-						} else {
-							fwrite($fp, "\$moufManager->bindComponents(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
-						}
-					}
-				}
-			}
-		}
-		fwrite($fp, "\n");
-		
-		foreach ($this->declaredSetterBinds as $instanceName=>$propArray) {
-			if (!isset($this->externalComponents[$instanceName]) || $this->externalComponents[$instanceName] != true) {
-				if (is_array($propArray)) {
-					foreach ($propArray as $propName=>$propValue) {
-						if (is_array($propValue)) {
-							fwrite($fp, "\$moufManager->bindComponentViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
-						} else {
-							fwrite($fp, "\$moufManager->bindComponentsViaSetter(".var_export($instanceName, true).", ".var_export($propName, true).", ".var_export($propValue, true).");\n");
-						}
-					}
-				}
-			}
-		}
-		fwrite($fp, "\n");*/
 		fwrite($fp, "unset(\$moufManager);\n");
 		fwrite($fp, "\n");
 		
@@ -1160,6 +1109,39 @@ class ".$this->mainClassName." {
 		fwrite($fp, "?>\n");
 		fclose($fp);
 		
+		// Analyze includes to manage autoloadable files.
+		$analyzeErrors = MoufReflectionProxy::analyzeIncludes(($this == self::$defaultInstance));
+		$autoloadableFiles = array();
+		$classesFiles = array();
+		foreach ($analyzeErrors["classes"] as $file => $classes) {
+			if($classes)
+				$autoloadableFiles[$file] = true;
+		}
+		foreach ($analyzeErrors["interfaces"] as $file => $interfaces) {
+			if($interfaces)
+				$autoloadableFiles[$file] = true;
+		}
+		foreach ($analyzeErrors["functions"] as $file => $functions) {
+			if($functions)
+				$autoloadableFiles[$file] = false;
+		}
+	
+		foreach ($analyzeErrors["classes"] as $file => $classes) {
+			if($autoloadableFiles[$file]) {
+				foreach ($classes as $class) {
+					$classesFiles[$class] = $file;
+				}
+			}
+		}
+	
+		foreach ($analyzeErrors["interfaces"] as $file => $interfaces) {
+			if($autoloadableFiles[$file]) {
+				foreach ($interfaces as $interface) {
+					$classesFiles[$interface] = $file;
+				}
+			}
+		}
+		
 		// Now, let's write the MoufRequire file that contains all the "require_once" stuff.
 		$fp2 = fopen(dirname(__FILE__)."/".$this->requireFileName, "w");
 		fwrite($fp2, "<?php\n");
@@ -1168,6 +1150,10 @@ class ".$this->mainClassName." {
 		fwrite($fp2, " */\n");
 		fwrite($fp2, "\n");
 
+		fwrite($fp2, "// Register autoloadable classes\n");
+		fwrite($fp2, 'MoufManager::getMoufManager()->registerAutoloadedClasses('.var_export($classesFiles, true).');'."\n");
+		fwrite($fp2, 'spl_autoload_register(array(MoufManager::getMoufManager(), "autoload"));'."\n");
+		
 		// Let's add the require_once from the packages first!
 		fwrite($fp2, "// Packages dependencies\n");
 		fwrite($fp2, "\$localFilePath = dirname(__FILE__);\n");
@@ -1182,7 +1168,8 @@ class ".$this->mainClassName." {
 		fwrite($fp2, "// User dependencies\n");
 		
 		foreach ($this->registeredComponents as $registeredComponent) {
-			fwrite($fp2, "require_once \$localFilePath.'/$registeredComponent';\n");
+			if(!isset($autoloadableFiles[$registeredComponent]) || !$autoloadableFiles[$registeredComponent])
+				fwrite($fp2, "require_once \$localFilePath.'/$registeredComponent';\n");
 		}
 		fwrite($fp2, "\n");
 		
@@ -1768,6 +1755,35 @@ class ".$this->mainClassName." {
 	 */
 	public function setAllVariables(array $variables) {
 		$this->variables = $variables;
+	}
+	
+	/**
+	 * Internal use only. Sets all the classes that can be autoloaded
+	 * 
+	 * @param array<className, fileName> $classes
+	 */
+	public function registerAutoloadedClasses($classes) {
+		$this->autoloadableClasses = $classes;
+	}
+	
+	/**
+	 * Autoload a class not load
+	 * 
+	 * @param string $className
+	 */
+	public function autoload($className) {
+		if(isset($this->autoloadableClasses[$className]))
+			require_once ROOT_PATH.$this->autoloadableClasses[$className];
+	}
+	
+	/**
+	 * Internal use only. Force loading all classes (even the one that can be autoloaded)
+	 * 
+	 */
+	public function forceAutoload() {
+		foreach ($this->autoloadableClasses as $class => $file) {
+			require_once ROOT_PATH.$file;
+		}
 	}
 }
 ?>

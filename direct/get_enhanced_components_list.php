@@ -23,6 +23,8 @@ require_once '../Moufspector.php';
 // and only after can we check if it was not loaded before loading it ourselves...
 require_once 'utils/check_rights.php';
 
+MoufManager::getMoufManager()->forceAutoload();
+
 $file=null;
 $line=null;
 $isSent = headers_sent($file, $line);

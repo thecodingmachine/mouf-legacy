@@ -45,8 +45,21 @@ div.file div.viewdetails {
 	cursor:pointer;
 }
 
+div.file div.autoloadable {
+	margin: 2px 6px 0 0;
+	float:right;
+	background:#DDFFDD none repeat scroll 0 0;
+	color:#007700;
+	padding: 1px;
+	border:1px solid #007700;
+	font-size: 0.7em;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px; 
+}
+
 div.packageList {
-	width:652px;	
+	width:652px;
 }
 
 div.group {

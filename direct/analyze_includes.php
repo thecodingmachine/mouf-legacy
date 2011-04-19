@@ -51,7 +51,11 @@ if ($missingPackages) {
 	}
 	
 	$moufDeclaredClasses = get_declared_classes();
+	$moufDeclaredFunctions = get_defined_functions();
+	$moufDeclaredInterfaces = get_declared_interfaces();
 	$moufDeclaredClassesByFiles = array();
+	$moufDeclaredFunctionsByFiles = array();
+	$moufDeclaredInterfacesByFiles = array();
 	
 	// Ok, now, we can start including our files.
 	foreach (MoufManager::getMoufManager()->getRegisteredIncludeFiles() as $registeredFile) {
@@ -70,6 +74,14 @@ if ($missingPackages) {
 			$moufDeclaredClassesNew = get_declared_classes();
 			$moufDeclaredClassesByFiles[$registeredFile] = array_diff($moufDeclaredClassesNew, $moufDeclaredClasses);
 			$moufDeclaredClasses = $moufDeclaredClassesNew;
+			
+			$moufDeclaredFunctionsNew = get_defined_functions();
+			$moufDeclaredFunctionsByFiles[$registeredFile] = array_diff($moufDeclaredFunctionsNew['user'], $moufDeclaredFunctions['user']);
+			$moufDeclaredFunctions = $moufDeclaredFunctionsNew;
+			
+			$moufDeclaredInterfacesNew = get_declared_interfaces();
+			$moufDeclaredInterfacesByFiles[$registeredFile] = array_diff($moufDeclaredInterfacesNew, $moufDeclaredInterfaces);
+			$moufDeclaredInterfaces = $moufDeclaredInterfacesNew;
 		} else {
 			$moufResponse = array("errorType"=>"filedoesnotexist", "errorMsg"=>"Error! Included file '".$registeredFile."' does not exist.");
 			break;
@@ -82,6 +94,8 @@ echo "\nX4EVDX4SEVX548DSVDXCDSF489\n";
 
 if (!isset($moufResponse['errorType'])) {
 	$moufResponse["classes"] = $moufDeclaredClassesByFiles;
+	$moufResponse["functions"] = $moufDeclaredFunctionsByFiles;
+	$moufResponse["interfaces"] = $moufDeclaredInterfacesByFiles;
 }
 
 $encode = "php";

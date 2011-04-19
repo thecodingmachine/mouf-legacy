@@ -44,7 +44,17 @@ jQuery(document).ready( function() {
 			} else {
 				$classList = null;
 			}
-			echo "addFile('".plainstring_to_htmlprotected($file)."', null, ".json_encode($classList).");\n";
+			if (isset($includesAnalyze['functions'][$file])) {
+				$functionList = array_values($includesAnalyze['functions'][$file]);
+			} else {
+				$functionList = null;
+			}
+			if (isset($includesAnalyze['interfaces'][$file])) {
+				$interfaceList = array_values($includesAnalyze['interfaces'][$file]);
+			} else {
+				$interfaceList = null;
+			}
+			echo "addFile('".plainstring_to_htmlprotected($file)."', null, ".json_encode($classList).", ".json_encode($functionList).", ".json_encode($interfaceList).");\n";
 		}
 	} else {
 		echo "jQuery('#noFiles').show();\n";
@@ -84,12 +94,16 @@ counter = 0;
  * @param $errorMsg The error message (or null if no error)
  * @param $classList The list of the classes defined by this file
  */
-function addFile(fileName, errorMsg, classList) {
+function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 	var html = "<div id='file"+counter+"' class='file'>";
 	html += "<div class='moveable'></div>";
 	html += "<div class='phpfileicon'></div>";
 	html += "<div class='trash' onclick='deleteFile(\"file"+counter+"\")'></div>";
 	html += "<div class='viewdetails'><a href='#'>view details</a></div>";
+
+	if(functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
+		html += "<div class='autoloadable'>autoloadable</div>";
+	}
 	if (errorMsg != null) {
 		html += "<div class='error'>"+errorMsg+"</div>";
 	}
@@ -97,7 +111,18 @@ function addFile(fileName, errorMsg, classList) {
 	// Todo: protect the value of the hidden tag.
 	html += "<input type='hidden' name='files[]' value='"+fileName+"' />";
 
-	if (classList != null) {
+
+	if (interfaceList.length > 0) {
+		html += "<div class='details'>Defined interfaces:<ul>";
+		for (var i=0; i<interfaceList.length; i++) {
+			html += "<li>"+interfaceList[i]+"</li>";
+		}
+		html += "</ul></div>";
+	} else {
+		html += "<div class='details'>No interfaces defined in that file</div>";
+	}
+	
+	if (classList.length > 0) {
 		html += "<div class='details'>Defined classes:<ul>";
 		for (var i=0; i<classList.length; i++) {
 			html += "<li>"+classList[i]+"</li>";
@@ -105,6 +130,16 @@ function addFile(fileName, errorMsg, classList) {
 		html += "</ul></div>";
 	} else {
 		html += "<div class='details'>No classes defined in that file</div>";
+	}
+
+	if (functionList.length > 0) {
+		html += "<div class='details'>Defined functions:<ul>";
+		for (var i=0; i<functionList.length; i++) {
+			html += "<li>"+functionList[i]+"</li>";
+		}
+		html += "</ul></div>";
+	} else {
+		html += "<div class='details'>No functions defined in that file</div>";
 	}
 
 	html += "</div>";

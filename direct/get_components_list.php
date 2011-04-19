@@ -19,6 +19,8 @@ require_once '../Moufspector.php';
 // and only after can we check if it was not loaded before loading it ourselves...
 require_once 'utils/check_rights.php';
 
+MoufManager::getMoufManager()->forceAutoload();
+
 $type = null;
 if (isset($_REQUEST["type"])) {
 	$type = $_REQUEST["type"];
