@@ -1127,7 +1127,7 @@ class ".$this->mainClassName." {
 		}
 	
 		foreach ($analyzeErrors["classes"] as $file => $classes) {
-			if($autoloadableFiles[$file]) {
+			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
 				foreach ($classes as $class) {
 					$classesFiles[$class] = $file;
 				}
@@ -1135,7 +1135,7 @@ class ".$this->mainClassName." {
 		}
 	
 		foreach ($analyzeErrors["interfaces"] as $file => $interfaces) {
-			if($autoloadableFiles[$file]) {
+			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
 				foreach ($interfaces as $interface) {
 					$classesFiles[$interface] = $file;
 				}
