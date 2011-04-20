@@ -101,9 +101,10 @@ function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 	html += "<div class='trash' onclick='deleteFile(\"file"+counter+"\")'></div>";
 	html += "<div class='viewdetails'><a href='#'>view details</a></div>";
 
-	if(functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
+	if(typeof(functionList) != "undefined" && functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
 		html += "<div class='autoloadable'>autoloadable</div>";
 	}
+	
 	if (errorMsg != null) {
 		html += "<div class='error'>"+errorMsg+"</div>";
 	}
@@ -111,8 +112,7 @@ function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 	// Todo: protect the value of the hidden tag.
 	html += "<input type='hidden' name='files[]' value='"+fileName+"' />";
 
-
-	if (interfaceList.length > 0) {
+	if (typeof(interfaceList) != "undefined" && interfaceList.length > 0) {
 		html += "<div class='details'>Defined interfaces:<ul>";
 		for (var i=0; i<interfaceList.length; i++) {
 			html += "<li>"+interfaceList[i]+"</li>";
@@ -122,7 +122,7 @@ function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 		html += "<div class='details'>No interfaces defined in that file</div>";
 	}
 	
-	if (classList.length > 0) {
+	if (typeof(classList) != "undefined" && classList.length > 0) {
 		html += "<div class='details'>Defined classes:<ul>";
 		for (var i=0; i<classList.length; i++) {
 			html += "<li>"+classList[i]+"</li>";
@@ -132,7 +132,7 @@ function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 		html += "<div class='details'>No classes defined in that file</div>";
 	}
 
-	if (functionList.length > 0) {
+	if (typeof(functionList) != "undefined" && functionList.length > 0) {
 		html += "<div class='details'>Defined functions:<ul>";
 		for (var i=0; i<functionList.length; i++) {
 			html += "<li>"+functionList[i]+"</li>";
