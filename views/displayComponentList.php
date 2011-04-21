@@ -28,6 +28,11 @@ Those files should not output directly something when included.</p>
 
 </form>
 
+<p>About auto-loading files: Mouf will try to detect all files that declare only a class or an interface.
+Those files will be requested by Mouf only if they are used through the use of the <code>__autoload</code>
+PHP feature. If a file has a function in it, it will not be autoloaded. You can force autoloading or
+prevent it by modifying the <code>autoload mode</code> parameter.</p>
+
 <div id="dialog" title="Select your file">
 	<p>Please select the PHP file to be added to the require_once list.</p>
 	<div id="fileTreeContainer"></div>
@@ -117,12 +122,12 @@ function addFile(fileName, errorMsg, autoload, classList, functionList, interfac
 	// Todo: protect the value of the hidden tag.
 	html += "<input type='hidden' name='files[]' value='"+fileName+"' />";
 
-	html += "<div class='details'>Change autoload parameter ";
+	html += "<div class='details'>Autoload mode: ";
 	html += "<select name='autoloads["+fileName+"]'>";
 	selected = '';
 	if(autoload == 'auto')
 		selected = "selected='selected'";
-	html += "<option value='auto' "+selected+">auto</option>";
+	html += "<option value='auto' "+selected+">auto-detect</option>";
 		
 	selected = '';
 	if(autoload == 'never')
