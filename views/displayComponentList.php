@@ -112,7 +112,20 @@ function addFile(fileName, errorMsg, autoload, classList, functionList, interfac
 	html += "<div class='viewdetails'><a href='#'>view details</a></div>";
 
 	if(typeof(functionList) != "undefined" && functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
-		html += "<div class='autoloadable'><acronyme title=\"The file can by autoloadable, by default it's auto, but you can change it, click on view details\">autoloadable</acronyme></div>";
+		if(autoload == 'force')
+			html += "<div class='autoload loaded'>autoload (force)</div>";
+		else if(autoload == 'never')
+			html += "<div class='autoload neverloaded'>no autoload (never)</div>";
+		else
+			html += "<div class='autoload loaded'>autoload</div>";
+	}
+	else {
+		if(autoload == 'never')
+			html += "<div class='autoload neverloaded'>no autoload (never)</div>";
+		else if(autoload == 'force')
+			html += "<div class='autoload loaded'>autoload (force)</div>";
+		else
+			html += "<div class='autoload noloaded'>no autoload</div>";
 	}
 	
 	if (errorMsg != null) {

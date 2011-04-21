@@ -45,17 +45,32 @@ div.file div.viewdetails {
 	cursor:pointer;
 }
 
-div.file div.autoloadable {
+div.file div.autoload {
 	margin: 2px 6px 0 0;
 	float:right;
-	background:#DDFFDD none repeat scroll 0 0;
-	color:#007700;
 	padding: 1px;
-	border:1px solid #007700;
 	font-size: 0.7em;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px; 
+}
+
+div.file div.autoload.loaded {
+	border:1px solid #007700;
+	background:#DDFFDD none repeat scroll 0 0;
+	color:#007700;
+}
+
+div.file div.autoload.noloaded {
+	border:1px solid #777700;
+	background:#FFF6BF none repeat scroll 0 0;
+	color:#514721;
+}
+
+div.file div.autoload.neverloaded {
+	border:1px solid #770000;
+	background:#FFDDDD none repeat scroll 0 0;
+	color:#770000;
 }
 
 div.packageList {
