@@ -64,7 +64,7 @@ class ComponentsController extends Controller {
 	 * @Logged
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 */
-	public function save($files = array(), $selfedit = "false") {
+	public function save($files = array(), $autoloads = array(), $selfedit = "false") {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -73,7 +73,7 @@ class ComponentsController extends Controller {
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
 		
-		$this->moufManager->setRegisteredComponentFiles($files);
+		$this->moufManager->setRegisteredComponentFiles($files, $autoloads);
 		
 		
 		$this->moufManager->rewriteMouf();

@@ -1,5 +1,5 @@
 <?php 
-$files = $this->moufManager->getRegisteredComponentFiles();
+$files = $this->moufManager->getRegisteredComponentFilesParameters();
 ?>
 <h1>List of included component files</h1>
 
@@ -38,7 +38,7 @@ Those files should not output directly something when included.</p>
 jQuery(document).ready( function() {
 	<?php
 	if (!empty($files)) {
-		foreach ($files as $file) {
+		foreach ($files as $file => $parameters) {
 			if (isset($includesAnalyze['classes'][$file])) {
 				$classList = array_values($includesAnalyze['classes'][$file]);
 			} else {
@@ -54,7 +54,12 @@ jQuery(document).ready( function() {
 			} else {
 				$interfaceList = null;
 			}
-			echo "addFile('".plainstring_to_htmlprotected($file)."', null, ".json_encode($classList).", ".json_encode($functionList).", ".json_encode($interfaceList).");\n";
+			
+			if(isset($parameters['autoload']))
+				$autoload = $parameters['autoload'];
+			else
+				$autoload = 'auto';
+			echo "addFile('".plainstring_to_htmlprotected($file)."', null, '".$autoload."', ".json_encode($classList).", ".json_encode($functionList).", ".json_encode($interfaceList).");\n";
 		}
 	} else {
 		echo "jQuery('#noFiles').show();\n";
@@ -62,7 +67,7 @@ jQuery(document).ready( function() {
 
 	?>
 	jQuery(".viewdetails").click(function(ev) {
-		jQuery(this).parent().find(".details").show();
+		jQuery(this).parent().find(".details").toggle();
 		ev.preventDefault();
 	});
 
@@ -94,7 +99,7 @@ counter = 0;
  * @param $errorMsg The error message (or null if no error)
  * @param $classList The list of the classes defined by this file
  */
-function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
+function addFile(fileName, errorMsg, autoload, classList, functionList, interfaceList) {
 	var html = "<div id='file"+counter+"' class='file'>";
 	html += "<div class='moveable'></div>";
 	html += "<div class='phpfileicon'></div>";
@@ -102,7 +107,7 @@ function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 	html += "<div class='viewdetails'><a href='#'>view details</a></div>";
 
 	if(typeof(functionList) != "undefined" && functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
-		html += "<div class='autoloadable'>autoloadable</div>";
+		html += "<div class='autoloadable'><acronyme title=\"The file can by autoloadable, by default it's auto, but you can change it, click on view details\">autoloadable</acronyme></div>";
 	}
 	
 	if (errorMsg != null) {
@@ -112,6 +117,25 @@ function addFile(fileName, errorMsg, classList, functionList, interfaceList) {
 	// Todo: protect the value of the hidden tag.
 	html += "<input type='hidden' name='files[]' value='"+fileName+"' />";
 
+	html += "<div class='details'>Change autoload parameter ";
+	html += "<select name='autoloads["+fileName+"]'>";
+	selected = '';
+	if(autoload == 'auto')
+		selected = "selected='selected'";
+	html += "<option value='auto' "+selected+">auto</option>";
+		
+	selected = '';
+	if(autoload == 'never')
+		selected = "selected='selected'";
+	html += "<option value='never' "+selected+"'>never</option>";
+	
+	selected = '';
+	if(autoload == 'force')
+		selected = "selected='selected'";
+	html += "<option value='force' "+selected+">force</option>";
+	html += "</select>";
+	html += "</div>";
+	
 	if (typeof(interfaceList) != "undefined" && interfaceList.length > 0) {
 		html += "<div class='details'>Defined interfaces:<ul>";
 		for (var i=0; i<interfaceList.length; i++) {

@@ -1008,11 +1008,13 @@ class MoufManager {
 	/**
 	 * This simply adds the passed file to the list of "registered components".
 	 * The list will be required by mouf.php when it is generated using "rewriteMouf" function.
+	 * It s possible to add an autoload parameter to force, never or auto load the file
 	 *
-	 * @param unknown_type $fileName
+	 * @param string $fileName
+	 * @param string $autoload
 	 */
-	public function registerComponent($fileName) {
-		$this->registeredComponents[] = $fileName;
+	public function registerComponent($fileName, $autoload = 'auto') {
+		$this->registeredComponents[$fileName] = array('name' => $fileName, 'autoload' => $autoload);
 	}
 	
 	/**
@@ -1075,9 +1077,12 @@ class MoufManager {
 		fwrite($fp, "\n");
 		
 		// Declare local components
-		foreach ($this->registeredComponents as $registeredComponent) {
+		foreach ($this->registeredComponents as $registeredComponent => $registeredComponentParameters) {
 			//fwrite($fp, "require_once dirname(__FILE__).'/$registeredComponent';\n");
-			fwrite($fp, "\$moufManager->registerComponent('$registeredComponent');\n");
+			$autoload = 'auto';
+			if(isset($registeredComponentParameters['autoload']))
+				$autoload = $registeredComponentParameters['autoload'];
+			fwrite($fp, "\$moufManager->registerComponent('$registeredComponent', '".$autoload."');\n");
 		}
 		fwrite($fp, "\n");
 		
@@ -1111,65 +1116,99 @@ class ".$this->mainClassName." {
 		
 		// Analyze includes to manage autoloadable files.
 		$analyzeResults = MoufReflectionProxy::analyzeIncludes(($this == self::$defaultInstance));
+
 		$autoloadableFiles = array();
 		$classesFiles = array();
+
+		// If no error in the curl analyze
+		if (!isset($analyzeResults['errorType'])) {
+			// Packages
+			foreach ($analyzeResults['packages']["classes"] as $file => $classes) {
+				if($classes)
+					$autoloadableFiles[$file] = true;
+			}
+			foreach ($analyzeResults['packages']["interfaces"] as $file => $interfaces) {
+				if($interfaces)
+					$autoloadableFiles[$file] = true;
+			}
+			foreach ($analyzeResults['packages']["functions"] as $file => $functions) {
+				if($functions)
+					$autoloadableFiles[$file] = false;
+			}
 		
-		// Packages
-		foreach ($analyzeResults['packages']["classes"] as $file => $classes) {
-			if($classes)
-				$autoloadableFiles[$file] = true;
-		}
-		foreach ($analyzeResults['packages']["interfaces"] as $file => $interfaces) {
-			if($interfaces)
-				$autoloadableFiles[$file] = true;
-		}
-		foreach ($analyzeResults['packages']["functions"] as $file => $functions) {
-			if($functions)
-				$autoloadableFiles[$file] = false;
-		}
-	
-		foreach ($analyzeResults['packages']["classes"] as $file => $classes) {
-			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
-				foreach ($classes as $class) {
-					$classesFiles[$class] = $file;
+			// Check the configuration of package, it s possible some require must never or force autoload
+			foreach ($this->packagesList as $fileName) {
+				$package = $packageManager->getPackage($fileName);
+				$packagePath = $this->pathToMouf."../plugins/".$package->getPackageDirectory().'/';
+				foreach ($package->getRequiredFilesParameters() as $requiredFile => $requiredFileParameters) {
+					if(isset($requiredFileParameters['autoload'])) {
+						if($requiredFileParameters['autoload'] == 'never') {
+							$autoloadableFiles[$packagePath.$requiredFile] = false;
+						}
+						elseif($requiredFileParameters['autoload'] == 'force') {
+							$autoloadableFiles[$packagePath.$requiredFile] = true;
+						}
+					}
 				}
 			}
-		}
-	
-		foreach ($analyzeResults['packages']["interfaces"] as $file => $interfaces) {
-			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
-				foreach ($interfaces as $interface) {
-					$classesFiles[$interface] = $file;
+			
+			// Array to associate class with file
+			foreach ($analyzeResults['packages']["classes"] as $file => $classes) {
+				if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
+					foreach ($classes as $class) {
+						$classesFiles[$class] = $file;
+					}
 				}
 			}
-		}
 		
-		// Requested files
-		foreach ($analyzeResults["classes"] as $file => $classes) {
-			if($classes)
-				$autoloadableFiles[$file] = true;
-		}
-		foreach ($analyzeResults["interfaces"] as $file => $interfaces) {
-			if($interfaces)
-				$autoloadableFiles[$file] = true;
-		}
-		foreach ($analyzeResults["functions"] as $file => $functions) {
-			if($functions)
-				$autoloadableFiles[$file] = false;
-		}
-	
-		foreach ($analyzeResults["classes"] as $file => $classes) {
-			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
-				foreach ($classes as $class) {
-					$classesFiles[$class] = $file;
+			foreach ($analyzeResults['packages']["interfaces"] as $file => $interfaces) {
+				if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
+					foreach ($interfaces as $interface) {
+						$classesFiles[$interface] = $file;
+					}
 				}
 			}
-		}
-	
-		foreach ($analyzeResults["interfaces"] as $file => $interfaces) {
-			if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
-				foreach ($interfaces as $interface) {
-					$classesFiles[$interface] = $file;
+			
+			// Requested files
+			foreach ($analyzeResults["classes"] as $file => $classes) {
+				if($classes)
+					$autoloadableFiles[$file] = true;
+			}
+			foreach ($analyzeResults["interfaces"] as $file => $interfaces) {
+				if($interfaces)
+					$autoloadableFiles[$file] = true;
+			}
+			foreach ($analyzeResults["functions"] as $file => $functions) {
+				if($functions)
+					$autoloadableFiles[$file] = false;
+			}
+		
+			// Check the configuration of require, it s possible some require must never or force autoload
+			foreach ($this->registeredComponents as $registeredComponent => $registeredComponentParameters) {
+				if(isset($registeredComponentParameters['autoload'])) {
+					if($registeredComponentParameters['autoload'] == 'never') {
+						$autoloadableFiles[$registeredComponent] = false;
+					}
+					elseif($registeredComponentParameters['autoload'] == 'force') {
+						$autoloadableFiles[$registeredComponent] = true;
+					}
+				}
+			}
+			
+			// Array to associate class with file
+			foreach ($analyzeResults["classes"] as $file => $classes) {
+				if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
+					foreach ($classes as $class) {
+						$classesFiles[$class] = $file;
+					}
+				}
+			}
+		
+			foreach ($analyzeResults["interfaces"] as $file => $interfaces) {
+				if(isset($autoloadableFiles[$file]) && $autoloadableFiles[$file]) {
+					foreach ($interfaces as $interface) {
+						$classesFiles[$interface] = $file;
+					}
 				}
 			}
 		}
@@ -1193,7 +1232,9 @@ class ".$this->mainClassName." {
 			$package = $packageManager->getPackage($fileName);
 			foreach ($package->getRequiredFiles() as $requiredFile) {
 				$pathFromRootPath = $this->pathToMouf."../plugins/".$package->getPackageDirectory()."/".$requiredFile;
-				if(!isset($autoloadableFiles[$pathFromRootPath]) || !$autoloadableFiles[$pathFromRootPath]) {
+				if(((!isset($autoloadableFiles[$pathFromRootPath]) || !$autoloadableFiles[$pathFromRootPath])
+						&& $package->getAutoloadRequiredFile($requiredFile) == 'auto')
+					|| $package->getAutoloadRequiredFile($requiredFile) == 'never') {
 					fwrite($fp2, "require_once \$localFilePath.'/".$pathFromRootPath."';\n");
 				}
 			}
@@ -1202,7 +1243,7 @@ class ".$this->mainClassName." {
 		
 		fwrite($fp2, "// User dependencies\n");
 		
-		foreach ($this->registeredComponents as $registeredComponent) {
+		foreach ($this->registeredComponents as $registeredComponent => $registeredComponentParameters) {
 			if(!isset($autoloadableFiles[$registeredComponent]) || !$autoloadableFiles[$registeredComponent]) {
 				fwrite($fp2, "require_once \$localFilePath.'/$registeredComponent';\n");
 			}
@@ -1440,7 +1481,7 @@ class ".$this->mainClassName." {
 		$fileArray = array();
 		$dirMoufFile = dirname($this->requireFileName);
 		$fulldir = realpath(dirname(__FILE__)."/..");
-		foreach ($this->registeredComponents as $file) {
+		foreach ($this->registeredComponents as $file => $registeredComponentParameters) {
 			$realpathFile = realpath($dirMoufFile."/".$file);
 			$relativeFile = substr($realpathFile, strlen($fulldir)+1);
 			$relativeFile = str_replace("\\", "/", $relativeFile);
@@ -1451,11 +1492,33 @@ class ".$this->mainClassName." {
 	}
 	
 	/**
+	 * Returns the list of files that will be included by Mouf, relative to the root of the project
+	 * Add parameters of files like autoload
+	 *
+	 * @return array<string, array<string, string>>
+	 */
+	public function getRegisteredComponentFilesParameters() {
+		
+		$fileArray = array();
+		$dirMoufFile = dirname($this->requireFileName);
+		$fulldir = realpath(dirname(__FILE__)."/..");
+		foreach ($this->registeredComponents as $file => $registeredComponentParameters) {
+			$realpathFile = realpath($dirMoufFile."/".$file);
+			$relativeFile = substr($realpathFile, strlen($fulldir)+1);
+			$relativeFile = str_replace("\\", "/", $relativeFile);
+			$fileArray[$relativeFile] = $registeredComponentParameters;
+		}
+		
+		return $fileArray;
+	}
+	
+	/**
 	 * Sets a list of files that will be included by Mouf, relative to the root of the project.
 	 *
 	 * @param array<string> $files
+	 * @param array<string, string> $autoloads List of files in index and autoload value
 	 */
-	public function setRegisteredComponentFiles($files) {
+	public function setRegisteredComponentFiles($files, $autoloads = array()) {
 		
 		$dirMoufFile = dirname(dirname(__FILE__)."/".$this->requireFileName);
 		$fulldir = realpath(dirname(__FILE__)."/../");
@@ -1468,9 +1531,13 @@ class ".$this->mainClassName." {
 		$registeredComponentsFile = array();
 		foreach ($files as $file) {
 			$fileFull = $fulldir.$file;
-			$registeredComponentsFile[] = $this->createRelativePath($dirMoufFile, $fileFull);
+			$path = $this->createRelativePath($dirMoufFile, $fileFull);
+			$autoload = 'auto';
+			if(isset($autoloads[$file]))
+				$autoload = $autoloads[$file];
+			$registeredComponentsFile[$path] = array('name' => $path, 'autoload' => $autoload);
 		}
-		
+
 		$this->registeredComponents = $registeredComponentsFile;
 	}
 
@@ -1478,8 +1545,9 @@ class ".$this->mainClassName." {
 	 * Adds one file that will be included by Mouf, relative to the root of the project.
 	 * 
 	 * @param string $file
+	 * @param string $autoload Autoload parameter, auto by default
 	 */
-	public function addRegisteredComponentFile($file) {
+	public function addRegisteredComponentFile($file, $autoload = 'auto') {
 		$dirMoufFile = dirname(dirname(__FILE__)."/".$this->requireFileName);
 		$fulldir = realpath(dirname(__FILE__)."/../");
 		$fulldir = str_replace("\\", "/", $fulldir);
@@ -1489,8 +1557,9 @@ class ".$this->mainClassName." {
 		}
 
 		$fileFull = $fulldir.$file;
-		if (array_search($file, $this->registeredComponents) === false) {
-			$this->registeredComponents[] = $this->createRelativePath($dirMoufFile, $fileFull);
+		if (array_key_exists($file, $this->registeredComponents) === false) {
+			$path = $this->createRelativePath($dirMoufFile, $fileFull);
+			$this->registeredComponents[$path] = array('name' => $path, 'autoload' => $autoload);
 		}		
 	}
 	
@@ -1744,7 +1813,11 @@ class ".$this->mainClassName." {
 	 * @return array<string>
 	 */
 	public function getRegisteredIncludeFiles() {
-		return $this->registeredComponents;
+		$return = array();
+		foreach ($this->registeredComponents as $registeredComponent => $registeredComponentParameters) {
+			$return[] = $registeredComponent;
+		}
+		return $return;
 	}
 	
 	/**

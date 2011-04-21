@@ -93,7 +93,7 @@ class MoufPackage {
 	/**
 	 * The list of files to be required, relative to the package directory.
 	 *
-	 * @var array<string>
+	 * @var array<string, array<string, string>>
 	 */
 	private $requires;
 	
@@ -108,7 +108,7 @@ class MoufPackage {
 	 * The list of files to be required by Mouf in its UI, relative to the package directory.
 	 * This can be useful to extend the template and provide additional features.
 	 *
-	 * @var array<string>
+	 * @var array<string, array<string, string>>
 	 */
 	private $adminRequires;
 	
@@ -190,7 +190,16 @@ class MoufPackage {
 		$requires = $this->packageSimpleXml->requires;
 		if ($requires) {
 			foreach ($requires->require as $require) {
-				$requiresList[] = (string)$require;
+				// Save the name
+				$requireName = (string)$require;
+				$requiresList[$requireName] = array('name' => $requireName);
+				
+				// Retrieve the attributes set
+				$requiresArray = (array)$require;
+				if(isset($requiresArray['@attributes'])) {
+					if(isset($requiresArray['@attributes']['autoload']))
+						$requiresList[$requireName]['autoload'] = $requiresArray['@attributes']['autoload'];
+				}
 			}
 		}
 		$this->requires = $requiresList;
@@ -209,7 +218,16 @@ class MoufPackage {
 		$adminRequires = $this->packageSimpleXml->adminRequires;
 		if ($adminRequires) {
 			foreach ($adminRequires->require as $require) {
-				$adminRequiresList[] = (string)$require;
+				// save the name
+				$requireName = (string)$require;
+				$adminRequiresList[$requireName] = array('name' => $requireName);
+				
+				// Retrieve the attributes set
+				$requiresArray = (array)$require;
+				if(isset($requiresArray['@attributes'])) {
+					if(isset($requiresArray['@attributes']['autoload']))
+						$adminRequiresList[$requireName]['autoload'] = $requiresArray['@attributes']['autoload'];
+				}
 			}
 		}
 		$this->adminRequires = $adminRequiresList;	
@@ -318,10 +336,34 @@ class MoufPackage {
 	/**
 	 * Returns the list of required files, relative to the root of the package.
 	 *
-	 * @array<string>
+	 * @return array<string>
 	 */
 	public function getRequiredFiles() {
+		$return = array();
+		foreach ($this->requires as $require => $parameters) {
+			$return[] = $require;
+		}
+		return $return;
+	}
+	
+	/**
+	 * Returns the list of required files with parameters, relative to the root of the package.
+	 *
+	 * @return array<string>
+	 */
+	public function getRequiredFilesParameters() {
 		return $this->requires;
+	}
+	
+	/**
+	 * Returns if the file in parameter is autolodable. There are 3 possibles values: auto, never, force
+	 *
+	 * @return string
+	 */
+	public function getAutoloadRequiredFile($file) {
+		if(isset($this->requires['autoload']))
+			return $this->requires['autoload'];
+		return 'auto';
 	}
 	
 	/**
@@ -339,7 +381,31 @@ class MoufPackage {
 	 * @return array<string>
 	 */
 	public function getAdminRequiredFiles() {
+		$return = array();
+		foreach ($this->adminRequires as $require => $parameters) {
+			$return[] = $require;
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the list of required files with parameters for the admin, relative to the root of the package.
+	 *
+	 * @return array<string>
+	 */
+	public function getAdminRequiredFilesParameters() {
 		return $this->adminRequires;
+	}
+	
+	/**
+	 * Returns if the file for the admin in parameter is autolodable. There are 3 possibles values: auto, never, force
+	 *
+	 * @return string
+	 */
+	public function getAutoloadAdminRequiredFile($file) {
+		if(isset($this->adminRequires['autoload']))
+			return $this->adminRequires['autoload'];
+		return 'auto';
 	}
 
 	/**
