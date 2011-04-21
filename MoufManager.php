@@ -1890,8 +1890,10 @@ class ".$this->mainClassName." {
 	 * 
 	 */
 	public function forceAutoload() {
-		foreach ($this->autoloadableClasses as $class => $file) {
-			require_once ROOT_PATH.$file;
+		if($this->autoloadableClasses) {
+			foreach ($this->autoloadableClasses as $class => $file) {
+				require_once ROOT_PATH.$file;
+			}
 		}
 	}
 }
