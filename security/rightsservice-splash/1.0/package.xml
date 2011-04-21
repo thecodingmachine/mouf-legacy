@@ -19,6 +19,6 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>RequiresRight.php</require>
+		<require autoload="never">RequiresRight.php</require>
 	</requires>
 </package>

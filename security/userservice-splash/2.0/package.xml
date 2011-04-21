@@ -19,6 +19,6 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>Logged.php</require>
+		<require autoload="never">Logged.php</require>
 	</requires>
 </package>

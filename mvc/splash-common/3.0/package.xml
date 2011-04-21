@@ -35,8 +35,8 @@
 		<require>controllers/Controller.php</require>
 		<require>filters/AbstractFilter.php</require>
 		<require>filters/RequireHttpsAnnotation.php</require>
-		<require>filters/RedirectToHttpAnnotation.php</require>
-		<require>filters/XajaAnnotation.php</require>
+		<require autoload="never">filters/RedirectToHttpAnnotation.php</require>
+		<require autoload="never">filters/XajaAnnotation.php</require>
 		<require>utils/ApplicationException.php</require>
 		<require>utils/annotations/AnnotationException.php</require>
 		<require>utils/annotations/paramAnnotation.php</require>
