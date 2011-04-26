@@ -14,12 +14,17 @@ class SplashGenerateService {
 	 * Writes the .htaccess file
 	 * 
 	 * @param string $rootUri
+	 * @param array<string> $exludeExtentions
+	 * @param array<string> $exludeFolders
 	 */
-	public function writeHtAccess($rootUri) {
+	public function writeHtAccess($rootUri, $exludeExtentions, $exludeFolders) {
 
 		$modelsDirName = dirname(__FILE__);
 		$splashDir = dirname($modelsDirName);
 		$splashVersion = basename($splashDir);
+		
+		$strExtentions = implode('|', $exludeExtentions);
+		$strFolders = '^' . implode('|^', $exludeFolders);
 		
 		$str = "Options FollowSymLinks
 		RewriteEngine on
@@ -28,7 +33,7 @@ class SplashGenerateService {
 		#RewriteCond %{REQUEST_FILENAME} !-f
 		#RewriteCond %{REQUEST_FILENAME} !-d
 		
-		RewriteRule !((\.(js|ico|gif|jpg|png|css)$)|^plugins|^mouf) plugins/mvc/splash/".$splashVersion."/splash.php";
+		RewriteRule !((\.($strExtentions)$)|$strFolders) plugins/mvc/splash/".$splashVersion."/splash.php";
 		
 		file_put_contents(dirname(__FILE__)."/../../../../../.htaccess", $str);
 	}
