@@ -25,7 +25,7 @@ class BrowserLanguageDetection implements LanguageDetectionInterface {
 			return $this->language;
 			
 		// getting http instruction if not provided
-		$str=$str?$str:(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])?$_SERVER['HTTP_ACCEPT_LANGUAGE']:"");
+		$str=(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])?$_SERVER['HTTP_ACCEPT_LANGUAGE']:"");
 		// exploding accepted languages
 		$langs=explode(',',$str);
 		// creating output list

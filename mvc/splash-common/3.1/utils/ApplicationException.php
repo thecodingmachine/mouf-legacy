@@ -62,8 +62,10 @@ class ApplicationException extends Exception {
 	 * @return string Returns the title, internationalized
 	 */
 	public function getI18Title() {
-		// FIXME: internationalization enabled
-		return $this->title."-".implode('/', $this->title_array);
+		$translationService = MoufManager::getMoufManager()->getInstance("splashTranslateService");
+		/* @var $translationService FinePHPArrayTranslationService */
+		return call_user_func_array(array($translationService, "getTranslation"), array_merge(array($this->title), $this->title_array));
+		//return $this->title."-".implode('/', $this->title_array);
 		//return call_user_func_array("iMsg", array_merge(array($this->title), $this->title_array));
 	}
 
@@ -71,8 +73,10 @@ class ApplicationException extends Exception {
 	 * @return string Returns the message, internationalized
 	 */
 	public function getI18Message() {
-		// FIXME: internationalization enabled
-		return $this->getMessage()."-".implode('/', $this->message_array);;
+		$translationService = MoufManager::getMoufManager()->getInstance("splashTranslateService");
+		/* @var $translationService FinePHPArrayTranslationService */
+		return call_user_func_array(array($translationService, "getTranslation"), array_merge(array($this->getMessage()), $this->message_array));
+		//return $this->getMessage()."-".implode('/', $this->message_array);;
 		//return call_user_func_array("iMsg", array_merge(array($this->getMessage()), $this->message_array));
 	}
 }
