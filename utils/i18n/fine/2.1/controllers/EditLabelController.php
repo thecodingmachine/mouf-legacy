@@ -418,9 +418,9 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	protected static function setTranslationForMessageFromService($selfEdit, $msgInstanceName, $key, $label, $language, $delete) {
 
-		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.1/direct/set_message_translation.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&key=".urlencode($key)."&label=".urlencode($label)."&language=".urlencode($language)."&delete=".urlencode($delete);
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/utils/i18n/fine/2.1/direct/set_message_translation.php?msginstancename=".urlencode($msgInstanceName)."&selfedit=".(($selfEdit)?"true":"false")."&key=".urlencode($key)."&language=".urlencode($language)."&delete=".urlencode($delete);
 		 
-		$response = self::performRequest($url);
+		$response = self::performRequest($url, array("label" => urlencode($label)));
 
 		$obj = unserialize($response);
 		
