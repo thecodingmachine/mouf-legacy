@@ -80,6 +80,7 @@ class MoufUserService implements UserServiceInterface {
 	/**
 	 * Logs the user using the provided login and password.
 	 * Returns true on success, false if the user or password is incorrect.
+	 * A Mouf Exception is thrown if no session is initialized. Require the mouf/load.php file in Mouf to start a session.
 	 * 
 	 * @param string $login
 	 * @param string $password
