@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>ErrorLog Logger</displayName>
+	<shortDescription>This package contains a logger that should be used to log messages directly to the PHP error log (using the error_log PHP function)</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>ErrorLogLogger.php</require>
+	</requires>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>>=1.1</version>
+		</dependency>
+	</dependencies>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
