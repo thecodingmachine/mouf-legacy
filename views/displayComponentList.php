@@ -111,7 +111,7 @@ function addFile(fileName, errorMsg, autoload, classList, functionList, interfac
 	html += "<div class='trash' onclick='deleteFile(\"file"+counter+"\")'></div>";
 	html += "<div class='viewdetails'><a href='#'>view details</a></div>";
 
-	if(typeof(functionList) != "undefined" && functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
+	if(functionList != null && typeof(functionList) != "undefined" && functionList.length == 0 && (interfaceList.length > 0 || classList.length > 0)) {
 		if(autoload == 'force')
 			html += "<div class='autoload loaded'>autoload (force)</div>";
 		else if(autoload == 'never')
@@ -154,7 +154,7 @@ function addFile(fileName, errorMsg, autoload, classList, functionList, interfac
 	html += "</select>";
 	html += "</div>";
 	
-	if (typeof(interfaceList) != "undefined" && interfaceList.length > 0) {
+	if (interfaceList != null && typeof(interfaceList) != "undefined" && interfaceList.length > 0) {
 		html += "<div class='details'>Defined interfaces:<ul>";
 		for (var i=0; i<interfaceList.length; i++) {
 			html += "<li>"+interfaceList[i]+"</li>";
@@ -164,7 +164,7 @@ function addFile(fileName, errorMsg, autoload, classList, functionList, interfac
 		html += "<div class='details'>No interfaces defined in that file</div>";
 	}
 	
-	if (typeof(classList) != "undefined" && classList.length > 0) {
+	if (classList != null && typeof(classList) != "undefined" && classList.length > 0) {
 		html += "<div class='details'>Defined classes:<ul>";
 		for (var i=0; i<classList.length; i++) {
 			html += "<li>"+classList[i]+"</li>";
@@ -174,7 +174,7 @@ function addFile(fileName, errorMsg, autoload, classList, functionList, interfac
 		html += "<div class='details'>No classes defined in that file</div>";
 	}
 
-	if (typeof(functionList) != "undefined" && functionList.length > 0) {
+	if (functionList != null && typeof(functionList) != "undefined" && functionList.length > 0) {
 		html += "<div class='details'>Defined functions:<ul>";
 		for (var i=0; i<functionList.length; i++) {
 			html += "<li>"+functionList[i]+"</li>";

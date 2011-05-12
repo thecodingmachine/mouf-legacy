@@ -51,7 +51,7 @@ class ComponentsController extends Controller {
 		$template = $this->template;
 		//$this->template->addJsFile(ROOT_URL."mouf/views/displayComponent.js");
 		
-		$this->analyzeErrors = MoufReflectionProxy::analyzeIncludes($selfedit != "false");
+		$this->analyzeErrors = MoufReflectionProxy::analyzeIncludes($selfedit == "true");
 		
 		$template->addContentFile("views/displayComponentList.php", $this);
 		$template->draw();	
