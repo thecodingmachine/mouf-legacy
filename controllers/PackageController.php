@@ -396,7 +396,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		
 		// Now, let's find the list of instances that are part of the packages to be removed.
 		// For each instance, let's find the class and the package it belongs to.
-		$componentsList = MoufReflectionProxy::getEnhancedComponentsList($this->selfedit != "false");
+		$componentsList = MoufReflectionProxy::getEnhancedComponentsList($this->selfedit == "true");
 		
 		$instancesList = $this->moufManager->getInstancesList();
 		$pluginsDirectory = $this->moufManager->getFullPathToPluginsDirectory();
@@ -406,6 +406,10 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		
 		foreach ($instancesList as $instanceName=>$className) {
 			if (isset($componentsList[$className])) {
+				// FIXME: we use the file name to know if a component class is part of a package.
+				// But we could also have components extending classes of the package we are disabling.
+				// We should put warnings for those. For instance, if we implemented Splash Controllers,
+				// and if we disable Splash, we will have some problems with the instances of controllers.
 				$fileName = $componentsList[$className]["filename"];
 				foreach ($this->moufDependencies as $dependency) {
 					if ($this->isPartOfPackage($fileName, $dependency, $fullPathToPluginsDirectory)) {
