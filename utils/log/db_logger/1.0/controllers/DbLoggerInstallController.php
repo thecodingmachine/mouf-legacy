@@ -124,6 +124,7 @@ class DbLoggerInstallController extends Controller {
 
 		$createTableSql = "CREATE TABLE `$tablename` (
 			`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+			`log_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, 
 			`message` VARCHAR( 2000 ) NOT NULL ,
 			`trace` TEXT NULL ,
 			`log_level` VARCHAR( 8 ) NOT NULL ,
