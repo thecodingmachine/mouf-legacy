@@ -1,10 +1,10 @@
 <?php
-require_once dirname(__FILE__).'/../utils/dao_generator.php';
 
 /**
  * The controller used in the DbLogger install process.
  * 
  * @Component
+ * @Logged
  */
 class DbLoggerInstallController extends Controller {
 	
@@ -75,12 +75,6 @@ class DbLoggerInstallController extends Controller {
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
 		
-		// Let's start by performing basic checks about the instances we assume to exist.
-		if (!$this->moufManager->instanceExists("dbConnection")) {
-			$this->displayErrorMsg("The TDBM install process assumes your database connection instance is already created, and that the name of this instance is 'dbConnection'. Could not find the 'dbConnection' instance.");
-			return;
-		}
-		
 		$this->tableName = "logs";
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../views/installStep2.php", $this);
@@ -94,7 +88,7 @@ class DbLoggerInstallController extends Controller {
 	 * @param string $tablename
 	 * @param string $selfedit
 	 */
-	public function install($tablename, $selfedit="false") {
+	public function install($dbconnection, $tablename, $level, $selfedit="false") {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -103,11 +97,14 @@ class DbLoggerInstallController extends Controller {
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
 		
-		$this->createTable($tablename, $selfedit);
+		$this->createTable($dbconnection, $tablename, $selfedit);
+		
 				
 		if (!$this->moufManager->instanceExists("dbLogger")) {
 			$this->moufManager->declareComponent("dbLogger", "DbLogger");
-			$this->moufManager->bindComponent("dbLogger", "dbConnection", "dbConnection");
+			$this->moufManager->bindComponent("dbLogger", "dbConnection", $dbconnection);
+			$this->moufManager->setParameter("dbLogger", "tableName", $tablename);
+			$this->moufManager->setParameter("dbLogger", "level", $level);
 		}
 		
 		$this->moufManager->rewriteMouf();
@@ -123,9 +120,43 @@ class DbLoggerInstallController extends Controller {
 		$this->template->draw();
 	}
 	
-	protected function createTable($tablename, $selfedit) {
+	protected function createTable($dbconnection, $tablename, $selfedit) {
+
+		$createTableSql = "CREATE TABLE `$tablename` (
+			`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+			`message` VARCHAR( 2000 ) NOT NULL ,
+			`trace` TEXT NULL ,
+			`log_level` VARCHAR( 8 ) NOT NULL ,
+			`server` VARCHAR( 100 ) NULL ,
+			`category1` VARCHAR( 30 ) NULL ,
+			`category2` VARCHAR( 30 ) NULL ,
+			`category3` VARCHAR( 30 ) NULL ,
+			`additional_data` TEXT NULL COMMENT 'A JSON encoded object containing additional data',
+			`client` VARCHAR( 100 ) NULL,
+			`file` VARCHAR( 256 ) NULL,
+			`line` INT NULL,
+			`class` VARCHAR( 100 ) NULL,
+			`function` VARCHAR( 100 ) NULL
+			
+		) ENGINE = MYISAM ;";
 		
-		var_dump(DB_ConnectionProxy::getLocalProxy()->getListOfTables(true));
+		$index1 = "ALTER TABLE `$tablename` ADD FULLTEXT (
+			`message`
+		)";
+		$index2 = "ALTER TABLE `$tablename` ADD INDEX ( `category1` , `category2` , `category3` ) ";
+		$index3 = "ALTER TABLE `$tablename` ADD INDEX ( `category2` , `category3` ) ";
+		$index4 = "ALTER TABLE `$tablename` ADD INDEX ( `category3` ) ";
+		$index5 = "ALTER TABLE `$tablename` ADD INDEX ( `server` ) ";
+		$index6 = "ALTER TABLE `$tablename` ADD INDEX ( `client` ) ";
+		
+		$proxy = DB_ConnectionProxy::getLocalProxy($dbconnection);
+		$proxy->exec($createTableSql);
+		$proxy->exec($index1);
+		$proxy->exec($index2);
+		$proxy->exec($index3);
+		$proxy->exec($index4);
+		$proxy->exec($index5);
+		$proxy->exec($index6);
 		
 	}
 	

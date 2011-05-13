@@ -63,13 +63,13 @@ class OutputLogger implements LogInterface {
 		if ($e == null) {
 			if (!$string instanceof Exception) {
 				$trace = debug_backtrace();
-				echo($level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string."\n");
+				echo($level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n");
 			} else {
 				echo($level.': '.ExceptionUtils::getTextForException($string)."\n");
 			}
 		} else {
 			$trace = debug_backtrace();
-			echo($level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string."\n".ExceptionUtils::getTextForException($e)."\n");
+			echo($level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".ExceptionUtils::getTextForException($e)."\n");
 		}
 
 	}

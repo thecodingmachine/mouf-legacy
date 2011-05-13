@@ -5,10 +5,6 @@
 connection and create the database table that will be used to store the logs automatically.</p>
 <p>The DbLogger install procedure will create a "dbLogger" instance.</p>
 
-<?php 
-// TESSSST
-$this->createTable(); ?>
-
 <form action="configure">
 	<input type="hidden" name="selfedit" value="<?php echo $this->selfedit ?>" />
 	<button>Configure DbLogger</button>

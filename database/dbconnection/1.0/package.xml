@@ -30,7 +30,7 @@
 		<require>DB_ConnectionSettingsInterface.php</require>
 		<require>DB_ConnectionInterface.php</require>
 		<require>DB_Exception.php</require>
-		<require>DbConnectionProxy.php</require>
+		<require>DB_ConnectionProxy.php</require>
 	</adminRequires>
 	<install>
 		<!--  <file>direct/install.php</file>  -->

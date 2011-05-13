@@ -510,9 +510,9 @@ class DB_ConnectionProxy implements DB_ConnectionInterface {
 		$methodName = $callingFunctionTrace['function'];
 		$args = $callingFunctionTrace['args'];
 		
-		$postArray = array("instance"=>$this->dbConnectionInstanceName, "method"=>$methodName, "args"=>var_export($args, true));
+		$postArray = array("instance"=>$this->dbConnectionInstanceName, "method"=>$methodName, "args"=>serialize($args));
 		
-		$response = $this->performRequest($url, $postArray);
+		$response = $this->performRequest($this->url, $postArray);
 		$obj = unserialize($response);
 		
 		if ($obj === false) {
@@ -528,11 +528,13 @@ class DB_ConnectionProxy implements DB_ConnectionInterface {
 				
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
 		if($post) {
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-		} else
+		} else {
 			curl_setopt($ch, CURLOPT_POST, false);
+		}
 		$response = curl_exec($ch );
 		
 		if( curl_error($ch) ) { 
@@ -552,7 +554,7 @@ class DB_ConnectionProxy implements DB_ConnectionInterface {
 	public static function getLocalProxy($dbConnectionInstanceName = "dbConnection") {
 		$dbProxy = new DB_ConnectionProxy();
 		$dbProxy->dbConnectionInstanceName = $dbConnectionInstanceName;
-		$dbProxy->url = ROOT_URL."plugins/database/dbconnection/1.0/direct/proxy.php";
+		$dbProxy->url = MoufReflectionProxy::getLocalUrlToProject()."plugins/database/dbconnection/1.0/direct/proxy.php";
 		return $dbProxy;
 	}
 }

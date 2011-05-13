@@ -91,16 +91,16 @@ class MailLogger implements LogInterface {
 		if ($e == null) {
 			if (!$string instanceof Exception) {
 				$trace = debug_backtrace();
-				$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string;
-				$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string;
+				$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
+				$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
 			} else {
 				$msg = $level.': '.ExceptionUtils::getTextForException($string);
 				$msgHtml = $level.': '.ExceptionUtils::getHtmlForException($string);
 			}
 		} else {
 			$trace = debug_backtrace();
-			$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string."\n".ExceptionUtils::getTextForException($e);
-			$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".$trace[2]['class'].$trace[2]['type'].$trace[2]['function']." -> ".$string."\n".ExceptionUtils::getHtmlForException($e);
+			$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".ExceptionUtils::getTextForException($e);
+			$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".ExceptionUtils::getHtmlForException($e);
 		}
 
 		$this->mail->setBodyText($msg);

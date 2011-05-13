@@ -36,7 +36,7 @@ if (get_magic_quotes_gpc()==1)
 $dbConnection = MoufManager::getMoufManager()->getInstance($instance);
 /* @var $dbConnection DB_ConnectionInterface */
 
-$result = call_user_func_array(array($dbConnection, $method), $args);
+$result = call_user_func_array(array($dbConnection, $method), unserialize($args));
 
 if ($encode == "php") {
 	echo serialize($result);
