@@ -20,7 +20,7 @@ require_once '../Moufspector.php';
 require_once 'utils/check_rights.php';
 
 $encode = "php";
-if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]="json") {
+if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]=="json") {
 	$encode = "json";
 }
 
