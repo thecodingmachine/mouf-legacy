@@ -5,6 +5,7 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	//require_once '../../Mouf.php';
 	require_once '../../MoufComponents.php';
 	require_once '../../MoufUniversalParameters.php';
+	$selfedit = "false";
 } else {
 	require_once '../MoufManager.php';
 	MoufManager::initMoufManager();
@@ -12,6 +13,7 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	MoufManager::switchToHidden();
 	//require_once '../MoufAdmin.php';
 	require_once '../MoufAdminComponents.php';
+	$selfedit = "true";
 }
 
 require_once '../MoufPackageManager.php';
@@ -48,7 +50,7 @@ foreach ($packagesXmlFiles as $packageXmlFile) {
 					if ($tooLate) {
 						$errorList[] = "The package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
 								requires the package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName()."/".$installedPackageDescriptor->getVersion().".
-								This package is indeed included, but too late! Therefore, the dependency might not be satisfied.<br/>";
+								This package is indeed included, but too late! Therefore, the dependency might not be satisfied. <a href='".ROOT_URL."mouf/direct/reorderDependencies.php?selfedit=$selfedit'>Click here to correct package order problems.</a><br/>";
 					} else {
 						$found = true;
 					}

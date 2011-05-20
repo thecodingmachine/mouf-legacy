@@ -18,13 +18,14 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/1.0/SplashTemplate.php',
   'SplashMenu' => 'mouf/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php',
   'SplashMenuItem' => 'mouf/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php',
+  'HtmlJSJQuery' => 'mouf/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php',
+  'HtmlJSJQueryFixedHeaderTable' => 'mouf/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/HtmlJSJQueryFixedHeaderTable.php',
   'FineMessageLanguage' => 'mouf/../plugins/utils/i18n/fine/2.1/FineMessageLanguage.php',
   'BrowserLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/BrowserLanguageDetection.php',
   'DomainLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/DomainLanguageDetection.php',
   'FixedLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/FixedLanguageDetection.php',
   'CascadingLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/CascadingLanguageDetection.php',
   'FinePHPArrayTranslationService' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/FinePHPArrayTranslationService.php',
-  'HtmlJSJQuery' => 'mouf/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php',
   'HtmlJSJQueryAutoGrow' => 'mouf/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php',
   'HtmlJSJQueryUI' => 'mouf/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php',
   'HtmlJSJQueryFileTree' => 'mouf/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php',
@@ -42,6 +43,10 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
   'TopSliderMenuRenderer' => 'mouf/../plugins/html/template/menus/topslidermenu/1.0/TopSliderMenuRenderer.php',
   'HtmlMenuTopSliderHead' => 'mouf/../plugins/html/template/menus/topslidermenu/1.0/HtmlMenuTopSliderHead.php',
+  'ValidatorException' => 'mouf/../plugins/utils/common/validators/1.0/ValidatorException.php',
+  'AbstractValidator' => 'mouf/../plugins/utils/common/validators/1.0/AbstractValidator.php',
+  'EmailValidator' => 'mouf/../plugins/utils/common/validators/1.0/EmailValidator.php',
+  'NumberValidator' => 'mouf/../plugins/utils/common/validators/1.0/NumberValidator.php',
   'FilterUtils' => 'mouf/../plugins/mvc/splash-common/3.2/services/FilterUtils.php',
   'AbstractFilter' => 'mouf/../plugins/mvc/splash-common/3.2/filters/AbstractFilter.php',
   'RequireHttpsAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/filters/RequireHttpsAnnotation.php',
@@ -75,6 +80,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'CacheInterface' => 'mouf/../plugins/utils/cache/cache-interface/1.0/CacheInterface.php',
   'MenuInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuInterface.php',
   'MenuItemInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemInterface.php',
+  'ValidatorInterface' => 'mouf/../plugins/utils/common/validators/1.0/ValidatorInterface.php',
   'UrlProviderInterface' => 'mouf/../plugins/mvc/splash-common/3.2/services/UrlProviderInterface.php',
   'WebServiceInterface' => 'mouf/../plugins/mvc/splash/3.2/models/Splash.php',
   'MoufValidatorService' => 'mouf/validator/MoufValidatorService.php',
@@ -141,6 +147,8 @@ require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/BaseTemp
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/1.0/SplashTemplate.php';
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php';
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php';
+require_once $localFilePath.'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
+require_once $localFilePath.'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/HtmlJSJQueryFixedHeaderTable.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/FineMessageLanguage.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/language/BrowserLanguageDetection.php';
@@ -150,7 +158,6 @@ require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/language/CascadingL
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/translate/FinePHPArrayTranslationService.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/msgFunctions.php';
-require_once $localFilePath.'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php';
@@ -176,6 +183,11 @@ require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/Menu.php';
 require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItem.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderMenuRenderer.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topslidermenu/1.0/HtmlMenuTopSliderHead.php';
+require_once $localFilePath.'/../plugins/utils/common/validators/1.0/ValidatorInterface.php';
+require_once $localFilePath.'/../plugins/utils/common/validators/1.0/ValidatorException.php';
+require_once $localFilePath.'/../plugins/utils/common/validators/1.0/AbstractValidator.php';
+require_once $localFilePath.'/../plugins/utils/common/validators/1.0/EmailValidator.php';
+require_once $localFilePath.'/../plugins/utils/common/validators/1.0/NumberValidator.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/load.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/services/FilterUtils.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/services/UrlProviderInterface.php';

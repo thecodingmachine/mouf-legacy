@@ -17,6 +17,7 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 require_once '../MoufPackageManager.php';
 require_once 'utils/check_rights.php';
 
+MoufManager::getMoufManager()->reorderPackagesDependencies();
 MoufManager::getMoufManager()->rewriteMouf();
 
-echo "Rewrite done.";
+header("Location:../validate?selfedit=".(isset($_REQUEST["selfedit"])?$_REQUEST["selfedit"]:"false"));

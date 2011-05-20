@@ -23,42 +23,45 @@ By default, this is behaviour is disabled.',
 ));
 
 $moufManager->setPackagesByXmlFile(array (
-  -20 => 'utils/common/getvars/1.1/package.xml',
-  -10 => 'utils/log/log_interface/1.1/package.xml',
-  -5 => 'utils/common/conditioninterface/1.0/package.xml',
-  -4 => 'html/htmlelement/1.0/package.xml',
-  -3 => 'utils/export/phpexcel/1.7.5/package.xml',
-  -2 => 'utils/icons/famfamfam/1.3/package.xml',
-  2 => 'html/template/BaseTemplate/1.0/package.xml',
-  3 => 'html/template/SplashTemplate/1.0/package.xml',
-  3.5 => 'javascript/jquery/jquery-fixedheadertable/1.3/package.xml',
-  4 => 'utils/i18n/fine/2.1/package.xml',
-  6 => 'javascript/jquery/jquery/1.3.2/package.xml',
-  7 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
-  8 => 'javascript/jquery/jquery-ui/1.7.2/package.xml',
-  9 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
-  11 => 'javascript/jit/1.1.2/package.xml',
-  12 => 'javascript/prototype/1.6.0.1/package.xml',
-  13 => 'utils/log/errorlog_logger/1.1/package.xml',
-  14 => 'security/userservice/1.0/package.xml',
-  16 => 'security/userfiledao/1.0/package.xml',
-  18 => 'utils/cache/cache-interface/1.0/package.xml',
-  19 => 'utils/cache/file-cache/1.1/package.xml',
-  20 => 'html/widgets/menu/1.0/package.xml',
-  21 => 'html/template/menus/topslidermenu/1.0/package.xml',
-  22 => 'mvc/splash-common/3.2/package.xml',
-  23 => 'mvc/splash/3.2/package.xml',
-  25 => 'security/simplelogincontroller/1.0/package.xml',
-  24 => 'security/userservice-splash/3.0/package.xml',
+  0 => 'utils/common/getvars/1.1/package.xml',
+  1 => 'utils/log/log_interface/1.1/package.xml',
+  2 => 'utils/common/conditioninterface/1.0/package.xml',
+  3 => 'html/htmlelement/1.0/package.xml',
+  4 => 'utils/export/phpexcel/1.7.5/package.xml',
+  5 => 'utils/icons/famfamfam/1.3/package.xml',
+  6 => 'html/template/BaseTemplate/1.0/package.xml',
+  7 => 'html/template/SplashTemplate/1.0/package.xml',
+  8 => 'javascript/jquery/jquery/1.3.2/package.xml',
+  9 => 'javascript/jquery/jquery-fixedheadertable/1.3/package.xml',
+  10 => 'utils/i18n/fine/2.1/package.xml',
+  11 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
+  12 => 'javascript/jquery/jquery-ui/1.7.2/package.xml',
+  13 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
+  14 => 'javascript/jit/1.1.2/package.xml',
+  15 => 'javascript/prototype/1.6.0.1/package.xml',
+  16 => 'utils/log/errorlog_logger/1.1/package.xml',
+  17 => 'security/userservice/1.0/package.xml',
+  18 => 'security/userfiledao/1.0/package.xml',
+  19 => 'utils/cache/cache-interface/1.0/package.xml',
+  20 => 'utils/cache/file-cache/1.1/package.xml',
+  21 => 'html/widgets/menu/1.0/package.xml',
+  22 => 'html/template/menus/topslidermenu/1.0/package.xml',
+  23 => 'utils/common/validators/1.0/package.xml',
+  24 => 'mvc/splash-common/3.2/package.xml',
+  25 => 'mvc/splash/3.2/package.xml',
+  26 => 'security/simplelogincontroller/1.0/package.xml',
+  27 => 'security/userservice-splash/3.0/package.xml',
 ));
 
 require dirname(__FILE__).'/../plugins/utils/common/conditioninterface/1.0/ConditionsExternalComponent.php';
-require dirname(__FILE__).'/../plugins/utils/i18n/fine/2.1/FineExternalComponents.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/JQueryFixedHeaderTableExternalComponent.php';
+require dirname(__FILE__).'/../plugins/utils/i18n/fine/2.1/FineExternalComponents.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/JQueryAutoGrowExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/JQueryUIExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
 require dirname(__FILE__).'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderExternalComponent.php';
+require dirname(__FILE__).'/../plugins/utils/common/validators/1.0/ValidatorsExternalComponents.php';
 require dirname(__FILE__).'/../plugins/mvc/splash/3.2/SplashExternalComponent.php';
 
 $moufManager->setAllVariables(array (
@@ -1588,17 +1591,24 @@ class MoufAdmin {
 	 }
 
 	/**
-	 * @return FinePHPArrayTranslationService
-	 */
-	 public static function getFineCommonTranslationService() {
-	 	return MoufManager::getMoufManager()->getInstance('fineCommonTranslationService');
-	 }
-
-	/**
 	 * @return HtmlJSJQuery
 	 */
 	 public static function getJquery1_3_2() {
 	 	return MoufManager::getMoufManager()->getInstance('jquery-1.3.2');
+	 }
+
+	/**
+	 * @return HtmlJSJQueryFixedHeaderTable
+	 */
+	 public static function getJqueryfixedheadertable1_3() {
+	 	return MoufManager::getMoufManager()->getInstance('jquery-fixedheadertable-1.3');
+	 }
+
+	/**
+	 * @return FinePHPArrayTranslationService
+	 */
+	 public static function getFineCommonTranslationService() {
+	 	return MoufManager::getMoufManager()->getInstance('fineCommonTranslationService');
 	 }
 
 	/**
@@ -2026,6 +2036,48 @@ class MoufAdmin {
 	 */
 	 public static function getPackageDependenciesValidator() {
 	 	return MoufManager::getMoufManager()->getInstance('packageDependenciesValidator');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getFineAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getFineSupportedLanguagesMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineSupportedLanguagesMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getFineEnableDisableMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineEnableDisableMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getFineMissingLabelsMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineMissingLabelsMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getFineImportCSVMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('fineImportCSVMenuItem');
+	 }
+
+	/**
+	 * @return EditLabelController
+	 */
+	 public static function getEditLabels() {
+	 	return MoufManager::getMoufManager()->getInstance('editLabels');
 	 }
 
 }

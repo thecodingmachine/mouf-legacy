@@ -1643,8 +1643,6 @@ class ".$this->mainClassName." {
 			$this->packagesList[] = $fileName;	
 		}
 		
-		// TODO: ensure the order of the dependencies is correct.
-		// FIXME: ensure the order of the dependencies is correct.
 		$this->reorderPackagesDependencies();
 	}
 	
@@ -1652,53 +1650,56 @@ class ".$this->mainClassName." {
 	 * This function sorts the packages according to their dependency order.
 	 */
 	public function reorderPackagesDependencies() {
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-				
+		
+		$packagesXmlFiles = $this->listEnabledPackagesXmlFiles();
+		
+		// As long as there are packages to be reordered...
+		while ($reorderDescriptor = $this->checkPackageOrder()) {
+			$parentPackage = $reorderDescriptor["parentPackage"];
+			/* @var $parentPackage MoufPackage */
+			$parentPackageXmlFile = $parentPackage->getDescriptor()->getGroup()."/".$parentPackage->getDescriptor()->getName()."/".$parentPackage->getDescriptor()->getVersion()."/package.xml";
+			
+			$tooLateListPackageXmlFiles = array();
+			foreach ($reorderDescriptor["tooLateChildren"] as $tooLateListPackage) {
+				/* @var $tooLateListPackage MoufPackageDescriptor */
+				$tooLateListPackageXmlFiles[] = $tooLateListPackage->getGroup()."/".$tooLateListPackage->getName()."/".$tooLateListPackage->getVersion()."/package.xml";
+			}
+			
+			$newPackagesXmlFilesList = array();
+			foreach ($packagesXmlFiles as $packageXmlFile) {
+				if ($packageXmlFile != $parentPackageXmlFile && array_search($packageXmlFile, $tooLateListPackageXmlFiles) === false ) {
+					$newPackagesXmlFilesList[] = $packageXmlFile;
+				}
+				if ($packageXmlFile == $parentPackageXmlFile) {
+					foreach ($tooLateListPackageXmlFiles as $tooLateListPackageXmlFile) {
+						$newPackagesXmlFilesList[] = $tooLateListPackageXmlFile;
+					}
+					$newPackagesXmlFilesList[] = $parentPackageXmlFile;
+				}
+			}
+			$packagesXmlFiles = $newPackagesXmlFilesList;
+			$this->setPackagesByXmlFile($packagesXmlFiles);
+		}
 	}
 	
 	/**
-	 * This function checks the order of the packages, and throws an exception if there is a problem.
+	 * This function checks the order of the packages.
+	 * It can return a list of packages that should be reordered.
+	 * Returns false if everything is alright.
+	 * 
+	 * @return array("parentPackage"=>MoufPackage, "tooLateList"=>array(MoufPackage))
 	 */
 	private function checkPackageOrder() {
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
-		// TODO: FINISH THIS METHOD
+
 		$packagesXmlFiles = $this->listEnabledPackagesXmlFiles();
 
 		$errorList = array();
+		$tooLateList = array();
 		
 		foreach ($packagesXmlFiles as $packageXmlFile) {
-			$packageManager = new MoufPackageManager("../plugins");
+			$packageManager = new MoufPackageManager($this->getFullPathToPluginsDirectory());
+			//$packageManager = new MoufPackageManager(dirname(__FILE__)."/../plugins");
+			
 			$package = $packageManager->getPackage($packageXmlFile);
 			$dependencies = $package->getDependenciesAsDescriptors();
 			
@@ -1717,14 +1718,12 @@ class ".$this->mainClassName." {
 					if ($dependency->getGroup() == $installedPackageDescriptor->getGroup()
 						&& $dependency->getName() == $installedPackageDescriptor->getName()) {
 						if (!$dependency->isCompatibleWithVersion($installedPackageDescriptor->getVersion())) {
-							$errorList[] = "For package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName().", installed version is ".$installedPackageDescriptor->getVersion().".
-											However, the package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
-											requires the version of this package to be ".$dependency->getVersion().".<br/>";
+							// Let's just ignore incompatible package.
+							// This method is about checking the order
 						} else {
 							if ($tooLate) {
-								$errorList[] = "The package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
-										requires the package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName()."/".$installedPackageDescriptor->getVersion().".
-										This package is indeed included, but too late! Therefore, the dependency might not be satisfied.<br/>";
+								$tooLateList['parentPackage'] = $package;
+								$tooLateList['tooLateChildren'][] = $installedPackageDescriptor;
 							} else {
 								$found = true;
 							}
@@ -1733,14 +1732,17 @@ class ".$this->mainClassName." {
 				}
 				
 				if (!$found) {
-					$errorList[] = "Unable to find package ".$dependency->getGroup()."/".$dependency->getName().", version ".$dependency->getVersion().".
-									This package is package requested by package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion().".<br/>";
+					// Let's just ignore not found packages.
+					// This method is about checking the order
 				} else {
 					$found = false;
 				}
 			}
-			
+			if ($tooLateList) {
+				return $tooLateList; 
+			}
 		}
+		return false;
 	}
 	
 	/**
@@ -1823,7 +1825,8 @@ class ".$this->mainClassName." {
 	 * @return string
 	 */
 	public function getFullPathToPluginsDirectory() {
-		return dirname(__FILE__)."/../".$this->pathToMouf."../plugins";
+		//return dirname(__FILE__)."/../".$this->pathToMouf."../plugins";
+		return dirname(__FILE__)."/../plugins";
 	}
 	
 	/**
