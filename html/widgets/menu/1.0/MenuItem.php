@@ -95,7 +95,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function __construct($label=null, $url=null, $children=null) {
 		$this->label = $label;
-		$this->menuLink = $menuLink;
+		$this->url = $url;
 		$this->children = $children;
 	}
 
@@ -107,30 +107,21 @@ class MenuItem implements MenuItemInterface {
 		if ($this->translationService) {
 			return $this->translationService->getTranslation($this->label);
 		} else {
-			return $label;
+			return $this->label;
 		}
 	}
 	
 	/**
 	 * The label for this menu item.
 	 * 
+	 * @Property
+	 * @Compulsory
 	 * @param string $label
 	 */
 	public function setLabel($label) {
 		$this->label = $label;
 	}
 	
-	/**
-	 * If any translation service is set, it will be used to translate the label.
-	 * Otherwise, the label is displayed "as-is".
-	 * 
-	 * @Property
-	 * @param LanguageTranslationInterface $translationInterface
-	 */
-	public function setTranslationService($translationService) {
-		$this->translationService = $translationService;
-	}
-
 	/**
 	 * Returns the URL for this menu (or null if this menu is not a link).
 	 * @return string
@@ -143,7 +134,7 @@ class MenuItem implements MenuItemInterface {
 	 * The link for the menu (relative to the root url), unless it starts with / or http:// or https://.
 	 *
 	 * @Property
-	 * @var string
+	 * @param string $url
 	 */
 	public function setUrl($url) {
 		$this->url = $url;
@@ -234,7 +225,7 @@ class MenuItem implements MenuItemInterface {
 	 * Use of this property depends on the menu implementation.
 	 * 
 	 * @Property
-	 * @return string
+	 * @param string $cssClass
 	 */
 	public function setCssClass($cssClass) {
 		$this->cssClass = $cssClass;
@@ -274,8 +265,33 @@ class MenuItem implements MenuItemInterface {
 	 * @return bool
 	 */
 	public function isHidden() {
+		if ($this->displayCondition == null) {
+			return false;
+		}
 		return !$this->displayCondition->isOk();
 	}
+
+	/**
+	 * If any translation service is set, it will be used to translate the label.
+	 * Otherwise, the label is displayed "as-is".
+	 * 
+	 * @Property
+	 * @param LanguageTranslationInterface $translationInterface
+	 */
+	public function setTranslationService(LanguageTranslationInterface $translationService) {
+		$this->translationService = $translationService;
+	}
+
+
+	/**
+	 * If set, this display condition is tested. If it returns false, the menu will be hidden.
+	 * 
+	 * @Property
+	 * @param ConditionInterface $displayCondition
+	 */
+	public function setDisplayCondition(ConditionInterface $displayCondition) {
+		$this->displayCondition = $displayCondition;
+	}	
 	
 	/**
 	 * A list of parameters that are propagated by the link.

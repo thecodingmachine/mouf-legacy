@@ -9,7 +9,7 @@
  * @author david
  *
  */
-interface MenuItemInterface extends MenuInterface {
+interface MenuItemInterface /*extends MenuInterface*/ {
 	
 	/**
 	 * Returns the label for the menu item.

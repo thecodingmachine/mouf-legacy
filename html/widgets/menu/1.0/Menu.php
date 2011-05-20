@@ -53,6 +53,17 @@ class Menu implements MenuInterface {
 	public function setChildren(array $children) {
 		$this->children = $children;
 	}
+	
+	/**
+	 * If set, this display condition is tested. If it returns false, the menu will be hidden.
+	 * 
+	 * @Property
+	 * @param ConditionInterface $displayCondition
+	 */
+	public function setDisplayCondition(ConditionInterface $displayCondition) {
+		$this->displayCondition = $displayCondition;
+	}	
+	
 
 	/**
 	 * If this function returns true, the menu item should not be displayed.
@@ -60,6 +71,9 @@ class Menu implements MenuInterface {
 	 * @return bool
 	 */
 	public function isHidden() {
+		if ($this->displayCondition == null) {
+			return false;
+		}
 		return !$this->displayCondition->isOk();
 	}
 	

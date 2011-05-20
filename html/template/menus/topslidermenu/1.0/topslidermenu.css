@@ -1,0 +1,67 @@
+
+div.topslidermenu {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	color: #333333;
+}
+
+div.topslidermenu div.topslidermenumaincontent {
+	background-color: #f7f7f7;	
+	width: 100%;
+	display: none;
+}
+
+div.topslidermenu div.topslidermenumaincontent > ul {
+	margin-left: auto;
+	margin-right: auto;
+	min-width: 300px;
+	max-width: 900px;
+	min-height: 100px;
+	display: none;
+}
+
+div.topslidermenu div.topslidermenumaincontent > ul > li {
+	min-width: 100px;
+	max-width: 300px;
+	border: solid 1px #333333;
+	float: left;
+	margin: 3px;
+	padding: 3px;
+	text-align: center;
+	font-weight: bold;
+}
+
+div.topslidermenu div.topslidermenumaincontent > ul > li li {
+	text-align: left;
+	font-weight: normal;
+}
+
+div.topslidermenu div.topslidermenutabs {
+	width: 100%;	
+}
+
+div.topslidermenu div.topslidermenutabs > ul {
+	margin-left: auto;
+	margin-right: auto;
+	min-width: 300px;
+	max-width: 500px;
+}
+
+div.topslidermenu div.topslidermenutabs > ul > li {
+	float: left;
+	background-color: #f7f7f7;
+	padding: 5px 5px 5px 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	font-family: Rockwell, Georgia, Verdana, Arial, sans-serif;
+	font-weight: normal;
+	font-size: 21px;
+	min-width: 100px;
+	text-align: center;
+}
+
+div.topslidermenu div.topslidermenutabs > ul > li.topslidermenuactive {
+	font-weight: bold;
+}

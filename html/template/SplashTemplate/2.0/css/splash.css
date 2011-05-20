@@ -1,0 +1,1019 @@
+/* $Id: style.css,v 1.23 2007/12/17 15:05:09 goba Exp $ */
+/*
+** HTML elements
+*/
+html {
+	height: 100%;
+	padding: 0px !important;
+	margin: 0px !important;
+}
+body {
+	padding: 0;
+	margin: 0px;
+	color: #000;
+	height: 100%;
+	background-color: #3d4339;
+	background-image: url("images/background.png");
+	background-repeat: repeat;
+	font: 11px Verdana, Arial,sans-serif;
+}
+tr.odd td, tr.even td {
+	padding: 0.3em;
+}
+h1, h2, h3, h4, h5, h6 {
+	margin-top: 0px;
+	margin-bottom: 3px;;
+	font-weight:normal;
+	font-family: Rockwell, Georgia, Verdana, Arial;
+}
+h1 {
+	padding-top: 10px;
+	font-size: 24px;
+	color: #ee0038;
+}
+h2 {
+	padding-top: 22px;
+	font-size: 16px;
+	color: #ee0038;
+}
+h3, h4, h5, h6 {
+	padding-top: 6px;
+	font-size: 13px;
+}
+p {
+	margin: 0;
+}
+a {
+	text-decoration: underline;
+	font-weight: normal;
+	color: #fe8c00;
+}
+a:link {
+	color: #fe8c00;
+}
+a:visited {
+	color: #fe8c00;
+}
+a:hover {
+	color: #fe1809;
+	text-decoration: underline;
+}
+dd {
+	margin: 0px
+}
+dt {
+	padding-top: 10px;
+	margin-top: 0px;
+	margin-bottom: 0.5em;
+	font-family: georgia, arial;
+	font-size: 18px;
+	font-style: italic;
+	font-weight:normal;
+}
+ul {
+	padding: 0px;
+	margin: 0px;
+}
+tbody {
+	border: none;
+}
+fieldset {
+	border: 1px solid #ccc;
+}
+pre {
+	background-color: #eee;
+	padding: 0.75em 1.5em;
+	font-size: 12px;
+	border: 1px solid #ddd;
+}
+table {
+	/* make <td> sizes relative to body size! */
+	font-size: 1em;
+}
+.form-item label {
+	font-size: 1em;
+	color: #222;
+}
+.item-list .title {
+	font-size: 1em;
+	color: #222;
+}
+.links {
+	margin-bottom: 0;
+}
+.comment .links {
+	margin-bottom: 0;
+}
+
+/*
+** Page layout blocks / IDs
+*/
+#page{
+	width: 1000px;
+	margin: auto;
+	padding: 0 0 30px 0;
+}
+div#container {
+	padding:0px;
+	margin: 0px;
+	position: relative;
+	min-height: 100%;
+}
+
+.headpiece2{
+	width: 100%;
+	height: 5px;
+}
+
+#headpiece_top {
+	width: 100%;
+	height: 5px;
+	background-image: url("images/headpiece.png");
+	background-repeat: repeat-x;
+}
+
+#headpiece_bottom {
+	font-size: 0px;
+	position: absolute;
+	bottom: 0;
+	padding: 0px;
+	background-color: #0066b2;
+	width: 100%;
+	height: 5px;
+	background-image: url("images/headpiece.png");
+	background-repeat: repeat-x;
+}
+#header, #content {
+	width: 100%;
+}
+#header {
+	text-align: left;
+	height: 90px;
+	margin-top: 5px;
+}
+
+/* Logo du header */
+#logo {
+	float:left;
+	padding-left: 20px;
+	width: 243px;
+}
+table#reset_password {
+	margin-left: 50px
+}
+
+/* menu on the header */
+div#nav{
+	padding: 0px;
+	margin: 0px 0px 0px 265px;
+	text-align: left;
+	height: 62px;
+	width: 730px;
+}
+div#nav table {
+	border: none;
+	border-collapse : collapse;
+	margin: 0px;
+	margin-top: 35px;
+}
+
+div#nav tbody{
+	border: none;
+}
+/*div#nav li.leaf {
+	list-style-type:none;
+	list-style-image: none;
+	padding: 0px;
+	margin: 0px 0px 0px 20px;
+	display:inline;
+}
+div#nav ul.menu {
+	padding: 0px;
+	margin: 0px;
+}
+div#nav a {
+	color: white;
+	text-decoration: none;
+	font-family: Rockwell, Georgia, Verdana, Arial, sans-serif;
+	font-weight: normal;
+	font-size: 21px;
+}
+div#nav a:hover {
+	text-decoration: none;
+	background-image: url("images/link_background.png");
+	background-repeat: repeat-x;
+	padding-bottom:3px;
+}*/
+
+#menu {
+	padding: 0.5em 0.5em 0 0.5em;
+	text-align: right;
+	vertical-align: middle;
+}
+ul.menu {
+	margin: 0px;
+	line-height:16px;
+}
+
+ul.menu a, ul.menu a:link, ul.menu a:visited{
+	color: #ee0038;
+	text-decoration: none;
+}
+ul.menu a:hover{
+	color: #ee0000;
+	text-decoration: underline;
+}
+
+#navlist {
+	font-size: 1.0em;
+	padding: 0 0.8em 1.2em 0; /* LTR */
+	color: #9cf;
+}
+#navlist a {
+	font-weight: bold;
+	color: #fff;
+}
+#subnavlist {
+	padding: 0.5em 1.2em 0.4em 0; /* LTR */
+	font-size: 0.8em;
+	color: #9cf;
+}
+#subnavlist a {
+	font-weight: bold;
+	color: #9cf;
+}
+#content tbody {
+	border: none;
+}
+ul.links li {
+	border-left: 1px solid #9cf; /* LTR */
+}
+ul.links li.first {
+	border: none;
+}
+#search .form-text, #search .form-submit {
+	border: 1px solid #369;
+	font-size: 1.1em;
+	height: 1.5em;
+	vertical-align: middle;
+}
+#search .form-text {
+	width: 8em;
+	padding: 0 0.5em;
+}
+#mission {
+	background-color: #369;
+	padding: 1.5em 2em;
+	color: #fff;
+}
+#mission a, #mission a:visited {
+	color: #9cf;
+	font-weight: bold;
+}
+.site-name {
+	margin: 0.6em 0 0 ;
+	padding: 0;
+	font-size: 2em;
+}
+.site-name a:link, .site-name a:visited {
+	color: #fff;
+}
+.site-name a:hover {
+	color: #369;
+	text-decoration: none;
+}
+.site-slogan {
+	font-size: 1em;
+	color: #eee;
+	display: block;
+	margin: 0;
+	font-style: italic;
+	font-weight: bold;
+}
+#content_frontpage p {
+	margin: 0px;
+	color: white;
+}
+#mission, .node .content, .comment .content {
+  line-height: 1.4em;
+  /*
+  padding-left: 30px;
+  padding-right: 30px;
+  */
+}
+#help {
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
+.breadcrumb {
+  margin-bottom: .5em;
+}
+.messages {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 0.3em;
+  margin-bottom: 1em;
+}
+.error {
+  border-color: red;
+}
+/*
+#sidebar-left, #sidebar-right {
+  width: 16em;
+  /* padding in px not ex because IE messes up 100% width tables otherwise 
+  padding: 10px;
+  vertical-align: top;
+}
+*/
+td#sidebar-left, td#sidebar-right {
+	width: 250px;
+  	vertical-align: top;	
+}
+div.sidebar_left {
+	width: 16px;
+	height: 139px;
+	float: left;
+	background-image: url("images/background_menu_left.png");
+	background-repeat: no-repeat;
+}
+div.sidebar_right {
+	float: right;
+	width: 16px;
+	height: 50px
+}
+
+div.sidebar_middle {
+	float: right;
+}
+div.sidebar_center {
+	width: 218px;
+	min-height: 100px;
+	height: auto !important;
+	height: 100px;
+	background-image: url("images/background_menu_center.png");
+	background-repeat: repeat-y;
+}
+div.sidebar_top {
+	width: 218px;
+	height: 39px;
+	background-image: url("images/background_menu_top.png");
+	background-repeat: repeat-y;
+}
+div.sidebar_bottom {
+	width: 218px;
+	height: 19px;
+	background-image: url("images/background_menu_bottom.png");
+	background-repeat: repeat-y;
+}
+div.sidebar_content {
+	margin-left: 7px;
+	margin-right: 7px;
+}
+/*
+#sidebar-left_top {
+  	background-image: url("images/background_top_left.png");
+	width: 250px;
+	height: 25px;
+	font-size: 0px;
+}
+#sidebar-left_middle {
+  	background-image: url("images/background_content_left.png");
+  	background-repeat: repeat-y;
+	width: 250px;
+}
+#sidebar-left_bottom {
+  	background-image: url("images/background_bottom_left.png");
+	width: 250px;
+	height: 20px;
+	font-size: 0px;
+}
+#sidebar-left_content {
+	padding-left: 14px;
+	padding-right: 4px;
+}
+*/
+
+#sidebar-right_top {
+  	background-image: url("images/background_top_right.png");
+	width: 250px;
+	height: 25px;
+	font-size: 0px;
+}
+#sidebar-right_middle {
+  	background-image: url("images/background_content_right.png");
+  	background-repeat: repeat-y;
+	width: 250px;
+}
+#sidebar-right_bottom {
+  	background-image: url("images/background_bottom_right.png");
+	width: 250px;
+	height: 20px;
+	font-size: 0px;
+}
+#sidebar-right_content {
+	padding-left: 4px;
+	padding-right: 14px;
+}
+
+
+#footer {
+	/*
+	background-color: black;
+	*/
+	font-size: 10px;
+	color: white;
+}
+
+/*
+** Common declarations for child classes of node, comment, block, box, etc.
+** If you want any of them styled differently for a specific parent, add
+** additional rules /with only the differing properties!/ to .parent .class.
+** See .comment .title for an example.
+*/
+.title, .title a {
+  font-weight: bold;
+  font-size: 1.3em;
+  color: #777;
+  margin: 0 auto;  /* decrease default margins for h<x>.title */
+}
+.submitted {
+  color: #999;
+  font-size: 0.8em;
+}
+.links {
+  color: #999;
+}
+.links a {
+  font-weight: bold;
+}
+.block, .box {
+  padding: 0 0 1.5em 0; /* LTR */
+}
+.block {
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 0.75em;
+  margin-bottom: 1.5em;
+}
+.block .title {
+  margin-bottom: .25em;
+}
+.box .title {
+  font-size: 1.1em;
+}
+/*
+.node {
+  margin: .5em 0 2em;
+}
+*/
+.sticky {
+  padding: .5em;
+  background-color: #eee;
+  border: solid 1px #ddd;
+}
+/*
+.node .content, .comment .content {
+  margin: .5em 0 .5em;
+}
+*/
+.node .taxonomy {
+  color: #999;
+  font-size: 0.8em;
+  padding-left: 1.5em; /* LTR */
+}
+.node .picture {
+  border: 1px solid #ddd;
+  float: right; /* LTR */
+  margin: 0.5em;
+}
+.comment {
+  border: 1px solid #abc;
+  padding: .5em;
+}
+.comment .title a {
+  font-size: 1.1em;
+  font-weight: normal;
+}
+.comment .new {
+  text-align: right; /* LTR */
+  font-weight: bold;
+  font-size: 0.8em;
+  float: right; /* LTR */
+  color: red;
+}
+.comment .picture {
+  border: 1px solid #abc;
+  float: right; /* LTR */
+  margin: 0.5em;
+}
+
+/*
+** Module specific styles
+*/
+#aggregator .feed-source {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 1em;
+  margin: 1em 0;
+}
+#aggregator .news-item .categories, #aggregator .source, #aggregator .age {
+  color: #999;
+  font-style: italic;
+  font-size: 0.9em;
+}
+#aggregator .title {
+  margin-bottom: 0.5em;
+  font-size: 1em;
+}
+#aggregator h3 {
+  margin-top: 1em;
+}
+#forum table {
+  width: 100%;
+}
+#forum td {
+  padding: 0.5em;
+}
+#forum td.forum, #forum td.posts {
+  background-color: #eee;
+}
+#forum td.topics, #forum td.last-reply {
+  background-color: #ddd;
+}
+#forum td.container {
+  background-color: #ccc;
+}
+#forum td.container a {
+  color: #555;
+}
+#forum td.statistics, #forum td.settings, #forum td.pager {
+  height: 1.5em;
+  border: 1px solid #bbb;
+}
+#forum td .name {
+  color: #96c;
+}
+#forum td .links {
+  padding-top: 0.7em;
+  font-size: 0.9em;
+}
+#profile .profile {
+  clear: both;
+  border: 1px solid #abc;
+  padding: .5em;
+  margin: 1em 0em;
+}
+#profile .profile .name {
+  padding-bottom: 0.5em;
+}
+.block-forum h3 {
+  margin-bottom: .5em;
+}
+div.admin-panel .description {
+  color: #999;
+}
+div.admin-panel .body {
+  background: #f4f4f4;
+}
+div.admin-panel h3 {
+  background-color: #69c;
+  color: #fff;
+  padding: 5px 8px 5px;
+  margin: 0;
+}
+
+/* For template */
+.got_an_account {
+	width: 250px;
+	float: right;
+	color: white;
+	font-family : verdana, arial;
+	font-size:  12px;
+}
+
+.got_an_account_login {
+	background-image: url("images/login.png");
+	width: 120px;
+	height: 35px;
+	display: block;
+}
+
+.got_an_account_login:hover {
+	background-image: url("images/login_hover.png");
+}
+
+.got_an_account_login_preload {
+	background-image: url("images/login_hover.png");
+	display: none;
+}
+
+/**** Main ****/
+div#main1 {
+	width: 1000px;
+}
+div#main2 {
+	width: 750px;
+}
+
+/* For one column */
+div#main_left1 {
+	width: 17px;
+	height: 245px;
+	float: left;
+	background-image: url("images/background_content_left.png");
+	background-repeat: no-repeat;
+}
+div#main_right1 {
+	float: right;
+	width: 15px;
+	height: 50px
+}
+
+div#main_middle1 {
+	float: right;
+}
+div#main_center1 {
+	width: 968px;
+	min-height: 200px;
+	height: auto !important;
+	height: 200px;
+	background-image: url("images/background_content_center.png");
+	background-repeat: repeat-y;
+}
+div#main_top1 {
+	width: 968px;
+	height: 54px;
+	background-image: url("images/background_content_top.png");
+	background-repeat: repeat-y;
+}
+div#main_bottom1 {
+	width: 968px;
+	height: 50px;
+	background-image: url("images/background_content_bottom.png");
+	background-repeat: repeat-y;
+}
+
+/* For two column */
+div#main_left2 {
+	width: 19px;
+	height: 245px;
+	float: left;
+	background-image: url("images/background_content_750_left.png");
+	background-repeat: no-repeat;
+}
+div#main_right2 {
+	float: right;
+	width: 19px;
+	height: 50px
+}
+
+div#main_middle2 {
+	float: right;
+}
+div#main_center2 {
+	width: 712px;
+	min-height: 200px;
+	height: auto !important;
+	height: 200px;
+	background-image: url("images/background_content_750_center.png");
+	background-repeat: repeat-y;
+}
+div#main_top2 {
+	width: 712px;
+	height: 45px;
+	background-image: url("images/background_content_750_top.png");
+	background-repeat: repeat-y;
+}
+div#main_bottom2 {
+	width: 712px;
+	height: 46px;
+	background-image: url("images/background_content_750_bottom.png");
+	background-repeat: repeat-y;
+}
+
+/* For three column */
+div#main_left3 {
+	width: 19px;
+	height: 245px;
+	float: left;
+	background-image: url("images/background_content_500_left.png");
+	background-repeat: no-repeat;
+}
+div#main_right3 {
+	float: right;
+	width: 19px;
+	height: 50px
+}
+
+div#main_middle3 {
+	float: right;
+}
+div#main_center3 {
+	width: 462px;
+	min-height: 200px;
+	height: auto !important;
+	height: 200px;
+	background-image: url("images/background_content_500_center.png");
+	background-repeat: repeat-y;
+}
+div#main_top3 {
+	width: 462px;
+	height: 45px;
+	background-image: url("images/background_content_500_top.png");
+	background-repeat: repeat-y;
+}
+div#main_bottom3 {
+	width: 462px;
+	height: 46px;
+	background-image: url("images/background_content_500_bottom.png");
+	background-repeat: repeat-y;
+}
+
+/*
+#main_top3 {
+	background-image: url("images/background_top_500.png");
+	width: 500px;
+	height: 25px;
+	font-size: 0px;
+}
+#main_middle3 {
+	background-image: url("images/background_content_500.png");
+	background-repeat: repeat-y;
+	width: 500px;
+}
+#main_bottom3 {
+	background-image: url("images/background_bottom_500.png");
+	background-repeat: no-repeat;
+	width: 500px;
+	height: 20px;
+	font-size: 0px;
+}
+*/
+
+#main_content {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+#main p {
+	margin: 0px;
+	padding: 0px;
+	
+	color: #1E1E1E;
+	font-family : verdana, arial;
+	font-size:  11px;
+	line-height: 16px;
+	text-align: justify;
+}
+div.warning {
+	background:#FFF3DD none repeat scroll 0 0;
+	color:#222200;
+	padding:5px 5px 5px 26px;
+	border:1px solid #F0C020;
+	background-image: url("images/warning.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.error {
+	background:#FFDDDD none repeat scroll 0 0;
+	color:#220000;
+	padding:5px 5px 5px 26px;
+	border:1px solid #F03010;
+	background-image: url("images/exclamation.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.good {
+	background:#DDFFDD none repeat scroll 0 0;
+	color:#002200;
+	padding:5px 5px 5px 26px;
+	border:1px solid #10F030;
+	background-image: url("images/good.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.bad {
+	background:#FFDDDD none repeat scroll 0 0;
+	color:#220000;
+	padding:5px 5px 5px 26px;
+	border:1px solid #F03010;
+	background-image: url("images/bad.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.star {
+	background:#FFFFDD none repeat scroll 0 0;
+	color:#222200;
+	padding:5px 5px 5px 26px;
+	border:1px solid #F0C020;
+	background-image: url("images/star.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.note {
+	background:#F3F3F3 none repeat scroll 0 0;
+	color:#111111;
+	padding:5px 5px 5px 26px;
+	/*border:1px solid #999999;*/
+	background-image: url("images/note.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.zoom {
+	background:#F3F3F3 none repeat scroll 0 0;
+	color:#111111;
+	padding:5px 5px 5px 26px;
+	/*border:1px solid #999999;*/
+	background-image: url("images/zoom.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+}
+div.codeheader {
+	/*background:#DDDDDD none repeat scroll 0 0;*/
+	color:#3D4339;
+	/*padding:5px 5px 5px 5px;*/
+	/*border:1px solid #111111;*/
+	font-weight: bold;
+	/*text-align: center;*/
+}
+
+/* Menu */
+#block-menu-menu-documents {
+	border: 0px;
+}
+#block-menu-menu-documents .title{
+}
+#block-menu-menu-documents ul a{
+	text-decoration: none;
+	/*
+	font-weight: normal;
+	*/
+	color: black;
+}
+#block-menu-menu-documents ul a.active{
+	color: green;
+}
+#block-menu-menu-documents ul a:hover {
+	text-decoration: none;
+	background-image: url("images/menu_link_background.gif");
+	background-repeat: repeat-x;
+	padding-bottom:3px;
+	color: #666;
+}
+/*
+#block-menu-menu-documents li a:hover, #block-menu-menu-documents li:hover {
+	list-style-image:url("images/menu_puce.png");
+	list-style-type:square;
+}*/
+
+
+/* Admin */
+ul.primary {
+	margin: 0px;
+}
+.profile {
+	margin: 0px
+}
+.profile dl {
+	margin: 0px
+}
+.block-region {
+background-color:#FFFF66;
+margin:0px;
+padding:0px;
+}
+.block {
+margin-bottom:0;
+}
+#edit-title-wrapper {
+margin: 0px;	
+}
+dl {
+	margin: 0px;
+}
+.help ul {
+	margin: 0px;	
+}
+.form-checkboxes, .form-radios {
+	margin: 0;
+}
+
+/* Some changes to the paragraphs in the main div: */
+.node .content p {
+	padding-bottom: 0;
+}
+
+.node  .content .comment {
+	border: 0px solid #AABBCC
+}
+
+/*  Classes for the doc generated by jGrouseDocs */
+
+/*.node .content a:link, .node .content a:visited
+{
+	color: blue;
+}
+
+
+.node .content a:hover {
+	text-decoration: underline;
+}*/
+
+.node .content a[name]:hover {
+    text-decoration: none;
+}
+
+
+.node .content hr {
+	border: 1px;
+	background-color: #D0D0D0;
+}
+
+.node .content .summaryTable {
+	border: medium none;
+	margin-top: 0.5em;
+}
+
+.node .content .summaryTableHeader {
+	background-color: #AAAAAA;
+	font-size: 1.3em;
+}
+
+.node .content .summaryTable .summaryItem {
+	border : none;
+	border-bottom: 1px solid;
+	border-color: #d0d0d0;
+	padding-top: 0.3em;
+}
+
+.node .content .summaryTable .summaryItemRef
+{
+	font-weight: normal;
+}
+
+
+.node .content .summaryTable .inheritanceSummary 
+{
+	border: none;
+}
+
+.node .content .sectionHeader {
+	background-color: #AAAAAA;
+	border: medium none;
+	font-size: 1.3em;
+}
+
+.node .content .elementName {
+	font-weight: normal;
+}
+
+.node .content .paddedDetails {
+	font-size: 0.9em;
+}
+
+.node .content .paddedDetails code {
+	font-weight: bolder;
+}
+
+.node .content .type 
+{
+	color: green;
+	font-weight: bolder;
+}
+
+.node .content .modifiers
+{
+	color: purple;
+}
+
+.node .content .logicalDetail .summaryTable
+{
+	display: inherit;
+}
+
+.node .content .navbaritem
+{
+	background-color: #66CCCC;
+}
+
+.node .content .navbaritem a
+{
+    background-color: #66CCCC;
+    color: black;
+    text-decoration: underline;
+}
+
+/** this is to show how to hide parent names */
+.node .content .overview .parent
+{
+	/*display: none;*/
+}
+
+.node .content a.searchItem
+{
+    color: black;
+}
+
+.node .content a.jgdSelectedItem.searchItem 
+{
+	color: white;
+	text-decoration: none;
+}

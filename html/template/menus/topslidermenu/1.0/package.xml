@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Top Slider Menu</displayName>
+	<shortDescription>This package contains a menu that slides from the top of the screen.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html/widgets</group>
+			<name>menu</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>TopSliderMenuRenderer.php</require>
+		<require>HtmlMenuTopSliderHead.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>TopSliderExternalComponent.php</require>
+	</externalComponentRequires>
+</package>

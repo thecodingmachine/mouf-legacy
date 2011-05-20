@@ -1,2 +1,2 @@
 <?php
-MoufAdmin::getSearchService()->searchableServices[] = MoufAdmin::getEditLabels();
+MoufAdmin::getSearchService()->searchableServices[] = MoufManager::getMoufManager()->getInstance('editLabels');

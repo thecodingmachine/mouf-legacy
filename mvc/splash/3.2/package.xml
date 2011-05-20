@@ -8,16 +8,11 @@
 		<dependency>
 			<group>mvc</group>
 			<name>splash-common</name>
-			<version>3.0</version>
+			<version>3.2</version>
 		</dependency>
 		<dependency>
 			<group>html/template</group>
 			<name>SplashTemplate</name>
-			<version>>=1.0</version>
-		</dependency>
-		<dependency>
-			<group>utils/i18n</group>
-			<name>fine</name>
 			<version>>=1.0</version>
 		</dependency>
 	</dependencies>
