@@ -29,13 +29,15 @@ class varAnnotation
         $this->type = $values[1];    
         if ($this->type == "array") {
         	preg_match("/^([a-zA-Z_\\\\][a-zA-Z0-9_\\\\]*)[<](.*)[>]/", $value, $stvalues);
-        	$tmpType = trim($stvalues[2]);
-        	if (strpos($tmpType,",") === false) {
-        		$this->subtype = $tmpType;
-        	} else {
-        		$types = explode(",", $tmpType);
-        		$this->keytype = trim($types[0]);
-        		$this->subtype = trim($types[1]); 
+        	if (isset($stvalues[2])) {
+	        	$tmpType = trim($stvalues[2]);
+	        	if (strpos($tmpType,",") === false) {
+	        		$this->subtype = $tmpType;
+	        	} else {
+	        		$types = explode(",", $tmpType);
+	        		$this->keytype = trim($types[0]);
+	        		$this->subtype = trim($types[1]); 
+	        	}
         	}
         }
     }

@@ -40,6 +40,8 @@ class InstallController extends Controller {
 	 */
 	protected $exception;
 	
+	protected $selfedit;
+	
 	/**
 	 * Displays the page that runs the actions of the MultiStepActionService.
 	 * 
@@ -48,6 +50,7 @@ class InstallController extends Controller {
 	 * @param string $selfedit 
 	 */
 	public function defaultAction($selfedit = "false") {
+		$this->selfedit = $selfedit;
 		$this->actionsList = $this->multiStepActionService->getActionsList();
 		$this->template->addContentFile(dirname(__FILE__)."/views/install.php", $this);
 		$this->template->draw();
@@ -59,7 +62,9 @@ class InstallController extends Controller {
 	 * @Action
 	 * @Logged
 	 */
-	public function nextstep() {
+	public function nextstep($selfedit = "false") {
+		// FIXME: we should take into account the $selfEdit variable!!!!
+		// TODO: first, we should receive the selfedit variable!!!!
 		$this->done = false;
 		$actionResult =  null;
 		$html = "";

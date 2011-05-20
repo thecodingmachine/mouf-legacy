@@ -140,6 +140,9 @@ foreach ($this->toProposeUpgradePackage as $incompatiblePackage) {
 	echo "This package is currently installed (or requested) in version <b>".htmlentities($incompatiblePackage->inPlaceVersion)."</b>";
 	echo "<br/>However, package ".htmlentities($incompatiblePackage->group."/".$incompatiblePackage->name."/".$incompatiblePackage->version)." requires packages ".htmlentities($incompatiblePackage->dependencyGroup)."/".htmlentities($incompatiblePackage->dependencyName)." version to be ".htmlentities($incompatiblePackage->requestedVersion);
 
+	// FIXME: This work for downward problems but not for upwards problems:
+	// This fails if the package installed is USED by a parent package
+	// In this case, we should check the compatible versions for the PARENT package....
 	$versions = $this->getCompatibleVersionsForPackage($incompatiblePackage->dependency);
 	
 	// FIXME: proposed versions are not necessarily newer, and that might be a problem.

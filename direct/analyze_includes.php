@@ -16,6 +16,7 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	require_once '../../config.php';
 	//require_once 'MoufRequire.php';
 	$mouf_base_path = ROOT_PATH;
+	$selfEdit = false;
 } else {
 	require_once '../MoufManager.php';
 	MoufManager::initMoufManager();
@@ -23,6 +24,7 @@ if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	//require_once '../MoufAdmin.php';
 	require_once '../MoufAdminComponents.php';
 	$mouf_base_path = ROOT_PATH."mouf/";
+	$selfEdit = true;
 }
 //require_once '../Moufspector.php';
 require_once '../MoufPackageManager.php';
@@ -86,6 +88,11 @@ if ($missingPackages) {
 			if ($isSent) {
 				$moufResponse = array("errorType"=>"outputStarted", "errorMsg"=>"Error! Output started on line ".$moufLine." in file ".$moufFile.", while including file $registeredFile");
 				break;
+			}
+			
+			if ($selfEdit) {
+				// TODO:check this!
+				$registeredFile = "mouf/".$registeredFile;
 			}
 			
 			$moufDeclaredClassesNew = get_declared_classes();

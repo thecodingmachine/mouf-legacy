@@ -221,6 +221,7 @@ class MoufPackageManager {
 			// Second, let's get all the dependencies that are not yet installed but part of the recursive process.
 			// Let's see if the current dependency is already installed.
 			// If yes, let's see if the version is compatible.
+			$isDependencyAlreadyPartOfInstallProcess = false;
 			foreach ($packageDependencies as $toBeInstalledPackage) {
 				/* @var $toBeInstalledPackage MoufPackage */
 				
@@ -237,9 +238,14 @@ class MoufPackageManager {
 					} else {
 						// The package is already added to the list and is furthermore compatible.
 						// We don't have to do anything, let's continue
+						
+						$isDependencyAlreadyPartOfInstallProcess = true;
 						continue;
 					}
 				}
+			}
+			if ($isDependencyAlreadyPartOfInstallProcess) {
+				continue;	
 			}
 			
 			$packageFound = false;

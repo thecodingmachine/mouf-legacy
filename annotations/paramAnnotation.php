@@ -10,6 +10,7 @@
 class paramAnnotation extends varAnnotation
 {
 	private $parameterName;
+	private $comments;
 	
     public function __construct($value)
     {
@@ -39,11 +40,8 @@ class paramAnnotation extends varAnnotation
 		$this->analyzeType($type);
 		
 		// Get the parameter name
-		$tokens = explode(" ", substr($value, $varPos));
-		$tokens2 = explode("\t", $tokens[0]);
-
-		$this->parameterName = trim($tokens2[0]);
-		
+		$this->parameterName = strtok(substr($value, $varPos), " \n\t");
+		$this->comments = strtok("");
 	}
 	
 	/**
@@ -53,6 +51,14 @@ class paramAnnotation extends varAnnotation
 	 */
 	public function getParameterName() {
 		return $this->parameterName;
+	}
+	
+	/**
+	 * Returns the comments (the part after the type and the variable name).
+	 * @return string
+	 */
+	public function getComments() {
+		return $this->comments;
 	}
 }
 

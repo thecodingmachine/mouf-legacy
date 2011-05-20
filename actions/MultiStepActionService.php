@@ -100,9 +100,9 @@ class MultiStepActionService {
 	 * @param string $instanceName
 	 * @param mixed $params (Must be serializable)
 	 */
-	public function addAction($instanceName, $params) {
+	public function addAction($instanceName, $params, $selfEdit=false) {
 		$this->loadActionsDescriptor();
-		$this->actionsDescriptorList[] = array("actionProvider"=>$instanceName, "params"=>$params, "status"=>"todo");
+		$this->actionsDescriptorList[] = array("actionProvider"=>$instanceName, "params"=>$params, "status"=>"todo", "selfEdit"=>$selfEdit);
 		$this->save();
 	}
 	
@@ -115,7 +115,7 @@ class MultiStepActionService {
 		$this->loadActionsDescriptor();
 		$array = array();
 		foreach ($this->actionsDescriptorList as $actionDescriptorArr) {
-			$array[] = new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status']);
+			$array[] = new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status'], $actionDescriptorArr['selfEdit']);
 		}
 		return $array;
 	}
@@ -130,7 +130,7 @@ class MultiStepActionService {
 		$array = array();
 		foreach ($this->actionsDescriptorList as $actionDescriptorArr) {
 			if ($actionDescriptorArr["status"] == 'todo') {
-				return new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status']);
+				return new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status'], $actionDescriptorArr['selfEdit']);
 			}
 		}
 		return null;
@@ -158,7 +158,7 @@ class MultiStepActionService {
 		$array = array();
 		foreach ($this->actionsDescriptorList as $key=>$actionDescriptorArr) {
 			if ($actionDescriptorArr["status"] == 'todo') {
-				$actionDescriptor = new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status']);
+				$actionDescriptor = new MoufActionDescriptor($actionDescriptorArr['actionProvider'], $actionDescriptorArr['params'], $actionDescriptorArr['status'], $actionDescriptorArr['selfEdit']);
 				try {
 					$actionResult = $actionDescriptor->execute();
 					if ($actionResult->getStatus() == "done") {

@@ -1115,7 +1115,9 @@ class ".$this->mainClassName." {
 		fclose($fp);
 		
 		// Analyze includes to manage autoloadable files.
-		$analyzeResults = MoufReflectionProxy::analyzeIncludes(($this == self::$defaultInstance));
+		// TODO: change the detection of the $selfEdit mode. We should have a "scope" notion.
+		$selfEdit = ($this->requireFileName == "MoufAdminRequire.php"); 
+		$analyzeResults = MoufReflectionProxy::analyzeIncludes($selfEdit);
 
 		$autoloadableFiles = array();
 		$classesFiles = array();
@@ -1650,7 +1652,95 @@ class ".$this->mainClassName." {
 	 * This function sorts the packages according to their dependency order.
 	 */
 	public function reorderPackagesDependencies() {
-		// TODO
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+				
+	}
+	
+	/**
+	 * This function checks the order of the packages, and throws an exception if there is a problem.
+	 */
+	private function checkPackageOrder() {
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		// TODO: FINISH THIS METHOD
+		$packagesXmlFiles = $this->listEnabledPackagesXmlFiles();
+
+		$errorList = array();
+		
+		foreach ($packagesXmlFiles as $packageXmlFile) {
+			$packageManager = new MoufPackageManager("../plugins");
+			$package = $packageManager->getPackage($packageXmlFile);
+			$dependencies = $package->getDependenciesAsDescriptors();
+			
+			$found = false;
+			foreach ($dependencies as $dependency) {
+				$tooLate = false;
+				/* @var $dependency MoufDependencyDescriptor */
+				// Let's test if each dependency is available, and in the first part of the dependencies.
+				foreach ($packagesXmlFiles as $packageXmlFileCheck) {
+					if ($packageXmlFileCheck == $packageXmlFile) {
+						// After current package, we are too late, we should change the order of the packages. 
+						$tooLate = true;
+					}
+					
+					$installedPackageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($packageXmlFileCheck);
+					if ($dependency->getGroup() == $installedPackageDescriptor->getGroup()
+						&& $dependency->getName() == $installedPackageDescriptor->getName()) {
+						if (!$dependency->isCompatibleWithVersion($installedPackageDescriptor->getVersion())) {
+							$errorList[] = "For package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName().", installed version is ".$installedPackageDescriptor->getVersion().".
+											However, the package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
+											requires the version of this package to be ".$dependency->getVersion().".<br/>";
+						} else {
+							if ($tooLate) {
+								$errorList[] = "The package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
+										requires the package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName()."/".$installedPackageDescriptor->getVersion().".
+										This package is indeed included, but too late! Therefore, the dependency might not be satisfied.<br/>";
+							} else {
+								$found = true;
+							}
+						}
+					}
+				}
+				
+				if (!$found) {
+					$errorList[] = "Unable to find package ".$dependency->getGroup()."/".$dependency->getName().", version ".$dependency->getVersion().".
+									This package is package requested by package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion().".<br/>";
+				} else {
+					$found = false;
+				}
+			}
+			
+		}
 	}
 	
 	/**

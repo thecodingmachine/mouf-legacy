@@ -23,33 +23,43 @@ By default, this is behaviour is disabled.',
 ));
 
 $moufManager->setPackagesByXmlFile(array (
-  0 => 'utils/log/log_interface/1.0/package.xml',
-  1 => 'html/htmlelement/1.0/package.xml',
+  -20 => 'utils/common/getvars/1.1/package.xml',
+  -10 => 'utils/log/log_interface/1.1/package.xml',
+  -5 => 'utils/common/conditioninterface/1.0/package.xml',
+  -4 => 'html/htmlelement/1.0/package.xml',
+  -3 => 'utils/export/phpexcel/1.7.5/package.xml',
+  -2 => 'utils/icons/famfamfam/1.3/package.xml',
   2 => 'html/template/BaseTemplate/1.0/package.xml',
   3 => 'html/template/SplashTemplate/1.0/package.xml',
-  4 => 'utils/i18n/fine/1.0/package.xml',
-  5 => 'mvc/splash/1.0/package.xml',
+  3.5 => 'javascript/jquery/jquery-fixedheadertable/1.3/package.xml',
+  4 => 'utils/i18n/fine/2.1/package.xml',
   6 => 'javascript/jquery/jquery/1.3.2/package.xml',
   7 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
   8 => 'javascript/jquery/jquery-ui/1.7.2/package.xml',
   9 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
-  10 => 'utils/common/getvars/1.0/package.xml',
   11 => 'javascript/jit/1.1.2/package.xml',
   12 => 'javascript/prototype/1.6.0.1/package.xml',
-  13 => 'utils/log/errorlog_logger/1.0/package.xml',
+  13 => 'utils/log/errorlog_logger/1.1/package.xml',
   14 => 'security/userservice/1.0/package.xml',
-  15 => 'security/userservice-splash/1.0/package.xml',
   16 => 'security/userfiledao/1.0/package.xml',
-  17 => 'security/simplelogincontroller/1.0/package.xml',
   18 => 'utils/cache/cache-interface/1.0/package.xml',
   19 => 'utils/cache/file-cache/1.1/package.xml',
+  20 => 'html/widgets/menu/1.0/package.xml',
+  21 => 'html/template/menus/topslidermenu/1.0/package.xml',
+  22 => 'mvc/splash-common/3.2/package.xml',
+  23 => 'mvc/splash/3.2/package.xml',
+  25 => 'security/simplelogincontroller/1.0/package.xml',
+  24 => 'security/userservice-splash/3.0/package.xml',
 ));
 
-require dirname(__FILE__).'/../plugins/mvc/splash/1.0/SplashExternalComponent.php';
+require dirname(__FILE__).'/../plugins/utils/common/conditioninterface/1.0/ConditionsExternalComponent.php';
+require dirname(__FILE__).'/../plugins/utils/i18n/fine/2.1/FineExternalComponents.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/JQueryAutoGrowExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/JQueryUIExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
+require dirname(__FILE__).'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderExternalComponent.php';
+require dirname(__FILE__).'/../plugins/mvc/splash/3.2/SplashExternalComponent.php';
 
 $moufManager->setAllVariables(array (
 ));
@@ -661,6 +671,7 @@ $moufManager->addComponentInstances(array (
         0 => 'requiredFilesValidator',
         1 => 'configCompleteValidator',
         2 => 'installProcessValidator',
+        3 => 'packageDependenciesValidator',
       ),
     ),
   ),
@@ -1483,41 +1494,76 @@ $moufManager->addComponentInstances(array (
       ),
     ),
   ),
+  'packageDependenciesValidator' => 
+  array (
+    'class' => 'MoufBasicValidationProvider',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'name' => 
+      array (
+        'value' => 'Package dependencies validator',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'url' => 
+      array (
+        'value' => 'mouf/direct/package_dependencies_validator.php',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'propagatedUrlParameters' => 
+      array (
+        'value' => 
+        array (
+          0 => 'selfedit',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
 ));
 
-$moufManager->registerComponent('validator/MoufValidatorService.php');
-$moufManager->registerComponent('validator/MoufBasicValidationProvider.php');
-$moufManager->registerComponent('controllers/DisplayPackageListInterface.php');
-$moufManager->registerComponent('MoufSearchable.php');
-$moufManager->registerComponent('MoufSearchService.php');
-$moufManager->registerComponent('actions/MoufActionDescriptor.php');
-$moufManager->registerComponent('actions/MoufActionProvider.php');
-$moufManager->registerComponent('actions/DownloadPackageAction.php');
-$moufManager->registerComponent('actions/EnablePackageAction.php');
-$moufManager->registerComponent('actions/RedirectAction.php');
-$moufManager->registerComponent('actions/MultiStepActionService.php');
-$moufManager->registerComponent('actions/InstallController.php');
-$moufManager->registerComponent('actions/MoufActionResultInterface.php');
-$moufManager->registerComponent('actions/MoufActionRedirectResult.php');
-$moufManager->registerComponent('actions/MoufActionDoneResult.php');
-$moufManager->registerComponent('controllers/MoufController.php');
-$moufManager->registerComponent('controllers/MoufRootController.php');
-$moufManager->registerComponent('controllers/ComponentsController.php');
-$moufManager->registerComponent('controllers/PackageController.php');
-$moufManager->registerComponent('controllers/MoufInstanceController.php');
-$moufManager->registerComponent('controllers/MoufDisplayGraphController.php');
-$moufManager->registerComponent('controllers/ConfigController.php');
-$moufManager->registerComponent('controllers/MoufValidatorController.php');
-$moufManager->registerComponent('controllers/MoufLoginController.php');
-$moufManager->registerComponent('controllers/PackageServiceController.php');
-$moufManager->registerComponent('controllers/RepositorySourceController.php');
-$moufManager->registerComponent('controllers/PackageDownloadController.php');
-$moufManager->registerComponent('MoufPackageDownloadService.php');
-$moufManager->registerComponent('MoufRepository.php');
-$moufManager->registerComponent('controllers/PhpInfoController.php');
-$moufManager->registerComponent('controllers/SearchController.php');
-$moufManager->registerComponent('actions/InstallUtils.php');
-$moufManager->registerComponent('load.php');
+$moufManager->registerComponent('validator/MoufValidatorService.php', 'auto');
+$moufManager->registerComponent('validator/MoufBasicValidationProvider.php', 'auto');
+$moufManager->registerComponent('controllers/DisplayPackageListInterface.php', 'auto');
+$moufManager->registerComponent('MoufSearchable.php', 'auto');
+$moufManager->registerComponent('MoufSearchService.php', 'auto');
+$moufManager->registerComponent('actions/MoufActionDescriptor.php', 'auto');
+$moufManager->registerComponent('actions/MoufActionProvider.php', 'auto');
+$moufManager->registerComponent('actions/DownloadPackageAction.php', 'auto');
+$moufManager->registerComponent('actions/EnablePackageAction.php', 'auto');
+$moufManager->registerComponent('actions/RedirectAction.php', 'auto');
+$moufManager->registerComponent('actions/MultiStepActionService.php', 'auto');
+$moufManager->registerComponent('actions/InstallController.php', 'auto');
+$moufManager->registerComponent('actions/MoufActionResultInterface.php', 'auto');
+$moufManager->registerComponent('actions/MoufActionRedirectResult.php', 'auto');
+$moufManager->registerComponent('actions/MoufActionDoneResult.php', 'auto');
+$moufManager->registerComponent('controllers/MoufController.php', 'auto');
+$moufManager->registerComponent('controllers/MoufRootController.php', 'auto');
+$moufManager->registerComponent('controllers/ComponentsController.php', 'auto');
+$moufManager->registerComponent('controllers/PackageController.php', 'auto');
+$moufManager->registerComponent('controllers/MoufInstanceController.php', 'auto');
+$moufManager->registerComponent('controllers/MoufDisplayGraphController.php', 'auto');
+$moufManager->registerComponent('controllers/ConfigController.php', 'auto');
+$moufManager->registerComponent('controllers/MoufValidatorController.php', 'auto');
+$moufManager->registerComponent('controllers/MoufLoginController.php', 'auto');
+$moufManager->registerComponent('controllers/PackageServiceController.php', 'auto');
+$moufManager->registerComponent('controllers/RepositorySourceController.php', 'auto');
+$moufManager->registerComponent('controllers/PackageDownloadController.php', 'auto');
+$moufManager->registerComponent('MoufPackageDownloadService.php', 'auto');
+$moufManager->registerComponent('MoufRepository.php', 'auto');
+$moufManager->registerComponent('controllers/PhpInfoController.php', 'auto');
+$moufManager->registerComponent('controllers/SearchController.php', 'auto');
+$moufManager->registerComponent('actions/InstallUtils.php', 'auto');
+$moufManager->registerComponent('load.php', 'auto');
 
 unset($moufManager);
 
@@ -1528,10 +1574,24 @@ unset($moufManager);
  */
 class MoufAdmin {
 	/**
-	 * @return Splash
+	 * @return TrueCondition
 	 */
-	 public static function getSplash2() {
-	 	return MoufManager::getMoufManager()->getInstance('splash2');
+	 public static function getTrue_condition() {
+	 	return MoufManager::getMoufManager()->getInstance('true.condition');
+	 }
+
+	/**
+	 * @return FalseCondition
+	 */
+	 public static function getFalse_condition() {
+	 	return MoufManager::getMoufManager()->getInstance('false.condition');
+	 }
+
+	/**
+	 * @return FinePHPArrayTranslationService
+	 */
+	 public static function getFineCommonTranslationService() {
+	 	return MoufManager::getMoufManager()->getInstance('fineCommonTranslationService');
 	 }
 
 	/**
@@ -1560,6 +1620,13 @@ class MoufAdmin {
 	 */
 	 public static function getJqueryFileTree1_01() {
 	 	return MoufManager::getMoufManager()->getInstance('jqueryFileTree-1.01');
+	 }
+
+	/**
+	 * @return HtmlMenuTopSliderHead
+	 */
+	 public static function getHtmlMenuTopSliderHead() {
+	 	return MoufManager::getMoufManager()->getInstance('htmlMenuTopSliderHead');
 	 }
 
 	/**
@@ -1955,80 +2022,10 @@ class MoufAdmin {
 	 }
 
 	/**
-	 * @return SplashMenuItem
+	 * @return MoufBasicValidationProvider
 	 */
-	 public static function getFineAdminLabelMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('fineAdminLabelMenuItem');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getFineSupportedLanguagesMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('fineSupportedLanguagesMenuItem');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getFineEnableDisableMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('fineEnableDisableMenuItem');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getFineMissingLabelsMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('fineMissingLabelsMenuItem');
-	 }
-
-	/**
-	 * @return EditLabelController
-	 */
-	 public static function getEditLabels() {
-	 	return MoufManager::getMoufManager()->getInstance('editLabels');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getSplashAdminLabelMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('splashAdminLabelMenuItem');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getSplashAdminApacheConfigItem() {
-	 	return MoufManager::getMoufManager()->getInstance('splashAdminApacheConfigItem');
-	 }
-
-	/**
-	 * @return SplashAdminApacheConfigureController
-	 */
-	 public static function getSplashApacheConfig() {
-	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getCacheInterfaceAdminLabelMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('cacheInterfaceAdminLabelMenuItem');
-	 }
-
-	/**
-	 * @return SplashMenuItem
-	 */
-	 public static function getCacheInterfacePurgeMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('cacheInterfacePurgeMenuItem');
-	 }
-
-	/**
-	 * @return PurgeCacheController
-	 */
-	 public static function getPurgeCaches() {
-	 	return MoufManager::getMoufManager()->getInstance('purgeCaches');
+	 public static function getPackageDependenciesValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('packageDependenciesValidator');
 	 }
 
 }

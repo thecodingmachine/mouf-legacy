@@ -18,6 +18,6 @@ if (isset($_REQUEST['selfedit']) && $_REQUEST['selfedit']=="true") {
 }
 
 $splashUrlPrefix = ROOT_URL."mouf/";
-require_once '../plugins/mvc/splash/1.0/splash.php';
+require_once '../plugins/mvc/splash/3.2/splash.php';
 
 ?>
