@@ -1,0 +1,17 @@
+<h1>FilterLogger</h1>
+
+<p>The FilterLogger class is a special class of logger that passes a filter on a message before logging it.
+As such, the FilterLogger class does no logging. Instead, it forwards the responsibility to log to another logger after having modified the message.</p>
+
+<p>The FilterLogger class takes in parameter any number of filters. The filters must extend the LogFilterInterface interface.</p>
+
+<p>Here are sample use cases:</p>
+<ul>
+<li>You could use a filter to discard a special log message that is repeated too often and useless.</li>
+<li>You could use a filter to automatically add meta data like categories to a log before sorting it into database (using the DB_Logger).</li>
+<li>etc...</li>
+</ul>
+
+<p>By default, the FilterLogger package comes with one preconfigured filter: EnhanceCategoryLogFilter. This filter takes the log message, keeps
+the first 30 characters (configurable), and use those characters as a category for the log. If you forward this to the DB_Logger, it will automatically
+classify the log using the category.</p>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Filter Logger</displayName>
+	<shortDescription>This package contains a class that acts as a logger. It purpose is to apply a filter on logs and forward the logs
+	to another logger that will take care of storing the log.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>LogMessage.php</require>
+		<require>LogFilterInterface.php</require>
+		<require>FilterLogger.php</require>
+		<require>EnhanceCategoryLogFilter.php</require>
+	</requires>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>>=1.1</version>
+		</dependency>
+	</dependencies>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
