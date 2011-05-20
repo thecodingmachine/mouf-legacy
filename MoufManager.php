@@ -1652,6 +1652,8 @@ class ".$this->mainClassName." {
 	public function reorderPackagesDependencies() {
 		
 		$packagesXmlFiles = $this->listEnabledPackagesXmlFiles();
+		// In case some packages are there twice (this should never happen unless the user plays with the MoufComponents file).
+		$packagesXmlFiles = array_unique($packagesXmlFiles);
 		
 		// As long as there are packages to be reordered...
 		while ($reorderDescriptor = $this->checkPackageOrder()) {
