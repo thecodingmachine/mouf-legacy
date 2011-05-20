@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/../FineMessageLanguage.php';
+//require_once dirname(__FILE__).'/../FineMessageLanguage.php';
 require_once dirname(__FILE__).'/../views/editLabel.php';
 
 /**

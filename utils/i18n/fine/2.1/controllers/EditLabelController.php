@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/../FineMessageLanguage.php';
+//require_once dirname(__FILE__).'/../FineMessageLanguage.php';
 require_once dirname(__FILE__).'/../views/editLabel.php';
 
 /**
@@ -511,7 +511,7 @@ class EditLabelController extends Controller implements MoufSearchable {
 	private function stripAccents($string){
 		$string = utf8_decode($string);
 		$string = strtr($string,
-						utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'),
+						utf8_decode('Ã Ã¡Ã¢Ã£Ã¤Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã±Ã²Ã³Ã´ÃµÃ¶Ã¹ÃºÃ»Ã¼Ã½Ã¿Ã€Ã�Ã‚ÃƒÃ„Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃ�ÃŽÃ�Ã‘Ã’Ã“Ã”Ã•Ã–Ã™ÃšÃ›ÃœÃ�'),
 						'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
 		return utf8_encode($string);
 	}
