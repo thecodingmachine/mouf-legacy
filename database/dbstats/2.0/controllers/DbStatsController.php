@@ -24,8 +24,8 @@ class DbStatsController extends AbstractMoufInstanceController {
 	 * This action generates the DAOs and Beans for the TDBM service passed in parameter. 
 	 * 
 	 * @Action
-	 * @param $name
-	 * @param $selfedit
+	 * @param string $name
+	 * @param string $selfedit
 	 */
 	public function generate($name, $dropIfExist = "false", $selfedit="false") {
 		$this->initController($name, $selfedit);
