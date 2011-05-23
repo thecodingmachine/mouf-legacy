@@ -157,6 +157,10 @@ class DbLogger implements LogInterface {
 			$additional_data = $additional_parameters['data'];
 		}
 		
+
+		// In case we use triggers (using the LogStats), we must ensure the trigger is performed in a transaction.
+		// Therefore, we start a transaction (even if this seems completely useless for a MyISAM table).
+		$this->dbConnection->beginTransaction();
 		
 		$sql = "INSERT INTO ".$this->dbConnection->escapeDBItem($this->tableName)." (message, trace, log_level, server, category1, category2, category3, additional_data, client, file, line, class, function)
 			VALUES (".$this->dbConnection->quoteSmart($msg).", ".
@@ -174,7 +178,7 @@ class DbLogger implements LogInterface {
 					$this->dbConnection->quoteSmart($function).")";
 		
 		$this->dbConnection->exec($sql);
-		
+		$this->dbConnection->commit();
 	}
 }
 

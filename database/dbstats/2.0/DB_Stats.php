@@ -161,7 +161,6 @@ class DB_Stats {
 			$this->dbConnection->exec($sql);
 			$sql = "CREATE TRIGGER $trigger_name AFTER INSERT ON `".$this->sourceTable."` \n";
 			$sql .= "  FOR EACH ROW BEGIN \n";
-			
 			$sql .= "    DECLARE myRowCount int default 0;\n";
 			
 			foreach ($columnsArrArr as $columns) {
@@ -169,7 +168,6 @@ class DB_Stats {
 				$sql .= $this->onInsertSqlStatement($columns, $filterColumns, $columnsArrArr, $valuesArr);
 				
 			}
-			
 			$sql .= "  END; \n";
 			//echo $sql;
 			error_log($sql);
@@ -195,7 +193,6 @@ class DB_Stats {
 				$sql .= $this->onInsertSqlStatement($columns, $filterColumns, $columnsArrArr, $valuesArr);
 
 			}
-			
 			$sql .= "  END; \n";
 			//echo $sql;
 			$this->dbConnection->exec($sql);
@@ -210,7 +207,7 @@ class DB_Stats {
 			$this->dbConnection->exec($sql);
 			$sql = "CREATE TRIGGER $trigger_name BEFORE DELETE ON `".$this->sourceTable."` \n";
 			$sql .= "  FOR EACH ROW BEGIN \n";
-						
+			
 			foreach ($columnsArrArr as $columns) {
 				// First, let's substract the old row
 				$sql .= $this->onDeleteSqlStatement($columns, $filterColumns, $columnsArrArr, $valuesArr);
