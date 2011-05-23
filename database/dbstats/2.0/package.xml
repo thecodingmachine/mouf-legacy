@@ -11,6 +11,11 @@
 			<name>dbconnection</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>mouf_helpers</name>
+			<version>>=1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>DB_Stats.php</require>

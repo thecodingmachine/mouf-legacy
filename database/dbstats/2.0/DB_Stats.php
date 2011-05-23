@@ -9,6 +9,7 @@ require_once('DB_Dimension.php');
  *
  * @Component
  * @ExtendedAction {"name":"Generate stat table", "url":"mouf/dbStatsAdmin/", "default":false}
+ * @ExtendedAction {"name":"Recompute stat table", "url":"mouf/dbStatsAdmin/recomputeForm", "default":false}
  */
 class DB_Stats {
 	

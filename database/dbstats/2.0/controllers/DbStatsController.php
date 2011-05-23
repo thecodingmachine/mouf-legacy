@@ -40,6 +40,34 @@ class DbStatsController extends AbstractMoufInstanceController {
 		header("Location: ".ROOT_URL."mouf/instance/?name=".urlencode($name)."&selfedit=".$selfedit);
 	}
 	
+	/**
+	 * Displays the form asking if the user wants to recompute the stats table.
+	 *
+	 * @Action
+	 * @Logged
+	 */
+	public function recomputeForm($name, $selfedit="false") {
+		$this->initController($name, $selfedit);
+		
+		$this->template->addContentFile(dirname(__FILE__)."/../views/recompute.php", $this);
+		$this->template->draw();
+	}
+	
+	/**
+	 * This action generates the DAOs and Beans for the TDBM service passed in parameter. 
+	 * 
+	 * @Action
+	 * @param string $name
+	 * @param string $selfedit
+	 */
+	public function recompute($name, $transaction = "false", $selfedit="false") {
+		$this->initController($name, $selfedit);
+
+		MoufProxy::getInstance($name, $selfedit=="true")->fillTable($transaction=="true");
+		
+		header("Location: ".ROOT_URL."mouf/instance/?name=".urlencode($name)."&selfedit=".$selfedit);
+	}
+	
 	private static function performRequest($url) {
 		// preparation de l'envoi
 		$ch = curl_init();
