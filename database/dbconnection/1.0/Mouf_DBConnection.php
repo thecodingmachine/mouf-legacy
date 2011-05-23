@@ -505,6 +505,9 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool true on success, false on failure.
 	 */
 	public function beginTransaction() {
+		if ($this->dbh == null) {
+			$this->connect();
+		}
 		$this->_hasActiveTransaction = $this->dbh->beginTransaction();
 		return $this->_hasActiveTransaction;
 	}
@@ -515,6 +518,9 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool true on success, false on failure.
 	 */
 	public function commit() {
+		if ($this->dbh == null) {
+			$this->connect();
+		}
 		$this->_hasActiveTransaction = false;
 		$this->dbh->commit();
 	}
