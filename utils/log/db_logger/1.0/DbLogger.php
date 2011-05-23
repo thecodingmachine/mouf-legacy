@@ -137,17 +137,17 @@ class DbLogger implements LogInterface {
 			$traceStr .= $additional_parameters['trace'];
 		}
 		
-		$category1 = null;
+		$category1 = "";
 		if (isset($additional_parameters['category1'])) {
 			$category1 = $additional_parameters['category1'];
 		}
 		
-		$category2 = null;
+		$category2 = "";
 		if (isset($additional_parameters['category2'])) {
 			$category2 = $additional_parameters['category2'];
 		}
 		
-		$category3 = null;
+		$category3 = "";
 		if (isset($additional_parameters['category3'])) {
 			$category3 = $additional_parameters['category3'];
 		}
