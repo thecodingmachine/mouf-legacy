@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Logger Stats</displayName>
+	<shortDescription>This package contains everything needed to aggregate database into stats that can be viewed and sorted.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<requires>
+	</requires>
+	<adminRequires>
+		<require>controllers/LogStatsInstallController.php</require>
+		<require>LogStatsAdmin.php</require>
+	</adminRequires>
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>mouf_helpers</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>db_logger</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>dbstats</name>
+			<version>>=2.0</version>
+		</dependency>
+	</dependencies>
+	<install>
+		<url>mouf/logstatsinstall/</url>
+	</install>
+</package>

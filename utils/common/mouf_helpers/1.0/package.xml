@@ -9,6 +9,7 @@
 	</dependencies>
 	<adminRequires>
 		<require>MoufHtmlHelper.php</require>
+		<require>MoufProxyInstance.php</require>
 		<require>MoufProxy.php</require>
 	</adminRequires>
 </package>

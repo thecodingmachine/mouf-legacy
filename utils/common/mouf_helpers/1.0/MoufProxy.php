@@ -6,6 +6,27 @@
  *
  */
 class MoufProxy {
+
+	/**
+	 * Returns a proxy instance of an object.
+	 * Any function call to the instance will be executed in a separate process.
+	 * This is very useful to call methods on objects living in the "application" scope when you are in the "admin" scope.
+	 * 
+	 * For instance:
+	 * <pre>
+	 * 	$myProxyObject = MoufProxy('myInstance');
+	 * 	$result = $myProxyObject->myMethod();
+	 * </pre>
+	 * 
+	 * Warning! Each function call is executed in a different process.
+	 * This is slow, and context is not kept. This means using setters or getters is mostly useless.
+	 * 
+	 * @param string $name
+	 * @param bool $selfEdit
+	 */
+	public static function getInstance($name, $selfEdit = false) {
+		return new MoufProxyInstance($name, $selfEdit);
+	}
 	
 	/**
 	 * Performs a request to a Mouf PHP file.
