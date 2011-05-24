@@ -170,7 +170,7 @@ class DB_Stats {
 			}
 			$sql .= "  END; \n";
 			//echo $sql;
-			error_log($sql);
+			//error_log($sql);
 			$this->dbConnection->exec($sql);
 		}
 
