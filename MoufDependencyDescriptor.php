@@ -38,12 +38,22 @@ class MoufDependencyDescriptor {
 	private $group;
 	
 	/**
+	 * The scope that should be used to load the package.
+	 * Can be one of "app" or "admin".
+	 * Defaults to "app".
+	 * If "admin" scope is used, the package files will be loaded in the admin part of the application.
+	 * 
+	 * @var string
+	 */
+	private $scope;
+	
+	/**
 	 * The minimum revision number of the package.
 	 * 
 	 * @var int
 	 */
 	private $revision;
-	
+		
 	/**
 	 * The URL of the repository this package can be found in.
 	 * Please note this does not mean the package will be downloaded from that repository.
@@ -76,10 +86,11 @@ class MoufDependencyDescriptor {
 	 * @param string $name
 	 * @param string $version
 	 */
-	public function __construct($group, $name, $version, $revision = 0, $repository = null) {
+	public function __construct($group, $name, $version, $scope="app", $revision = 0, $repository = null) {
 		$this->version = $version;
 		$this->name = $name;
 		$this->group = $group;
+		$this->scope = $scope;
 		$this->revision = $revision;
 		$this->repository = $repository;
 		
@@ -153,6 +164,15 @@ class MoufDependencyDescriptor {
 	 */
 	public function getGroup() {
 		return $this->group;
+	}
+	
+	/**
+	 * Returns the scope of the package
+	 *
+	 * @return string
+	 */
+	public function getScope() {
+		return $this->scope;
 	}
 	
 	/**
@@ -242,6 +262,7 @@ class MoufDependencyDescriptor {
 		$array = array("version"=>$this->version,
 			"name"=>$this->name,
 			"group"=>$this->group,
+			"scope"=>$this->scope,
 			"revision"=>$this->revision,
 			"repository"=>$this->repository);
 
@@ -258,7 +279,7 @@ class MoufDependencyDescriptor {
 	 * @return MoufDependencyDescriptor
 	 */
 	public static function fromJsonArray($array) {
-		return new MoufDependencyDescriptor($array['group'], $array['name'], $array['version'], $array['revision'], $array['repository']);
+		return new MoufDependencyDescriptor($array['group'], $array['name'], $array['version'], $array['scope'], $array['revision'], $array['repository']);
 	}
 	
 }

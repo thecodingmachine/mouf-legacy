@@ -146,40 +146,63 @@ class MoufPackageManager {
 	 * The most recent package possible is chosen.
 	 *
 	 * @param MoufPackage $package
-	 * @param MoufManager $moufManager
-	 * @param array<string, MoufPackage> $upgradeList List of packages that will be upgraded. The key is [group]/[name]
+	 * @param string $scope The scope the package is to be included (can be "app" for normal inclusion, or "admin" if the package should be required on the admin side).
+	 * @param array<scope, array<string, MoufPackage>> $upgradeList List of packages that will be upgraded. The first key is the scope (app[admin), the second key is the [group]/[name]
 	 * @return array<MoufPackage>
 	 */
-	public function getDependencies(MoufPackage $package, MoufManager $moufManager, array $upgradeList = array()) {
+	public function getDependencies(MoufPackage $package, $scope, array $upgradeList = array()) {
 		$orderedPackageList = $this->getOrderedPackagesList();
+		
+		if ($scope == MoufManager::SCOPE_APP) {
+			$moufManager = MoufManager::getMoufManagerHiddenInstance(); 		
+		} else {
+			$moufManager = MoufManager::getMoufManager();
+		}
+		
 		$packageDownloadService = MoufAdmin::getPackageDownloadService();
 		$packageDownloadService->setMoufManager($moufManager);
 		
-		return $this->getRecursiveDependencies($package, array(), $moufManager, $orderedPackageList, $packageDownloadService, $upgradeList);
+		return $this->getRecursiveDependencies($package, $scope, array(), /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
 	}
 
 	/**
 	 * Recurse through the dependencies.
 	 *
 	 * @param MoufPackage $package
-	 * @param array<MoufPackage> $packageDependencies
+	 * @param string $scope The scope the package is to be included (can be "app" for normal inclusion, or "admin" if the package should be required on the admin side).
+	 * @param array[$scope]<MoufPackage> $packageDependencies
 	 * @param MoufManager $moufManager
 	 * @param MoufGroupDescriptor $orderedPackageList
-	 * @param array<string, MoufPackage> $upgradeList List of packages that will be upgraded. The key is [group]/[name] 
-	 * @return array<MoufPackage>
+	 * @param array[$scope]<string, MoufPackage> $upgradeList List of packages that will be upgraded. The key is [group]/[name] 
+	 * @return array[$scope]<MoufPackage>
 	 */	
-	private function getRecursiveDependencies(MoufPackage $package, 
+	private function getRecursiveDependencies(MoufPackage $package,
+			$scope, 
 			array $packageDependencies, 
-			MoufManager $moufManager, 
+			//MoufManager $moufManager, 
 			MoufGroupDescriptor $orderedPackageList, 
 			MoufPackageDownloadService $packageDownloadService,
 			array $upgradeList) {
 
 		$dependencies = $package->getDependenciesAsDescriptors();
 		
+		
 		// For each dependency of the package
 		foreach ($dependencies as $dependency) {
 			/* @var $dependency MoufDependencyDescriptor */
+			
+			// First, if current scope is admin and dependency scope is admin, let's just ignore. There is no such thing as an admin for the admin scope.
+			if ($dependency->getScope() == MoufManager::SCOPE_ADMIN && $scope == MoufManager::SCOPE_ADMIN) {
+				continue;
+			}
+			
+			if ($scope == MoufManager::SCOPE_APP && $dependency->getScope() == MoufManager::SCOPE_APP) {
+				$moufManager = MoufManager::getMoufManagerHiddenInstance();
+				$dependencyRealScope = MoufManager::SCOPE_APP;
+			} else {
+				$moufManager = MoufManager::getMoufManager();
+				$dependencyRealScope = MoufManager::SCOPE_ADMIN;
+			}
 			
 			// The list of exceptions encountered during the search for this dependency.
 			$encounteredExceptions = array();
@@ -190,9 +213,9 @@ class MoufPackageManager {
 			if ($currentEnabledVersion !== null) {
 				// A version of the package is already enabled.
 				// Will we keep this package or are we planning to updgrade it?
-				if (isset($upgradeList[$dependency->getGroup()."/".$dependency->getName()])) {
+				if (isset($upgradeList[$dependencyRealScope][$dependency->getGroup()."/".$dependency->getName()])) {
 					// We have already planned to upgrade this package. Let's use this version instead.
-					$upgradedPackage = $upgradeList[$dependency->getGroup()."/".$dependency->getName()];
+					$upgradedPackage = $upgradeList[$dependencyRealScope][$dependency->getGroup()."/".$dependency->getName()];
 					/* @var $upgradedPackage MoufPackage */
 					$currentEnabledVersion = $upgradedPackage->getDescriptor()->getVersion();
 				}
@@ -210,7 +233,7 @@ class MoufPackageManager {
 					// Problem: this is more complex, as if the package upgraded is used by other packages, the other packages might need to be upgraded too!
 					// We might want instead to do things manually: if such an exception is used at the top level, we might want to propose
 					// upgrading to it (manually in the UI), then we run again with the 2 packages, and so on until we have all the packages updated.
-					throw new MoufIncompatiblePackageException($package, $dependency, $currentEnabledVersion, true);
+					throw new MoufIncompatiblePackageException($package, $dependency, $currentEnabledVersion, true, $dependencyRealScope);
 				} else {
 					// The package is already installed, and already compatible.
 					// Let's continue
@@ -222,25 +245,27 @@ class MoufPackageManager {
 			// Let's see if the current dependency is already installed.
 			// If yes, let's see if the version is compatible.
 			$isDependencyAlreadyPartOfInstallProcess = false;
-			foreach ($packageDependencies as $toBeInstalledPackage) {
-				/* @var $toBeInstalledPackage MoufPackage */
-				
-				$toBeInstalledPackageDescriptor = $toBeInstalledPackage->getDescriptor();
-				// Is the package already part of the list of packages to be installed?
-				if ($toBeInstalledPackageDescriptor->getGroup() == $dependency->getGroup()
-					&& $toBeInstalledPackageDescriptor->getName() == $dependency->getName()) {
-				
-					if (!$dependency->isCompatibleWithVersion($toBeInstalledPackageDescriptor->getVersion())) {
-						// We are incompatible!
-						// Let's throw an Exception (that will be catched and correctly displayed by the controller or be catched by the recursive mecanism).
-						// Note: this is not a best practice to use Exceptions in the recursion, but this is very practical.
-						throw new MoufIncompatiblePackageException($package, $dependency, $toBeInstalledPackageDescriptor->getVersion(), false);
-					} else {
-						// The package is already added to the list and is furthermore compatible.
-						// We don't have to do anything, let's continue
-						
-						$isDependencyAlreadyPartOfInstallProcess = true;
-						continue;
+			if (isset($packageDependencies[$dependencyRealScope])) {
+				foreach ($packageDependencies[$dependencyRealScope] as $toBeInstalledPackage) {
+					/* @var $toBeInstalledPackage MoufPackage */
+					
+					$toBeInstalledPackageDescriptor = $toBeInstalledPackage->getDescriptor();
+					// Is the package already part of the list of packages to be installed?
+					if ($toBeInstalledPackageDescriptor->getGroup() == $dependency->getGroup()
+						&& $toBeInstalledPackageDescriptor->getName() == $dependency->getName()) {
+					
+						if (!$dependency->isCompatibleWithVersion($toBeInstalledPackageDescriptor->getVersion())) {
+							// We are incompatible!
+							// Let's throw an Exception (that will be catched and correctly displayed by the controller or be catched by the recursive mecanism).
+							// Note: this is not a best practice to use Exceptions in the recursion, but this is very practical.
+							throw new MoufIncompatiblePackageException($package, $dependency, $toBeInstalledPackageDescriptor->getVersion(), false, $dependencyRealScope);
+						} else {
+							// The package is already added to the list and is furthermore compatible.
+							// We don't have to do anything, let's continue
+							
+							$isDependencyAlreadyPartOfInstallProcess = true;
+							continue;
+						}
 					}
 				}
 			}
@@ -274,14 +299,14 @@ class MoufPackageManager {
 					
 					// Let's recurse
 					try {
-						$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList, $packageDownloadService, $upgradeList);
+						$packageDependencies = $this->getRecursiveDependencies($myPackage, $scope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
 					} catch (Exception $ex) {
 						// If there is a problem, we try the next version.
 						$encounteredExceptions[] = $ex; 
 						continue;
 					}
 					
-					$packageDependencies[] = $toAddPackage;
+					$packageDependencies[$dependencyRealScope][] = $toAddPackage;
 					
 					// If there is no problem, we go to the next dependency for the package $package.
 					$foundCorrectVersion = true;
@@ -316,14 +341,16 @@ class MoufPackageManager {
 								
 								// Let's recurse
 								try {
-									$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList, $packageDownloadService, $upgradeList);
+									$packageDependencies = $this->getRecursiveDependencies($myPackage, $scope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
 								} catch (MoufIncompatiblePackageException $ex) {
 									// If there is a problem, we try the next version.
 									$encounteredExceptions[] = $ex; 
 									continue;
 								}
 	
-								$newPackageDependencies[] = $toAddPackage;
+								// TODO: the line below has been replaced with line below, check this is correct. 
+								//$newPackageDependencies[$dependencyRealScope][] = $toAddPackage;
+								$packageDependencies[$dependencyRealScope][] = $toAddPackage;
 								
 								// If there is no problem, we go to the next dependency for the package $package.
 								$foundCorrectVersion = true;
@@ -356,292 +383,6 @@ class MoufPackageManager {
 	}
 	
 	
-//	/**
-//	 * Recurse through the dependencies.
-//	 *
-//	 * @param MoufPackage $package
-//	 * @param array<MoufPackage> $packageDependencies
-//	 * @param MoufManager $moufManager
-//	 * @param MoufGroupDescriptor $orderedPackageList
-//	 * @return array<MoufPackage>
-//	 */	
-//	private function getRecursiveDependencies(MoufPackage $package, 
-//			array $packageDependencies, 
-//			MoufManager $moufManager, 
-//			MoufGroupDescriptor $orderedPackageList, 
-//			MoufPackageDownloadService $packageDownloadService) {
-//
-//		$dependencies = $package->getDependenciesAsDescriptors();
-//		
-//		// For each dependency of the package
-//		foreach ($dependencies as $dependency) {
-//			/* @var $dependency MoufDependencyDescriptor */
-//			
-//			// The list of exceptions encountered during the search for this dependency.
-//			$encounteredExceptions = array();
-//			
-//			// First, is the dependency already installed? If yes, is the version compatible with the requested version?
-//			$currentEnabledVersion = $moufManager->getVersionForEnabledPackage($dependency->getGroup(), $dependency->getName());
-//			if ($currentEnabledVersion !== null) {
-//				// A version of the package is already enabled.
-//				// Is it compatible with the package we want to enable?
-//				if (!$dependency->isCompatibleWithVersion($currentEnabledVersion)) {
-//					// We are incompatible!
-//					// Let's throw an Exception (that will be catched and correctly displayed by the controller or be catched by the recursive mecanism).
-//					// Note: this is not a best practice to use Exceptions in the recursion, but this is very practical.
-//					
-//					// TODO: before issuing an incompatible package exception, we might want to propose upgrading the package of the currently enabled version.
-//					// We might do this in 2 passes: one trying to do everything without upgrades, and the next one trying to authorize upgrades (that
-//					// should be signaled to the user, of course!)
-//					// We should also completely disallow downgrades.
-//					// Problem: this is more complex, as if the package upgraded is used by other packages, the other packages might need to be upgraded too!
-//					// We might want instead to do things manually: if such an exception is used at the top level, we might want to propose
-//					// upgrading to it (manually in the UI), then we run again with the 2 packages, and so on until we have all the packages updated.
-//					throw new MoufIncompatiblePackageException($package->getDescriptor()->getGroup(), $package->getDescriptor()->getName(), $dependency->getGroup(), $dependency->getName(), $currentEnabledVersion, $dependency->getVersion(), true);
-//				} else {
-//					// The package is already installed, and already compatible.
-//					// Let's continue
-//					continue;
-//				}
-//			}
-//			
-//			// Second, let's get all the dependencies that are not yet installed but part of the recursive process.
-//			// Let's see if the current dependency is already installed.
-//			// If yes, let's see if the version is compatible.
-//			foreach ($packageDependencies as $toBeInstalledPackage) {
-//				/* @var $toBeInstalledPackage MoufPackage */
-//				
-//				$toBeInstalledPackageDescriptor = $toBeInstalledPackage->getDescriptor();
-//				// Is the package already part of the list of packages to be installed?
-//				if ($toBeInstalledPackageDescriptor->getGroup() == $dependency->getGroup()
-//					&& $toBeInstalledPackageDescriptor->getName() == $dependency->getName()) {
-//				
-//					if (!$dependency->isCompatibleWithVersion($toBeInstalledPackageDescriptor->getVersion())) {
-//						// We are incompatible!
-//						// Let's throw an Exception (that will be catched and correctly displayed by the controller or be catched by the recursive mecanism).
-//						// Note: this is not a best practice to use Exceptions in the recursion, but this is very practical.
-//						throw new MoufIncompatiblePackageException($package->getDescriptor()->getGroup(), $package->getDescriptor()->getName(), $dependency->getGroup(), $dependency->getName(), $toBeInstalledPackageDescriptor->getVersion(), $dependency->getVersion(), false);
-//					} else {
-//						// The package is already added to the list and is furthermore compatible.
-//						// We don't have to do anything, let's continue
-//						continue;
-//					}
-//				}
-//			}
-//			
-//			$packageFound = false;
-//			// Let's get all the LOCAL versions available, and see if one version matches the dependency requirements.
-//			$versions = $this->getVersionsForPackage($dependency->getGroup(), $dependency->getName(), $orderedPackageList);
-//			// Note: the $versions are sorted in reverse order, which is exactly what we need.
-//			$foundCorrectVersion = false;
-//			if (!empty($versions->packages)) {
-//				$packageFound = true;
-//			}
-//			foreach ($versions->packages as $version=>$myPackage) {
-//				/* @var $myPackage MoufPackage */
-//				
-//				// Let's test each version.
-//				if ($dependency->isCompatibleWithVersion($version)) {
-//					// We found a compatible version! Yeah!
-//					$newPackageDependencies = $packageDependencies;
-//					$toAddPackage = $this->createPackage($myPackage->getDescriptor()->getGroup()."/".$myPackage->getDescriptor()->getName()."/".$version."/package.xml");
-//					//$newPackageDependencies[] = $toAddPackage;
-//					
-//					// PREVIOUS IDEA: Add the package to the beginning of the array
-//					// 	NOTE: is this really ok? This package might depend on a package that is in the $newPackageDependencies dependency list!!!!
-//					//  So we will add the package AFTER we find the recursive dependencies.
-//					//  TODO: add a defensive mechanism to avoid recursions (a package that refers itself or a package that refers a second package that refers the first, etc...)
-//					//array_unshift($newPackageDependencies, $toAddPackage);
-//					
-//					// Let's recurse
-//					try {
-//						$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList, $packageDownloadService);
-//					} catch (Exception $ex) {
-//						// If there is a problem, we try the next version.
-//						$encounteredExceptions[] = $ex; 
-//						continue;
-//					}
-//					
-//					$packageDependencies[] = $toAddPackage;
-//					
-//					// If there is no problem, we go to the next dependency for the package $package.
-//					$foundCorrectVersion = true;
-//					break;
-//				}
-//			}
-//			
-//			if ($foundCorrectVersion == false) {
-//				// If we are here, we failed finding a compatible version locally...
-//				// Let's try again, but using the repositories.
-//				$repositories = $packageDownloadService->getRepositories();
-//				
-//				foreach ($repositories as $repository) {
-//					/* @var $repository MoufRepository  */
-//					
-//					// Let's get all the REMOTE versions available for current explored repository, and see if one version matches the dependency requirements.
-//					$versions = $repository->getVersionsForPackage($dependency->getGroup(), $dependency->getName());
-//					// Note: the $versions are sorted in reverse order, which is exactly what we need.
-//					if (!empty($versions->packages)) {
-//						$packageFound = true;
-//					}
-//					if ($versions != null) {
-//						foreach ($versions->packages as $version=>$myPackage) {
-//							/* @var $myPackage MoufPackage */
-//							
-//							// Let's test each version.
-//							if ($dependency->isCompatibleWithVersion($version)) {
-//								// We found a compatible version! Yeah!
-//								$newPackageDependencies = $packageDependencies;
-//	
-//								$toAddPackage = $versions->getPackage($version);
-//								
-//								// Let's recurse
-//								try {
-//									$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList, $packageDownloadService);
-//								} catch (MoufIncompatiblePackageException $ex) {
-//									// If there is a problem, we try the next version.
-//									$encounteredExceptions[] = $ex; 
-//									continue;
-//								}
-//	
-//								$newPackageDependencies[] = $toAddPackage;
-//								
-//								// If there is no problem, we go to the next dependency for the package $package.
-//								$foundCorrectVersion = true;
-//								break;
-//							}
-//						}
-//					}
-//					if ($foundCorrectVersion) {
-//						break;
-//					}
-//				}
-//
-//				// We couldn't find a compatible version locally or remotely, let's throw an exception.
-//				if (!$foundCorrectVersion) {
-//					if ($packageFound) {
-//						// Let's throw an exception.
-//						throw new MoufProblemInDependencyPackageException($package->getDescriptor()->getGroup(), $package->getDescriptor()->getName(), $package->getDescriptor()->getVersion(), $encounteredExceptions);
-//					} else {
-//						throw new MoufPackageNotFoundException($package->getDescriptor()->getGroup(), $package->getDescriptor()->getName(), $dependency->getGroup(), $dependency->getName(), $dependency->getVersion());
-//					}
-//				}
-//			}
-//			
-//		}
-//		
-//		// If we are here, there are no dependencies to the package, or they are all satisfied.
-//		// Let's return the list of dependencies.
-//		return $packageDependencies;
-//		
-//	}
-
-	
-/*	private function getRecursiveDependencies(MoufPackage $package, array $packageDependencies, MoufManager $moufManager, MoufGroupDescriptor $orderedPackageList) {		
-		$dependencies = $package->getDependenciesAsDescriptors();		
-		
-		// For each dependency of the package
-		foreach ($dependencies as $dependency) {
-			/* @var $dependency MoufDependencyDescriptor *-/
-			
-			// First, is the dependency already installed? If yes, is the version compatible with the requested version?
-			$currentEnabledVersion = $moufManager->getVersionForEnabledPackage($dependency->getGroup(), $dependency->getName());
-			if ($currentEnabledVersion !== null) {
-				// A version of the package is already enabled.
-				// Is it compatible with the package we want to enable?
-				if (!$dependency->isCompatibleWithVersion($currentEnabledVersion)) {
-					// We are incompatible!
-					// Let's throw an Exception (that will be catched and correctly displayed by the controller or be catched by the recursive mecanism).
-					// Note: this is not a best practice to use Exceptions in the recursion, but this is very practical.
-					throw new MoufIncompatiblePackageException($dependency->getGroup(), $dependency->getName(), $currentEnabledVersion, $dependency->getVersion(), true);
-				} else {
-					// The package is already installed, and already compatible.
-					// Let's return
-					return $packageDependencies;
-				}
-			}
-			
-			// Second, let's get all the dependencies that are not yet installed but part of the recursive process.
-			// Let's see if the current dependency is already installed.
-			// If yes, let's see if the version is compatible.
-			foreach ($packageDependencies as $toBeInstalledPackage) {
-				/* @var $toBeInstalledPackage MoufPackage *-/
-				
-				$toBeInstalledPackageDescriptor = $toBeInstalledPackage->getDescriptor();
-				// If the package already part of the list of packages to be installed?
-				if ($toBeInstalledPackageDescriptor->getGroup() == $package->getDescriptor()->getGroup()
-					&& $toBeInstalledPackageDescriptor->getName() == $package->getDescriptor()->getName()) {
-				
-					if (!$dependency->isCompatibleWithVersion($toBeInstalledPackageDescriptor->getVersion())) {
-						// We are incompatible!
-						// Let's throw an Exception (that will be catched and correctly displayed by the controller or be catched by the recursive mecanism).
-						// Note: this is not a best practice to use Exceptions in the recursion, but this is very practical.
-						throw new MoufIncompatiblePackageException($dependency->getGroup(), $dependency->getName(), $toBeInstalledPackageDescriptor->getVersion(), $dependency->getVersion(), false);
-					} else {
-						// The package is already added to the list and is furthermore compatible.
-						// We don't have to do anything.
-						return $packageDependencies;
-					}
-				}
-			}
-			
-			// Let's get all versions available, and see if one version matches the dependency requirements.
-			$versions = $this->getVersionsForPackage($dependency->getGroup(), $dependency->getName(), $orderedPackageList);
-			// Note: the $versions are sorted in reverse order, which is exactly what we need.
-			$foundCorrectVersion = false;
-			foreach ($versions->packages as $version=>$myPackage) {
-				/* @var $myPackage MoufPackage *-/
-				
-				// Let's test each version.
-				if ($dependency->isCompatibleWithVersion($version)) {
-					// We found a compatible version! Yeah!
-					$newPackageDependencies = $packageDependencies;
-					$toAddPackage = $this->createPackage($myPackage->getDescriptor()->getGroup()."/".$myPackage->getDescriptor()->getName()."/".$version."/package.xml");
-					$newPackageDependencies[] = $toAddPackage;
-					
-					// Let's recurse
-					try {
-						$packageDependencies = $this->getRecursiveDependencies($myPackage, $newPackageDependencies, $moufManager, $orderedPackageList);
-					} catch (MoufIncompatiblePackageException $ex) {
-						// If there is a problem, we try the next version. 
-						continue;
-					}
-					
-					// If there is no problem, we go to the next dependency for the package $package.
-					$foundCorrectVersion = true;
-					break;
-				}
-			}
-			
-			if ($foundCorrectVersion == false) {
-				// If we are here, we failed finding a compatible version...
-				// Let's throw an exception.
-				
-				throw new MoufIncompatiblePackageException($group, $name, null, $dependency->getVersion(), false);
-			}
-			
-		}
-		
-		// If we are here, there are no dependencies to the package, or they are all satisfied.
-		// Let's return the list of dependencies.
-		return $packageDependencies;
-		
-//		// FIXME: impossible, maintenant que nous avons à faire à un dependencyDescriptor qui contient plusieurs versions
-//		foreach ($descriptors as $descriptor) {
-//			$fileName = $descriptor->getPackageXmlPath();
-//			$additionalPackage = $this->getPackage($fileName);
-//			if (array_search($additionalPackage, $packageDependencies)) {
-//				continue;
-//			}
-//			
-//			$packageDependencies = $this->getRecursiveDependencies($additionalPackage, $packageDependencies);
-//			$packageDependencies[] = $additionalPackage;
-//		}
-//		return $packageDependencies;
-	}
-*/
-	
-	
 	/**
 	 * Returns a MoufPackageVersionsContainer that contains all the available versions for the package passed in parameter.
 	 * 
@@ -658,15 +399,6 @@ class MoufPackageManager {
 		return $packageGroup->getPackageContainer($name);
 	}
 	
-	/**
-	 * Returns the list of children (packages that depend upon this package (recursively) for this package.
-	 *
-	 * @param MoufPackage $package
-	 * @return array<MoufPackage>
-	 */
-	/*public function getChildren(MoufPackage $package) {
-		return $this->getRecursiveChildren($package, array());
-	}*/
 	
 	/**
 	 * Returns the list of children (packages that depend upon this package (recursively) for this package.
@@ -975,12 +707,21 @@ class MoufPackageManager {
 	 * WARNING! The list of packages is returned as a list of MoufIncompatiblePackageException. This value is RETURNED, not THROWN. 
 	 * 
 	 * @param MoufPackage $moufPackage
-	 * @param array<MoufPackage> $updateList
-	 * @param MoufManager $moufManager
+	 * @param array<scope, <group/name, MoufPackage>> $updateList
+	 * @param string $scope
 	 * @return array<MoufIncompatiblePackageException>
 	 */
-	public function getParentPackagesRequiringUpdate(MoufPackage $moufPackage, array $updateList, MoufManager $moufManager) {
-		$parentPackages = $this->getInstalledPackagesUsingThisPackage($moufPackage, $moufManager, $updateList);
+	public function getParentPackagesRequiringUpdate(MoufPackage $moufPackage, array $updateList, $scope) {
+
+		if ($scope == MoufManager::SCOPE_APP) {
+			$moufManager = MoufManager::getMoufManagerHiddenInstance();
+		} else {
+			$moufManager = MoufManager::getMoufManager();
+		}
+		
+		
+		// FIXME: when in admin, some packages from the app scope might require us. We should detect that too.
+		$parentPackages = $this->getInstalledPackagesUsingThisPackage($moufPackage, $moufManager, (isset($updateList[$moufManager->getScope()]))?$updateList[$moufManager->getScope()]:array());
 		$toUpdateParentPackages = array();
 		foreach ($parentPackages as $parentPackage) {
 			/* @var $parentPackage MoufPackage */
@@ -994,8 +735,8 @@ class MoufPackageManager {
 					// First, what is the version of the package?
 					$packageVersion = $moufPackage->getDescriptor()->getVersion();
 					$isInPlaceVersionInstalled = true;
-					if (isset($updateList[$dependency->getGroup()."/".$dependency->getName()])) {
-						$packageVersion = $updateList[$dependency->getGroup()."/".$dependency->getName()]->getDescriptor()->getVersion();
+					if (isset($updateList[$moufManager->getScope()][$dependency->getGroup()."/".$dependency->getName()])) {
+						$packageVersion = $updateList[$moufManager->getScope()][$dependency->getGroup()."/".$dependency->getName()]->getDescriptor()->getVersion();
 						$isInPlaceVersionInstalled = false;
 					}
 					
@@ -1003,7 +744,8 @@ class MoufPackageManager {
 						$ex = new MoufIncompatiblePackageException($parentPackage,
 								$dependency,
 								$packageVersion,
-								$isInPlaceVersionInstalled);
+								$isInPlaceVersionInstalled,
+								$moufManager->getScope());
 						$toUpdateParentPackages[] = $ex;
 					}
 					break;

@@ -31,6 +31,8 @@ class MoufIncompatiblePackageException extends MoufException {
 	public $dependencyGroup;
 	public $dependencyName;
 	
+	public $scope;
+	
 	/**
 	 * 
 	 * @param string $group
@@ -56,7 +58,7 @@ class MoufIncompatiblePackageException extends MoufException {
 		$this->isInPlaceVersionInstalled = $isInPlaceVersionInstalled;
 	}*/
 
-	public function __construct(MoufPackage $parentPackage, MoufDependencyDescriptor $dependency, $inPlaceVersion, $isInPlaceVersionInstalled) {
+	public function __construct(MoufPackage $parentPackage, MoufDependencyDescriptor $dependency, $inPlaceVersion, $isInPlaceVersionInstalled, $scope) {
 		$this->parentPackage = $parentPackage;
 		$this->dependency = $dependency;
 		
@@ -67,7 +69,10 @@ class MoufIncompatiblePackageException extends MoufException {
 		$this->dependencyName = $dependency->getName();
 		$this->inPlaceVersion = $inPlaceVersion;
 		$this->requestedVersion = $dependency->getVersion();
-		$this->isInPlaceVersionInstalled = $isInPlaceVersionInstalled;		
+		$this->isInPlaceVersionInstalled = $isInPlaceVersionInstalled;
+
+		$this->scope = $scope;
+		
 		if ($isInPlaceVersionInstalled) {
 			parent::__construct("An exception occured while installing incompatible packages. The package $this->group/$this->name/$this->version requires package $this->dependencyGroup/$this->dependencyName whose requested version must be $this->requestedVersion. Current installed version is $inPlaceVersion.", 0);
 		} else {

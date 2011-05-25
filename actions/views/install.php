@@ -25,6 +25,9 @@ jQuery(document).ready(function() {
 			} else if (json.code == "redirect") {
 				window.location.href = json.redirect;
 				return;
+			} else if (json.code == "error") {
+				jQuery('#installProcess').html("<div class='error'>"+json.html+"</div>");
+				performNextStep();
 			} else {
 				jQuery('#installProcess').html("<div class='error'>Unknown JSON answer</div>");
 			}

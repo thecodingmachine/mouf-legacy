@@ -1532,6 +1532,31 @@ $moufManager->addComponentInstances(array (
       ),
     ),
   ),
+  'splashTranslateService' => 
+  array (
+    'class' => 'FinePHPArrayTranslationService',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'i18nMessagePath' => 
+      array (
+        'value' => 'plugins/mvc/splash-common/3.2/resources/',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+    'setterBinds' => 
+    array (
+      'setLanguageDetection' => 'splashBrowserLanguageDetection',
+    ),
+  ),
+  'splashBrowserLanguageDetection' => 
+  array (
+    'class' => 'BrowserLanguageDetection',
+    'external' => false,
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php', 'auto');
@@ -1637,6 +1662,20 @@ class MoufAdmin {
 	 */
 	 public static function getHtmlMenuTopSliderHead() {
 	 	return MoufManager::getMoufManager()->getInstance('htmlMenuTopSliderHead');
+	 }
+
+	/**
+	 * @return EmailValidator
+	 */
+	 public static function getEmailValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('emailValidator');
+	 }
+
+	/**
+	 * @return NumberValidator
+	 */
+	 public static function getNumberValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('numberValidator');
 	 }
 
 	/**
@@ -2039,6 +2078,20 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return FinePHPArrayTranslationService
+	 */
+	 public static function getSplashTranslateService() {
+	 	return MoufManager::getMoufManager()->getInstance('splashTranslateService');
+	 }
+
+	/**
+	 * @return BrowserLanguageDetection
+	 */
+	 public static function getSplashBrowserLanguageDetection() {
+	 	return MoufManager::getMoufManager()->getInstance('splashBrowserLanguageDetection');
+	 }
+
+	/**
 	 * @return SplashMenuItem
 	 */
 	 public static function getFineAdminLabelMenuItem() {
@@ -2078,6 +2131,90 @@ class MoufAdmin {
 	 */
 	 public static function getEditLabels() {
 	 	return MoufManager::getMoufManager()->getInstance('editLabels');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getCacheInterfaceAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('cacheInterfaceAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getCacheInterfacePurgeMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('cacheInterfacePurgeMenuItem');
+	 }
+
+	/**
+	 * @return PurgeCacheController
+	 */
+	 public static function getPurgeCaches() {
+	 	return MoufManager::getMoufManager()->getInstance('purgeCaches');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSplashCommonAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('splashCommonAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSplashAdminUrlsListItem() {
+	 	return MoufManager::getMoufManager()->getInstance('splashAdminUrlsListItem');
+	 }
+
+	/**
+	 * @return SplashViewUrlsController
+	 */
+	 public static function getSplashViewUrls() {
+	 	return MoufManager::getMoufManager()->getInstance('splashViewUrls');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSplashAdminLabelMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('splashAdminLabelMenuItem');
+	 }
+
+	/**
+	 * @return SplashMenuItem
+	 */
+	 public static function getSplashAdminApacheConfigItem() {
+	 	return MoufManager::getMoufManager()->getInstance('splashAdminApacheConfigItem');
+	 }
+
+	/**
+	 * @return SplashGenerateService
+	 */
+	 public static function getSplashGenerateService() {
+	 	return MoufManager::getMoufManager()->getInstance('splashGenerateService');
+	 }
+
+	/**
+	 * @return SplashAdminApacheConfigureController
+	 */
+	 public static function getSplashApacheConfig() {
+	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
+	 }
+
+	/**
+	 * @return SplashInstallController
+	 */
+	 public static function getSplashinstall() {
+	 	return MoufManager::getMoufManager()->getInstance('splashinstall');
+	 }
+
+	/**
+	 * @return MoufBasicValidationProvider
+	 */
+	 public static function getSplashHtaccessValidator() {
+	 	return MoufManager::getMoufManager()->getInstance('splashHtaccessValidator');
 	 }
 
 }

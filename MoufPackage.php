@@ -86,7 +86,7 @@ class MoufPackage {
 	/**
 	 * The list of package dependencies (as package descriptors)
 	 *
-	 * @var array<MoufPackageDescriptor>
+	 * @var array<MoufDependencyDescriptor>
 	 */
 	private $dependencies;
 	
@@ -181,7 +181,11 @@ class MoufPackage {
 		if ($dependencies) {
 			foreach ($dependencies->dependency as $dependencyXml) {
 				$revision = (int) $dependencyXml->revision or 0;
-				$depList[] = new MoufDependencyDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version, $revision, (string)$dependencyXml->repository);
+				$scope = (string) $dependencyXml->scope;
+				if (empty($scope)) {
+					$scope = "app";
+				}
+				$depList[] = new MoufDependencyDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version, $scope, $revision, (string)$dependencyXml->repository);
 			}
 		}
 		$this->dependencies = $depList;

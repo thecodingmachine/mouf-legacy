@@ -29,7 +29,7 @@ class EnablePackageAction implements MoufActionProviderInterface {
 			throw new MoufException("Unable to enable package: the file plugins/".$fileName." does not exist.");
 		}
 		
-		$moufManager->addPackageByXmlFileWithCheck($fileName);
+		$moufManager->addPackageByXmlFileWithCheck($fileName, $actionDescriptor->params['scope']);
 		$moufManager->rewriteMouf();
 		return new MoufActionDoneResult();
 	}
@@ -40,7 +40,7 @@ class EnablePackageAction implements MoufActionProviderInterface {
 	 * @param MoufActionDescriptor $actionDescriptor
 	 */
 	public function getName(MoufActionDescriptor $actionDescriptor) {
-		return "Enabling package ".$actionDescriptor->params['packageFile'].".";
+		return "Enabling package ".$actionDescriptor->params['packageFile']." in ".$actionDescriptor->params['scope']." scope.";
 	}
 	
 }

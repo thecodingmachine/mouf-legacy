@@ -69,14 +69,14 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 * The list of packages that are incompatible with the current enable/update and that should be proposed
 	 * for an updage.
 	 *
-	 * @var array<MoufPackage>
+	 * @var array<MoufIncompatiblePackageException>
 	 */
 	protected $toProposeUpgradePackage;
 	
 	/**
 	 * The list of packages that will be upgraded in the process of the install.
 	 *
-	 * @var array<MoufPackage>
+	 * @var array<scope, <group/name, MoufPackage>>
 	 */
 	protected $upgradePackageList;
 	
@@ -108,6 +108,8 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	 * @param array<string> $packageList The array of packages enabled or disabled.
 	 */
 	public function defaultAction($selfedit = "false", $validation = null, $packageList = null) {
+		// TODO: CHANGE THE PACKAGE CONTROLLER SO WE CAN VIEW FROM THE APP SCOPE THE PACKAGES THAT ARE REQUESTED ON THE ADMIN SCOPE VIA A <scope>admin</scope> declaration.
+		
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -159,7 +161,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	/**
 	 * Action that is run to enable a package.
 	 *
-	 * Format of the $upgradeList array: array[]["group"=>xxx,"name"=>xxx,"version"=>xxx,"origin"=>xxx]
+	 * Format of the $upgradeList array: array[scope][]["group"=>xxx,"name"=>xxx,"version"=>xxx,"origin"=>xxx]
 	 *
 	 * @Action
 	 * @Logged
@@ -179,7 +181,8 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		} else {
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		}
-	
+		$scope = ($selfedit=='true')?MoufManager::SCOPE_ADMIN:MoufManager::SCOPE_APP;
+		
 		$this->packageManager = new MoufPackageManager();
 		
 		if ($origin == null) {
@@ -193,35 +196,43 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 
 		// Let's get the list of all packages that will be upgraded in the process (requested by the user).
 		$this->upgradePackageList = array();
-		foreach ($upgradeList as $upgrade) {
-			if (isset($upgrade['origin']) && $upgrade['origin'] != "") {
-				// TODO: move $packageDownloadService as a property
-				$packageDownloadService = MoufAdmin::getPackageDownloadService();
-				$packageDownloadService->setMoufManager($this->moufManager);
-				$this->upgradePackageList[$upgrade['group']."/".$upgrade['name']] = $packageDownloadService->getRepository($upgrade['origin'])->getPackage($upgrade['group'], $upgrade['name'], $upgrade['version']);
-			} else {
-				$this->upgradePackageList[$upgrade['group']."/".$upgrade['name']] = $this->packageManager->getPackageByDefinition($upgrade['group'], $upgrade['name'], $upgrade['version']);
+		foreach ($upgradeList as $myScope => $upgradeInnerList) {
+			foreach ($upgradeInnerList as $upgradeList) {
+				if (isset($upgrade['origin']) && $upgrade['origin'] != "") {
+					// TODO: move $packageDownloadService as a property
+					$packageDownloadService = MoufAdmin::getPackageDownloadService();
+					$packageDownloadService->setMoufManager($this->moufManager);
+					$this->upgradePackageList[$myScope][$upgrade['group']."/".$upgrade['name']] = $packageDownloadService->getRepository($upgrade['origin'])->getPackage($upgrade['group'], $upgrade['name'], $upgrade['version']);
+				} else {
+					$this->upgradePackageList[$myScope][$upgrade['group']."/".$upgrade['name']] = $this->packageManager->getPackageByDefinition($upgrade['group'], $upgrade['name'], $upgrade['version']);
+				}
 			}
 		}
 
-		// List of packages that should be proposed as an upgrade.
+		/*
+		 * List of packages that should be proposed as an upgrade (as an array of MoufIncompatiblePackageException).
+		 */ 
 		$this->toProposeUpgradePackage = array();
 		
 		
 		// For each package that was requested to be upgraded, let's check if the packages depending on it are still compatible.
 		
 		// Let's start with the package we try to install (in case this is an upgrade)
-		$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($this->package, $this->upgradePackageList, $this->moufManager);
+		$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($this->package, $this->upgradePackageList, $scope);
 		$this->toProposeUpgradePackage = array_merge($this->toProposeUpgradePackage, $toProposeUpgrade);
-		foreach ($this->upgradePackageList as $toUpgradePackage) {
-			/* @var $toUpgradePackage MoufPackage */
-			$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($toUpgradePackage, $this->upgradePackageList, $this->moufManager);
-			$this->toProposeUpgradePackage = array_merge($this->toProposeUpgradePackage, $toProposeUpgrade);		
+		
+		foreach ($this->upgradePackageList as $myScope=>$innerList) {
+			foreach ($innerList as $toUpgradePackage) {
+				/* @var $toUpgradePackage MoufPackage */
+				$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($toUpgradePackage, $this->upgradePackageList, myScope);
+				$this->toProposeUpgradePackage = array_merge($this->toProposeUpgradePackage, $toProposeUpgrade);		
+			}
 		}
-				
+		
+		
 		//$this->moufDependencies = $this->packageManager->getDependencies($this->package);
 		try {
-			$this->moufDependencies = $this->packageManager->getDependencies($this->package, $this->moufManager, $this->upgradePackageList);
+			$this->moufDependencies = $this->packageManager->getDependencies($this->package, $scope, $this->upgradePackageList);
 		} catch (MoufIncompatiblePackageException $ex) {
 			$this->toProposeUpgradePackage[] = $ex;
 		} catch (MoufProblemInDependencyPackageException $exProblem) {
@@ -245,96 +256,116 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		
 		//var_dump($this->moufDependencies); exit;
 				
-		if ((!empty($this->moufDependencies) && $confirm=="false") || $this->toProposeUpgradePackage) {
+		if (((!empty($this->moufDependencies[MoufManager::SCOPE_APP]) || !empty($this->moufDependencies[MoufManager::SCOPE_ADMIN])) && $confirm=="false") || $this->toProposeUpgradePackage) {
 			$this->template->addContentFile("views/packages/displayConfirmPackagesEnable.php", $this);
 			$this->template->draw();
 		} else {
 			
 			if (!array_search($this->package, $this->moufDependencies)) {
-				$this->moufDependencies[] = $this->package;
+				$this->moufDependencies[$scope][] = $this->package;
 			}
-			
-			/*foreach ($this->moufDependencies as $dependency) {
-				$this->moufManager->addPackageByXmlFile($dependency->getDescriptor()->getPackageXmlPath());
-			}
-			$this->moufManager->rewriteMouf();*/
+
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
+			// TODO SCOPE: CONTINUER ICI
 			
 			// Upgrading goes first (TODO: check this).
-			foreach ($upgradeList as $upgradeOrder) {
-				// special case: let's not make the upgrade if this is the main package to be installed (don't do it twice).
-				if ($upgradeOrder['group'] == $group && $upgradeOrder['name'] == $name && $upgradeOrder['version'] == $version) {
-					continue;
-				}
-				
-				// Let's download if needed.
-				if ($upgradeOrder['origin'] != null && $upgradeOrder['origin'] != "") {
-					$this->multiStepActionService->addAction("downloadPackageAction", array(
-							"repositoryUrl"=>$upgradeOrder['origin'],
-							"group"=>$upgradeOrder['group'],
-							"name"=>$upgradeOrder['name'],
-							"version"=>$upgradeOrder['version']
-							), $selfedit == "true");
-				}
-				// Now, let's perform the upgrade (this is handled by the enablePackageAction action).
-				$this->multiStepActionService->addAction("enablePackageAction", array(
-							"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml"), $selfedit == "true");
-				
-				// Now, let's see if there are specific installation steps.
-				$thePackage = $this->packageManager->findPackage($upgradeOrder['group'], $upgradeOrder['name'], $upgradeOrder['version'], $this->moufManager);
-
-				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
-				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
-				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
-				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
-				// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
-				// WE SHOULD FIND SOMETHING MORE CLEVER TO PERFORM THE UPGRADE!!!!
-				$installSteps = $thePackage->getInstallSteps();
-				if ($installSteps) {
-					foreach ($installSteps as $installStep) {
-						if ($installStep['type'] == 'file') {
-							$this->multiStepActionService->addAction("redirectAction", array(
+			foreach ($upgradeList as $myScope=>$innerList) {
+				foreach ($innerList as $upgradeOrder) {
+					// special case: let's not make the upgrade if this is the main package to be installed (don't do it twice).
+					if ($upgradeOrder['group'] == $group && $upgradeOrder['name'] == $name && $upgradeOrder['version'] == $version) {
+						continue;
+					}
+					
+					// Let's download if needed.
+					if ($upgradeOrder['origin'] != null && $upgradeOrder['origin'] != "") {
+						$this->multiStepActionService->addAction("downloadPackageAction", array(
+								"repositoryUrl"=>$upgradeOrder['origin'],
+								"group"=>$upgradeOrder['group'],
+								"name"=>$upgradeOrder['name'],
+								"version"=>$upgradeOrder['version']
+								), $selfedit == "true");
+					}
+					// Now, let's perform the upgrade (this is handled by the enablePackageAction action).
+					$this->multiStepActionService->addAction("enablePackageAction", array(
 								"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml",
-								"redirectUrl"=>ROOT_URL."plugins/".$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/".$installStep['file']), $selfedit == "true");
-						} elseif ($installStep['type'] == 'url') {
-							$this->multiStepActionService->addAction("redirectAction", array(
-								"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml",
-								"redirectUrl"=>ROOT_URL.$installStep['url']), $selfedit == "true");
-						} else {
-							throw new Exception("Unknown type during install process.");
+								"scope"=>$myScope), $selfedit == "true");
+					
+					// Now, let's see if there are specific installation steps.
+					$thePackage = $this->packageManager->findPackage($upgradeOrder['group'], $upgradeOrder['name'], $upgradeOrder['version'], $this->moufManager);
+	
+					// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+					// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+					// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+					// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+					// FIXME: THIS IS AN UPGRADE!!!! NOT AN INSTALL!!!!!!!!!!
+					// WE SHOULD FIND SOMETHING MORE CLEVER TO PERFORM THE UPGRADE!!!!
+					$installSteps = $thePackage->getInstallSteps();
+					if ($installSteps) {
+						foreach ($installSteps as $installStep) {
+							if ($installStep['type'] == 'file') {
+								$this->multiStepActionService->addAction("redirectAction", array(
+									"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml",
+									"redirectUrl"=>ROOT_URL."plugins/".$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/".$installStep['file'],
+									"scope"=>$myScope), $selfedit == "true");
+							} elseif ($installStep['type'] == 'url') {
+								$this->multiStepActionService->addAction("redirectAction", array(
+									"packageFile"=>$upgradeOrder['group']."/".$upgradeOrder['name']."/".$upgradeOrder['version']."/package.xml",
+									"redirectUrl"=>ROOT_URL.$installStep['url'],
+									"scope"=>$myScope), $selfedit == "true");
+							} else {
+								throw new Exception("Unknown type during install process.");
+							}
 						}
 					}
 				}
 			}
 			
-			foreach ($this->moufDependencies as $dependency) {
-				/* @var $dependency MoufPackage */
-				if ($dependency->getCurrentLocation() != null) {
-					$repository = $dependency->getCurrentLocation();
-					$this->multiStepActionService->addAction("downloadPackageAction", array(
-							"repositoryUrl"=>$repository->getUrl(),
-							"group"=>$dependency->getDescriptor()->getGroup(),
-							"name"=>$dependency->getDescriptor()->getName(),
-							"version"=>$dependency->getDescriptor()->getVersion()
-							), $selfedit == "true");
-				}
-				$this->multiStepActionService->addAction("enablePackageAction", array(
-							"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath()), $selfedit == "true");
-				
-				// Now, let's see if there are specific installation steps.
-				$installSteps = $dependency->getInstallSteps();
-				if ($installSteps) {
-					foreach ($installSteps as $installStep) {
-						
-						if ($installStep['type'] == 'file') {
-							$this->multiStepActionService->addAction("redirectAction", array(
+			foreach ($this->moufDependencies as $myScope=>$innerList) {
+				foreach ($innerList as $dependency) {
+					/* @var $dependency MoufPackage */
+					if ($dependency->getCurrentLocation() != null) {
+						$repository = $dependency->getCurrentLocation();
+						$this->multiStepActionService->addAction("downloadPackageAction", array(
+								"repositoryUrl"=>$repository->getUrl(),
+								"group"=>$dependency->getDescriptor()->getGroup(),
+								"name"=>$dependency->getDescriptor()->getName(),
+								"version"=>$dependency->getDescriptor()->getVersion()
+								), $selfedit == "true");
+					}
+					$this->multiStepActionService->addAction("enablePackageAction", array(
 								"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath(),
-								"redirectUrl"=>ROOT_URL."plugins/".$dependency->getDescriptor()->getGroup()."/".$dependency->getDescriptor()->getName()."/".$dependency->getDescriptor()->getVersion()."/".$installStep['file']), $selfedit == "true");
-						} elseif ($installStep['type'] == 'url') {
-							$this->multiStepActionService->addAction("redirectAction", array(
-								"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath(),
-								"redirectUrl"=>ROOT_URL.$installStep['url']), $selfedit == "true");
-						} else {
-							throw new Exception("Unknown type during install process.");
+								"scope"=>$myScope), $selfedit == "true");
+					
+					// Now, let's see if there are specific installation steps.
+					$installSteps = $dependency->getInstallSteps();
+					if ($installSteps) {
+						foreach ($installSteps as $installStep) {
+							
+							if ($installStep['type'] == 'file') {
+								$this->multiStepActionService->addAction("redirectAction", array(
+									"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath(),
+									"scope"=>$myScope,
+									"redirectUrl"=>ROOT_URL."plugins/".$dependency->getDescriptor()->getGroup()."/".$dependency->getDescriptor()->getName()."/".$dependency->getDescriptor()->getVersion()."/".$installStep['file']), $selfedit == "true");
+							} elseif ($installStep['type'] == 'url') {
+								$this->multiStepActionService->addAction("redirectAction", array(
+									"packageFile"=>$dependency->getDescriptor()->getPackageXmlPath(),
+									"scope"=>$myScope,
+									"redirectUrl"=>ROOT_URL.$installStep['url']), $selfedit == "true");
+							} else {
+								throw new Exception("Unknown type during install process.");
+							}
 						}
 					}
 				}
@@ -343,9 +374,11 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 			$url = ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";
 			$msg = "Packages successfully enabled: ";
 			$msgArr = array();
-			foreach ($this->moufDependencies as $moufDependency) {
-				$url.= "&packageList[]=".$moufDependency->getDescriptor()->getPackageDirectory();
-				$msgArr[] = $moufDependency->getDescriptor()->getPackageDirectory();
+			foreach ($this->moufDependencies as $myScope=>$innerList) {
+				foreach ($innerList as $moufDependency) {
+					$url.= "&packageList[]=".$moufDependency->getDescriptor()->getPackageDirectory();
+					$msgArr[] = $moufDependency->getDescriptor()->getPackageDirectory();
+				}
 			}
 			$msg .= implode(", ", $msgArr);
 			$this->multiStepActionService->setFinalUrlRedirect($url);

@@ -29,29 +29,32 @@ if ($this->moufDependencies):
 <div id="packageList" class="packageList">
 <?php 
 $oldGroup = "";
-foreach ($this->moufDependencies as $package) {
-	if ($package->getDescriptor()->getGroup() != $oldGroup) {
-		echo "<div class='group'>Group: <b>".htmlentities($package->getDescriptor()->getGroup())."</b></div>";
-		$oldGroup = $package->getDescriptor()->getGroup();
+foreach ($this->moufDependencies as $scope=>$innerList) {
+	echo "<h2>Dependencies to be installed in $scope scope</h2>";
+	foreach ($innerList as $package) {
+		if ($package->getDescriptor()->getGroup() != $oldGroup) {
+			echo "<div class='group'>Group: <b>".htmlentities($package->getDescriptor()->getGroup())."</b></div>";
+			$oldGroup = $package->getDescriptor()->getGroup();
+		}
+		echo "<div class='outerpackage'>";
+		echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
+		if ($package->getShortDescription() || $package->getDocUrl()) {
+			echo "<div class='packagedescription'>";
+			echo $package->getShortDescription();
+			if ($package->getShortDescription() && $package->getDocUrl()) {
+				echo "<br/>";
+			}
+			if ($package->getDocUrl()) {
+				echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
+			}
+			if ($package->getCurrentLocation() != null) {
+				echo "<br/>This package will be downloaded from repository '".plainstring_to_htmlprotected($package->getCurrentLocation()->getName())."'";
+			}
+			echo "</div>";
+		}
+		
+		echo "</div></div>";
 	}
-	echo "<div class='outerpackage'>";
-	echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
-	if ($package->getShortDescription() || $package->getDocUrl()) {
-		echo "<div class='packagedescription'>";
-		echo $package->getShortDescription();
-		if ($package->getShortDescription() && $package->getDocUrl()) {
-			echo "<br/>";
-		}
-		if ($package->getDocUrl()) {
-			echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
-		}
-		if ($package->getCurrentLocation() != null) {
-			echo "<br/>This package will be downloaded from repository '".plainstring_to_htmlprotected($package->getCurrentLocation()->getName())."'";
-		}
-		echo "</div>";
-	}
-	
-	echo "</div></div>";
 }
 endif;
 
@@ -62,29 +65,32 @@ if ($this->upgradePackageList):
 
 <?php 
 $oldGroup = "";
-foreach ($this->upgradePackageList as $package) {
-	if ($package->getDescriptor()->getGroup() != $oldGroup) {
-		echo "<div class='group'>Group: <b>".htmlentities($package->getDescriptor()->getGroup())."</b></div>";
-		$oldGroup = $package->getDescriptor()->getGroup();
+foreach ($this->upgradePackageList as $scope=>$innerList) {
+	echo "<h2>Dependencies to be upgraded in $scope scope</h2>";
+	foreach ($innerList as $package) {
+		if ($package->getDescriptor()->getGroup() != $oldGroup) {
+			echo "<div class='group'>Group: <b>".htmlentities($package->getDescriptor()->getGroup())."</b></div>";
+			$oldGroup = $package->getDescriptor()->getGroup();
+		}
+		echo "<div class='outerpackage'>";
+		echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
+		if ($package->getShortDescription() || $package->getDocUrl()) {
+			echo "<div class='packagedescription'>";
+			echo $package->getShortDescription();
+			if ($package->getShortDescription() && $package->getDocUrl()) {
+				echo "<br/>";
+			}
+			if ($package->getDocUrl()) {
+				echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
+			}
+			if ($package->getCurrentLocation() != null) {
+				echo "<br/>This package will be downloaded from repository '".plainstring_to_htmlprotected($package->getCurrentLocation()->getName())."'";
+			}
+			echo "</div>";
+		}
+		
+		echo "</div></div>";
 	}
-	echo "<div class='outerpackage'>";
-	echo "<div class='package'><span class='packagename'>".htmlentities($package->getDisplayName())."</span> <span class='packgeversion'>(version ".htmlentities($package->getDescriptor()->getVersion()).")</span>";
-	if ($package->getShortDescription() || $package->getDocUrl()) {
-		echo "<div class='packagedescription'>";
-		echo $package->getShortDescription();
-		if ($package->getShortDescription() && $package->getDocUrl()) {
-			echo "<br/>";
-		}
-		if ($package->getDocUrl()) {
-			echo "Documentation URL: <a href='".htmlentities($package->getDocUrl())."'>".$package->getDocUrl()."</a>";
-		}
-		if ($package->getCurrentLocation() != null) {
-			echo "<br/>This package will be downloaded from repository '".plainstring_to_htmlprotected($package->getCurrentLocation()->getName())."'";
-		}
-		echo "</div>";
-	}
-	
-	echo "</div></div>";
 }
 ?>
 
@@ -102,17 +108,19 @@ if (empty($this->toProposeUpgradePackage)) {
 	echo "<input type='hidden' name='name' value='".htmlentities($this->package->getDescriptor()->getName())."' />";
 	echo "<input type='hidden' name='version' value='".htmlentities($this->package->getDescriptor()->getVersion())."' />";
 	echo "<input type='hidden' name='confirm' value='true' />";
-	$i=0;
-	// List of packages to upgrade.
-	foreach ($this->upgradePackageList as $upgradePackage) {
-		/* @var $upgradePackage MoufPackage */
-		echo "<input type='hidden' name='upgradeList[".$i."][group]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getGroup())."' />";
-		echo "<input type='hidden' name='upgradeList[".$i."][name]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getName())."' />";
-		echo "<input type='hidden' name='upgradeList[".$i."][version]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getVersion())."' />";
-		if ($upgradePackage->getCurrentLocation()) {
-			echo "<input type='hidden' name='upgradeList[".$i."][origin]' value='".plainstring_to_htmlprotected($upgradePackage->getCurrentLocation())."' />";
+	foreach ($this->upgradePackageList as $myScope=>$innerPackageList) {
+		$i=0;
+		// List of packages to upgrade.
+		foreach ($innerPackageList as $upgradePackage) {
+			/* @var $upgradePackage MoufPackage */
+			echo "<input type='hidden' name='upgradeList[$myScope][".$i."][group]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='upgradeList[$myScope][".$i."][name]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getName())."' />";
+			echo "<input type='hidden' name='upgradeList[$myScope][".$i."][version]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getVersion())."' />";
+			if ($upgradePackage->getCurrentLocation()) {
+				echo "<input type='hidden' name='upgradeList[$myScope][".$i."][origin]' value='".plainstring_to_htmlprotected($upgradePackage->getCurrentLocation())."' />";
+			}
+			$i++;
 		}
-		$i++;
 	}
 	echo "<button>Enable all listed packages</button>";
 	echo "</form>";
@@ -154,25 +162,27 @@ foreach ($this->toProposeUpgradePackage as $incompatiblePackage) {
 	echo "<input type='hidden' name='name' value='".htmlentities($this->package->getDescriptor()->getName())."' />";
 	echo "<input type='hidden' name='version' value='".htmlentities($this->package->getDescriptor()->getVersion())."' />";
 	echo "<input type='hidden' name='confirm' value='true' />";
-	$i=0;
-	// List of packages to upgrade.
-	foreach ($this->upgradePackageList as $upgradePackage) {
-		/* @var $upgradePackage MoufPackage */
-		echo "<input type='hidden' name='upgradeList[".$i."][group]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getGroup())."' />";
-		echo "<input type='hidden' name='upgradeList[".$i."][name]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getName())."' />";
-		echo "<input type='hidden' name='upgradeList[".$i."][version]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getVersion())."' />";
-		if ($upgradePackage->getCurrentLocation()) {
-			echo "<input type='hidden' name='upgradeList[".$i."][origin]' value='".plainstring_to_htmlprotected($upgradePackage->getCurrentLocation())."' />";
+	foreach ($this->upgradePackageList as $myScope=>$innerPackageList) {
+		$i=0;
+		// List of packages to upgrade.
+		foreach ($innerPackageList as $upgradePackage) {
+			/* @var $upgradePackage MoufPackage */
+			echo "<input type='hidden' name='upgradeList[$myScope][".$i."][group]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getGroup())."' />";
+			echo "<input type='hidden' name='upgradeList[$myScope][".$i."][name]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getName())."' />";
+			echo "<input type='hidden' name='upgradeList[$myScope][".$i."][version]' value='".plainstring_to_htmlprotected($upgradePackage->getDescriptor()->getVersion())."' />";
+			if ($upgradePackage->getCurrentLocation()) {
+				echo "<input type='hidden' name='upgradeList[$myScope][".$i."][origin]' value='".plainstring_to_htmlprotected($upgradePackage->getCurrentLocation())."' />";
+			}
+			$i++;
 		}
-		$i++;
 	}
 	
 	// TODO: HTML CODE FOR THE FORM HERE.
 	
-	echo "<input type='hidden' name='upgradeList[".$i."][group]' value='".$incompatiblePackage->dependency->getGroup()."' id='group_".$j."' />";
-	echo "<input type='hidden' name='upgradeList[".$i."][name]' value='".$incompatiblePackage->dependency->getName()."' id='name_".$j."' />";
-	echo "<input type='hidden' name='upgradeList[".$i."][version]' value='' id='version_".$j."' />";
-	echo "<input type='hidden' name='upgradeList[".$i."][origin]' value='' id='origin_".$j."' />";
+	echo "<input type='hidden' name='upgradeList[".$incompatiblePackage->scope."][".$i."][group]' value='".$incompatiblePackage->dependency->getGroup()."' id='group_".$j."' />";
+	echo "<input type='hidden' name='upgradeList[".$incompatiblePackage->scope."][".$i."][name]' value='".$incompatiblePackage->dependency->getName()."' id='name_".$j."' />";
+	echo "<input type='hidden' name='upgradeList[".$incompatiblePackage->scope."][".$i."][version]' value='' id='version_".$j."' />";
+	echo "<input type='hidden' name='upgradeList[".$incompatiblePackage->scope."][".$i."][origin]' value='' id='origin_".$j."' />";
 	
 	echo "<select id='updateselect_".$j."'>";
 	echo "<option value=''></option>";
