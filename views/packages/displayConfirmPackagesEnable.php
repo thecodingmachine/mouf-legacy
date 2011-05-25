@@ -108,8 +108,8 @@ if (empty($this->toProposeUpgradePackage)) {
 	echo "<input type='hidden' name='name' value='".htmlentities($this->package->getDescriptor()->getName())."' />";
 	echo "<input type='hidden' name='version' value='".htmlentities($this->package->getDescriptor()->getVersion())."' />";
 	echo "<input type='hidden' name='confirm' value='true' />";
+	$i=0;
 	foreach ($this->upgradePackageList as $myScope=>$innerPackageList) {
-		$i=0;
 		// List of packages to upgrade.
 		foreach ($innerPackageList as $upgradePackage) {
 			/* @var $upgradePackage MoufPackage */
@@ -162,8 +162,8 @@ foreach ($this->toProposeUpgradePackage as $incompatiblePackage) {
 	echo "<input type='hidden' name='name' value='".htmlentities($this->package->getDescriptor()->getName())."' />";
 	echo "<input type='hidden' name='version' value='".htmlentities($this->package->getDescriptor()->getVersion())."' />";
 	echo "<input type='hidden' name='confirm' value='true' />";
+	$i=0;
 	foreach ($this->upgradePackageList as $myScope=>$innerPackageList) {
-		$i=0;
 		// List of packages to upgrade.
 		foreach ($innerPackageList as $upgradePackage) {
 			/* @var $upgradePackage MoufPackage */
