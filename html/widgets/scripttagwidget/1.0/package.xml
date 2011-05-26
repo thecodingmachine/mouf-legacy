@@ -5,6 +5,11 @@
 	<docUrl></docUrl>
 	<logo>logo.png</logo>
 	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>ScriptTagWidget.php</require>
