@@ -10,11 +10,11 @@ MoufManager::getMoufManager()->setParameter('advancedLoggerLabelMenuItem', 'menu
 MoufManager::getMoufManager()->setParameter('advancedLoggerLabelMenuItem', 'menuCssClass', '');
 MoufManager::getMoufManager()->setParameter('advancedLoggerLabelMenuItem', 'propagatedUrlParameters', false);
 
-MoufManager::getMoufManager()->declareComponent('advancedLoggerCronMenuItem', 'SplashMenuItem', true);
-MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuText', 'View log stats');
-MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuLink', 'javascript:chooseInstancePopup("AdvancedMailLogger", "mouf/advancedlogger/viewStats", "View log stats", false)');
-MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuCssClass', '');
-/*MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'propagatedUrlParameters', array (
+MoufManager::getMoufManager()->declareComponent('advancedLoggerViewStatsMenuItem', 'SplashMenuItem', true);
+MoufManager::getMoufManager()->setParameter('advancedLoggerViewStatsMenuItem', 'menuText', 'View log stats');
+MoufManager::getMoufManager()->setParameter('advancedLoggerViewStatsMenuItem', 'menuLink', 'javascript:chooseInstancePopup("AdvancedMailLogger", "'.ROOT_URL.'mouf/advancedlogger/showStats?name=", "View log stats", false)');
+MoufManager::getMoufManager()->setParameter('advancedLoggerViewStatsMenuItem', 'menuCssClass', '');
+/*MoufManager::getMoufManager()->setParameter('advancedLoggerViewStatsMenuItem', 'propagatedUrlParameters', array (
   0 => 'selfedit',
 ));*/
 
@@ -37,6 +37,7 @@ MoufManager::getMoufManager()->setParameter('advancedLoggerSendMailMenuItem', 'p
 
 $actionMenu = MoufManager::getMoufManager()->getInstance("actionMenu");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("advancedLoggerLabelMenuItem");
+$actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("advancedLoggerViewStatsMenuItem");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("advancedLoggerCronMenuItem");
 $actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("advancedLoggerSendMailMenuItem");
 
