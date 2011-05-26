@@ -15,51 +15,47 @@ function chooseInstancePopup(type, url, title, selfedit) {
 
 function chooseInstancePopupOnComponentsListLoaded(instancesList, type, url, title, selfedit) {
 	
-	alert(instancesList.length);
-	return;
+	// Only one item, let's go to the target URL directly.
+	if (instancesList.length == 1) {
+		window.location = url+instancesList[0];
+		return;
+	}
 	
-	var options = '';
-    for (var i = 0; i < j.length; i++) {
-      options += '<option value="' + j[i] + '">' + j[i] + '</option>';
-    }
-    jQuery("select#instanceClassDialog").html(options);
-    
-    if (j.length == 0) {
-	      jQuery("#noMatchingComponent").html("You have no class with the @Component annotation that inherits/implements '"+type+"'. You should try to <a href='../packagetransfer/'>download</a>/<a href='../packages/'>enable</a> a package that provides a component implement the "+type+" class/interface.");
-	      jQuery("#noMatchingComponent").show();
-    }
-	
+
 	if (jQuery('#chooseInstancePopup').size() == 0) {
-		jQuery('body').append("<div id='chooseInstancePopup' style='width: 600px; height: 400px'></div>");
+		jQuery('body').append("<div id='chooseInstancePopup' style='height: 400px;display:none'></div>");
+		jQuery("#chooseInstancePopup").dialog({width:500});
 	}
 	
 	jQuery('#chooseInstancePopup').attr('title', title);
+
+	var html = "";
+	if (instancesList.length == 0) {
+		html += "<div class='warning' id='noMatchingComponent' >You should create an instance implementing or extending the <code>"+type+"</code> class/interface.</div>";
+	} else {
+		var html = "<div>\
+			<p>Please select an instance.</p>\
+			<label for='instanceClass'>Instance name:</label>\
+			<select name='selectedInstancePopup' id='selectedInstancePopup'>";
+		
+		for (var i=0; i<instancesList.length; i++) {
+			html += "<option>"+instancesList[i]+"</option>";
+		}
+			
+		html += "</select>\
+			</div>";
 	
-	
-	// TODO: protect title.
-	var html = "<div>\
-		<label for='instanceNameDialog'>Instance name:</label><input type='text' name='newInstanceNameDialog' id='newInstanceNameDialog' /> \
-		</div>\
-		\
-		<div>\
-		<label for='instanceClass'>Class:</label>\
-		<select name='instanceClassDialog' id='instanceClassDialog'>\
-		</select>\
-		</div>\
-		\
-		<div class='error' id='noMatchingComponent' style='display:none'></div>\
-		\
-		<input type='button' value='Create' onclick='onCreateNewInstance(); return false;' />";
+			
+		html += "<input type='button' id='chooseInstancePopupButton' value='Go' />";
+	}
 
 	jQuery('#chooseInstancePopup').html(html);
+	jQuery('#chooseInstancePopupButton').unbind('click');
+	jQuery('#chooseInstancePopupButton').click(function() {
+		window.location = url+jQuery("#selectedInstancePopup").val();
+	})
+	
+	jQuery("#chooseInstancePopup").dialog('open');
 	
 	
-	
-
-	lastSelectBox = dropdown;
-	
-	jQuery("#newInstanceName").val("");
-	jQuery("#bindToProperty").val(propertyName);
-	
-	jQuery("#dialog").dialog("open");
 }

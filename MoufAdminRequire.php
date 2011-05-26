@@ -65,6 +65,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'SplashAction' => 'mouf/../plugins/mvc/splash/3.2/models/Splash.php',
   'SimpleLoginController' => 'mouf/../plugins/security/simplelogincontroller/1.0/SimpleLoginController.php',
   'LoggedAnnotation' => 'mouf/../plugins/security/userservice-splash/3.0/Logged.php',
+  'ScriptTagWidget' => 'mouf/../plugins/html/widgets/scripttagwidget/1.0/ScriptTagWidget.php',
   'LogInterface' => 'mouf/../plugins/utils/log/log_interface/1.1/LogInterface.php',
   'ConditionInterface' => 'mouf/../plugins/utils/common/conditioninterface/1.0/ConditionInterface.php',
   'Scopable' => 'mouf/../plugins/html/htmlelement/1.0/Scopable.php',
@@ -206,6 +207,7 @@ require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/utils/ExceptionUt
 require_once $localFilePath.'/../plugins/mvc/splash/3.2/models/Splash.php';
 require_once $localFilePath.'/../plugins/security/simplelogincontroller/1.0/SimpleLoginController.php';
 require_once $localFilePath.'/../plugins/security/userservice-splash/3.0/Logged.php';
+require_once $localFilePath.'/../plugins/html/widgets/scripttagwidget/1.0/ScriptTagWidget.php';
 
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';

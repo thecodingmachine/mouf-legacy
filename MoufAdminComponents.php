@@ -51,6 +51,10 @@ $moufManager->setPackagesByXmlFile(array (
   25 => 'mvc/splash/3.2/package.xml',
   26 => 'security/simplelogincontroller/1.0/package.xml',
   27 => 'security/userservice-splash/3.0/package.xml',
+  28 => 'html/widgets/scripttagwidget/1.0/package.xml',
+));
+
+$moufManager->setPackagesByXmlFileInAdminScope(array (
 ));
 
 require dirname(__FILE__).'/../plugins/utils/common/conditioninterface/1.0/ConditionsExternalComponent.php';
@@ -169,6 +173,7 @@ $moufManager->addComponentInstances(array (
         2 => 'jqueryui',
         3 => 'jqueryFileTree',
         4 => 'jquery-autogrow-1.2.2',
+        5 => 'chooseInstancePopupJs',
       ),
       'left' => 
       array (
@@ -1557,6 +1562,33 @@ $moufManager->addComponentInstances(array (
     'class' => 'BrowserLanguageDetection',
     'external' => false,
   ),
+  'chooseInstancePopupJs' => 
+  array (
+    'class' => 'ScriptTagWidget',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'cssFiles' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'jsFiles' => 
+      array (
+        'value' => 
+        array (
+          0 => 'mouf/views/chooseInstancePopup.js',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
 ));
 
 $moufManager->registerComponent('validator/MoufValidatorService.php', 'auto');
@@ -2089,6 +2121,13 @@ class MoufAdmin {
 	 */
 	 public static function getSplashBrowserLanguageDetection() {
 	 	return MoufManager::getMoufManager()->getInstance('splashBrowserLanguageDetection');
+	 }
+
+	/**
+	 * @return ScriptTagWidget
+	 */
+	 public static function getChooseInstancePopupJs() {
+	 	return MoufManager::getMoufManager()->getInstance('chooseInstancePopupJs');
 	 }
 
 	/**
