@@ -75,7 +75,7 @@ class SplashMenuItem implements HtmlElementInterface {
 			}
 			echo '>';
 			if (!empty($this->menuLink)) {
-				echo '<a href="'.$this->getLinkWithParams().'" >';
+				echo '<a href="'.str_replace('"', '&quot;', $this->getLinkWithParams()).'" >';
 			}
 			echo $this->menuText;
 			if (!empty($this->menuLink)) {
