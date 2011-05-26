@@ -30,6 +30,23 @@ class AdvancedMailLoggerController extends Controller {
 	}
 	
 	/**
+	 * Show the stats.
+	 *
+	 * @Action
+	 * @Logged
+	 * @param string $name
+	 * @param string $selfedit
+	 */
+	public function showStats($name, $selfedit = "false") {
+		$advancedMailLogger = MoufProxy::getInstance($name);
+		/* @var $advancedMailLogger AdvancedMailLogger */
+		$this->template->addContentText($advancedMailLogger->getHtmlForMail());
+		
+		$this->template->draw();
+	}
+	
+	
+	/**
 	 * Admin page used to send mails manually.
 	 *
 	 * @Action

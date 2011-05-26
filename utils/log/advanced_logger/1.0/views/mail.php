@@ -7,8 +7,8 @@
 <table>
 	<tr>
 		<th width="200"></th>
-		<th width="100"><?php echo date("d/m", strtotime('-1 day')) ?></th>
-		<th width="100"><?php echo date("d/m", strtotime('-2 day')) ?></th>
+		<th width="100"><?php echo date("m/d", $this->today) ?></th>
+		<th width="100"><?php echo date("m/d", $this->yesterday) ?></th>
 	</tr>
 	<tr>
 		<td style="background-color: #ff6d6d">FATAL</td>
@@ -42,7 +42,7 @@
 	</tr>
 </table>
 
-<h2>Logs by category:</h2>
+<h2>Logs by category for <?php echo date("m/d", $this->today) ?>:</h2>
 
 <table width="100%">
 	<tr>

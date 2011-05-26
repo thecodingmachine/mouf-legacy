@@ -6,6 +6,7 @@
  * 
  * @author David Negrier
  * @Component
+ * @ExtendedAction {"name":"View stats", "url":"mouf/advancedlogger/showStats", "default":false}
  */
 class AdvancedMailLogger {
 	
@@ -70,19 +71,27 @@ class AdvancedMailLogger {
 	protected $byLevelTheDayBeforeArray = array();
 	protected $byCategoryYesterdayArray = array();
 	
+	protected $today;
+	protected $yesterday;
+	
 	/**
-	 * Compute stats and sends the mail containing the logs stats.
+	 * Returns the HTML for the stats sent by mail.
+	 *  
+	 * @param timestamp $time The stats are for today
 	 */
-	public function sendMail() {
+	public function getHtmlForMail($time = null) {
+		if ($time==null) {
+			$time = time();
+		}
 		
-		$yesterday = strtotime('-1 day');
-		$theDayBefore = strtotime('-2 days');
+		$this->today = $time;
+		$this->yesterday = strtotime('-1 day', $time);
 		
 		$sql = "SELECT *
 				FROM `logstats`
-				WHERE `year` = ".date("Y", $yesterday)."
-				AND `month` = ".date("n", $yesterday)."
-				AND `day` = ".date("j", $yesterday)."
+				WHERE `year` = ".date("Y", $this->today)."
+				AND `month` = ".date("n", $this->today)."
+				AND `day` = ".date("j", $this->today)."
 				AND `hour` IS NULL
 				AND `category1` IS NULL
 				AND `category2` IS NULL
@@ -97,9 +106,9 @@ class AdvancedMailLogger {
 		
 		$sql = "SELECT *
 				FROM `logstats`
-				WHERE `year` = ".date("Y", $theDayBefore)."
-				AND `month` = ".date("n", $theDayBefore)."
-				AND `day` = ".date("j", $theDayBefore)."
+				WHERE `year` = ".date("Y", $this->yesterday)."
+				AND `month` = ".date("n", $this->yesterday)."
+				AND `day` = ".date("j", $this->yesterday)."
 				AND `hour` IS NULL
 				AND `category1` IS NULL
 				AND `category2` IS NULL
@@ -114,9 +123,9 @@ class AdvancedMailLogger {
 		
 		$sql = "SELECT `category1`, `category2`, `category3`, `log_level`, `nb_logs` 
 			FROM `logstats` 
-			WHERE `year` = ".date("Y", $theDayBefore)." 
-			AND `month` = ".date("n", $theDayBefore)." 
-			AND `day` = ".date("j", $theDayBefore)." 
+			WHERE `year` = ".date("Y", $this->today)." 
+			AND `month` = ".date("n", $this->today)." 
+			AND `day` = ".date("j", $this->today)." 
 			AND `hour` IS NULL 
 			AND `category1` IS NOT NULL 
 			AND `category2` IS ".(($this->aggregateByCategory>=2)?"NOT":"")." NULL
@@ -126,6 +135,19 @@ class AdvancedMailLogger {
 		
 		$this->byCategoryYesterdayArray = $this->dbStats->dbConnection->getAll($sql);
 		
+		ob_start();
+		include('views/mail.php');
+		$html = ob_get_contents();
+		ob_end_clean();
+		return $html;
+	}
+	
+	/**
+	 * Compute stats and sends the mail containing the logs stats.
+	 */
+	public function sendMail() {
+		
+		
 		$mail = new Mail();
 		$mail->setTitle($this->title);
 		$mail->setFrom(new MailAddress($this->from));
@@ -134,10 +156,8 @@ class AdvancedMailLogger {
 			$mail->addToRecipient(new MailAddress(trim($to)));
 		}
 		
-		ob_start();
-		include('views/mail.php');
-		$html = ob_get_contents();
-		ob_end_clean();
+		$html = $this->getHtmlForMail(strtotime('-1 day'));
+		
 		$mail->setBodyHtml($html);
 		$this->mailService->send($mail);
 		//echo $html;
