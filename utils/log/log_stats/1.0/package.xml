@@ -22,6 +22,11 @@
 			<version>>=1.0</version>
 		</dependency>
 		<dependency>
+			<group>utils/log</group>
+			<name>filter_logger</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
 			<group>database</group>
 			<name>dbstats</name>
 			<version>>=2.0</version>

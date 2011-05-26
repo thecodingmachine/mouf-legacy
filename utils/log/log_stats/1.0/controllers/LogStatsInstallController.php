@@ -221,6 +221,24 @@ class LogStatsInstallController extends Controller {
 			$this->moufManager->bindComponents($logStatsName, "values", array($countColumnName)); 
 		}
 		
+		// ********************* CREATE A FILTER_LOG ***********************
+		$enhanceCategoryLogFilterName = "enhanceCategoryLogFilter";
+		if (!$this->moufManager->instanceExists($enhanceCategoryLogFilterName)) {
+			$this->moufManager->declareComponent($enhanceCategoryLogFilterName, "EnhanceCategoryLogFilter");
+			$this->moufManager->setParameter($enhanceCategoryLogFilterName, "useCategory", "1");
+			$this->moufManager->setParameter($enhanceCategoryLogFilterName, "splitPosition", "30");
+		}
+		
+		
+		$filterLoggerName = "dbLoggerWithCategories";
+		if (!$this->moufManager->instanceExists($filterLoggerName)) {
+			$this->moufManager->declareComponent($filterLoggerName, "FilterLogger");
+			$this->moufManager->bindComponent($filterLoggerName, "logger", $dblogger);
+			$this->moufManager->bindComponents($filterLoggerName, "values", array($enhanceCategoryLogFilterName));
+		}
+		
+		
+		
 		$this->moufManager->rewriteMouf();
 
 		MoufProxy::getInstance($logStatsName)->createStatsTable(true);
