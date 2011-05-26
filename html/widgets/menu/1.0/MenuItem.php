@@ -336,6 +336,7 @@ class MenuItem implements MenuItemInterface {
 	
 	private function getLink() {
 		if (strpos($this->menuLink, "/") === 0
+			|| strpos($this->menuLink, "javascript:") === 0
 			|| strpos($this->menuLink, "http://") === 0
 			|| strpos($this->menuLink, "https://") === 0) {
 			return $this->menuLink;	

@@ -11,6 +11,14 @@ MoufManager::getMoufManager()->setParameter('advancedLoggerLabelMenuItem', 'menu
 MoufManager::getMoufManager()->setParameter('advancedLoggerLabelMenuItem', 'propagatedUrlParameters', false);
 
 MoufManager::getMoufManager()->declareComponent('advancedLoggerCronMenuItem', 'SplashMenuItem', true);
+MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuText', 'View log stats');
+MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuLink', 'javascript:chooseInstancePopup("AdvancedMailLogger", "mouf/advancedlogger/viewStats", "View log stats", false)');
+MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuCssClass', '');
+/*MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'propagatedUrlParameters', array (
+  0 => 'selfedit',
+));*/
+
+MoufManager::getMoufManager()->declareComponent('advancedLoggerCronMenuItem', 'SplashMenuItem', true);
 MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuText', 'Install advanced logger CRON');
 MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuLink', 'mouf/advancedlogger/');
 MoufManager::getMoufManager()->setParameter('advancedLoggerCronMenuItem', 'menuCssClass', '');

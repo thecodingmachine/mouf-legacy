@@ -225,7 +225,7 @@ class LogStatsInstallController extends Controller {
 		$enhanceCategoryLogFilterName = "enhanceCategoryLogFilter";
 		if (!$this->moufManager->instanceExists($enhanceCategoryLogFilterName)) {
 			$this->moufManager->declareComponent($enhanceCategoryLogFilterName, "EnhanceCategoryLogFilter");
-			$this->moufManager->setParameter($enhanceCategoryLogFilterName, "useCategory", "1");
+			$this->moufManager->setParameter($enhanceCategoryLogFilterName, "useCategory", "category1");
 			$this->moufManager->setParameter($enhanceCategoryLogFilterName, "splitPosition", "30");
 		}
 		
@@ -234,7 +234,7 @@ class LogStatsInstallController extends Controller {
 		if (!$this->moufManager->instanceExists($filterLoggerName)) {
 			$this->moufManager->declareComponent($filterLoggerName, "FilterLogger");
 			$this->moufManager->bindComponent($filterLoggerName, "logger", $dblogger);
-			$this->moufManager->bindComponents($filterLoggerName, "values", array($enhanceCategoryLogFilterName));
+			$this->moufManager->bindComponents($filterLoggerName, "filters", array($enhanceCategoryLogFilterName));
 		}
 		
 		
