@@ -60,7 +60,7 @@ foreach ($packagesXmlFiles as $packageXmlFile) {
 		
 		if (!$found) {
 			$errorList[] = "Unable to find package ".$dependency->getGroup()."/".$dependency->getName().", version ".$dependency->getVersion().".
-							This package is package requested by package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion().".<br/>";
+							This package is requested by package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion().".<br/>";
 		} else {
 			$found = false;
 		}
