@@ -157,10 +157,10 @@ class DbConnectionInstallController extends Controller  {
 	 * If the connection parameters are incorrect, returns an empty JSON array 
 	 * 
 	 * @Action
-	 * @param $host
-	 * @param $port
-	 * @param $user
-	 * @param $password
+	 * @param string $host
+	 * @param string $port
+	 * @param string $user
+	 * @param string $password
 	 */
 	public function getDbList($host, $port, $user, $password) {
 		require_once dirname(__FILE__).'/../DB_Column.php';
