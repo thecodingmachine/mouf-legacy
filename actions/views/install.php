@@ -27,7 +27,6 @@ jQuery(document).ready(function() {
 				return;
 			} else if (json.code == "error") {
 				jQuery('#installProcess').html("<div class='error'>"+json.html+"</div>");
-				performNextStep();
 			} else {
 				jQuery('#installProcess').html("<div class='error'>Unknown JSON answer</div>");
 			}

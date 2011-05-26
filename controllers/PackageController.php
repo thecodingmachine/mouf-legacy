@@ -197,7 +197,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		// Let's get the list of all packages that will be upgraded in the process (requested by the user).
 		$this->upgradePackageList = array();
 		foreach ($upgradeList as $myScope => $upgradeInnerList) {
-			foreach ($upgradeInnerList as $upgradeList) {
+			foreach ($upgradeInnerList as $upgrade) {
 				if (isset($upgrade['origin']) && $upgrade['origin'] != "") {
 					// TODO: move $packageDownloadService as a property
 					$packageDownloadService = MoufAdmin::getPackageDownloadService();
@@ -265,20 +265,6 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 				$this->moufDependencies[$scope][] = $this->package;
 			}
 
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
-			// TODO SCOPE: CONTINUER ICI
 			
 			// Upgrading goes first (TODO: check this).
 			foreach ($upgradeList as $myScope=>$innerList) {
@@ -493,7 +479,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	public function upgradePackage($group, $name, $version, $selfedit = "false", $origin = null) {
 		//throw new Exception("Sorry, upgrading packages is not supported yet.");
 		$this->enablePackage($group, $name, $version, $selfedit, "false", $origin,
-			array(0=>array("group"=>$group,"name"=>$name,"version"=>$version,"origin"=>$origin)));
+			array("app"=>array(0=>array("group"=>$group,"name"=>$name,"version"=>$version,"origin"=>$origin))));
 	}
 	
 	/**
