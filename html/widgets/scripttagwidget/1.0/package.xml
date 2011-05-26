@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Script Tag Widget</displayName>
+	<shortDescription>This package contains the script tag widget. This is a tag that can be used to add javascript and css file.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+	</dependencies>
+	<requires>
+		<require>ScriptTagWidget.php</require>
+	</requires>
+</package>
