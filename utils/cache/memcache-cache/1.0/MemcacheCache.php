@@ -102,7 +102,7 @@ class MemcacheCache implements CacheInterface {
 		elseif($this->noConnection)
 			return false;
 			
-		return $this->memcacheObject->get($key);
+		return @$this->memcacheObject->get($key);
 	}
 	
 	/**
