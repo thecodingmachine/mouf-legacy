@@ -30,19 +30,23 @@ class ScriptTagWidget implements HtmlElementInterface {
      * @see HtmlElementInterface::toHtml()
      */
 	public function toHtml() {
-		foreach ($this->cssFiles as $value) {
-			if(strpos($value, 'http://') === false && strpos($value, 'https://') === false)
-				$url = ROOT_URL.$value;
-			else
-				$url = $value;
-			echo '<link href="'.$url.'" rel="stylesheet" type="text/css" />'."\n";
+		if($this->cssFiles) {
+			foreach ($this->cssFiles as $value) {
+				if(strpos($value, 'http://') === false && strpos($value, 'https://') === false)
+					$url = ROOT_URL.$value;
+				else
+					$url = $value;
+				echo '<link href="'.$url.'" rel="stylesheet" type="text/css" />'."\n";
+			}
 		}
-		foreach ($this->jsFiles as $value) {
-			if(strpos($value, 'http://') === false && strpos($value, 'https://') === false)
-				$url = ROOT_URL.$value;
-			else
-				$url = $value;
-			echo '<script type="text/javascript" src="'.$url.'"></script>'."\n";
+		if($this->jsFiles) {
+			foreach ($this->jsFiles as $value) {
+				if(strpos($value, 'http://') === false && strpos($value, 'https://') === false)
+					$url = ROOT_URL.$value;
+				else
+					$url = $value;
+				echo '<script type="text/javascript" src="'.$url.'"></script>'."\n";
+			}
 		}
 	}
 }
