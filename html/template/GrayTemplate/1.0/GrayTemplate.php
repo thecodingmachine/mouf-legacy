@@ -29,6 +29,16 @@ class GrayTemplate extends BaseTemplate  {
 
 		include "views/gray.php";
 	}
-	
+
+	/**
+	 * Draws the Gray page by calling the template in /views/template/gray.php
+	 * Without header !!!
+	 */
+	public function drawSimple(){
+		header('Content-Type: text/html; charset=utf-8');
+		
+		$this->header = array();
+		include "views/gray.php";
+	}
 }
 ?>
