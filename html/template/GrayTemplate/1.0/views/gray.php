@@ -20,7 +20,7 @@
 			<?php if (count($this->header) != 0) { ?>
 				<div id="header"><?php $this->drawArray($this->header);?></div>
 			<?php } ?>
-			<div id="page">
+			<div id="page" class="<?php if(count($this->header) == 0) echo 'page_simple'; ?>">
 				<?php if (count($this->left) != 0) { ?>
 					<div id="sidebar-left">
 						<div class="sidebar-top"></div>
