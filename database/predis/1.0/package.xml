@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Predis</displayName>
+	<shortDescription>This package provides PHP bindings to communicate with a Redis Nosql database. You need a working Redis instance to use these bindings. Only works with a single database configuration.</shortDescription>
+	<docUrl>http://redis.io/documentation</docUrl>
+	<logo>icon.png</logo>
+	<requires>
+		<require>Predis.php</require>
+	</requires>
+</package>
