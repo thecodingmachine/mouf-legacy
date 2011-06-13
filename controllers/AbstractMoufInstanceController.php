@@ -70,25 +70,33 @@ abstract class AbstractMoufInstanceController extends Controller {
 		$extendedActions = $this->reflectionClass->getAnnotations("ExtendedAction");
 		if (!empty($extendedActions)) {
 			$items = array();
-			$items[] = new SplashMenuItem("<b>Special actions</b>", null, null);
 			foreach ($extendedActions as $extendedAction) {
-				$menuItem = new SplashMenuItem();
-				$menuItem->menuText = $extendedAction->getName();
-				$menuItem->menuLink = ROOT_URL.$extendedAction->getUrl();
-				$menuItem->propagatedUrlParameters=array("selfedit", "name");
+				$menuItem = new MenuItem($extendedAction->getName(), ROOT_URL.$extendedAction->getUrl());
+				$menuItem->setPropagatedUrlParameters(array("selfedit", "name"));
 				$items[] = $menuItem;
 			}
-			$menuItems = new SplashMenu($items);
-			$this->template->addRightHtmlElement($menuItems);	
+			$specialActionsMenuItem = new MenuItem("Special actions", null, $items);
+						
+			//$menu = new Menu($items);
+			MoufAdmin::getSpecialActionsMenu()->addChild($specialActionsMenuItem);
+			
+			//$this->template->addRightHtmlElement($menuItems);	
 		}
 		
-		$this->template->addRightHtmlElement(new SplashMenu(
+		$viewPropertiesMenuItem = new MenuItem("View properties", ROOT_URL."mouf/instance/");
+		$viewPropertiesMenuItem->setPropagatedUrlParameters(array("selfedit", "name"));
+		$viewDependencyGraphMenuItem = new MenuItem("View dependency graph", "mouf/displayGraph/");
+		$viewDependencyGraphMenuItem->setPropagatedUrlParameters(array("selfedit", "name"));
+		$commonMenuItem = new MenuItem("Common", null, array($viewPropertiesMenuItem, $viewDependencyGraphMenuItem));
+		MoufAdmin::getInstanceMenu()->addChild($commonMenuItem);
+		/*$this->template->addRightHtmlElement(new SplashMenu(
 			array(
 			new SplashMenuItem("<b>Common</b>", null, null),
 			new SplashMenuItem("View properties", ROOT_URL."mouf/instance/?name=".$name, null, array("selfedit")),
 			new SplashMenuItem("View dependency graph", "mouf/displayGraph/?name=".$name, null, array("selfedit")))));
 		$this->template->addRightFunction(array($this, "displayComponentParents"));
-		
+		*/
+		$this->displayComponentParents();
 	}
 	
 	/**
@@ -99,15 +107,14 @@ abstract class AbstractMoufInstanceController extends Controller {
 		$componentsList = $this->moufManager->getOwnerComponents($this->instanceName);
 		
 		if (!empty($componentsList)) {
-			$selfedit = get('selfedit');
-			if (!$selfedit) {
-				$selfedit = "false";
-			}
-			echo '<ul class="menu"><li><b>Referred by instances:</b></li>';
+			$children = array();
 			foreach ($componentsList as $component) {
-				echo '<li><a href="'.ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component).'&selfedit='.$selfedit.'">'.plainstring_to_htmlprotected($component).'</a></li>';
+				$child = new MenuItem($component, ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component));
+				$child->setPropagatedUrlParameters(array("selfedit"));
+				$children[] = $child;
 			}
-			echo '</ul>';
+			$referredByMenuItem = new MenuItem('Referred by instances:', null, $children);
+			MoufAdmin::getInstanceMenu()->addChild($referredByMenuItem);
 		}
 	}
 	

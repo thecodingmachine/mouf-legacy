@@ -73,8 +73,8 @@ div.file div.autoload.neverloaded {
 	color:#770000;
 }
 
-div.packageList {
-	width:652px;
+div#packageList {
+	width:642px;
 }
 
 div.group {

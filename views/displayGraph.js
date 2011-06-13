@@ -338,12 +338,15 @@ function initJit() {
             style.cursor = 'pointer';
 
             if (node._depth <= 1) {
-                style.fontSize = "0.8em";
+                style.fontSize = "0.9em";
                 style.color = "#222";
             
             } else if(node._depth == 2){
-                style.fontSize = "0.7em";
+                style.fontSize = "0.8em";
                 style.color = "#666";
+            } else if(node._depth == 3){
+                style.fontSize = "0.7em";
+                style.color = "#888";
             } else {
                 //style.fontSize = "0.6em";
                 //style.color = "#999";

@@ -15,9 +15,10 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'HtmlFromFunction' => 'mouf/../plugins/html/htmlelement/1.0/HtmlFromFunction.php',
   'HtmlString' => 'mouf/../plugins/html/htmlelement/1.0/HtmlString.php',
   'BaseTemplate' => 'mouf/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php',
-  'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/1.0/SplashTemplate.php',
-  'SplashMenu' => 'mouf/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php',
-  'SplashMenuItem' => 'mouf/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php',
+  'Menu' => 'mouf/../plugins/html/widgets/menu/1.0/Menu.php',
+  'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
+  'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php',
+  'SplashMenuRenderer' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php',
   'HtmlJSJQuery' => 'mouf/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php',
   'HtmlJSJQueryFixedHeaderTable' => 'mouf/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/HtmlJSJQueryFixedHeaderTable.php',
   'FineMessageLanguage' => 'mouf/../plugins/utils/i18n/fine/2.1/FineMessageLanguage.php',
@@ -39,8 +40,6 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'UserFileDaoException' => 'mouf/../plugins/security/userfiledao/1.0/UserFileDaoException.php',
   'UserFileDao' => 'mouf/../plugins/security/userfiledao/1.0/UserFileDao.php',
   'FileCache' => 'mouf/../plugins/utils/cache/file-cache/1.1/FileCache.php',
-  'Menu' => 'mouf/../plugins/html/widgets/menu/1.0/Menu.php',
-  'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
   'TopSliderMenuRenderer' => 'mouf/../plugins/html/template/menus/topslidermenu/1.0/TopSliderMenuRenderer.php',
   'HtmlMenuTopSliderHead' => 'mouf/../plugins/html/template/menus/topslidermenu/1.0/HtmlMenuTopSliderHead.php',
   'ValidatorException' => 'mouf/../plugins/utils/common/validators/1.0/ValidatorException.php',
@@ -71,6 +70,8 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'Scopable' => 'mouf/../plugins/html/htmlelement/1.0/Scopable.php',
   'HtmlElementInterface' => 'mouf/../plugins/html/htmlelement/1.0/HtmlElementInterface.php',
   'TemplateInterface' => 'mouf/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php',
+  'MenuInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuInterface.php',
+  'MenuItemInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemInterface.php',
   'LanguageDetectionInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface.php',
   'LanguageTranslationInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface.php',
   'AuthenticationListenerInterface' => 'mouf/../plugins/security/userservice/1.0/AuthenticationListenerInterface.php',
@@ -79,8 +80,6 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'UserDaoInterface' => 'mouf/../plugins/security/userservice/1.0/UserDaoInterface.php',
   'UserServiceInterface' => 'mouf/../plugins/security/userservice/1.0/UserServiceInterface.php',
   'CacheInterface' => 'mouf/../plugins/utils/cache/cache-interface/1.0/CacheInterface.php',
-  'MenuInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuInterface.php',
-  'MenuItemInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemInterface.php',
   'ValidatorInterface' => 'mouf/../plugins/utils/common/validators/1.0/ValidatorInterface.php',
   'UrlProviderInterface' => 'mouf/../plugins/mvc/splash-common/3.2/services/UrlProviderInterface.php',
   'WebServiceInterface' => 'mouf/../plugins/mvc/splash/3.2/models/Splash.php',
@@ -115,8 +114,10 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'PackageServiceController' => 'mouf/controllers/PackageServiceController.php',
   'RepositorySourceController' => 'mouf/controllers/RepositorySourceController.php',
   'PackageDownloadController' => 'mouf/controllers/PackageDownloadController.php',
+  'DocumentationController' => 'mouf/controllers/DocumentationController.php',
   'MoufPackageDownloadService' => 'mouf/MoufPackageDownloadService.php',
   'MoufRepository' => 'mouf/MoufRepository.php',
+  'MoufUtils' => 'mouf/MoufUtils.php',
   'PhpInfoController' => 'mouf/controllers/PhpInfoController.php',
   'SearchController' => 'mouf/controllers/SearchController.php',
   'InstallUtils' => 'mouf/actions/InstallUtils.php',
@@ -145,9 +146,12 @@ require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlFromFunction.p
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlString.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php';
-require_once $localFilePath.'/../plugins/html/template/SplashTemplate/1.0/SplashTemplate.php';
-require_once $localFilePath.'/../plugins/html/template/SplashTemplate/1.0/SplashMenu.php';
-require_once $localFilePath.'/../plugins/html/template/SplashTemplate/1.0/SplashMenuItem.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuInterface.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemInterface.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/Menu.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItem.php';
+require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php';
+require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/HtmlJSJQueryFixedHeaderTable.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/FineMessageLanguage.php';
@@ -178,10 +182,6 @@ require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileDaoExc
 require_once $localFilePath.'/../plugins/security/userfiledao/1.0/UserFileDao.php';
 require_once $localFilePath.'/../plugins/utils/cache/cache-interface/1.0/CacheInterface.php';
 require_once $localFilePath.'/../plugins/utils/cache/file-cache/1.1/FileCache.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuInterface.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemInterface.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/Menu.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItem.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderMenuRenderer.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topslidermenu/1.0/HtmlMenuTopSliderHead.php';
 require_once $localFilePath.'/../plugins/utils/common/validators/1.0/ValidatorInterface.php';
@@ -237,8 +237,10 @@ require_once $localFilePath.'/controllers/MoufLoginController.php';
 require_once $localFilePath.'/controllers/PackageServiceController.php';
 require_once $localFilePath.'/controllers/RepositorySourceController.php';
 require_once $localFilePath.'/controllers/PackageDownloadController.php';
+require_once $localFilePath.'/controllers/DocumentationController.php';
 require_once $localFilePath.'/MoufPackageDownloadService.php';
 require_once $localFilePath.'/MoufRepository.php';
+require_once $localFilePath.'/MoufUtils.php';
 require_once $localFilePath.'/controllers/PhpInfoController.php';
 require_once $localFilePath.'/controllers/SearchController.php';
 require_once $localFilePath.'/actions/InstallUtils.php';

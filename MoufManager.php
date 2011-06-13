@@ -1087,11 +1087,11 @@ class ".$this->mainClassName." {
 	 */
 	public function getBoundComponents($instanceName) {
 		$binds = array();
-		if (isset($this->declaredInstances[$instanceName]) && isset($this->declaredInstances[$instanceName]['fieldProperties'])) {
-			$binds = $this->declaredInstances[$instanceName]['fieldProperties'];
+		if (isset($this->declaredInstances[$instanceName]) && isset($this->declaredInstances[$instanceName]['fieldBinds'])) {
+			$binds = $this->declaredInstances[$instanceName]['fieldBinds'];
 		}
-		if (isset($this->declaredInstances[$instanceName]) && isset($this->declaredInstances[$instanceName]['setterProperties'])) {
-			foreach ($this->declaredInstances[$instanceName]['setterProperties'] as $setter=>$bind) {
+		if (isset($this->declaredInstances[$instanceName]) && isset($this->declaredInstances[$instanceName]['setterBinds'])) {
+			foreach ($this->declaredInstances[$instanceName]['setterBinds'] as $setter=>$bind) {
 				$binds[MoufPropertyDescriptor::getPropertyNameFromSetterName($setter)] = $bind;
 			}
 		}

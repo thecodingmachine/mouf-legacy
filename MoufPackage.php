@@ -2,6 +2,7 @@
 
 require_once 'MoufPackageDescriptor.php';
 require_once 'MoufDependencyDescriptor.php';
+require_once 'MoufDocumentationPageDescriptor.php';
 
 /**
  * This class represents a package that can be downloaded and used by Mouf.
@@ -120,6 +121,20 @@ class MoufPackage {
 	 */
 	private $installSteps;
 	
+	/**
+	 * The list of pages for the documentation.
+	 *
+	 * @var array<MoufDocumentationPageDescriptor>
+	 */
+	private $docPages;
+	
+	/**
+	 * The documentation root directory.
+	 * 
+	 * @var string
+	 */
+	private $documentationRootDirectory = "doc";
+	
 	public function __construct() {
 		
 	}
@@ -236,14 +251,6 @@ class MoufPackage {
 		}
 		$this->adminRequires = $adminRequiresList;	
 
-		/*$installFilesList = array();
-		$installFiles = $this->packageSimpleXml->installFiles;
-		if ($installFiles) {
-			foreach ($installFiles->installFile as $installFile) {
-				$installFilesList[] = (string)$installFile;
-			}
-		}
-		$this->installFiles = $installFilesList;*/
 		$installStepsList = array();
 		$installSteps = $this->packageSimpleXml->install;
 		if ($installSteps) {
@@ -261,6 +268,25 @@ class MoufPackage {
 			}
 		}
 		$this->installSteps = $installStepsList;	
+		
+		$docPagesList = array();
+		$docPages = $this->packageSimpleXml->doc;
+		
+		// Retrieve the attributes set
+		$docPagesArray = (array)$docPages;
+		if(isset($docPagesArray['@attributes'])) {
+			if(isset($docPagesArray['@attributes']['root']))
+				$this->documentationRootDirectory = $docPagesArray['@attributes']['root']; 
+		}
+
+		
+		if ($docPages) {
+			foreach ($docPages->children() as $page) {
+				/* @var $page SimpleXmlElement */
+				$docPagesList[] = new MoufDocumentationPageDescriptor($page, $this);
+			}
+		}
+		$this->docPages = $docPagesList;	
 		
 	}
 	
@@ -435,6 +461,24 @@ class MoufPackage {
 	}
 	
 	/**
+	 * The list of all documentation pages, if any.
+	 * 
+	 * @return array<MoufDocumentationPageDescriptor>
+	 */
+	public function getDocPages() {
+		return $this->docPages;
+	}
+	
+	/**
+	 * Returns the root directory for the documentation, without trailing or starting slash.
+	 * Defaults to "doc".
+	 * @return string
+	 */
+	public function getDocumentationRootDirectory() { 
+		return $this->documentationRootDirectory;
+	}
+	
+	/**
 	 * Returns a PHP array that describes the package.
 	 * The array does not contain all available information, only enough information to display the list of packages in the Mouf interface.
 	 * 
@@ -491,5 +535,6 @@ class MoufPackage {
 		}
 		return $moufPackage;
 	}
+	
 }
 ?>

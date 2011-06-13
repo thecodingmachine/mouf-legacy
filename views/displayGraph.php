@@ -12,6 +12,6 @@ if (count($phpJitNodes)>1) {
 
 </script>
 
-<div id="infovis" style="height:425px;width:425px"></div>    
+<div id="infovis" style="height:672px;width:672px"></div>    
 <div id="log"></div>
 <div id="inner-details"></div>
