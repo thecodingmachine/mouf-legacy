@@ -11,6 +11,7 @@ div.topslidermenu div.topslidermenumaincontent {
 	background-color: #f7f7f7;	
 	width: 100%;
 	display: none;
+	border-bottom: 3px solid black;
 }
 
 div.topslidermenu div.topslidermenumaincontent > ul {
@@ -23,13 +24,19 @@ div.topslidermenu div.topslidermenumaincontent > ul {
 }
 
 div.topslidermenu div.topslidermenumaincontent > ul > li {
+	/*
 	min-width: 100px;
-	max-width: 300px;
+	max-width: 300px;*/
+	width: 150px;
 	border: solid 1px #333333;
 	float: left;
 	margin: 3px;
 	padding: 3px;
 	text-align: center;
+	font-weight: bold;
+}
+
+div.topslidermenu div.topslidermenumaincontent > ul > li a.active {
 	font-weight: bold;
 }
 
@@ -60,6 +67,16 @@ div.topslidermenu div.topslidermenutabs > ul > li {
 	font-size: 21px;
 	min-width: 100px;
 	text-align: center;
+	-moz-border-radius-bottomright: 8px;
+	-webkit-border-bottom-right-radius: 8px;
+	border-bottom-right-radius: 8px;
+	-moz-border-radius-bottomleft: 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	border-bottom-left-radius: 8px;
+	border-bottom: 3px solid black;
+	border-left: 3px solid black;
+	border-right: 3px solid black;
+	margin-top: -3px;
 }
 
 div.topslidermenu div.topslidermenutabs > ul > li.topslidermenuactive {

@@ -5,6 +5,11 @@
 	The DB_Stats can be used to initalize the aggregation tables and automatically create triggers that will update data in real time.</shortDescription>
 	<docUrl>../../plugins/database/dbstats/1.0/doc/index.html</docUrl>
 	<logo>icon.png</logo>
+	<!-- TODO: implement the "root" mechanism to put the docroot where we want -->
+	<doc root='doc'>
+		<page title="Introduction to DbStats" url="index.html" />
+		<page title="The query mechanism" url="DB_Stats_Query.html" />
+	</doc>
 	<dependencies>
 		<dependency>
 			<group>database</group>

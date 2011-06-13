@@ -81,14 +81,19 @@ class TopSliderMenuRenderer implements HtmlElementInterface {
 				echo 'class="'.$menuCssClass.'"';
 			}
 			echo '>';
-			$url = $menuItem->getUrl();
+			$url = $menuItem->getLink();
 			if ($url) {
-				echo '<a href="'.$url.'" >';
+				echo '<a ';
+				if ($menuItem->isActive()) {
+					echo 'class="active" ';
+				}
+				$url = str_replace('"', "&quot;", $url);
+				echo 'href="'.$url.'" >';
 			}
 			echo $menuItem->getLabel();
 			$children = $menuItem->getChildren();
 			if ($children) {
-				echo '<div class="content"><ul class="menu">';
+				echo '<div class="content"><ul >';
 				foreach ($children as $child) {
 					/* @var $child MenuItemInterface */
 					$this->renderHtmlMenuItem($child);

@@ -1,15 +1,4 @@
 <?php
-MoufManager::getMoufManager()->declareComponent('splashAdminLabelMenuItem', 'SplashMenuItem', true);
-MoufManager::getMoufManager()->setParameter('splashAdminLabelMenuItem', 'menuText', '<b>Splash</b>');
-MoufManager::getMoufManager()->setParameter('splashAdminLabelMenuItem', 'menuLink', '');
-MoufManager::getMoufManager()->setParameter('splashAdminLabelMenuItem', 'menuCssClass', '');
-MoufManager::getMoufManager()->setParameter('splashAdminLabelMenuItem', 'propagatedUrlParameters', false);
-
-MoufManager::getMoufManager()->declareComponent('splashAdminApacheConfigItem', 'SplashMenuItem', true);
-MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'menuText', 'Configure Apache redirection');
-MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'menuLink', 'mouf/splashApacheConfig/');
-MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'menuCssClass', '');
-MoufManager::getMoufManager()->setParameter('splashAdminApacheConfigItem', 'propagatedUrlParameters', array('selfedit'));
 
 MoufManager::getMoufManager()->declareComponent('splashGenerateService', 'SplashGenerateService', true);
 
@@ -21,8 +10,9 @@ MoufManager::getMoufManager()->declareComponent('splashinstall', 'SplashInstallC
 MoufManager::getMoufManager()->bindComponent('splashinstall', 'template', 'installTemplate');
 MoufManager::getMoufManager()->bindComponent('splashinstall', 'splashGenerateService', 'splashGenerateService');
 
-MoufManager::getMoufManager()->getInstance("actionMenu")->menuItems[] = MoufManager::getMoufManager()->getInstance("splashAdminLabelMenuItem");
-MoufManager::getMoufManager()->getInstance("actionMenu")->menuItems[] = MoufManager::getMoufManager()->getInstance("splashAdminApacheConfigItem");
+
+MoufUtils::registerMenuItem('splashSubMenu', 'Splash MVC', null, 'moufSubMenu', 45);
+MoufUtils::registerMenuItem('splashAdminApacheConfig2Item', 'Configure Apache redirection', 'mouf/splashApacheConfig/', 'splashSubMenu', 45);
 
 MoufManager::getMoufManager()->declareComponent('splashHtaccessValidator', 'MoufBasicValidationProvider', true);
 MoufManager::getMoufManager()->setParameter('splashHtaccessValidator', 'name', 'Splash validator');

@@ -1,21 +1,6 @@
 <?php
-MoufManager::getMoufManager()->declareComponent('cacheInterfaceAdminLabelMenuItem', 'SplashMenuItem', true);
-MoufManager::getMoufManager()->setParameter('cacheInterfaceAdminLabelMenuItem', 'menuText', '<b>Cache management</b>');
-MoufManager::getMoufManager()->setParameter('cacheInterfaceAdminLabelMenuItem', 'menuLink', '');
-MoufManager::getMoufManager()->setParameter('cacheInterfaceAdminLabelMenuItem', 'menuCssClass', '');
-MoufManager::getMoufManager()->setParameter('cacheInterfaceAdminLabelMenuItem', 'propagatedUrlParameters', false);
-
-MoufManager::getMoufManager()->declareComponent('cacheInterfacePurgeMenuItem', 'SplashMenuItem', true);
-MoufManager::getMoufManager()->setParameter('cacheInterfacePurgeMenuItem', 'menuText', 'Purge all caches');
-MoufManager::getMoufManager()->setParameter('cacheInterfacePurgeMenuItem', 'menuLink', 'mouf/purgeCaches/');
-MoufManager::getMoufManager()->setParameter('cacheInterfacePurgeMenuItem', 'menuCssClass', '');
-MoufManager::getMoufManager()->setParameter('cacheInterfacePurgeMenuItem', 'propagatedUrlParameters', array (
-  0 => 'selfedit',
-));
-
-$actionMenu = MoufManager::getMoufManager()->getInstance("actionMenu");
-$actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("cacheInterfaceAdminLabelMenuItem");
-$actionMenu->menuItems[] = MoufManager::getMoufManager()->getInstance("cacheInterfacePurgeMenuItem");
+MoufUtils::registerMenuItem('cacheInterfaceAdminSubMenu', 'Cache management', null, 'moufSubMenu', 50);
+MoufUtils::registerMenuItem('cacheInterfacePurgeAllCachesMenuItem', 'Purge all caches', 'mouf/purgeCaches/', 'cacheInterfaceAdminSubMenu', 10);
 
 // Controller declaration
 MoufManager::getMoufManager()->declareComponent('purgeCaches', 'PurgeCacheController', true);

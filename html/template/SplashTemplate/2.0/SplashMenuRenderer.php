@@ -26,7 +26,7 @@ class SplashMenuRenderer implements HtmlElementInterface {
 	}
 	
 	public function toHtml() {
-		if (!$this->menu->isHidden()) {
+		if ($this->menu && !$this->menu->isHidden()) {
 			echo '<div class="content"><ul class="menu">';
 			
 			$menuItems = $this->menu->getChildren();
@@ -48,7 +48,7 @@ class SplashMenuRenderer implements HtmlElementInterface {
 				echo 'class="'.$menuCssClass.'"';
 			}
 			echo '>';
-			$url = $menuItem->getUrl();
+			$url = $menuItem->getLink();
 			if ($url) {
 				echo '<a href="'.$url.'" >';
 			}

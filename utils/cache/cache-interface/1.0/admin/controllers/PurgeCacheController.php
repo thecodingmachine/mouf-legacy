@@ -25,6 +25,9 @@ class PurgeCacheController extends Controller {
 	 * @Logged
 	 */
 	public function defaultAction($selfedit = "false", $done = "false") {
+		$menu = MoufManager::getMoufManager()->getInstance('cacheInterfacePurgeAllCachesMenuItem');
+		$menu->setIsActive(true);
+		
 		$this->selfedit = $selfedit;
 		$this->done = $done;
 		$this->template->addContentFile(dirname(__FILE__)."/../views/purge.php", $this);

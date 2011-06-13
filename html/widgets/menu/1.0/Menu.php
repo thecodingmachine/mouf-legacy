@@ -55,6 +55,15 @@ class Menu implements MenuInterface {
 	}
 	
 	/**
+	 * Adds one child menu item to this menu item.
+	 * 
+	 * @param MenuItem $child
+	 */
+	public function addChild(MenuItem $child) {
+		$this->children[] = $child;
+	}
+	
+	/**
 	 * If set, this display condition is tested. If it returns false, the menu will be hidden.
 	 * 
 	 * @Property

@@ -88,6 +88,13 @@ class MenuItem implements MenuItemInterface {
 	private $priority;
 	
 	/**
+	 * If the URL of the current page matches the URL of the link, the link will be considered as "active".
+	 * 
+	 * @var bool
+	 */
+	private $activateBasedOnUrl = true;
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param string $label
@@ -142,10 +149,28 @@ class MenuItem implements MenuItemInterface {
 	
 	/**
 	 * Returns a list of children elements for the menu (if there are some).
+	 * 
+	 * @see MenuItemInterface::getChildren()
 	 * @return array<MenuItemInterface>
 	 */
 	public function getChildren() {
+		if ($this->sorted == false && $this->children) {
+			usort($this->children, array($this, "compareMenuItems"));
+			$this->sorted = true;
+		}
 		return $this->children;
+	}
+	
+	private $sorted = false;
+	
+	public function compareMenuItems(MenuItem $item1, MenuItem $item2) {
+		$priority1 = $item1->getPriority();
+		$priority2 = $item2->getPriority();
+		if ($priority1 === null && $priority2 === null) {
+			// If no priority is set, let's keep the default ordering (which happens is usort by always returning positive numbers...) 
+			return 1;	
+		}
+		return $priority1 - $priority2;
 	}
 	
 	/**
@@ -155,6 +180,7 @@ class MenuItem implements MenuItemInterface {
 	 * @param array<MenuItemInterface> $children
 	 */
 	public function setChildren(array $children) {
+		$this->sorted = false;
 		$this->children = $children;
 	}
 
@@ -164,6 +190,7 @@ class MenuItem implements MenuItemInterface {
 	 * @param MenuItemInterface $menuItem
 	 */
 	public function addMenuItem(MenuItemInterface $menuItem) {
+		$this->sorted = false;
 		$this->children[] = $menuItem;
 	}
 	
@@ -172,7 +199,16 @@ class MenuItem implements MenuItemInterface {
 	 * @return bool
 	 */
 	public function isActive() {
-		return $this->isActive;
+		if ($this->isActive) {
+			return true;
+		}
+		// TODO: really compare URLs instead of performin a strpos.
+		// We can do this using the parse_url function
+		//var_dump(parse_url(ROOT_URL.$this->url));
+		if ($this->activateBasedOnUrl && $this->url && strpos($_SERVER['REQUEST_URI'], ROOT_URL.$this->url) !== false) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -208,7 +244,7 @@ class MenuItem implements MenuItemInterface {
 	 * @Property
 	 * @param bool $isExtended
 	 */
-	public function setIsExtended($isExtended) {
+	public function setIsExtended($isExtended = true) {
 		$this->isExtended = $isExtended;
 	}
 	
@@ -234,7 +270,8 @@ class MenuItem implements MenuItemInterface {
 	/**
 	 * Level of priority used to order the menu items.
 	 * 
-	 * @var float
+	 * @Property
+	 * @param float $priority
 	 */
 	public function setPriority($priority) {
 		$this->priority = $priority;
@@ -298,6 +335,7 @@ class MenuItem implements MenuItemInterface {
 	 * For instance, if the parameter "mode" is set to 42 on the page (because the URL is http://mywebsite/myurl?mode=42),
 	 * then if you choose to propagate the "mode" parameter, the menu link will have "mode=42" as a parameter.
 	 *
+	 * @Property
 	 * @param array<string> $propagatedUrlParameters
 	 */
 	public function setPropagatedUrlParameters($propagatedUrlParameters) {
@@ -305,8 +343,15 @@ class MenuItem implements MenuItemInterface {
 	}
 	
 	
-	private function getLinkWithParams() {
-		$link = $this->getLink();
+	/**
+	 * Returns the absolute URL, with parameters if required.
+	 * @return string
+	 */
+	public function getLink() {
+		if (!$this->url) {
+			return null;
+		}
+		$link = $this->getLinkWithoutParams();
 		
 		$params = array();
 		// First, get the list of all parameters to be propagated
@@ -334,16 +379,25 @@ class MenuItem implements MenuItemInterface {
 		return $link;
 	}
 	
-	private function getLink() {
-		if (strpos($this->menuLink, "/") === 0
-			|| strpos($this->menuLink, "javascript:") === 0
-			|| strpos($this->menuLink, "http://") === 0
-			|| strpos($this->menuLink, "https://") === 0) {
-			return $this->menuLink;	
+	private function getLinkWithoutParams() {
+		if (strpos($this->url, "/") === 0
+			|| strpos($this->url, "javascript:") === 0
+			|| strpos($this->url, "http://") === 0
+			|| strpos($this->url, "https://") === 0) {
+			return $this->url;	
 		}
 		
-		return ROOT_URL.$this->menuLink;
+		return ROOT_URL.$this->url;
 	}
 	
+	/**
+	 * If the URL of the current page matches the URL of the link, the link will be considered as "active".
+	 * 
+	 * @Property
+	 * @param bool $activateBasedOnUrl
+	 */
+	public function setActivateBasedOnUrl($activateBasedOnUrl = true) {
+		$this->activateBasedOnUrl = $activateBasedOnUrl;
+	}
 }
 ?>
