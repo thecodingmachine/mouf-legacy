@@ -5,6 +5,7 @@
 	database model.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/tdbm/doc/manual.html</docUrl>
 	<logo>icon.png</logo>
+	<!-- The list of dependencies -->
 	<dependencies>
 		<dependency>
 			<group>database</group>
@@ -16,7 +17,6 @@
 			<name>cache-interface</name>
 			<version>1.0</version>
 		</dependency>
-		<!-- The dependencies below are not compulsory but are used by the default install process -->
 		<dependency>
 			<group>utils/cache</group>
 			<name>no-cache</name>
@@ -28,14 +28,17 @@
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
+	<!-- The files to be requested in the application -->
 	<requires>
 		<require>TDBM_Service.php</require>
 	</requires>
+	<!-- The files to be requested in the Mouf interface (to add extra controllers) -->
 	<adminRequires>
 		<require>controllers/TdbmController.php</require>
 		<require>controllers/TdbmInstallController.php</require>
 		<require>TdbmAdmin.php</require>
 	</adminRequires>
+	<!-- The package install process -->
 	<install>
 		<url>mouf/tdbminstall/</url>
 	</install>
