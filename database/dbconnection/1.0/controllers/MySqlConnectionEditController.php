@@ -27,10 +27,10 @@ class MySqlConnectionEditController extends AbstractMoufInstanceController {
 	 * If the connection parameters are incorrect, returns an empty JSON array 
 	 * 
 	 * @Action
-	 * @param $host
-	 * @param $port
-	 * @param $user
-	 * @param $password
+	 * @param string $host
+	 * @param string $port
+	 * @param string $user
+	 * @param string $password
 	 */
 	public function getDbList($host, $port, $user, $password) {
 		require_once dirname(__FILE__).'/../DB_Column.php';
@@ -64,14 +64,13 @@ class MySqlConnectionEditController extends AbstractMoufInstanceController {
 	 * The action to save the instance.
 	 * 
 	 * @Action
-	 * @param $name Instance name
-	 * @param $selfedit
-	 * @param $host
-	 * @param $port
-	 * @param $user
-	 * @param $password
-	 * @param $dbname
-	 * @return unknown_type
+	 * @param string $name Instance name
+	 * @param bool $selfedit
+	 * @param string $host
+	 * @param string $port
+	 * @param string $user
+	 * @param string $password
+	 * @param string $dbname
 	 */
 	public function save($name, $selfedit, $host, $port, $user, $password, $dbname) {
 		$this->initController($name, $selfedit);

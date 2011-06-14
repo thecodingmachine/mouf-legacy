@@ -317,7 +317,7 @@ class DrupalTemplate extends BaseTemplate  {
 	
 	/**
 	 * 
-	 * @param $array array<HtmlElementInterface>
+	 * @param array<HtmlElementInterface> $array
 	 * @return string
 	 */
 	private function getHtmlArray($array) {

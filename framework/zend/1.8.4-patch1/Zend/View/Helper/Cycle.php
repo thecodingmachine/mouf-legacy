@@ -91,7 +91,7 @@ class Zend_View_Helper_Cycle implements Iterator
     /**
      * Sets actual name of cycle
      *
-     * @param $name
+     * @param string $name
      * @return Zend_View_Helper_Cycle
      */
     public function setName($name = self::DEFAULT_NAME)
@@ -110,7 +110,7 @@ class Zend_View_Helper_Cycle implements Iterator
     /**
      * Gets actual name of cycle
      *
-     * @param $name
+     * @param string $name
      * @return string
      */
     public function getName()

@@ -43,7 +43,7 @@ class CalendarDataSource implements CalendarDataSourceInterface {
 	
 	/**
 	 * Add category to the data source
-	 * @param $name string Category name
+	 * @param string $name string Category name
 	 * @param $id mixed You can add a id to simplify the element search (like a database id).
 	 * @param $style_category string A css style of your category
 	 * @param $style_tooltip string A css style of the tooltip category
@@ -60,7 +60,7 @@ class CalendarDataSource implements CalendarDataSourceInterface {
 	
 	/**
 	 * Search a category with its name
-	 * @param $name string Name searched
+	 * @param string $name string Name searched
 	 * @return <CategoryInterface> or null
 	 */
 	function getCategoryByName($name) {
@@ -73,7 +73,7 @@ class CalendarDataSource implements CalendarDataSourceInterface {
 
 	/**
 	 * Search a category with its id
-	 * @param $name mixed Id searched
+	 * @param string $name mixed Id searched
 	 * @return <CategoryInterface> or null
 	 */
 	function getCategoryById($id) {

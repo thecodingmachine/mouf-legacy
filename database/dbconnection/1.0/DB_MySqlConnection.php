@@ -631,7 +631,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 * - datetime
 	 * - date
 	 * 
-	 * @param $type string
+	 * @param string $type
 	 * @return string
 	 */
 	public function getUnderlyingType($type) {

@@ -101,8 +101,8 @@ class SplashInstallController extends Controller {
 	 * This action generates the TDBM instance, then the DAOs and Beans. 
 	 * 
 	 * @Action
-	 * @param $name
-	 * @param $selfedit
+	 * @param string $name
+	 * @param bool $selfedit
 	 */
 	public function generate($controllerdirectory, $viewdirectory, $selfedit="false") {
 		$this->selfedit = $selfedit;		

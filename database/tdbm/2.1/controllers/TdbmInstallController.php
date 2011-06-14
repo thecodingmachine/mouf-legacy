@@ -104,8 +104,8 @@ class TdbmInstallController extends Controller {
 	 * This action generates the TDBM instance, then the DAOs and Beans. 
 	 * 
 	 * @Action
-	 * @param $name
-	 * @param $selfedit
+	 * @param string $name
+	 * @param bool $selfedit
 	 */
 	public function generate($daodirectory, $beandirectory, $selfedit="false") {
 		$this->selfedit = $selfedit;

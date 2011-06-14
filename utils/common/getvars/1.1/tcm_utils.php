@@ -76,10 +76,11 @@ function dbdate_to_displaydate($strDate, $ccode="en", $long=false)
 /**
  * Returns the content of a REQUEST or SESSION or COOKIE parameter.
  * This function does automatically remove any added \
- * 
+ * If type is boolean the value will be converted to true if the value is 1, 'on' or 'true'
+ * the value will be converted to false if the value is 0, 'off', 'false' or empty
  *
  * @param string $var The name of the Request or Session parameter.
- * @param string $type Can be "string", "int", "float", "date", "array" or "unknown_type"
+ * @param string $type Can be "string", "int", "float", "date", "array", "boolean" (or "bool") or "unknown_type"
  * @param bool $compulsory Can be true or false
  * @param unknown_type $default_value Default value of not compulsory
  * @param string $origin A string containing R and S or C. R for Request, S for Session, C for Cookie. So this can be "R","S","RSC" or whatever. The first found will stop the search.
@@ -115,6 +116,16 @@ function get($var, $type="unknown_type", $compulsory=false, $default_value=false
 					}
 					return $_REQUEST[$var];
 				}
+				elseif ($type=='bool' || $type=='boolean')
+				{
+					if(strcasecmp($_REQUEST[$var], 'false') || empty($_REQUEST[$var]) || strcasecmp($_REQUEST[$var], 'off'))
+						return false;
+						
+					if(strcasecmp($_REQUEST[$var], 'true') || $_REQUEST[$var] == 1 || strcasecmp($_REQUEST[$var], 'on'))
+						return true;
+					
+					throw new TcmUtilsException('<b>Error!</b> The '.$var.' field must be a boolean');
+				}
 				elseif ($type=='float')
 				{
 					if (!is_numeric($_REQUEST[$var]))
@@ -138,7 +149,7 @@ function get($var, $type="unknown_type", $compulsory=false, $default_value=false
 				}
 				else 
 				{
-					throw new TcmUtilsException('<b>Error!</b> Unknown required type "'.$type.'" on "'.$var.'". Must be one "string", "int", "float" and "date"');
+					throw new TcmUtilsException('<b>Error!</b> Unknown required type "'.$type.'" on "'.$var.'". Must be one "string", "int", "float", "boolean" (or "bool") and "date"');
 				}
 			}
 		}
@@ -169,6 +180,16 @@ function get($var, $type="unknown_type", $compulsory=false, $default_value=false
 						throw new TcmUtilsException('<b>Error!</b> The '.$var.' field must be an integer');
 					}
 					return $_SESSION[$var];
+				}
+				elseif ($type=='bool' || $type=='boolean')
+				{
+					if(strcasecmp($_SESSION[$var], 'false') || empty($_SESSION[$var]) || strcasecmp($_SESSION[$var], 'off'))
+						return false;
+						
+					if(strcasecmp($_SESSION[$var], 'true') || $_SESSION[$var] == 1 || strcasecmp($_SESSION[$var], 'on') || $_SESSION[$var] === true)
+						return true;
+					
+					throw new TcmUtilsException('<b>Error!</b> The '.$var.' field must be a boolean');
 				}
 				elseif ($type=='float')
 				{
@@ -223,6 +244,16 @@ function get($var, $type="unknown_type", $compulsory=false, $default_value=false
 						throw new TcmUtilsException('<b>Error!</b> The '.$var.' field must be an integer');
 					}
 					return $_COOKIE[$var];
+				}
+				elseif ($type=='bool' || $type=='boolean')
+				{
+					if(strcasecmp($_COOKIE[$var], 'false') || empty($_COOKIE[$var]) || strcasecmp($_COOKIE[$var], 'off'))
+						return false;
+						
+					if(strcasecmp($_COOKIE[$var], 'true') || $_COOKIE[$var] == 1 || strcasecmp($_COOKIE[$var], 'on'))
+						return true;
+					
+					throw new TcmUtilsException('<b>Error!</b> The '.$var.' field must be a boolean');
 				}
 				elseif ($type=='float')
 				{

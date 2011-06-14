@@ -31,8 +31,8 @@ class MoufDatasourceInstanceController extends AbstractMoufInstanceController {
 	 * This action generates the columns instances for the jqGrid instance passed in parameter. 
 	 * 
 	 * @Action
-	 * @param $name
-	 * @param $selfedit
+	 * @param string $name
+	 * @param bool $selfedit
 	 */
 	public function generate($name, $prefix, $selfedit="false") {
 		$this->initController($name, $selfedit);

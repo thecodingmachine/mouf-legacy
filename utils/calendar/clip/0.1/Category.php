@@ -19,7 +19,7 @@ class Category implements CategoryInterface {
 	
 	/**
 	 * Set the name
-	 * @param $name string
+	 * @param string $name string
 	 */
 	function setName($name) {
 		$this->name = $name;

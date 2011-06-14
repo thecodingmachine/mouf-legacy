@@ -183,7 +183,7 @@ abstract class Zend_View_Helper_FormElement extends Zend_View_Helper_HtmlElement
      *
      * @access protected
      *
-     * @param $name The element name.
+     * @param string $name The element name.
      *
      * @param $value The element value.
      *
