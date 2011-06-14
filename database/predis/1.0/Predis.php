@@ -16,7 +16,7 @@ spl_autoload_register(function($class) {
  * @author Paul Bouchequet <p.bouchequet@thecodingmachine.com>
  * @Component
  */
-class Predis extends Predis\Client
+class Predis
 {
 	/**
 	 * The Redis host instance IP address
@@ -45,13 +45,27 @@ class Predis extends Predis\Client
 	 */
 	public $database = 15;
 	
-	public function __construct()
-	{
-		parent::__construct(array(
-    		'host'     => $this->host,
-    		'port'     => $this->port,
-    		'database' => $this->database
-		));
-	}
+	/**
+	 * The Predis client instance.
+	 * 
+	 * @var Predis\Client
+	 */
+	private $redis;
 	
+	/**
+	 * Execute all requested functions
+	 */
+	public function __call($method, $args)
+	{
+		if($this->redis == null)
+		{
+			$this->redis = new Predis\Client(array(
+    					'host'     => $this->host,
+    					'port'     => $this->port,
+    					'database' => $this->database
+						));
+		}
+		
+		return call_user_func_array(array($this->redis, $method),$args);
+	}
 }
