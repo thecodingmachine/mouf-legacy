@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Redis Cache</displayName>
+	<shortDescription>This package contains a cache mechanism that uses Redis to cache data.
+	</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>database</group>
+			<name>predis</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/cache</group>
+			<name>cache-interface</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>RedisCache.php</require>
+	</requires>
+</package>
