@@ -28,7 +28,7 @@ class MoufGroupDescriptor {
 	 * The group is created if it does not exist.
 	 * If the group name contains slashes (if this represents a set of groups), the last subgroup will be returned.
 	 * 
-	 * @param $name
+	 * @param string $name
 	 * @return MoufGroupDescriptor
 	 */
 	public function getGroup($name) {
@@ -51,7 +51,7 @@ class MoufGroupDescriptor {
 	 * Returns the package version container whose name is "$name".
 	 * The container is created if it does not exist.
 	 * 
-	 * @param $name
+	 * @param string $name
 	 * @return MoufPackageVersionsContainer
 	 */
 	public function getPackageContainer($name) {

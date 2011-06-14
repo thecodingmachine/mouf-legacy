@@ -19,7 +19,7 @@ class MoufPackageVersionsContainer {
 	 * Returns the package version whose version is "$version".
 	 * Returns null of the version is not found.
 	 * 
-	 * @param $name
+	 * @param string $name
 	 * @return MoufPackage
 	 */
 	public function getPackage($version) {

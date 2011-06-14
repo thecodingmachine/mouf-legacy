@@ -404,8 +404,9 @@ class MoufPackageManager {
 	 * Returns the list of children (packages that depend upon this package (recursively) for this package.
 	 * The version of the real installed packages can be replaced using the $updateList array that binds a group/name to a new version number.
 	 * 
-	 * @param $package
-	 * @param $moufManager
+	 * @param MoufPackage $package
+	 * @param MoufManager $moufManager
+	 * @param array $updateList
 	 * @return array<MoufPackage>
 	 */
 	public function getInstalledPackagesUsingThisPackage(MoufPackage $package, MoufManager $moufManager, array $updateList = array()) {

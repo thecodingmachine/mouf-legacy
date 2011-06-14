@@ -9,7 +9,7 @@ class MoufAnnotationHelper {
 	/**
 	 * Returns a list from the string. The string can be specified as "toto", "tata", "titi"
 	 *
-	 * @param $value string
+	 * @param string $value
 	 * @return array<string>
 	 */
 	public static function getValueAsList($value) {

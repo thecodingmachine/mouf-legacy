@@ -201,7 +201,7 @@ class MoufDependencyDescriptor {
 	/**
 	 * Checks if the version passed in parameter is compatible with the dependency requirements.
 	 * 
-	 * @param $v2 The version to match to the dependency.
+	 * @param string $v2 The version to match to the dependency.
 	 */
 	public function isCompatibleWithVersion($v2) {
 		
