@@ -30,7 +30,6 @@ jQuery(function(){
 <button id="gmailDefault">Use Gmail default (test machine on Windows)</button>
 
 <form action="install">
-<input type="hidden" id="name" name="name" value="<?php echo plainstring_to_htmlprotected($this->instanceName) ?>" />
 <input type="hidden" id="selfedit" name="selfedit" value="<?php echo plainstring_to_htmlprotected($this->selfedit) ?>" />
 
 <p>The IP address or URL of your SMTP server. This is usually 'localhost'.</p>
