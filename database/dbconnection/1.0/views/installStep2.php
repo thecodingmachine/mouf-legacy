@@ -26,7 +26,6 @@ jQuery(function(){
 <h1>Configure your MySQL connection</h1>
 
 <form action="install">
-<input type="hidden" id="name" name="name" value="<?php echo plainstring_to_htmlprotected($this->instanceName) ?>" />
 <input type="hidden" id="selfedit" name="selfedit" value="<?php echo plainstring_to_htmlprotected($this->selfedit) ?>" />
 
 <p>The IP address or URL of your database server. This is usually 'localhost'.</p>

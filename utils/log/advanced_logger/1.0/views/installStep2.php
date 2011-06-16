@@ -3,7 +3,6 @@
 <h1>Configure the advanced mail logger</h1>
 
 <form action="install">
-<input type="hidden" id="name" name="name" value="<?php echo plainstring_to_htmlprotected($this->instanceName) ?>" />
 <input type="hidden" id="selfedit" name="selfedit" value="<?php echo plainstring_to_htmlprotected($this->selfedit) ?>" />
 
 <p>The object used to create log stats:</p>
