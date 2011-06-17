@@ -5,7 +5,8 @@
  * This is very useful used with the DB_Logger (because the DB_Logger uses the "category" additional parameter to sort the logs.
  * Using this filter, you can automatically classify your logs in categories based on the message received. 
  * 
- * @author david
+ * @author David Negrier
+ * @Component
  */
 class EnhanceCategoryLogFilter implements LogFilterInterface {
 	

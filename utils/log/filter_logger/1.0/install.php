@@ -14,12 +14,12 @@ if (!$moufManager->instanceExists("enhanceCategoryLogFilter")) {
 	$moufManager->setParameter("enhanceCategoryLogFilter", "splitPosition", "30");
 }
 
-if (!$moufManager->instanceExists("filterLogger")) {
+/*if (!$moufManager->instanceExists("filterLogger")) {
 	$moufManager->declareComponent("filterLogger", "FilterLogger");
 	// TODO: provide a default logger
 	//$moufManager->bindComponent("filterLogger", "logger", TODO);
 	$moufManager->bindComponents("filterLogger", "filters", array("enhanceCategoryLogFilter"));
-}
+}*/
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();
