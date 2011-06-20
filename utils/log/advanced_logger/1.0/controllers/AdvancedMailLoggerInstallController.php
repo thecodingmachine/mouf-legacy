@@ -124,6 +124,7 @@ class AdvancedMailLoggerInstallController extends Controller  {
 			$moufManager->bindComponent("advancedMailLogger", "mailService", $mailServiceInstance);
 			$moufManager->setParameter("advancedMailLogger", "from", "ADVANCED_STATS_LOGGER_FROM", "config");
 			$moufManager->setParameter("advancedMailLogger", "to", "ADVANCED_STATS_LOGGER_TO", "config");
+			$moufManager->setParameter("advancedMailLogger", "aggregateByCategory", 2);
 			
 		}
 		
