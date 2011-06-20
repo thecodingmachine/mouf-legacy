@@ -27,9 +27,11 @@ class MoufUtils {
 		$moufManager->setParameterViaSetter($instanceName, 'setLabel', $label);
 		$moufManager->setParameterViaSetter($instanceName, 'setUrl', $url);
 		$moufManager->setParameterViaSetter($instanceName, 'setPriority', $priority);
-		$moufManager->setParameterViaSetter($instanceName, 'setPropagatedUrlParameters', array (
-		  0 => 'selfedit',
-		));
+		if (strpos($url, "javascript:") !== 0) {
+			$moufManager->setParameterViaSetter($instanceName, 'setPropagatedUrlParameters', array (
+			  0 => 'selfedit',
+			));
+		}
 
 		$parentMenuItem = MoufManager::getMoufManager()->getInstance($parentMenuItemName);
 		/* @var $parentMenuItem MenuItem */
