@@ -53,7 +53,7 @@ class RepositorySourceController extends Controller {
 			$this->repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
 		}
 		
-		$this->template->addContentFile("views/packages/displayRepositorySources.php", $this);
+		$this->template->addContentFile(ROOT_PATH."mouf/views/packages/displayRepositorySources.php", $this);
 		$this->template->draw();	
 	}
 	
@@ -77,7 +77,7 @@ class RepositorySourceController extends Controller {
 		
 		
 		
-		$this->template->addContentFile("views/packages/editRepository.php", $this);
+		$this->template->addContentFile(ROOT_PATH."mouf/views/packages/editRepository.php", $this);
 		$this->template->draw();
 	}
 	
@@ -99,7 +99,7 @@ class RepositorySourceController extends Controller {
 		}
 		$this->repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
 		
-		$this->template->addContentFile("views/packages/editRepository.php", $this);
+		$this->template->addContentFile(ROOT_PATH."mouf/views/packages/editRepository.php", $this);
 		$this->template->draw();
 	}
 	

@@ -139,7 +139,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		// Furthermore, we will sort packages with different version numbers by version number.
 		// So we will sort by group, then package, then version:
 		uasort($this->moufPackageList, array($this, "comparePackageGroup"));
-		$this->template->addContentFile("views/packages/displayPackagesList.php", $this);
+		$this->template->addContentFile(ROOT_PATH."mouf/views/packages/displayPackagesList.php", $this);
 		$this->template->draw();	
 	}
 	
@@ -257,7 +257,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		//var_dump($this->moufDependencies); exit;
 				
 		if (((!empty($this->moufDependencies[MoufManager::SCOPE_APP]) || !empty($this->moufDependencies[MoufManager::SCOPE_ADMIN])) && $confirm=="false") || $this->toProposeUpgradePackage) {
-			$this->template->addContentFile("views/packages/displayConfirmPackagesEnable.php", $this);
+			$this->template->addContentFile(ROOT_PATH."mouf/views/packages/displayConfirmPackagesEnable.php", $this);
 			$this->template->draw();
 		} else {
 			
@@ -440,7 +440,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		
 		
 		if ((count($this->moufDependencies)>1 || count($this->toDeleteInstance)>0) && $confirm=="false") {
-			$this->template->addContentFile("views/packages/displayConfirmPackagesDisable.php", $this);
+			$this->template->addContentFile(ROOT_PATH."mouf/views/packages/displayConfirmPackagesDisable.php", $this);
 			$this->template->draw();	
 		} else {
 			/*if (!array_search($this->package, $this->moufDependencies)) {

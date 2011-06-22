@@ -76,7 +76,7 @@ class DocumentationController extends Controller {
 		//$this->moufPackageRoot = $this->packageManager->getOrderedPackagesList();
 		$this->packageList = $this->packageManager->getPackagesList();
 		
-		$this->template->addContentFile("views/doc/index.php", $this);
+		$this->template->addContentFile(ROOT_PATH."mouf/views/doc/index.php", $this);
 		$this->template->draw();	
 	}
 	

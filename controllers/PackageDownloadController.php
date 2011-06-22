@@ -62,7 +62,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 			$this->repositoryUrls = $this->moufManager->getVariable("repositoryUrls");
 		}
 		
-		$this->template->addContentFile("views/packages/displayDownloadPackages.php", $this);
+		$this->template->addContentFile(ROOT_PATH."mouf/views/packages/displayDownloadPackages.php", $this);
 		$this->template->draw();	
 	}
 	
