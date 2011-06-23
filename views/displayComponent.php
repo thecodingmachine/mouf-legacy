@@ -275,7 +275,7 @@ foreach ($this->properties as $property) {
 				if (is_array($defaultValues)) {
 					foreach ($defaultValues as $defaultKey=>$defaultValue) {
 						if ($isAssociative) {
-							echo "addNewTextBox($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", true, \"$defaultKey\");\n";
+							echo "addNewTextBox($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", true, \"".addslashes($defaultKey)."\");\n";
 						} else {
 							echo "addNewTextBox($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", false, \"\");\n";
 						}

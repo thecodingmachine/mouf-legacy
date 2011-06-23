@@ -1029,6 +1029,10 @@ class ".$this->mainClassName." {
 		$modInstance = str_replace("\n", "", $modInstance);
 		$modInstance = str_replace("-", "", $modInstance);
 		$modInstance = str_replace(".", "_", $modInstance);
+		// Let's remove anything that is not an authorized character:
+		$modInstance = preg_replace("/[^A-Za-z0-9_]/", "", $modInstance);
+		
+		
 		return "get".strtoupper(substr($modInstance,0,1)).substr($modInstance,1);
 	}
 	
