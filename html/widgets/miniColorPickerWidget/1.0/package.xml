@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>MiniColors Picker Widget</displayName>
+	<shortDescription>This package contains a color-picker widget based on jQuery minicolors module.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>html/widgets</group>
+			<name>BaseHtmlWidget</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-minicolors</name>
+			<version>>=0.1</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>MiniColorsPickerWidget.php</require>
+	</requires>
+</package>

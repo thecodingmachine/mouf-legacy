@@ -2,13 +2,12 @@
 
 /**
  * This class represent a select HTML tag.
- * It can be directly bound to a datagrid to retrieve data.
- * Use HtmlSelectStaticWidget if you want to enter directly the options of the select widget
- * without relying on a datasource.
+ * The data in the select tag is directly entered in the widget.
+ * Use HtmlSelectWidget if you want to bind the data to a datasource.
  *
  * @Component
  */
-class HtmlSelectWidget extends AbstractHtmlInputWidget {
+class HtmlSelectStaticWidget extends AbstractHtmlInputWidget {
 
 	/**
 	 * Number of fields displayed
@@ -18,20 +17,12 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 	private static $count = 0;
 	
 	/**
-	 * Datasource to populate the select box.
+	 * The list of options to populate the select box.
 	 *
 	 * @Property
-	 * @var DataSourceInterface
+	 * @var array<string, string>
 	 */
-	public $datasource;
-	
-	/**
-	 * The column containing the label returned by the select box.
-	 *
-	 * @Property
-	 * @var DataSourceColumnInterface
-	 */
-	public $columnLabel;
+	public $options;
 	
 	/**
 	 * Whether the values displayed inside the select box should be internationalized or not.
@@ -40,22 +31,6 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 	 * @var boolean
 	 */
 	public $enableI18nValues;
-
-	/**
-	 * If the labels are internationalized, this prefix will be applied before internationalization.
-	 *
-	 * @Property
-	 * @var string
-	 */
-	public $i18nValuesPrefix;
-		
-	/**
-	 * Whether to sort the values or not
-	 *
-	 * @Property
-	 * @var boolean
-	 */
-	public $sort = true;
 	
 	/**
 	 * Whether we should propose a default value that is NOT part of the datasource.
@@ -65,14 +40,6 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 	 * @var bool
 	 */
 	public $hasDefaultValue;
-	
-	/**
-	 * The key used by the default value.
-	 *
-	 * @Property
-	 * @var string
-	 */
-	//public $defaultKey;
 	
 	/**
 	 * The string displayed for the default value (the top value).
@@ -147,22 +114,14 @@ class HtmlSelectWidget extends AbstractHtmlInputWidget {
 			echo "</option>\n";
 		}
 		
-		$content = $this->datasource->getRows();
-		
-		
 		// Let's start by translating the content, if needed.
 		$values = array();
-		$labelColumn = $this->columnLabel->getName();
-		foreach ($content as $key=>$row) {
+		foreach ($this->options as $key=>$value) {
 			if ($this->enableI18nValues) {
-				$values[$key] = iMsg($this->i18nValuesPrefix.$row->$labelColumn);
+				$values[$key] = iMsg($value);
 			} else {
-				$values[$key] = $row->$labelColumn;
+				$values[$key] = $value;
 			}
-		}
-		
-		if ($this->sort) {
-			asort($values);
 		}
 		
 		$defaultSelect = null;

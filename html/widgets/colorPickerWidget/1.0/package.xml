@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Color-picker Widget</displayName>
+	<shortDescription>This package contains a color-picker widget based on jQuery colorpicker module.</shortDescription>
+	<docUrl></docUrl>
+	<dependencies>
+		<dependency>
+			<group>html/widgets</group>
+			<name>BaseHtmlWidget</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-colorpicker</name>
+			<version>>=2009.05.23</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>ColorPickerWidget.php</require>
+	</requires>
+</package>

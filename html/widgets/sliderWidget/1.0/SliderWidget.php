@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This class represent a simple HTML input tag for typing text.
+ * This class represent an HTML slider.
  *
  * @Component
  */
@@ -26,6 +26,7 @@ class SliderWidget extends AbstractHtmlInputWidget {
 	 * The minimum value of the slider.
 	 * 
 	 * @Property
+	 * @Compulsory
 	 * @var int
 	 */
 	public $minValue;
@@ -34,6 +35,7 @@ class SliderWidget extends AbstractHtmlInputWidget {
 	 * The maximum value of the slider.
 	 * 
 	 * @Property
+	 * @Compulsory
 	 * @var int
 	 */
 	public $maxValue;
@@ -42,6 +44,7 @@ class SliderWidget extends AbstractHtmlInputWidget {
 	 * The increment value for the slider.
 	 * 
 	 * @Property
+	 * @Compulsory
 	 * @var int
 	 */
 	public $step;
@@ -80,10 +83,6 @@ class SliderWidget extends AbstractHtmlInputWidget {
 		$defaultSelect = null;
 		if ($this->selectDefaultFromRequest) {
 			$defaultSelect = get($this->name, "string", false, null);
-		}
-		
-		if ($this->disabled) {
-			echo ' disabled="disabled"';
 		}
 		
 		$myDefaultValue = $this->minValue;
