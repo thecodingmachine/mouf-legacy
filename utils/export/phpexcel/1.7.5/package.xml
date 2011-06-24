@@ -11,6 +11,9 @@
 	</dependencies>
 	<externalComponentRequires>
 	</externalComponentRequires>
+	<requires>
+		<require autoload="never">PHPExcel.php</require>
+	</requires>
 	<adminRequires>
 		<require>PHPExcel/IOFactory.php</require>
 	</adminRequires>	
