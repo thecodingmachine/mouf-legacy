@@ -73,7 +73,8 @@ class MemcachedCached implements CacheInterface {
 				if(!isset($parameters[1]))
 					$parameters[1] = '11211';
 				$this->memcachedObject->addServer($parameters[0], $parameters[1]);
-				if($this->memcacheObject->getServerStatus($parameters[0], $parameters[1]) != 0)
+				$status = $this->memcacheObject->getStats();
+				if(!$status)
 					$noServer = false;
 			}
 			if($noServer) {
