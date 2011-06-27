@@ -46,6 +46,18 @@ if (!file_exists("../MoufComponents.php")) {
 	 */
 	require_once 'mouf/MoufManager.php';
 	MoufManager::initMoufManager();
+	\$moufManager = MoufManager::getMoufManager();
+
+	\$moufManager->setAllVariables(array (
+	  'repositoryUrls' => 
+	  array (
+		0 => 
+		array (
+		  'name' => 'mouf',
+		  'url' => 'http://www.mouf-php.com/mouf',
+		),
+	  ),
+	));
 	?>";
 	
 	file_put_contents("../MoufComponents.php", $moufComponentsStr);
