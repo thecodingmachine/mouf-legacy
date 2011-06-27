@@ -34,6 +34,7 @@
 	<requires>
 		<require>load.php</require>
 		<require>services/FilterUtils.php</require>
+		<require>services/SplashUtils.php</require>
 		<!--  <require>services/SplashCallback.php</require>  -->
 		<!--  <require>services/SplashUrlManager.php</require> -->
 		<require>services/UrlProviderInterface.php</require>
