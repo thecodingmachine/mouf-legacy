@@ -79,7 +79,14 @@ class TDBM_Service {
 	 * @var array
 	 */
 	private $primary_keys;
-	
+
+	/**
+	 * Whether we should track execution time or not.
+	 * If true, if the execution time reaches 90% of the allowed execution time, the request will stop with an exception. 
+	 * 
+	 * @var bool
+	 */
+	private $trackExecutionTime = true;
 
 	/**
 	 * Table of objects that are cached in memory.
@@ -219,7 +226,16 @@ class TDBM_Service {
 	 	$this->commitOnQuit = $commitOnQuit;
 	}
 	
-	
+	/**
+	 * Whether we should track execution time or not.
+	 * If true, if the execution time reaches 90% of the allowed execution time, the request will stop with an exception. 
+	 * 
+	 * @Property
+	 * @param boolean $trackExecutionTime
+	 */
+	public function setTrackExecutionTime($trackExecutionTime = true) {
+		$this->trackExecutionTime = $trackExecutionTime;
+	}
 
 	
 	/**
@@ -789,7 +805,7 @@ class TDBM_Service {
 				}
 
 				// At each iteration, let's check the time.
-				if (microtime(true)-self::$script_start_up_time > $max_execution_time && $max_execution_time!=0) {
+				if ($this->trackExecutionTime && microtime(true)-self::$script_start_up_time > $max_execution_time && $max_execution_time!=0) {
 					// Call check table names
 					$this->checkTablesExist($tables);
 
