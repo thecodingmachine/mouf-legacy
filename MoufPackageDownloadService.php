@@ -71,7 +71,7 @@ class MoufPackageDownloadService {
 		$response = curl_exec( $ch );
 		
 		if( curl_error($ch) ) { 
-			throw new Exception("An error occured: ".curl_error($ch));
+			throw new MoufException("An error occured: ".curl_error($ch));
 		}
 		curl_close( $ch );
 		
@@ -146,38 +146,60 @@ class MoufPackageDownloadService {
 		$fileName = tempnam(sys_get_temp_dir(), "moufpackage");
 		$fp = fopen($fileName, "w");
 		
-		$url = $repository->getUrl();
-		
-		// preparation de l'envoi
-		$ch = curl_init();
-		if (strrpos($url, "/") !== strlen($url)-1) {
-			$url .= "/";
-		}
-		$url .= "packagesService/download?group=".urlencode($group)."&name=".urlencode($name)."&version=".urlencode($version);
-		curl_setopt( $ch, CURLOPT_URL, $url);
-		curl_setopt( $ch, CURLOPT_POST, FALSE );
-		/**
-		 * Ask cURL to write the contents to a file
-		 */
-		curl_setopt($ch, CURLOPT_FILE, $fp);
-		//curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-		
-		curl_exec( $ch );
-		
-		if( curl_error($ch) ) { 
-			throw new Exception("An error occured: ".curl_error($ch));
-		}
-		curl_close( $ch );
-		
-		fclose($fp);
+		if($fp) {
+			$url = $repository->getUrl();
+			
+			// preparation de l'envoi
+			$ch = curl_init();
+			if (strrpos($url, "/") !== strlen($url)-1) {
+				$url .= "/";
+			}
+			$url .= "packagesService/download?group=".urlencode($group)."&name=".urlencode($name)."&version=".urlencode($version);
+			curl_setopt( $ch, CURLOPT_URL, $url);
+			curl_setopt( $ch, CURLOPT_POST, FALSE );
+			/**
+			 * Ask cURL to write the contents to a file
+			 */
+			curl_setopt($ch, CURLOPT_FILE, $fp);
+//			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+			
+			curl_exec( $ch );
+			
+			if( curl_error($ch) ) { 
+				throw new MoufException("An error occured (CURL): ".curl_error($ch));
+			}
+			curl_close( $ch );
+			
+			// CLose the file
+			$isClose = fclose($fp);
+			if(!$isClose) {
+				throw new MoufException("An error occured at file close.");
+			}
+			
+			// Due to a fclose bug close again the file if necessary
+			// FIXME: http://www.mail-archive.com/php-bugs@lists.php.net/msg127687.html
+			if(is_resource($fp)) {
+        		$isCloseAgain = fclose($fp);
+				if(!$isCloseAgain) {
+					throw new MoufException("An error occured at file close again.");
+				}
+			}
 
-		try {
-			$this->packageManager->unpackPackage(new MoufPackageDescriptor($group, $name, $version), $fileName);
-		} catch (MoufPackageUnzipException $zipException) {
-			throw new Exception("Error while unzipping ZIP file ".$fileName." that is supposed to contain the package ".$group."/".$name."/".$version.". Check the content of the file to understand what is wrong.");
+			try {
+				$this->packageManager->unpackPackage(new MoufPackageDescriptor($group, $name, $version), $fileName);
+			} catch (MoufPackageUnzipException $zipException) {
+				throw new MoufException("Error while unzipping ZIP file ".$fileName." that is supposed to contain the package ".$group."/".$name."/".$version.". Check the content of the file to understand what is wrong.");
+			}
+			
+			if(is_file($fileName) == TRUE 
+					&& file_exists($fileName)) {
+				unlink(realpath($fileName));
+			} else {
+				throw new MoufException("File $fileName is not a file or doesn't exist.");
+			}
+		} else {
+			throw new MoufException("File $fileName doesn't exist.");
 		}
-		
-		unlink($fileName);
 	}
 }
 

@@ -672,6 +672,16 @@ class MoufPackageManager {
 		// create object
 		$zip = new ZipArchive();
 
+		// Zip file does not exist
+		if(!file_exists($fileName)) {
+			throw new MoufException("ZIP file does not exist: '".$fileName."'");
+		}
+		
+		// Test the file size
+		if(filesize($fileName) == 0) {
+			throw new MoufException("ZIP file is empty: '".$fileName."'");
+		}
+		
 		// open output file for writing
 		if ($zip->open($fileName) !== TRUE) {
 		    throw new MoufException("Could not open the ZIP file '".$fileName."'");
@@ -690,7 +700,6 @@ class MoufPackageManager {
 		if (!is_writable(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/")) {
 			throw new MoufException("Unable to write in directory ".ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/");
 		}
-		
 
 	    $res = $zip->extractTo(ROOT_PATH."mouf/".$this->pluginsDir."/".$packageDescriptor->getGroup()."/".$packageDescriptor->getName()."/".$packageDescriptor->getVersion()."/");
 		if (!$res) {
