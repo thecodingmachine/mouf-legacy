@@ -47,8 +47,8 @@ class TopSliderMenuRenderer implements HtmlElementInterface {
 								$this->renderHtmlMenuItem($item);
 							}
 						}
+						echo '</ul>';
 					}
-					echo '</ul>';
 				}
 			}
 			

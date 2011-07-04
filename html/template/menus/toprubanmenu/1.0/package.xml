@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Top Ruban Menu</displayName>
+	<shortDescription>This package contains a menu that ruban from the top of the screen.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html/widgets</group>
+			<name>menu</name>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>TopRubanMenuRenderer.php</require>
+		<require>HtmlMenuTopRubanHead.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>TopRubanExternalComponent.php</require>
+	</externalComponentRequires>
+</package>

@@ -50,7 +50,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 	public $footer;
 
 	/**
-	 * The HTML elements that will be written in the <head> tag.
+	 * The HTML elements that will be written in the &lt;head&gt; tag.
 	 *
 	 * @Property
 	 * @var array<HtmlElementInterface>
@@ -424,7 +424,7 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 	
 	
 	/**
-	 * Adds some content to the <head> tag by calling the function passed in parameter.
+	 * Adds some content to the &lt;head&gt; tag by calling the function passed in parameter.
 	 * @return SplashTemplate
 	 */
 	public function addHeadFunction($function) {

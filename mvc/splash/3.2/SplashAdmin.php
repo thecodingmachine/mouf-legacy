@@ -18,8 +18,9 @@ MoufManager::getMoufManager()->getInstance("validatorService")->validators[] = M
 
 MoufAdmin::getValidatorService()->registerBasicValidator('Splash validator', 'plugins/mvc/splash/3.0/direct/splash_instance_validator.php');
 
-MoufUtils::registerMenuItem('splashSubMenu', 'Splash MVC', null, 'moufSubMenu', 45);
-MoufUtils::registerMenuItem('splashAdminApacheConfig2Item', 'Configure Apache redirection', 'mouf/splashApacheConfig/', 'splashSubMenu', 45);
+MoufUtils::registerMainMenu('mvcMainMenu', 'MVC', null, 'mainMenu', 100);
+MoufUtils::registerMenuItem('mvcSplashSubMenu', 'Splash MVC', null, 'mvcMainMenu', 45);
+MoufUtils::registerMenuItem('mvcSplashAdminApacheConfig2Item', 'Configure Apache redirection', 'mouf/splashApacheConfig/', 'mvcSplashSubMenu', 45);
 
 
 

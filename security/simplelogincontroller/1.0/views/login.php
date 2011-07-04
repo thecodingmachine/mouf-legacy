@@ -10,7 +10,7 @@ if ($this->badCredentials) {
 }
 ?>
 
-<div class="smallcenterbox lightbox">
+<div class="smallcenterbox lightbox login_controller">
 <form class='splash' action='login'  method='post'>
 	<input type='hidden' name='redirect' value='<?php echo plainstring_to_htmlprotected($this->redirecturl) ?>' />
 	<ol>
@@ -22,7 +22,7 @@ if ($this->badCredentials) {
 			<label for='password'><?php echo ($this->i18nPasswordLabel)?iMsg($this->passwordLabel):$this->passwordLabel; ?></label>
 			<input type='password' id='password' name='password' />
 		</li>
-		<li style="text-align: center">
+		<li class="login_controller_submit">
 			<button type='submit' name='action' value='login'><?php echo ($this->i18nLoginSubmitLabel)?iMsg($this->loginSubmitLabel):$this->loginSubmitLabel; ?></button>
 		</li>
 	</ol>

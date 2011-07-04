@@ -26,6 +26,8 @@ class Menu implements MenuInterface {
 	 */
 	private $displayCondition;
 		
+	private $sorted = false;
+	
 	/**
 	 * Constructor.
 	 *
@@ -41,7 +43,21 @@ class Menu implements MenuInterface {
 	 * @return array<MenuItemInterface>
 	 */
 	public function getChildren() {
+		if ($this->sorted == false && $this->children) {
+			usort($this->children, array($this, "compareMenuItems"));
+			$this->sorted = true;
+		}
 		return $this->children;
+	}
+
+	public function compareMenuItems(MenuItem $item1, MenuItem $item2) {
+		$priority1 = $item1->getPriority();
+		$priority2 = $item2->getPriority();
+		if ($priority1 === null && $priority2 === null) {
+			// If no priority is set, let's keep the default ordering (which happens is usort by always returning positive numbers...) 
+			return 1;	
+		}
+		return $priority1 - $priority2;
 	}
 	
 	/**
@@ -51,6 +67,7 @@ class Menu implements MenuInterface {
 	 * @param array<MenuItemInterface> $children
 	 */
 	public function setChildren(array $children) {
+		$this->sorted = false;
 		$this->children = $children;
 	}
 	
@@ -60,6 +77,7 @@ class Menu implements MenuInterface {
 	 * @param MenuItem $child
 	 */
 	public function addChild(MenuItem $child) {
+		$this->sorted = false;
 		$this->children[] = $child;
 	}
 	

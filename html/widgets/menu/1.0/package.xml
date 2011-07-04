@@ -10,7 +10,9 @@
 	<requires>
 		<require>MenuInterface.php</require>
 		<require>MenuItemInterface.php</require>
+		<require>MenuItemStyleInterface.php</require>
 		<require>Menu.php</require>
 		<require>MenuItem.php</require>
+		<require>MenuItemStyleIcon.php</require>
 	</requires>
 </package>

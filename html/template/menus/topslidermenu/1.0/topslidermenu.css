@@ -1,4 +1,14 @@
 
+div.topslidermenu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+div.topslidermenu li {
+	margin: 0;
+}
+
 div.topslidermenu {
 	position: fixed;
 	top: 0px;

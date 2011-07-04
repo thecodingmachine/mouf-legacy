@@ -3,7 +3,8 @@
 MoufManager::getMoufManager()->declareComponent('splashViewUrls', 'SplashViewUrlsController', true);
 MoufManager::getMoufManager()->bindComponent('splashViewUrls', 'template', 'moufTemplate');
 
-MoufUtils::registerMenuItem('splashSubMenu', 'Splash MVC', null, 'moufSubMenu', 45);
-MoufUtils::registerMenuItem('splashAdminUrlsListMenuItem', 'View URLs', 'mouf/splashViewUrls/', 'splashSubMenu', 10);
+MoufUtils::registerMainMenu('mvcMainMenu', 'MVC', null, 'mainMenu', 100);
+MoufUtils::registerMenuItem('mvcSplashSubMenu', 'Splash', null, 'mvcMainMenu', 10);
+MoufUtils::registerMenuItem('mvcSplashAdminUrlsListMenuItem', 'View URLs', 'mouf/splashViewUrls/', 'mvcSplashSubMenu', 10);
 
 ?>

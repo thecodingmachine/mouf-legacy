@@ -1,6 +1,7 @@
 <?php
-MoufUtils::registerMenuItem('cacheInterfaceAdminSubMenu', 'Cache management', null, 'moufSubMenu', 50);
-MoufUtils::registerMenuItem('cacheInterfacePurgeAllCachesMenuItem', 'Purge all caches', 'mouf/purgeCaches/', 'cacheInterfaceAdminSubMenu', 10);
+MoufUtils::registerMainMenu('utilsMainMenu', 'Utils', null, 'mainMenu', 200);
+MoufUtils::registerMenuItem('utilsCacheInterfaceMenu', 'Cache management', null, 'utilsMainMenu', 50);
+MoufUtils::registerMenuItem('utilsCacheInterfacePurgeAllCachesMenuItem', 'Purge all caches', 'mouf/purgeCaches/', 'utilsCacheInterfaceMenu', 10);
 
 // Controller declaration
 MoufManager::getMoufManager()->declareComponent('purgeCaches', 'PurgeCacheController', true);

@@ -1,9 +1,10 @@
 <?php
-MoufUtils::registerMenuItem('fineAdminSubMenu', 'I18N with Fine', null, 'moufSubMenu', 40);
-MoufUtils::registerMenuItem('fineEditTranslationsMenuItem', 'Edit translations', 'mouf/editLabels/missinglabels', 'fineAdminSubMenu', 10);
-MoufUtils::registerMenuItem('fineEnableDisable2MenuItem', 'Enable/Disable translation', 'mouf/editLabels/', 'fineAdminSubMenu', 20);
-MoufUtils::registerMenuItem('fineSupportedLanguages2MenuItem', 'Supported languages', 'mouf/editLabels/supportedLanguages', 'fineAdminSubMenu', 30);
-
+MoufUtils::registerMainMenu('htmlMainMenu', 'HTML', null, 'mainMenu', 40);
+MoufUtils::registerMenuItem('htmlFineMainMenu', 'Fine', null, 'htmlMainMenu', 10);
+MoufUtils::registerMenuItem('htmlFineSupportedLanguagesMenuItem', 'Supported languages', 'javascript:chooseInstancePopup("FinePHPArrayTranslationService", "'.ROOT_URL.'mouf/editLabels/supportedLanguages?name=")', 'htmlFineMainMenu', 40);
+MoufUtils::registerMenuItem('htmlFineEditTranslationMenuItem', 'Edit translations', 'javascript:chooseInstancePopup("FinePHPArrayTranslationService", "'.ROOT_URL.'mouf/editLabels/missinglabels?name=")', 'htmlFineMainMenu', 40);
+MoufUtils::registerMenuItem('htmlFineEnableDisable2MenuItem', 'Enable/Disable translation', 'mouf/editLabels/', 'htmlFineMainMenu', 20);
+MoufUtils::registerMenuItem('htmlFineImportCSV2MenuItem', 'Import/Export', 'mouf/editLabels/excelimport', 'htmlFineMainMenu', 40);
 
 // Controller declaration
 MoufManager::getMoufManager()->declareComponent('editLabels', 'EditLabelController', true);

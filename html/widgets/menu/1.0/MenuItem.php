@@ -95,6 +95,11 @@ class MenuItem implements MenuItemInterface {
 	private $activateBasedOnUrl = true;
 	
 	/**
+	 * @var array<MenuItemStyleInterface>
+	 */
+	private $additionalStyles = array();
+	
+	/**
 	 * Constructor.
 	 *
 	 * @param string $label
@@ -205,9 +210,20 @@ class MenuItem implements MenuItemInterface {
 		// TODO: really compare URLs instead of performin a strpos.
 		// We can do this using the parse_url function
 		//var_dump(parse_url(ROOT_URL.$this->url));
+		
+		$requestUrl = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+		error_log($_SERVER['REQUEST_URI'].' - '.$requestUrl.' - '.ROOT_URL.$this->url);
+		if($this->activateBasedOnUrl) {
+			if($_SERVER['REQUEST_URI'] == ROOT_URL.$this->url)
+				return true;
+			elseif($requestUrl == ROOT_URL.$this->url)
+				return true;
+		}
+		/*
 		if ($this->activateBasedOnUrl && $this->url && strpos($_SERVER['REQUEST_URI'], ROOT_URL.$this->url) !== false) {
 			return true;
 		}
+		*/
 		return false;
 	}
 	
@@ -283,6 +299,59 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function getPriority() {
 		return $this->priority;
+	}
+
+	/**
+	 * Returns the list of additionnal style
+	 * @return array<MenuItemStyleInterface>
+	 */
+	public function getAdditionalStyles() {
+		return $this->additionalStyles;
+	}
+
+	/**
+	 * Returns the one of additionnal style
+	 * @return array<MenuItemStyleInterface>
+	 */
+	public function getAdditionalStyleByType($type) {
+		$return = null;
+		if($this->additionalStyles) {
+			foreach ($this->additionalStyles as $additionalStyle) {
+				if($additionalStyle instanceof $type) {
+					if($return === null)
+						$return = $additionalStyle;
+					else
+						throw new Exception("MenuItem: There are many instance of $type, please use getAdditionalStylesByType function to get all instance");
+				}
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Returns the list of additionnal style
+	 * @return array<MenuItemStyleInterface>
+	 */
+	public function getAdditionalStylesByType($type) {
+		$return = array();
+		if($this->additionalStyles) {
+			foreach ($this->additionalStyles as $additionalStyle) {
+				if($additionalStyle instanceof $type) {
+					$return[] = $additionalStyle;
+				}
+			}
+		}
+		return $return;
+	}
+	
+	/**
+	 * Add menu item style.
+	 * 
+	 * @Property
+	 * @param array<MenuItemStyleInterface> $menuItemStyleInterface
+	 */
+	public function setAdditionalStyles($menuItemStyleInterface) {
+		$this->additionalStyles = $menuItemStyleInterface;
 	}
 	
 	/**

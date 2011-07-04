@@ -68,6 +68,12 @@ interface MenuItemInterface /*extends MenuInterface*/ {
 	 * @return float
 	 */
 	function getPriority();
+	
+	/**
+	 * Returns the list of additionnal style
+	 * @return array<MenuItemStyleInterface>
+	 */
+	function getAdditionalStyles();
 }
 
 ?>
