@@ -263,7 +263,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 	 */ 
 	function displayFieldToolboxButton(MoufPropertyDescriptor $property) {
 		$defaultType = $this->getTypeForProperty($property);
-		echo '<div style="float:right">';
+		echo '<span>';
 		$hideSession = ' style="display:none" ';
 		$hideConfig = ' style="display:none" ';
 		$hideRequest = ' style="display:none" ';
@@ -278,7 +278,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 		echo '<span class="configmarker" '.$hideConfig.'>config</span>';
 		echo '<span class="requestmarker" '.$hideRequest.'>request</span>';
 		echo '<a onclick="onPropertyOptionsClick(\''.$property->getName().'\')" href="javascript:void(0)" ><img src="'.ROOT_URL.'mouf/views/images/bullet_wrench.png" alt="Options" /></a>';
-		echo '</div>';
+		echo '</span>';
 	}
 }
 ?>

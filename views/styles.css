@@ -1,6 +1,8 @@
+ul, li {
+	list-style: none outside none;
+}
 
 div.file {
-	width: 500px;
 	min-height: 20px;
 	border: 1px solid #cccccc;
 	background-color: #eeeeee;
@@ -73,12 +75,7 @@ div.file div.autoload.neverloaded {
 	color:#770000;
 }
 
-div#packageList {
-	width:642px;
-}
-
 div.group {
-	width: 100%;
 	height: 20px;
 	color: #ffffff;
 	background-color: #777777;
@@ -117,7 +114,6 @@ div.outerpackage {
 }
 
 div.package {
-	width: 100%;
 	background-color: #eeeeee;
 	/*color: #EE0038;*/
 	margin-bottom: 10px;
@@ -125,7 +121,7 @@ div.package {
 }
 
 div.packageenabled {
-	background-color: #aaffaa;	
+	background-color: #35B735;	
 }
 
 span.packagename {
@@ -162,7 +158,6 @@ a.viewotherversions {
 }
 
 div.directorytitle {
-	width: 100%;
 	background-color: #777777;
 	color: white;
 	padding: 5px 5px 5px 5px;
@@ -215,11 +210,14 @@ span.requestmarker {
 	padding: 1px 1px 1px 1px;
 }
 
+span.compulsory {
+	color: #A10C27;
+}
+
 div.constant {
 	background-color:#EEEEEE;
 	border:1px solid #CCCCCC;
 	clear:both;
-	width:500px;
 	padding: 2px;
 	margin-bottom: 5px;
 }
@@ -288,3 +286,51 @@ div.validator {
 	background-image: url("images/cross.png");
 }
 
+/****************** Login Page ******************/
+div.login_controller label {
+    float: left;
+    padding-right: 8px;
+    text-align: right;
+    width: 150px;
+}
+
+div.login_controller li.login_controller_submit {
+	margin-left: 200px;
+}
+
+/**************** Component Page ****************/
+form#componentForm div.instance_parameter {
+	width: 59%;
+	float: left;
+}
+
+form#componentForm div#instance_properties {
+	width: 39%;
+	float: right;
+	padding-top: 36px;
+}
+
+form#componentForm div.moufpropertyblock {
+	margin-top: 10px;
+}
+
+form#componentForm label {
+	font-weight: bold;
+}
+
+form#componentForm textarea.string {
+	width: 80%;
+	height: 75px;
+}
+
+form#componentForm div.instance_doc_div_mouf {
+	margin-top: 10px;
+}
+
+form#componentForm table#instance_properties {
+	width: 100%;
+}
+
+form#componentForm table#instance_properties td {
+	vertical-align: top;
+}

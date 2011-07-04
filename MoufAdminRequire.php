@@ -17,6 +17,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'BaseTemplate' => 'mouf/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php',
   'Menu' => 'mouf/../plugins/html/widgets/menu/1.0/Menu.php',
   'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
+  'MenuItemStyleIcon' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon.php',
   'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php',
   'SplashMenuRenderer' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php',
   'HtmlJSJQuery' => 'mouf/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php',
@@ -65,6 +66,11 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'SimpleLoginController' => 'mouf/../plugins/security/simplelogincontroller/1.0/SimpleLoginController.php',
   'LoggedAnnotation' => 'mouf/../plugins/security/userservice-splash/3.0/Logged.php',
   'ScriptTagWidget' => 'mouf/../plugins/html/widgets/scripttagwidget/1.0/ScriptTagWidget.php',
+  'MoufTemplate' => 'mouf/../plugins/html/template/MoufTemplate/1.0/MoufTemplate.php',
+  'GrayMenu' => 'mouf/../plugins/html/template/MoufTemplate/1.0/MoufMenu.php',
+  'GrayMenuItem' => 'mouf/../plugins/html/template/MoufTemplate/1.0/MoufMenuItem.php',
+  'TopRubanMenuRenderer' => 'mouf/../plugins/html/template/menus/toprubanmenu/1.0/TopRubanMenuRenderer.php',
+  'HtmlMenuTopRubanHead' => 'mouf/../plugins/html/template/menus/toprubanmenu/1.0/HtmlMenuTopRubanHead.php',
   'LogInterface' => 'mouf/../plugins/utils/log/log_interface/1.1/LogInterface.php',
   'ConditionInterface' => 'mouf/../plugins/utils/common/conditioninterface/1.0/ConditionInterface.php',
   'Scopable' => 'mouf/../plugins/html/htmlelement/1.0/Scopable.php',
@@ -72,6 +78,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'TemplateInterface' => 'mouf/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php',
   'MenuInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuInterface.php',
   'MenuItemInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemInterface.php',
+  'MenuItemStyleInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemStyleInterface.php',
   'LanguageDetectionInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface.php',
   'LanguageTranslationInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface.php',
   'AuthenticationListenerInterface' => 'mouf/../plugins/security/userservice/1.0/AuthenticationListenerInterface.php',
@@ -148,8 +155,10 @@ require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/Template
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php';
 require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuInterface.php';
 require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemInterface.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleInterface.php';
 require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/Menu.php';
 require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItem.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon.php';
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php';
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
@@ -208,6 +217,11 @@ require_once $localFilePath.'/../plugins/mvc/splash/3.2/models/Splash.php';
 require_once $localFilePath.'/../plugins/security/simplelogincontroller/1.0/SimpleLoginController.php';
 require_once $localFilePath.'/../plugins/security/userservice-splash/3.0/Logged.php';
 require_once $localFilePath.'/../plugins/html/widgets/scripttagwidget/1.0/ScriptTagWidget.php';
+require_once $localFilePath.'/../plugins/html/template/MoufTemplate/1.0/MoufTemplate.php';
+require_once $localFilePath.'/../plugins/html/template/MoufTemplate/1.0/MoufMenu.php';
+require_once $localFilePath.'/../plugins/html/template/MoufTemplate/1.0/MoufMenuItem.php';
+require_once $localFilePath.'/../plugins/html/template/menus/toprubanmenu/1.0/TopRubanMenuRenderer.php';
+require_once $localFilePath.'/../plugins/html/template/menus/toprubanmenu/1.0/HtmlMenuTopRubanHead.php';
 
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';
