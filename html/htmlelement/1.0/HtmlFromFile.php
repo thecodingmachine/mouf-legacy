@@ -43,13 +43,13 @@ class HtmlFromFile implements HtmlElementInterface {
 		if (strpos($this->fileName, "/") === 0 || strpos($this->fileName, ":") === 1) {
 			$isRelative = false;
 		}
-		
+
 		if ($isRelative && $this->relativeToRootPath) {
 			$fileName = ROOT_PATH.$this->fileName;
 		} else {
 			$fileName = $this->fileName;
 		}
-		
+
 		if ($this->scope != null) {
 			$this->scope->loadFile($fileName);
 		} else {
