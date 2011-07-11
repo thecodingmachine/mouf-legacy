@@ -43,6 +43,13 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 	public $package;
 	
 	/**
+	 * The origin (if any) of the package to enable/disable. 
+	 * 
+	 * @var string
+	 */
+	public $origin;
+	
+	/**
 	 * The list of packages found on the system.
 	 *
 	 * @var array<MoufPackage>
@@ -191,6 +198,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 			// TODO: move $packageDownloadService as a property
 			$packageDownloadService = MoufAdmin::getPackageDownloadService();
 			$packageDownloadService->setMoufManager($this->moufManager);
+			$this->origin = $origin;
 			$this->package = $packageDownloadService->getRepository($origin)->getPackage($group, $name, $version);
 		}
 

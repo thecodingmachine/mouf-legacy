@@ -77,7 +77,7 @@ class MoufRepository  {
 	 * @return MoufPackageVersionsContainer
 	 */
 	public function getVersionsForPackage($group, $name) {
-		$groupDirs = split($group, "/");
+		$groupDirs = explode("/", $group);
 		if ($groupDirs[0] == ".") {
 			array_shift($groupDirs);
 		}
@@ -108,7 +108,7 @@ class MoufRepository  {
 	 * @return MoufPackage
 	 */
 	public function getPackage($group, $name, $version) {
-		$groupDirs = split("/", $group);
+		$groupDirs = explode("/", $group);
 		if ($groupDirs[0] == "." || $groupDirs[0] == "") {
 			array_shift($groupDirs);
 		}

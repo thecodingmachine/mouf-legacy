@@ -107,6 +107,7 @@ if (empty($this->toProposeUpgradePackage)) {
 	echo "<input type='hidden' name='group' value='".htmlentities($this->package->getDescriptor()->getGroup())."' />";
 	echo "<input type='hidden' name='name' value='".htmlentities($this->package->getDescriptor()->getName())."' />";
 	echo "<input type='hidden' name='version' value='".htmlentities($this->package->getDescriptor()->getVersion())."' />";
+	echo "<input type='hidden' name='origin' value='".htmlentities($this->origin)."' />";
 	echo "<input type='hidden' name='confirm' value='true' />";
 	$i=0;
 	foreach ($this->upgradePackageList as $myScope=>$innerPackageList) {
