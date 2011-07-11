@@ -108,6 +108,12 @@ div.warning {
 	background-repeat: no-repeat;
 	background-position: 5px 5px;
 }
+.warning {
+	background:#FFF3DD none repeat scroll 0 0;
+	color:#222200;
+	padding:5px 5px 5px 26px;
+	border:1px solid #F0C020;
+}
 div.error {
 	background:#FFDDDD none repeat scroll 0 0;
 	color:#220000;
