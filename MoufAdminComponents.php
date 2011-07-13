@@ -53,7 +53,7 @@ $moufManager->setPackagesByXmlFile(array (
   27 => 'security/userservice-splash/3.0/package.xml',
   28 => 'html/widgets/scripttagwidget/1.0/package.xml',
   29 => 'html/template/MoufTemplate/1.0/package.xml',
-  30 => 'html/template/menus/toprubanmenu/1.0/package.xml',
+  30 => 'html/template/menus/topribbonmenu/1.0/package.xml',
 ));
 
 $moufManager->setPackagesByXmlFileInAdminScope(array (
@@ -69,7 +69,7 @@ require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQu
 require dirname(__FILE__).'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderExternalComponent.php';
 require dirname(__FILE__).'/../plugins/utils/common/validators/1.0/ValidatorsExternalComponents.php';
 require dirname(__FILE__).'/../plugins/mvc/splash/3.2/SplashExternalComponent.php';
-require dirname(__FILE__).'/../plugins/html/template/menus/toprubanmenu/1.0/TopRubanExternalComponent.php';
+require dirname(__FILE__).'/../plugins/html/template/menus/topribbonmenu/1.0/TopRibbonExternalComponent.php';
 
 $moufManager->setAllVariables(array (
 ));
@@ -177,7 +177,7 @@ $moufManager->addComponentInstances(array (
         3 => 'jqueryFileTree',
         4 => 'jquery-autogrow-1.2.2',
         5 => 'chooseInstancePopupJs',
-        6 => 'htmlMenuTopRubanHead',
+        6 => 'htmlMenuTopRibbonHead',
       ),
       'left' => 
       array (
@@ -188,7 +188,7 @@ $moufManager->addComponentInstances(array (
       ),
       'header' => 
       array (
-        0 => 'topRubanMenuRenderer',
+        0 => 'topRibbonMenuRenderer',
       ),
     ),
     'fieldProperties' => 
@@ -2097,9 +2097,9 @@ $moufManager->addComponentInstances(array (
     'class' => 'Menu',
     'external' => false,
   ),
-  'topRubanMenuRenderer' => 
+  'topRibbonMenuRenderer' => 
   array (
-    'class' => 'TopRubanMenuRenderer',
+    'class' => 'TopRibbonMenuRenderer',
     'external' => false,
     'fieldBinds' => 
     array (
@@ -2376,10 +2376,10 @@ class MoufAdmin {
 	 }
 
 	/**
-	 * @return HtmlMenuTopRubanHead
+	 * @return HtmlMenuTopRibbonHead
 	 */
-	 public static function getHtmlMenuTopRubanHead() {
-	 	return MoufManager::getMoufManager()->getInstance('htmlMenuTopRubanHead');
+	 public static function getHtmlMenuTopRibbonHead() {
+	 	return MoufManager::getMoufManager()->getInstance('htmlMenuTopRibbonHead');
 	 }
 
 	/**
@@ -2866,10 +2866,10 @@ class MoufAdmin {
 	 }
 
 	/**
-	 * @return TopRubanMenuRenderer
+	 * @return TopRibbonMenuRenderer
 	 */
-	 public static function getTopRubanMenuRenderer() {
-	 	return MoufManager::getMoufManager()->getInstance('topRubanMenuRenderer');
+	 public static function getTopRibbonMenuRenderer() {
+	 	return MoufManager::getMoufManager()->getInstance('topRibbonMenuRenderer');
 	 }
 
 	/**
