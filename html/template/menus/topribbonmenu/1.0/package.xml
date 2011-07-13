@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package>
-	<displayName>Top Ruban Menu</displayName>
-	<shortDescription>This package contains a menu that ruban from the top of the screen.</shortDescription>
+	<displayName>Top Ribbon Menu</displayName>
+	<shortDescription>This package contains a menu that ribbon from the top of the screen.</shortDescription>
 	<docUrl></docUrl>
 	<logo>logo.png</logo>
 	<dependencies>
@@ -12,10 +12,10 @@
 		</dependency>
 	</dependencies>
 	<requires>
-		<require>TopRubanMenuRenderer.php</require>
-		<require>HtmlMenuTopRubanHead.php</require>
+		<require>TopRibbonMenuRenderer.php</require>
+		<require>HtmlMenuTopRibbonHead.php</require>
 	</requires>
 	<externalComponentRequires>
-		<require>TopRubanExternalComponent.php</require>
+		<require>TopRibbonExternalComponent.php</require>
 	</externalComponentRequires>
 </package>

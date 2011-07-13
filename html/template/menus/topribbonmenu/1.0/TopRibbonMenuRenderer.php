@@ -5,7 +5,7 @@
  *
  * @Component
  */
-class TopRubanMenuRenderer implements HtmlElementInterface {
+class TopRibbonMenuRenderer implements HtmlElementInterface {
 	
 	/**
 	 * The menu to render
@@ -29,7 +29,7 @@ class TopRubanMenuRenderer implements HtmlElementInterface {
 		if (!$this->menu->isHidden()) {
 			$menuItems = $this->menu->getChildren();
 			
-			echo '<div class="toprubanmenu"><div class="toprubanmenumaincontent">';
+			echo '<div class="topribbonmenu"><div class="topribbonmenumaincontent">';
 			
 			$i=0;
 			$mainMenu = array();
@@ -41,7 +41,7 @@ class TopRubanMenuRenderer implements HtmlElementInterface {
 					if (!$bigMenuItem->isHidden()) {
 						$i++;
 						/*
-						echo '<ul class="menu" id="toprubanmenu_item'.$i.'" ';
+						echo '<ul class="menu" id="topribbonmenu_item'.$i.'" ';
 						if ($bigMenuItem->isActive()) {
 							echo " style='display:block'";
 						}
@@ -74,10 +74,10 @@ class TopRubanMenuRenderer implements HtmlElementInterface {
 					echo '">';
 					if($menuItem->getLink()) {
 						$url = str_replace('"', "&quot;", $url);
-						echo '<a href="'.$url.'" onclick="return toprubanSubmenuList(\''.$i.'\')">'.$menuItem->getLabel().'</a>';
+						echo '<a href="'.$url.'" onclick="return topribbonSubmenuList(\''.$i.'\')">'.$menuItem->getLabel().'</a>';
 					}
 					else
-						echo '<a href="#" onclick="return toprubanSubmenuList(\''.$i.'\')">'.$menuItem->getLabel().'</a>';
+						echo '<a href="#" onclick="return topribbonSubmenuList(\''.$i.'\')">'.$menuItem->getLabel().'</a>';
 					echo '</li>';
 				}
 			}
@@ -86,14 +86,14 @@ class TopRubanMenuRenderer implements HtmlElementInterface {
 			/*
 			echo '<div style="clear:both"></div>';
 			echo '</div>';
-			echo '<div class="toprubanmenutabs"><ul>';
+			echo '<div class="topribbonmenutabs"><ul>';
 			$i=0;
 			if (is_array($menuItems)) {
 				foreach ($menuItems as $item) {
 					if (!$item->isHidden()) {
 						echo "<li ";
 						if ($item->isActive()) {
-							echo " class='toprubanmenuactive'";
+							echo " class='topribbonmenuactive'";
 						}
 						
 						echo ">".$item->getLabel()."</li>";

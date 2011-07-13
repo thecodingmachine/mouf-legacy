@@ -4,18 +4,18 @@ jQuery(document).ready(function() {
 	jQuery('.submenu_element').each(function(index) {
 		i ++;
 		if(jQuery(this).hasClass('active')) {
-			toprubanSubmenuList(i)
+			topribbonSubmenuList(i)
 			active = true;
 		}
 	 });
 	if(active == false) {
 		if(jQuery('#submenu_element_1').length)
-			toprubanSubmenuList(1);
+			topribbonSubmenuList(1);
 	}
 
 });
 
-function toprubanSubmenuList(id) {
+function topribbonSubmenuList(id) {
 	jQuery('.submenu_list').hide();
 	jQuery('.submenu_element').removeClass('active');
 	jQuery('#submenu_list_element_'+id).show();

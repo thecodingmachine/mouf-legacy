@@ -1,4 +1,4 @@
-div.toprubanmenu {
+div.topribbonmenu {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -14,7 +14,7 @@ body {
 	margin-top: 80px;
 }
 
-div.toprubanmenu div.submenu_list {
+div.topribbonmenu div.submenu_list {
 	height: 80px;
 	overflow: hidden;
 	background-color: #F9F9F9;
@@ -22,7 +22,7 @@ div.toprubanmenu div.submenu_list {
 	padding-left: 10px;
 }
 
-div.toprubanmenu div.submenu_package {
+div.topribbonmenu div.submenu_package {
 	margin: 2px;
 	background-color: #E0E0E0;
 	border: 1px solid #CCCCCC;
@@ -34,7 +34,7 @@ div.toprubanmenu div.submenu_package {
 	height: 74px;
 }
 
-div.toprubanmenu div.submenu_package_detail {
+div.topribbonmenu div.submenu_package_detail {
 	background-color: #F0F0F0;
 	height: 52px;
 	text-align: left;
@@ -48,8 +48,8 @@ div.toprubanmenu div.submenu_package_detail {
 	border-top-right-radius: 4px;
 }
 
-div.toprubanmenu div.submenu_package span.submenu_title,
-div.toprubanmenu div.submenu_package span.submenu_title a {
+div.topribbonmenu div.submenu_package span.submenu_title,
+div.topribbonmenu div.submenu_package span.submenu_title a {
 	font-weight: bold;
 	margin-top: 2px;
 	display: block;
@@ -57,17 +57,17 @@ div.toprubanmenu div.submenu_package span.submenu_title a {
 	color: #3D3D3D;
 }
 
-div.toprubanmenu div.submenu_package_detail div.submenu_link {
+div.topribbonmenu div.submenu_package_detail div.submenu_link {
 	height: 18px;
 }
 
-div.toprubanmenu div.submenu_package_detail a {
+div.topribbonmenu div.submenu_package_detail a {
 	font-size: 11px;
 	height: 18px;
 	display: block;
 }
 
-div.toprubanmenu div.submenu_package_detail a img {
+div.topribbonmenu div.submenu_package_detail a img {
 	padding: 1px;
 	float: left;
 	height: 16px;
@@ -75,29 +75,29 @@ div.toprubanmenu div.submenu_package_detail a img {
 	margin-right: 3px;
 }
 
-div.toprubanmenu div.submenu_package_detail div.submenu_link a {
+div.topribbonmenu div.submenu_package_detail div.submenu_link a {
 	text-decoration: none;
 }
 
-div.toprubanmenu div.submenu_package_detail div.submenu_link a:hover img{
+div.topribbonmenu div.submenu_package_detail div.submenu_link a:hover img{
 	background-image: url(images/background_icon_hover.png);
 	box-shadow: 0 0 5px #c9c9c9;
 }
 
-div.toprubanmenu div.submenu_package_detail div.submenu_link a span {
+div.topribbonmenu div.submenu_package_detail div.submenu_link a span {
 	display: block;
 	padding-top: 4px;
 }
 
-div.toprubanmenu div.submenu_package_detail div.submenu_link a:hover span {
+div.topribbonmenu div.submenu_package_detail div.submenu_link a:hover span {
 	text-decoration: underline;
 }
 
-div.toprubanmenu div.submenu_package_detail a.active {
+div.topribbonmenu div.submenu_package_detail a.active {
 	font-weight: bold;
 }
 
-div.toprubanmenu div.submenu_package_detail div.submenu_package_detail_group {
+div.topribbonmenu div.submenu_package_detail div.submenu_package_detail_group {
 	float: left;
 	width: 175px;
 }

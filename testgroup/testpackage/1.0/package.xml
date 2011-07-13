@@ -4,6 +4,9 @@
 	<shortDescription>Pourvu que ça marche!</shortDescription>
 	<docUrl>http://www.famfamfam.com/</docUrl>
 	<logo>logo.png</logo>
+	<requires>
+		<require>TestPackage.php</require>
+	</requires>
 	<dependencies>
 	</dependencies>
 </package>
