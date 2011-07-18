@@ -118,7 +118,49 @@ class DocumentationController extends Controller {
 		
 		chdir(ROOT_PATH."plugins");
 		
+		$group = $this->packageManager->getOrderedPackagesList();
+		
 		$dirToPackage = "";
+		$packageContainer = null;
+		while ($args) {
+			$dir = array_shift($args);
+			
+			if ($group->hasSubgroup($dir)) {
+				$group = $group->getGroup($dir);
+				$dirToPackage .= $dir.DIRECTORY_SEPARATOR;
+			} elseif ($group->hasPackageContainer($dir)) {
+				$packageContainer = $group->getPackageContainer($dir);
+				$dirToPackage .= $dir.DIRECTORY_SEPARATOR;
+				break;
+			} else {
+				Controller::FourOFour("Page not found", false);
+				return;
+			}
+		}
+		
+		if ($packageContainer == null) {
+			Controller::FourOFour("Page not found", false);
+			return;
+		}
+		
+		$dir = array_shift($args);
+		
+		if ($dir != "latest") {
+			$this->package = $packageContainer->getPackage($dir);
+			if ($this->package == null) {
+				Controller::FourOFour("Page not found", false);
+				return;
+			}
+			$dirToPackage .= $dir.DIRECTORY_SEPARATOR;
+		} else {
+			// Let's finc the latest version!
+			$packages = $packageContainer->getOrderedList();
+			$this->package = array_pop($packages);
+			$dirToPackage .= $this->package->getDescriptor()->getVersion().DIRECTORY_SEPARATOR;
+		}
+		
+		
+		/*$dirToPackage = "";
 		$found = false;
 		while ($args) {
 			if (file_exists("package.xml")) {
@@ -128,21 +170,24 @@ class DocumentationController extends Controller {
 			
 			$dir = array_shift($args);
 			if (!file_exists($dir) || !is_dir($dir)) {
-				Controller::FourOFour("Page not found", false);
-				return;
+				if ($dir == "latest") {
+					// If the user decides to write "latest" instead of the version, let's find the latest version for him.
+					
+					$dir = "TODO: find the latest version!";
+				} else {
+					Controller::FourOFour("Page not found", false);
+					return;
+				}
 			}
 			chdir($dir);
 			$dirToPackage .= $dir.DIRECTORY_SEPARATOR;
 		}
 		
 		chdir($oldDir);
-
-		if (!$found) {
-			Controller::FourOFour("Page not found", false);
-			return;
-		}
+		*/
 		
-		$this->package = $this->packageManager->getPackage($dirToPackage."package.xml");
+		
+		//$this->package = $this->packageManager->getPackage($dirToPackage."package.xml");
 		
 		$docPath = implode("/", $args);
 

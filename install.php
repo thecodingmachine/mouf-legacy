@@ -18,7 +18,8 @@ RewriteBase $uri
 #RewriteCond %{REQUEST_FILENAME} !-f
 #RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteRule !((\.(js|ico|gif|jpg|png|css)$)|^direct) splash.php";
+RewriteRule mouf\\/doc\\/view\\/ splash.php
+RewriteRule !((\\.(js|ico|gif|jpg|png|css)$)|^direct) splash.php";
 
 file_put_contents(".htaccess", $str);
 

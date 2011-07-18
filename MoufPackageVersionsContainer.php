@@ -74,6 +74,17 @@ class MoufPackageVersionsContainer {
 		}
 		return $moufVersionsContainer;
 	}
+	
+	/**
+	 * Returns an ordered list of the packages, ordered by ascending version number
+	 * 
+	 * @return array<MoufPackage>
+	 */
+	public function getOrderedList() {
+		$packages = $this->packages;
+		uksort($packages, array("MoufPackageDescriptor", "compareVersionNumber"));
+		return $packages;
+	}
 }
 
 ?>
