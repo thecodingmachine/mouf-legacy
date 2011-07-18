@@ -3,6 +3,9 @@
 	<displayName>jqGrid Widget</displayName>
 	<shortDescription>This package contains the jqGrid widget. This is a jQuery datagrid that can be used to display data. This version integrates with jqGrid 3.7.1</shortDescription>
 	<docUrl></docUrl>
+	<doc>
+		<page title="jqGrid datasource" url="jqGrid.html" />
+	</doc>						
 	<dependencies>
 		<dependency>
 			<group>database/datagrid</group>

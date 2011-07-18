@@ -5,6 +5,9 @@
 	classes. Unless you want to implement your own caching method, you should import a cache
 	package that will use this interface. For instance, common/utils/session-cache, or common/utils/file-cache.</shortDescription>
 	<docUrl></docUrl>
+	<doc>
+		<page title="Mouf's Cache architecture" url="index.html" />
+	</doc>		
 	<logo>logo.png</logo>
 	<dependencies>
 	</dependencies>

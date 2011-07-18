@@ -6,6 +6,9 @@
 	mapping files, but you will have a nice graphical interface in the Mouf framework to write your own
 	translated messages.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/i18n/using_fine.html</docUrl>
+	<doc>
+		<page title="Using FINE" url="using_fine.html" />
+	</doc>	
 	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>

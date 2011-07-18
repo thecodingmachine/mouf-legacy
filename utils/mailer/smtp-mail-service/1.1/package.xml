@@ -5,6 +5,10 @@
 	The package is a wrapper around the Zend_Mail class of the Zend framework.</shortDescription>
 	<docUrl></docUrl>
 	<logo>logo.png</logo>
+	<doc>
+		<page title="Sending mails using the SMTP Mail Service" url="smtpmailservice.html" />
+	</doc>	
+	
 	<dependencies>
 		<dependency>
 			<group>utils/common</group>

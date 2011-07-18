@@ -1,0 +1,32 @@
+<h1>Displaying datagrids</h1>
+
+<p>The Mouf framework is only an IOC framework. As such, it does not provide any means for displaying datagrids. Hopefully,
+the Mouf team provides also a range of packages to display datagrids. A Datagrid can be used to display advanced tables in HTML.
+The grid can usually be sorted, can provide Ajax loading and row expanders...</p>
+
+<h2>The datagrid architecture</h2>
+
+<p>All grids provided by the Mouf framework are split in 2 parts:</p>
+<ul>
+  <li>The datagrid: it is the object responsible for displaying the grid in HTML</li>
+  <li>The datasource: it is the object responsible for querying data (in database or anywhere else)</li>
+</ul>
+
+<img src="architecture.png" alt="" />
+
+<p>A datasource contains </p>
+<p>Any kind of datasource can be combined with any kind of datagrid.</p>
+
+<h2>The datasource</h2>
+
+<p>The Mouf team provides 2 datasources, and of course, you are free to implement your own.</p>
+<ul>
+  <li>The SQL datasource: The SQL datasource is performing a request on the database to retrieve data. It requires the TDBM framework to run</li>
+  <li>The DBM datasource: The DBM datasource is performing a request on a specific table. Very useful if all the data you want to display is part of only one table. It requires the TDBM framework to run</li>
+</ul>
+
+<p>Each datasource implements the XajaDataSourceInterface interface. When implementing your own datasource, you should extend this interface too.</p>
+
+<h2>The datagrids</h2>
+
+<p>The Mouf team provides one implementation of a datagrid: the jqGrid datagrid, based on the jqGrid jQuery widget.</p>

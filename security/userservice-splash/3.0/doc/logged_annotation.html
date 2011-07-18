@@ -1,0 +1,36 @@
+<h1>Integrating the "userservice" with Splash</h1>
+
+<p>If you are using the Splash MVC framework, there is a special package to help you
+integrate the "userservice" with Splash. The package name is "security/userservice_splash".</p>
+
+<h2>The <b>@Logged</b> filter</h2>
+
+<p>This filter can be used in any action. If you put this annotation, the user will be denied access
+if he is not logged in.</p>
+
+<pre>
+/**
+ * A sample default action that requires to be logged.
+ *
+ * @Action
+ * @Logged
+ */
+public function defaultAction() { ... }
+</pre>
+
+<p>The <b>@Logged</b> annotation requires an instance of <a href="userservice_package.html">UserService</a> to exist. The
+name of the instance must be "userService".</p>
+<p>If your UserService instance is not named "userService" (or if you want to use several UserService instances,
+you can specify the instance of UserService to use in parameter of the annotation:</p>
+
+<pre>
+/**
+ * A sample default action that requires to be logged.
+ * The "myUserService" Mouf instance will be used to check
+ * whether the user is logged or not.
+ *
+ * @Action
+ * @Logged("myUserService")
+ */
+public function defaultAction() { ... }
+</pre>

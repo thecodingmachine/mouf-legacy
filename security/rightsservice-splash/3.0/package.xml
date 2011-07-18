@@ -5,6 +5,9 @@
 	with the RightsService component. It features: a @RequiresRight annotation to restrict access to
 	logged users only.</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/manage_users/splash_annotations.html</docUrl>
+	<doc>
+		<page title="The @RequiresRight annotation" url="requiresright_annotation.html" />
+	</doc>				
 	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>

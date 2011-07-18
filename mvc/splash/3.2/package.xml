@@ -3,6 +3,13 @@
 	<displayName>Splash</displayName>
 	<shortDescription>An MVC framework deeply integrated with Mouf</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
+	<doc>
+		<page title="Introduction to Splash" url="index.html" />
+		<page title="Installing Splash" url="install.html" />
+		<page title="Writing controllers" url="writing_controllers.html" />
+		<page title="Managing URL parameters" url="url_parameters.html" />
+		<page title="Writing your own filters" url="filters.html" />
+	</doc>
 	<logo>icons/logo.png</logo>
 	<dependencies>
 		<dependency>

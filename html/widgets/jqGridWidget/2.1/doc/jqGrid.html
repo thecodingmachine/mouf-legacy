@@ -1,0 +1,130 @@
+<h1>The JqGrid Datagrid widget</h1>
+
+<p>The JqGridWidget class is a datagrid that uses the <a href="http://www.trirand.com/blog/">jqGrid widget</a> (a javascript datagrid that uses the jQuery framework).
+Therefore, to use it, you will need to be sure that jQuery, the jQuery-ui plugin and the jqGrid plugin are loaded.</p>
+
+<p>The JqGridWidget class is part of the <b>html/widgets/jqGridWidget</b> package.</p>
+
+<p>The typical look of a grid is shown below:</p>
+<img src="images/jqDataGridHtmlSample.png" alt="" />
+<p>The jqGrid features Ajax paging and sorting, but does not feature a row expander.</p>
+
+<h2>Using the jqGridWidget with Mouf</h2>
+
+<h3>Configuring the datagrid</h3>
+<p>Let's have a quick look at the jqGrid widget when we create one inside Mouf:</p>
+
+<img src="images/jqDataGridEmpty.png" alt="" />
+
+
+<p>First, a datagrid needs a datasource. In this exemple, the <b>datasource</b> property is bound to a "myStaticDataSource" instance that
+points to a StaticDataSource (see the <a href="../datasources/static.html">static datasource documentation</a> for more information).</p>
+
+<p>The jqGrid is an <b>Ajax enabled grid</b>. This means that the displayed data is retrieved from the PHP server via a separate request that
+will return the data in a XML formatted string. The <b>dataUrl</b> property contains the URL that will send back the data as XML.</p>
+
+<p>The <b>tableId</b> and <b>pagerId</b> are used to set the ID of the &lt;table&gt; element that will host the table, and of the &lt;div&gt; element
+that will host the pager.</p>
+
+<p>The <b>caption</b> property can be used to set the caption of the grid.</p>
+
+<p>Then, we must define the columns displayed in the grid.</p>
+<p>The columns are part of the <b>columns</b> property. There is one special column: the <b>idColumn</b>. This column is always hidden,
+and must contain a unique identifier for the row.</p>
+
+<p>Columns are represented by classes extending the <code>DataColumnInterface</code> interface. The Mouf team provides to implementations
+for this interface:</p>
+<ul>
+  <li><b>FieldDataColumn</b>: This represents a column in the table, with its title, width, ... The data is retrieved from the row of the 
+  dataset using a public property.</li>
+  <li><b>GetterDataColumn</b>: This represents a column in the table, with its title, width, ... The data is retrieved from the row of the 
+  dataset using a getter.</li>
+</ul>
+
+<p>This might not be very clear so let's see an exemple. I want to retrieve the data from the "myStaticDataSource" instance. I know that 
+this is an instance from the StaticDataSource class. In the static datasource, I access data using public properties of objects. For
+instance, I can access data with this code:</p>
+<pre>
+echo $staticDs[0]-&gt;name;
+</pre>
+<p>Therefore, I must use the <code>FieldDataColumn</code> class. If data was accessed using a getter, I would have used the <code>GetterDataColumn</code>.</p>
+
+<p>Let's create this column now in Mouf, and let's bind it to the datagrid:</p>
+<img src="images/namecolumn.png" alt="" />
+
+<p>This column contains a number of properties:</p>
+<ul>
+  <li><b>fieldName</b>: the name of the field in the row object. Since we use <code>$staticDs[0]-&gt;name</code> to access that data, the name of the field is "name".</li>
+  <li><b>title</b>: The displayed title for the column.</li>
+  <li><b>sortColumn</b>: the column to sort on when the "sort" button is clicked. This is usually the same as the fieldName.</li>
+  <li><b>width</b>: the width of the column, in pixels.</li>
+  <li><b>formatters</b>: a special way to format the column.</li>
+</ul>
+
+<p>In this exemple, we only want to display some text in the "name" column. Therefore, we won't use any formatter. However, there exist a number of
+formatters that can be used to render the text: as a checkbox, as a date, with an embedded link, etc...</p>
+
+<p>At the end of the process, the datagrid will look like this:</p>
+<img src="images/jqDataGridFull.png" alt="" />
+
+<h3>Displaying the datagrid</h3>
+
+<p>Our datagrid is configured, let's display it.</p>
+<p>This exemple will contain 2 files. The main file "index.php", will be used to display the grid. The second file "feeder.php" will be used to 
+send data via Ajax.</p>
+
+<p>Since we are using a StaticDataSource, the "feeder.php" file will also fill the source with some sample data.</p>
+
+<p><b>Index.php:</b></p>
+<pre>
+&lt;?php
+require 'Mouf.php';
+?&gt;
+<html>
+	<head>
+		<?php 
+		// Let's load jquery, jquery-ui and jquery-jqgrid
+		Mouf::getJquery1_3_2()-&gt;toHtml();
+		Mouf::getJqueryui1_7_2()-&gt;toHtml();
+		Mouf::getJqueryjqgrid3_5()-&gt;toHtml();
+		?>
+	</head>
+	<body>
+		&lt;?php 
+		// Display the data grid.
+		Mouf::getMyDataGrid()-&gt;toHtml();
+		?&gt;
+	</body>
+</html>
+</pre>
+
+<p>Of course, in your application, the jQuery libraries will certainly be loaded in another way, for instance by direct injection in the template (see wa href="http://www.thecodingmachine.com/ext/mouf/doc/components.html">this tutorial</a>).</p>
+<p>Now, we must provide some code to get the data and return it in XML format. Hopefully, the datagrid will take care
+of generating the XML message. All we need to do is provide the datagrid with the right data, and the right parameters.</p>
+<pre>
+&lt;?php
+require 'Mouf.php';
+
+$staticDs = Mouf::getMyStaticDataSource();
+$staticDs->addRecordFromArray(array("id"=>1, "name"=>"Mickey", "phone"=>"1-555-120-152"));
+$staticDs->addRecordFromArray(array("id"=>2, "name"=>"Minnie", "phone"=>"1-555-120-153"));
+$staticDs->addRecordFromArray(array("id"=>3, "name"=>"Pluto", "phone"=>"1-555-120-154"));
+
+Mouf::getMyDataGrid()->printXmlData($_REQUEST['page'], $_REQUEST['rows'], $_REQUEST['sidx'], $_REQUEST['sord']);
+?&gt;
+</pre>
+
+<p>The <b>printXmlData</b> method prints the XML data contained in the datasource. The <b>printXmlData</b> method expects 4 parameters:</p>
+<ul>
+  <li>page</li>
+  <li>rows</li>
+  <li>sidx</li>
+  <li>sord</li>
+</ul>
+
+<p>Those parameters (related to the number of fields to be displayed and to the sort order) are present in the request. We just have to forward it.</p>
+
+<h3>The result</h3>
+<p>Finally, we can see the result. By browsing to the index.html page, we will see this:</p>
+
+<img src="images/jqDataGridHtmlSample.png" alt="" />

@@ -5,6 +5,10 @@
 	should be implemented by any service that can send mails. You should use a package implementing this interface (like the
 	SmtpMailer package.</shortDescription>
 	<docUrl></docUrl>
+	<doc>
+		<page title="Introduction to Mouf's mail architecture" url="index.html" />
+	</doc>	
+	
 	<logo>logo.png</logo>
 	<requires>
 		<require>MailAttachmentInterface.php</require>

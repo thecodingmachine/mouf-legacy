@@ -5,6 +5,11 @@
 	helper class to build HTML templates easily (the BaseTemplate class). Any package using the Splash template 
 	mechanism should use this package. See the <a href="http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php">Splash template doc</a> for more details</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/splash/doc/templates/index.xaja.php</docUrl>
+	<doc>
+		<page title="Using a template" url="index.html" />
+		<page title="Writing a template" url="designing_php.html" />
+		<page title="Writing a template - CSS guidelines" url="designing_css.html" />
+	</doc>
 	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
