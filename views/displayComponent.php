@@ -436,8 +436,8 @@ jQuery(document).ready (function() {
 				}
 				
 				echo '</td>';
-				echo '<td style="position: static;">';
-				echo "<div class='instance_doc_div_mouf' style='position: relative; z-index: 0' onmouseover='displayProperties(\"".$property->getName()."\")'>\n";
+				echo '<td>';
+				echo "<div class='instance_doc_div_mouf' style='position: relative;' onmouseover='displayProperties(\"".$property->getName()."\")'>\n";
 				if(strpos($property->getDocCommentWithoutAnnotations(), '.') !== false)
 					$resume = substr($property->getDocCommentWithoutAnnotations(), 0, strpos($property->getDocCommentWithoutAnnotations(), '.') + 1);
 				else
