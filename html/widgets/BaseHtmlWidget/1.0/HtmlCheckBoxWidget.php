@@ -67,10 +67,10 @@ class HtmlCheckBoxWidget extends AbstractHtmlInputWidget {
 		
 		if ($defaultSelect !== null) {
 			if ($defaultSelect !== true) {
-				echo " selected='selected'";
+				echo " checked='checked'";
 			}
 		} else if ($this->defaultValue) {
-			echo " selected='selected'";
+			echo " checked='checked'";
 		}
 		echo " name='".plainstring_to_htmlprotected($this->name)."' />\n";
 
