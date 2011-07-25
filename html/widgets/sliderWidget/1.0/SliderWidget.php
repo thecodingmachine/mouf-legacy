@@ -100,10 +100,10 @@ class SliderWidget extends AbstractHtmlInputWidget {
 				max: '.$this->maxValue.',
 				step: '.$this->step.',
 				slide: function( event, ui ) {
-					jQuery( "#'.plainstring_to_htmlprotected($id).'" ).val( ui.value );
+					jQuery( "#'.plainstring_to_htmlprotected($id).'_value" ).val( ui.value );
 				}
 			});
-			jQuery( "#'.plainstring_to_htmlprotected($id).'" ).val( jQuery( "#'.plainstring_to_htmlprotected($id).'_div" ).slider( "value" ) );
+			jQuery( "#'.plainstring_to_htmlprotected($id).'_value" ).val( jQuery( "#'.plainstring_to_htmlprotected($id).'" ).slider( "value" ) );
 		});</script>';
 		
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
