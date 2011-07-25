@@ -131,7 +131,7 @@ class HtmlSelectStaticWidget extends AbstractHtmlInputWidget {
 		if ($defaultSelect == null && $this->selectedValue != null) {
 			$defaultSelect = $this->selectedValue;
 		}
-	
+		
 		foreach ($values as $key=>$value) {
 			echo "<option value='".plainstring_to_htmlprotected($key)."'";
 			if ($defaultSelect != null && $key == $defaultSelect) {
@@ -143,7 +143,7 @@ class HtmlSelectStaticWidget extends AbstractHtmlInputWidget {
 		}
 		
 		echo "</select>\n";
-		
+
 		if (BaseWidgetUtils::isWidgetEditionEnabled()) {
 			$manager = MoufManager::getMoufManager();
 			$instanceName = $manager->findInstanceName($this);
