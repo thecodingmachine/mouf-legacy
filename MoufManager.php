@@ -1278,12 +1278,13 @@ class ".$this->mainClassName." {
 	 * The path is relative to the "plugins" directory. 
 	 *
 	 * Deprecated. Should not be used.
+	 * FOR BACKWARD COMPATIBILITY ONLY
 	 *
 	 * @param string $fileName
 	 */
-	/*public function addPackageByXmlFile($fileName) {
+	public function addPackageByXmlFile($fileName) {
 		$this->packagesList[] = $fileName;
-	}*/
+	}
 	
 	/**
 	 * Adds a package by providing the path to the package.xml file.
