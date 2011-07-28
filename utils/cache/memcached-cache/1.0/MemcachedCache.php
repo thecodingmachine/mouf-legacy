@@ -74,14 +74,14 @@ class MemcachedCached implements CacheInterface {
 					$parameters[1] = '11211';
 				$this->memcachedObject->addServer($parameters[0], $parameters[1]);
 				$status = $this->memcachedObject->getStats();
-				if(!$status)
+				if($status)
 					$noServer = false;
 			}
 			if($noServer) {
 				$this->noConnection = true;
-				$this->log->error('Memcache Exception, Impossible to establish connection to memcached server');
+				$this->log->error('Memcache Exception, unable to establish connection to memcached server');
 				if($this->crash)
-					throw new Exception('Memcache Exception, Impossible to establish connection to memcached server');
+					throw new Exception('Memcache Exception, unable to establish connection to memcached server');
 				return false;
 			}
 			return true;
