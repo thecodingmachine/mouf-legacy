@@ -53,22 +53,6 @@ class TDBMDaoGenerator {
 	 */
 	public function generateAllDaosAndBeans() {
 		// TODO: check that no class name ends with "Base". Otherwise, there will be name clash.
-		
-		if (!file_exists($this->daoDirectory)) {
-			$result = mkdir($this->daoDirectory, 0777, true);
-			if ($result == false) {
-				echo "Unable to create directory: ".$this->daoDirectory.".";
-				exit;
-			}
-		}
-		if (!file_exists($this->beanDirectory)) {
-			$result = mkdir($this->beanDirectory, 0777, true);
-			if ($result == false) {
-				echo "Unable to create directory: ".$this->beanDirectory.".";
-				exit;
-			}
-		}
-		
 		$tableList = $this->dbConnection->getListOfTables();
 		foreach ($tableList as $table) {
 			$this->generateDaoAndBean($table);
@@ -96,6 +80,21 @@ class TDBMDaoGenerator {
 		$daoName = $this->getDaoNameFromTableName($tableName);
 		$beanName = $this->getBeanNameFromTableName($tableName);
 		$baseBeanName = $this->getBaseBeanNameFromTableName($tableName);
+		
+		if (!file_exists($this->daoDirectory)) {
+			$result = mkdir($this->daoDirectory, 0777, true);
+			if ($result == false) {
+				echo "Unable to create directory: ".$this->daoDirectory.".";
+				exit;
+			}
+		}
+		if (!file_exists($this->beanDirectory)) {
+			$result = mkdir($this->beanDirectory, 0777, true);
+			if ($result == false) {
+				echo "Unable to create directory: ".$this->beanDirectory.".";
+				exit;
+			}
+		}
 		
 		$this->generateBean($beanName.".php", $beanName, $baseBeanName.".php", $baseBeanName, $tableName);
 		$this->generateDao($daoName.".php", $daoName."Base.php", $beanName.".php", $daoName, $daoName."Base", $beanName, $tableName);
@@ -182,11 +181,7 @@ class $baseClassName extends TDBM_Object
 	 * @return timestamp
 	 */
 	public function '.$columnGetterName.'(){
-		$date = $this->__get(\''.$column->name.'\');
-		if($date === null)
-			return null;
-		else
-			return strtotime($date);
+		return strtotime($this->__get(\''.$column->name.'\'));
 	}
 	
 	/**
@@ -196,10 +191,7 @@ class $baseClassName extends TDBM_Object
 	 * @param timestamp $'.$column->name.'
 	 */
 	public function '.$columnSetterName.'($'.$column->name.') {
-		if($'.$column->name.' === null)
-			$this->__set(\''.$column->name.'\', null);
-		else
-			$this->__set(\''.$column->name.'\', date("Y-m-d H:i:s", $'.$column->name.'));
+		$this->__set(\''.$column->name.'\', date("Y-m-d H:i:s", $'.$column->name.'));
 	}
 	
 ';
@@ -266,8 +258,8 @@ class $baseClassName extends TDBM_Object
 	 *
 	 * @param '.$referencedBeanName.' $object
 	 */
-	public function '.$setterName.'('.$referencedBeanName.' $object) {
-		$this->'.$array["col1"].' = $object->'.$array["col2"].';
+	public function '.$setterName.'($object) {
+		$this->__set(\''.$array["col1"].'\', ($object == null)?null:$object->__get(\''.$array["col2"].'\'));
 	}
 	
 ';
@@ -317,8 +309,8 @@ class $baseClassName extends TDBM_Object
 	 *
 	 * @param '.$referencedBeanName.' $object
 	 */
-	public function '.$shortSetterName.'('.$referencedBeanName.' $object) {
-		$this->__set(\''.$array["col1"].'\', $object->__get(\''.$array["col2"].'\'));
+	public function '.$shortSetterName.'($object) {
+		$this->__set(\''.$array["col1"].'\', ($object == null)?null:$object->__get(\''.$array["col2"].'\'));
 	}
 	
 ';

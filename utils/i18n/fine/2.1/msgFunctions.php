@@ -82,7 +82,7 @@ function fine_get_month($month) {
 /**
  * Return the translation of the day.  
  * 
- * @param int $day Number of the day, 0 for sunday, 7 for saturday
+ * @param int $day Number of the day, 0 for sunday, 6 for saturday
  * @return string
  */
 function fine_get_day($day) {
@@ -101,16 +101,39 @@ function fine_get_dateformat_php_short() {
 }
 
 /**
+ * Returns the string representing a price, along its currency.
+ * The price is passed as a double. The currency as a ISO 4217 code ("USD" for US Dollar, etc...)
+ * @param float $price
+ * @param string $currency_iso_code
+ */
+function fine_get_price($price, $currency_iso_code) {
+	return fine_get_common_service("price.format", $price, fine_get_currency_symbol($currency_iso_code));
+}
+
+/**
+ * Returns the currency symbol based on the currency ISO 4217 code.
+ * 
+ * @param string $isocode
+ */
+function fine_get_currency_symbol($isocode) {
+	include dirname(__FILE__).'/misc/currencySymbols.php';
+	return empty($currencySymbols[$isoCode])?$isocode:$currencySymbols[$isoCode];
+}
+
+/**
  * Return the translation for a key with the commonService instance. The resource is stored in the plugin
  * 
  * @return string
  */
 function fine_get_common_service($key) {
 	static $commonService = null;
-
+	
+	$args = func_get_args();
+	
 	if ($commonService == null) {
 		/* @var $commonService LanguageTranslationInterface */
 		$commonService = MoufManager::getMoufManager()->getInstance("fineCommonTranslationService");
 	}
-	return $commonService->getTranslationNoEditMode($key);
+	
+	return call_user_func_array(array($commonService, "getTranslationNoEditMode"), $args);
 }

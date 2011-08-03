@@ -39,13 +39,26 @@ class Druplash {
 				$accessArguments[] = 'access content';
 			}
 			
-			$items[$url] = array(
-			    'title' => $title,
-			    'page callback' => 'druplash_execute_action',
-			    'access arguments' => $accessArguments,
-				'page arguments' => array($urlCallback->controllerInstanceName, $urlCallback->methodName),
-			    'type' => MENU_VISIBLE_IN_BREADCRUMB
-			);
+			$httpMethods = $urlCallback->httpMethods;
+			if (empty($httpMethods)) {
+				$httpMethods[] = "default";
+			}
+			
+			foreach ($httpMethods as $httpMethod) {
+			
+				if (isset($items[$url])) {
+					// FIXME: support different 'access arguments' for different HTTP methods!
+					$items[$url]['page arguments'][$httpMethod] = array($urlCallback->controllerInstanceName, $urlCallback->methodName);
+				} else {
+					$items[$url] = array(
+					    'title' => $title,
+					    'page callback' => 'druplash_execute_action',
+					    'access arguments' => $accessArguments,
+						'page arguments' => array(array($httpMethod => array("instance"=>$urlCallback->controllerInstanceName, "method"=>$urlCallback->methodName))),
+					    'type' => MENU_VISIBLE_IN_BREADCRUMB
+					);
+				}
+			}
 			
 		}
 		
@@ -54,14 +67,23 @@ class Druplash {
 	
 	/**
 	 * Executes an action.
-	 * This mmethod is triggered from the Drusplash menu hook.
+	 * This method is triggered from the Druplash menu hook.
 	 * 
-	 * @param string $instanceName
-	 * @param string $actionName
+	 * @param string $actions
 	 */
-	public static function executeAction($instanceName, $actionName) {
-		$controller = MoufManager::getMoufManager()->getInstance($instanceName);
-		return $controller->callAction($actionName);
+	public static function executeAction($actions) {
+		$httpMethod = $_SERVER['REQUEST_METHOD'];
+		
+		if (isset($actions[$httpMethod])) {
+			$action = $actions[$httpMethod];
+		} elseif (isset($actions["default"])) {
+			$action = $actions["default"];
+		} else {
+			drupal_not_found();
+		}
+		
+		$controller = MoufManager::getMoufManager()->getInstance($action['instance']);
+		return $controller->callAction($action['method']);
 	}
 	
 	/**

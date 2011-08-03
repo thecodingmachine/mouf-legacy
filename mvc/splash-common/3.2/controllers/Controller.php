@@ -292,7 +292,7 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				} else {
 					$url = $moufManager->findInstanceName($this)."/".$methodName;
 				}
-				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment());
+				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod));
 			}
 
 			// Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)
@@ -304,13 +304,28 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 					$url = trim($url, "/");
 				}
 				
-				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment());
+				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod));
 			}
 			
 		}
 		
 		
 		return $urlsList;
+	}
+	
+	/**
+	 * Returns the supported HTTP methods on this function, based on the annotations (@Get, @Post, etc...)
+	 * @param MoufReflectionMethod $refMethod
+	 */
+	private function getSupportedHttpMethods(MoufReflectionMethod $refMethod) {
+		$methods = array();
+		if ($refMethod->hasAnnotation('Get')) {
+			$methods[] = "GET";
+		}
+		if ($refMethod->hasAnnotation('Post')) {
+			$methods[] = "POST";
+		}
+		return $methods;
 	}
 }
 ?>
