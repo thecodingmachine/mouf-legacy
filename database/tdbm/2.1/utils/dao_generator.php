@@ -250,6 +250,9 @@ class $baseClassName extends TDBM_Object
 	 * @return '.$referencedBeanName.'
 	 */
 	public function '.$getterName.'() {
+		if ($this->'.$array["col1"].' == null) {
+			return null;
+		}
 		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].', "'.$referencedBeanName.'", true);
 	}
 	
@@ -300,6 +303,9 @@ class $baseClassName extends TDBM_Object
 	 * @return '.$referencedBeanName.'
 	 */
 	public function '.$shortGetterName.'() {
+		if ($this->'.$array["col1"].' == null) {
+			return null;
+		}
 		return $this->tdbmService->getObject("'.$array["table2"].'", $this->'.$array["col1"].', "'.$referencedBeanName.'");
 	}
 	
