@@ -8,6 +8,8 @@
 	<docUrl>http://www.thecodingmachine.com/ext/mouf/doc/i18n/using_fine.html</docUrl>
 	<doc>
 		<page title="Using FINE" url="using_fine.html" />
+		<page title="Date functions" url="date_functions.html" />
+		<page title="Currency functions" url="currency_functions.html" />
 	</doc>	
 	<logo>logo.png</logo>
 	<dependencies>
