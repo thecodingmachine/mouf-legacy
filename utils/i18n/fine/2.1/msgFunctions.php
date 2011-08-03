@@ -116,8 +116,7 @@ function fine_get_price($price, $currency_iso_code) {
  * @param string $isocode
  */
 function fine_get_currency_symbol($isocode) {
-	include dirname(__FILE__).'/misc/currencySymbols.php';
-	return empty($currencySymbols[$isoCode])?$isocode:$currencySymbols[$isoCode];
+	return FineCurrencyUtils::getCurrencySymbol($isocode);
 }
 
 /**

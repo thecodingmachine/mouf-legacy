@@ -41,6 +41,7 @@
 		<require>language/CascadingLanguageDetection.php</require>
 		<require>translate/LanguageTranslationInterface.php</require>
 		<require>translate/FinePHPArrayTranslationService.php</require>
+		<require>misc/FineCurrencyUtils.php</require>
 		<require>msgFunctions.php</require>
 	</requires>
 	<externalComponentRequires>
