@@ -24,7 +24,7 @@ abstract class DrupalController extends Controller {
 	 * @Property
 	 * @var array<HtmlElementInterface>
 	 */
-	protected $content = array();
+	public $content = array();
 	
 	/**
 	 * Whether the current request is an Ajax request (value = true),

@@ -34,8 +34,8 @@ function druplash_menu() {
 	return Druplash::getDrupalMenus();
 }
 
-function druplash_execute_action($instanceName, $actionName) {
-	return Druplash::executeAction($instanceName, $actionName);
+function druplash_execute_action($actions) {
+	return Druplash::executeAction($actions);
 }
 
 /**

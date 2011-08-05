@@ -6,7 +6,8 @@
 	<docUrl>../../plugins/database/dbstats/1.0/doc/index.html</docUrl>
 	<logo>icon.png</logo>
 	<doc root='doc'>
-		<page title="Introduction to Mouf's cache architecture" url="index.html" />
+		<page title="Computing stats using DB_Stats" url="index.html" />
+		<page title="Easy stats query using DB_Stats_Query " url="DB_Stats_Query.html" />
 	</doc>
 	<dependencies>
 		<dependency>

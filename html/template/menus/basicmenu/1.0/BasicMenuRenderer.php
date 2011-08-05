@@ -2,10 +2,11 @@
 
 /**
  * This class is in charge of rendering a menu. It contains a menu and can transform it in HTML using the toHtml() method.
- *
+ * The rendering is performed using &lt;ul&gt; and &lt;li&gt; tags.
+ * 
  * @Component
  */
-class SplashMenuRenderer implements HtmlElementInterface {
+class BasicMenuRenderer implements HtmlElementInterface {
 	
 	/**
 	 * The menu to render
@@ -27,7 +28,7 @@ class SplashMenuRenderer implements HtmlElementInterface {
 	
 	public function toHtml() {
 		if ($this->menu && !$this->menu->isHidden()) {
-			echo '<div class="content"><ul class="menu">';
+			echo '<ul class="menu">';
 			
 			$menuItems = $this->menu->getChildren();
 			if (is_array($menuItems)) {
@@ -36,7 +37,7 @@ class SplashMenuRenderer implements HtmlElementInterface {
 				}
 			}
 				
-			echo '</ul></div>';
+			echo '</ul>';
 		}
 	}
 	
@@ -58,12 +59,12 @@ class SplashMenuRenderer implements HtmlElementInterface {
 			}
 			$children = $menuItem->getChildren();
 			if ($children) {
-				echo '<div class="content"><ul class="menu">';
+				echo '<ul class="menu">';
 				foreach ($children as $child) {
 					/* @var $child MenuItemInterface */
 					$this->renderHtmlMenuItem($child);
 				}
-				echo '</ul></div>';
+				echo '</ul>';
 			}
 			
 			echo '</li>';

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Basic Menu Renderer</displayName>
+	<shortDescription>This class contains a single class in charge of rendering a "Menu" instance in HTML using the toHtml() method. 
+	The rendering is performed using &lt;ul&gt; and &lt;li&gt; tags.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+		<dependency>
+			<group>html/widgets</group>
+			<name>menu</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>BasicMenuRenderer.php</require>
+	</requires>
+</package>

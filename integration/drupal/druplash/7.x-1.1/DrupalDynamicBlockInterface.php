@@ -77,7 +77,6 @@ interface DrupalDynamicBlockInterface {
 	/**
 	 * Returns the body of the block.
 	 * 
-	 * @Property
 	 * @var string
 	 */
 	public function getContent();
