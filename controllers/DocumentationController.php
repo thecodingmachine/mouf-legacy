@@ -153,7 +153,7 @@ class DocumentationController extends Controller {
 			}
 			$dirToPackage .= $dir.DIRECTORY_SEPARATOR;
 		} else {
-			// Let's finc the latest version!
+			// Let's find the latest version!
 			$packages = $packageContainer->getOrderedList();
 			$this->package = array_pop($packages);
 			$dirToPackage .= $this->package->getDescriptor()->getVersion().DIRECTORY_SEPARATOR;
