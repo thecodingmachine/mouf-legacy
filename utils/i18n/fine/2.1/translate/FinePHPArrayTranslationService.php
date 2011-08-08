@@ -73,14 +73,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 */
 	public function getTranslation($message) {
 		if($this->language === null) {
-			if($this->languageDetection)
-				$this->language = $this->languageDetection->getLanguage();
-			elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
-				$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
-			else {
-				$this->languageDetection = new BrowserLanguageDetection();
-				$this->language = $this->languageDetection->getLanguage();
-			}
+			$this->initLanguage();
 		}
 		if($this->msg_edition_mode === null)
 			$this->msg_edition_mode = isset($_SESSION["FINE_MESSAGE_EDITION_MODE"])?$_SESSION["FINE_MESSAGE_EDITION_MODE"]:false;
@@ -128,14 +121,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 */
 	public function getTranslationNoEditMode($message) {
 		if($this->language === null) {
-			if($this->languageDetection)
-				$this->language = $this->languageDetection->getLanguage();
-			elseif(MoufManager::getMoufManager()->instanceExists("translationService"))
-				$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
-			else {
-				$this->languageDetection = new BrowserLanguageDetection();
-				$this->language = $this->languageDetection->getLanguage();
-			}
+			$this->initLanguage();
 		}
 
 		$args = func_get_args();
@@ -191,6 +177,16 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 		}
 	}
 	
+	private function initLanguage() {
+		if($this->languageDetection) {
+			$this->language = $this->languageDetection->getLanguage();
+		} elseif(MoufManager::getMoufManager()->instanceExists("translationService")) {
+			$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
+		} else {
+			$this->languageDetection = new BrowserLanguageDetection();
+			$this->language = $this->languageDetection->getLanguage();
+		}
+	}
 	
 	/**
 	 * Retrieve array variable store in the language file.
