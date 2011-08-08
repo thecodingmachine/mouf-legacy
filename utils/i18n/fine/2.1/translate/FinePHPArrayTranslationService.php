@@ -158,9 +158,39 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 			}
 			$value .= "???";
 		}
-	
+
 		return $value;
 	}
+
+
+	/**
+	 * Returns true if a translation is available for the $message key, false otherwise.
+	 *
+	 * @param string $message Key of the message
+	 * @return bool
+	 */
+	public function hasTranslation($message) {
+		if($this->language === null) {
+			$this->initLanguage();
+		}
+		
+		//Load the main file
+		if($this->msg === null) {
+			$this->retrieveMessages($this->language);
+		}
+		
+		//If the translation is not in the main file, load the custom file associated to the message
+		if(!isset($this->msg[$message])) {
+			$this->retrieveCustomMessages($message, $this->language);
+		}
+		
+		if (isset($this->msg[$message])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	
 	/**
 	 * Retrieve array variable store in the language file.
