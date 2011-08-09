@@ -3,9 +3,16 @@
  * 
  */
 
-function chooseInstancePopup(type, url, title, selfedit) {
+/**
+ * Displays a popup asking the user to choose on instance amongst the instances whose type is "type".
+ * 
+ * @param type The type the instance should belong to
+ * @param url The URL to use
+ * @param rooturl The root URL of the application. 
+ */
+function chooseInstancePopup(type, url, rooturl, title, selfedit) {
 
-	jQuery.getJSON("../direct/get_instances.php",{class: type, encode:"json", selfedit:selfedit?"true":"false", ajax: 'true'}, function(j){
+	jQuery.getJSON(rooturl+"mouf/direct/get_instances.php",{class: type, encode:"json", selfedit:selfedit?"true":"false", ajax: 'true'}, function(j){
 		chooseInstancePopupOnComponentsListLoaded(j, type, url, title, selfedit);
 	});
 	
