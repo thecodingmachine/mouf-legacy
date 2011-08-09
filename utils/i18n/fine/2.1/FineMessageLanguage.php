@@ -118,8 +118,8 @@ class FineMessageLanguage {
 				}
 			} else {			
 				$exception = new ApplicationException();
-				$exception->setTitle("unable.to.write.file.title", $this->file);
-				$exception->setMessage("unable.to.write.file.text", $this->file);
+				$exception->setTitle("unable.to.write.file.title", $file);
+				$exception->setMessage("unable.to.write.file.text", $file);
 				throw $exception;
 			}
 		} else {
