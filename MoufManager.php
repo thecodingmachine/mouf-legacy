@@ -756,6 +756,12 @@ class MoufManager {
 			throw new MoufException("Error, unable to write file ".$dirname."/".$filename);
 		}
 		
+		if (!is_writable(dirname(dirname(__FILE__)."/".$this->requireFileName)) || (file_exists(dirname(__FILE__)."/".$this->requireFileName) && !is_writable(dirname(__FILE__)."/".$this->requireFileName))) {
+			$dirname = realpath(dirname(dirname(__FILE__)."/".$this->requireFileName));
+			$filename = basename(dirname(__FILE__)."/".$this->requireFileName);
+			throw new MoufException("Error, unable to write file ".$dirname."/".$filename);
+		}
+		
 		$fp = fopen(dirname(__FILE__)."/".$this->componentsFileName, "w");
 		fwrite($fp, "<?php\n");
 		fwrite($fp, "/**\n");

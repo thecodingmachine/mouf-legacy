@@ -8,6 +8,9 @@ while (ob_get_level() != 0) {
 	ob_end_clean();
 }
 
+ini_set('display_errors', 1);
+// Add E_ERROR to error reporting it it is not already set
+error_reporting(E_ERROR | error_reporting());
 
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	//require_once '../../Mouf.php';
