@@ -1,0 +1,46 @@
+@CHARSET "UTF-8";
+
+/****************** Messages **************/
+div.warning {
+	background: #FFF3DD none repeat scroll 0 0;
+	color: #222200;
+	padding: 5px 5px 5px 26px;
+	border: 1px solid #F0C020;
+	background-image: url("images/warning.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	margin-bottom: 2px;
+}
+
+div.error {
+	background: #FFDDDD none repeat scroll 0 0;
+	color: #220000;
+	padding: 5px 5px 5px 26px;
+	border: 1px solid #F03010;
+	background-image: url("images/exclamation.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	margin-bottom: 2px;
+}
+
+div.success {
+	background: #DDFFDD none repeat scroll 0 0;
+	color: #002200;
+	padding: 5px 5px 5px 26px;
+	border: 1px solid #10F030;
+	background-image: url("images/good.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	margin-bottom: 2px;
+}
+
+div.info {
+	background: #F3F3F3 none repeat scroll 0 0;
+	color: #111111;
+	padding: 5px 5px 5px 26px;
+	border:1px solid #DDDDDD;
+	background-image: url("images/note.png");
+	background-repeat: no-repeat;
+	background-position: 5px 5px;
+	margin-bottom: 2px;
+}

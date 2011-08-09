@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Message Service</displayName>
+	<shortDescription>Use this package to display info/warning/error messages to the user on a web page.
+	Using the SessionMessageService class, you register messages to be displayed.
+	Using the MessageWidget class, you display the error messages in your templates.</shortDescription>
+	<docUrl></docUrl>
+	<doc>
+		<page title="Using the message service" url="index.html" />
+		<page title="Advanced usage" url="advanced.html" />
+	</doc>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>service/UserMessageInterface.php</require>
+		<require>service/MessageProviderInterface.php</require>
+		<require>service/UserMessage.php</require>
+		<require>service/SessionMessageService.php</require>
+		<require>widget/MessageWidget.php</require>
+		<require>common_functions.php</require>
+	</requires>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>

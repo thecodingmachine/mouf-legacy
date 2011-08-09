@@ -1,0 +1,35 @@
+<h1>Displaying status messages to your users: advanced usage</h1>
+
+<h2>The long story</h2>
+
+<p>What happens when you call the <code>set_user_message</code> function?</p>
+<p>The <code>set_user_message</code> function is a shortcut for:</p>
+
+<pre>Mouf::getUserMessageService()-&gt;setMessage($html, $type, $category);</pre>
+
+<p>The "userMessageService" Mouf instance is an instance of the component <code>SessionMessageService</code></p>.
+
+<h3>The <code>SessionMessageService</code> class</h3>
+
+<p>This class is in charge of storing and providing the messages to be displayed to the user.
+Use <code>SessionMessageService-&gt;setMessage</code> to register a message. Use 
+<code>SessionMessageService-&gt;getMessages</code> to retrieve the list of messages to display.
+The messages will be retrieved as an array of <code>UserMessage</code> instances.
+A call to the <code>SessionMessageService-&gt;getMessages</code> function removes the messages from
+the instance, so if you perform 2 calls to this method, the second call will return an empty array.</p>
+
+<h3>Writing your own <code>MessageService</code></h3>
+
+<p>The <code>SessionMessageService</code> is storing the messages in the session. This is a great default
+behaviour because it means that the user will not miss a message in the event a message is registered,
+but no call is performed to the MessageWidget.</p>
+
+<p>You can however provide your own class instead of the <code>SessionMessageService</code>. To do this,
+your class must implement the <code>MessageProviderInterface</code>.</p>
+
+<h3>Writing your own <code>MessageWidget</code></h3>
+
+<p>The <code>MessageWidget</code> class is responsible for displaying the error messages.
+The default implementation is capable of detecting duplicates in the error messages (it
+will display each message only once). You can also develop your own class. All you need to
+do is implement the HtmlElementInterface interface, so you can use your component in any template.</p>
