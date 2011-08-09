@@ -42,6 +42,8 @@
 		<require>HtmlHiddenInputWidget.php</require>
 		<require>HtmlCheckBoxWidget.php</require>
 		<require>HtmlCheckBoxGroupWidget.php</require>
+		<require>HtmlRadioGroupWidget.php</require>
+		<require>HtmlRadioGroupStaticWidget.php</require>
 		<require>HtmlFormTag.php</require>
 		<require>HtmlListTag.php</require>
 		<require>HtmlButtonWidget.php</require>
