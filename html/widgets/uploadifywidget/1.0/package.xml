@@ -25,6 +25,7 @@
 		</dependency>
 	</dependencies>
 	<requires>
+		<require>UploadifyOnUploadInterface.php</require>
 		<require>UploadifySingleFileWidget.php</require>
 	</requires>
 </package>

@@ -77,7 +77,7 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	 * To be registered, an instance should implement the UploadifyOnUpoadInterface interface.
 	 * 
 	 * @Property
-	 * @var array<UploadifyOnUpoadInterface>
+	 * @var array<UploadifyOnUploadInterface>
 	 */
 	public $listeners;
 	
