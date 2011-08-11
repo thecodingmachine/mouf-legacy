@@ -25,8 +25,6 @@ $sessArray = $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId];
 $targetFile = $sessArray["path"];
 
 
-/* @var $uploadWidget UploadifySingleFileWidget */
-
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
 
@@ -38,22 +36,35 @@ if (!empty($_FILES)) {
 	// if (in_array($fileParts['extension'],$typesArray)) {
 	// Uncomment the following line if you want to make the directory if it doesn't exist
 	$targetPath = dirname($targetFile);
-	if (!is_dir($targetPath)) {
-		mkdir(str_replace('//','/', $targetPath), 0755, true);
-	}
-	move_uploaded_file($tempFile,$targetFile);
+
+	$returnArray = array('status'=>'ok');
+	
 	if (!empty($sessArray['instanceName'])) {
 		$instance = MoufManager::getMoufManager()->getInstance($sessArray['instanceName']);
 		/* @var $instance UploadifySingleFileWidget */
 		if (is_array($instance->listeners)) {
 			foreach ($instance->listeners as $listener) {
 				/* @var $listener UploadifyOnUploadInterface */
-				$listener->onUpload($tempFile, $targetFile, $fileId, $widget)
+				$result = $listener->onUpload($tempFile, $targetFile, $sessArray["fileId"], $instance);
+				if (!$result) {
+					$returnArray['status'] = 'error';
+					break; 
+				}
 			}
 		}
 	}
 	
-	echo "1";
+	if (!is_dir($targetPath)) {
+		mkdir(str_replace('//','/', $targetPath), 0755, true);
+	}
+	if ($returnArray['status'] != "error") {
+		$result = move_uploaded_file($tempFile,$targetFile);
+		if (!$result) {
+			$returnArray['status'] = 'error';
+		}
+	}
+	
+	echo json_encode($result);
 	// } else {
 	// 	echo 'Invalid file type.';
 	// }

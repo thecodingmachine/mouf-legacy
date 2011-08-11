@@ -17,7 +17,7 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	
 	/**
 	 * The list of file extensions for the files to upload, separated by a ";".
-	 * For instance: *.jpg;*.gif;*.png
+	 * <p>For instance: *.jpg;*.gif;*.png</p>
 	 * 
 	 * @Property
 	 * @var string
@@ -27,8 +27,8 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	
 	/**
 	 * The $fileDescription option sets the text that will appear in the file type drop down in the file selection system window.
-	 * This option is required when using the $fileExtensions option.
-	 * For instance: 'Web Image Files (.JPG, .GIF, .PNG)'
+	 * <p>This option is required when using the $fileExtensions option.
+	 * For instance: 'Web Image Files (.JPG, .GIF, .PNG)'</p>
 	 *
 	 * @Property
 	 * @var string
@@ -40,6 +40,9 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	 * If it does not start with "/", this is relative to ROOT_PATH.
 	 * The directory is created if it does not exist.
 	 * 
+	 * You can of course set this value dynamically, in your code, using
+	 * <pre>$instance->directory = "my/directory";</pre>
+	 * 
 	 * @Property
 	 * @var string
 	 */
@@ -49,15 +52,20 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	 * The destination file name for the file to be written.
 	 * This is a unique file name and cannot contain "/".
 	 *
+	 * Most of the time, you will set this value dynamically, in your code, using
+	 * <pre>$instance->fileName = "myFileName.ext";</pre>
+	 * 
 	 * @Property
 	 * @var string
 	 */
 	public $fileName;
 	
 	/**
-	 * A unique ID attached to the file.
-	 * You should set this ID programmatically.
-	 * The ID will be passed to the listeners when an upload is completed.
+	 * If you want to trigger some code when the file is uploaded, you will need to give the file a unique ID.
+	 * You should set this ID programmatically, using:
+	 * <pre>$instance->fileId = $myId;</pre>
+	 * Then, you should register a listener that will be triggered when the file is uploaded (see the "listeners"
+	 * property). The ID will be passed to the listener when an upload is completed.
 	 * 
 	 * @Property
 	 * @var string
@@ -66,11 +74,21 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	
 	/**
 	 * A list of instances that will be notified when an upload occurs.
+	 * To be registered, an instance should implement the UploadifyOnUpoadInterface interface.
 	 * 
 	 * @Property
 	 * @var array<UploadifyOnUpoadInterface>
 	 */
 	public $listeners;
+	
+	/**
+	 * The name of the javascript function to trigger on upload completed.
+	 * See http://www.uploadify.com/documentation/events/oncomplete-2/ for more information.
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $onCompleteJavascriptFunction;
 	
 	/**
 	 * Renders the object in HTML.
@@ -118,6 +136,9 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 		if (!empty($this->fileExtensions)) {
 			echo '"fileExt"   : "'.plainstring_to_htmlprotected($this->fileExtensions).'",';
 			echo '"fileDesc"   : "'.plainstring_to_htmlprotected($this->fileDescription).'",';
+		}
+		if (!empty($this->onCompleteJavascriptFunction)) {
+			echo '"onComplete"   : '.$this->onCompleteJavascriptFunction.',';
 		}
 		echo '	  "auto"      : true
 			});

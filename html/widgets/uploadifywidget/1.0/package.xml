@@ -4,6 +4,9 @@
 	<shortDescription>This package contains an upload widget based on jQuery uploadify plugin.
 	This allows easy uploading of files.</shortDescription>
 	<docUrl></docUrl>
+	<doc root='doc'>
+		<page title="Using the Uploadify Widget" url="index.html" />
+	</doc>	
 	<dependencies>
 		<dependency>
 			<group>html/widgets</group>
