@@ -45,7 +45,7 @@ if (!empty($_FILES)) {
 		if (is_array($instance->listeners)) {
 			foreach ($instance->listeners as $listener) {
 				/* @var $listener UploadifyOnUploadInterface */
-				$result = $listener->onUpload($tempFile, $targetFile, $sessArray["fileId"], $instance);
+				$result = $listener->onUpload($tempFile, $targetFile, $sessArray["fileId"], $instance, $returnArray);
 				if (!$result) {
 					$returnArray['status'] = 'error';
 					break; 
@@ -64,7 +64,7 @@ if (!empty($_FILES)) {
 		}
 	}
 	
-	echo json_encode($result);
+	echo json_encode($returnArray);
 	// } else {
 	// 	echo 'Invalid file type.';
 	// }
