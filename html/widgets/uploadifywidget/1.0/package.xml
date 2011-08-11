@@ -15,6 +15,11 @@
 			<name>jquery.uploadify</name>
 			<version>2.1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/session</group>
+			<name>sessionmanager</name>
+			<version>&gt;=1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>UploadifySingleFileWidget.php</require>

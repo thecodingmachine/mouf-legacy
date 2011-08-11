@@ -15,9 +15,7 @@ class DrupalSessionManager implements SessionManagerInterface {
 	 * @return bool
 	 */
 	public function start() {
-		error_log("DRUPAL SESSION INIT START");
 		if (isset($_SESSION)) {
-			error_log("DRUPAL SESSION INIT CANCELED, SESSION ALREADY STARTED");
 			return false;
 		}
 		
@@ -28,7 +26,6 @@ class DrupalSessionManager implements SessionManagerInterface {
 		drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 		
 		chdir($olddir);
-		error_log("DRUPAL SESSION INIT DONE");
 	}
 	
 	/**

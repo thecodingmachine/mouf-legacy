@@ -24,6 +24,17 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	 */
 	public $fileExtensions;
 	
+	
+	/**
+	 * The $fileDescription option sets the text that will appear in the file type drop down in the file selection system window.
+	 * This option is required when using the $fileExtensions option.
+	 * For instance: 'Web Image Files (.JPG, .GIF, .PNG)'
+	 *
+	 * @Property
+	 * @var string
+	 */
+	public $fileDescription;
+	
 	/**
 	 * The destination directory for the file to be written. 
 	 * If it does not start with "/", this is relative to ROOT_PATH.
@@ -42,6 +53,24 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	 * @var string
 	 */
 	public $fileName;
+	
+	/**
+	 * A unique ID attached to the file.
+	 * You should set this ID programmatically.
+	 * The ID will be passed to the listeners when an upload is completed.
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $fileId;
+	
+	/**
+	 * A list of instances that will be notified when an upload occurs.
+	 * 
+	 * @Property
+	 * @var array<UploadifyOnUpoadInterface>
+	 */
+	public $listeners;
 	
 	/**
 	 * Renders the object in HTML.
@@ -74,15 +103,21 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 
 		$version = basename(dirname(__FILE__));
 		
+		$uniqueId = rand();
+		$thisInstanceName = MoufManager::getMoufManager()->findInstanceName($this);
+		
 		echo '<script type="text/javascript">jQuery(function() {
 			jQuery( "#'.plainstring_to_htmlprotected($id).'" ).uploadify({
 				  "uploader"  : "'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/uploadify.swf",
-				  "script"    : "'.ROOT_URL.'plugins/html/widgets/uploadifywidget/'.$version.'/direct/upload.php",
+				  "script"    : "'.ROOT_URL.'plugins/html/widgets/uploadifywidget/'.$version.'/direct/upload.php?'.htmlspecialchars(session_name()."=".session_id()).'",
 				  "cancelImg" : "'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/cancel.png",
-				  "folder"    : "/uploads",
+				  "scriptData"    : {"uniqueId": "'.$uniqueId.'",
+									 "sessionName": "'.session_name().'",
+									 "sessionId": "'.session_id().'"},
 			';
 		if (!empty($this->fileExtensions)) {
 			echo '"fileExt"   : "'.plainstring_to_htmlprotected($this->fileExtensions).'",';
+			echo '"fileDesc"   : "'.plainstring_to_htmlprotected($this->fileDescription).'",';
 		}
 		echo '	  "auto"      : true
 			});
@@ -96,8 +131,11 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 			}
 		}
 		
-		// FIXME: implement SECURITY!!!!!
-		//$_SESSION["mouf_uploadify_autorizeduploads"][] = $this->getUploadedFilePath();
+		// Start a session using the session manager.
+		Mouf::getSessionManager()->start();
+		$_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId] = array("path"=>$this->getUploadedFilePath(),
+																		"fileId"=>$this->fileId,
+																		"instanceName"=>$thisInstanceName);
 	}
 	
 	/**
@@ -111,7 +149,9 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 		}
 		rtrim($directory, DIRECTORY_SEPARATOR);
 		$directory .= DIRECTORY_SEPARATOR;
-		return $directory.DIRECTORY_SEPARATOR.basename($this->fileName);
+		$file = $directory.basename($this->fileName);
+		$file = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $file);
+		return $file;
 	}
 }
 ?>
