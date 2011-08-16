@@ -13,6 +13,10 @@ class MoufManager {
 	const SCOPE_APP = 'app';
 	const SCOPE_ADMIN = 'admin';
 	
+	const DECLARE_ON_EXIST_EXCEPTION = 'exception';
+	const DECLARE_ON_EXIST_KEEP_INCOMING_LINKS = 'keepincominglinks';
+	const DECLARE_ON_EXIST_KEEP_ALL = 'keepall';
+	
 	/**
 	 * The default instance of the MoufManager.
 	 *
@@ -295,7 +299,20 @@ class MoufManager {
 	 * @param string $className
 	 * @param boolean $external Whether the component is external or not. Defaults to false.
 	 */
-	public function declareComponent($instanceName, $className, $external = false) {
+	public function declareComponent($instanceName, $className, $external = false, $mode = self::DECLARE_ON_EXIST_EXCEPTION) {
+		if (isset($this->declaredInstances[$instanceName])) {
+			if ($mode == self::DECLARE_ON_EXIST_EXCEPTION) {
+				throw new MoufException("Unable to create Mouf istance named '".$instanceName."'. An instance with this name already exists.");
+			} elseif ($mode == self::DECLARE_ON_EXIST_KEEP_INCOMING_LINKS) {
+				$this->declaredInstances[$instanceName]["fieldProperties"] = array();
+				$this->declaredInstances[$instanceName]["setterProperties"] = array();
+				$this->declaredInstances[$instanceName]["fieldBinds"] = array();
+				$this->declaredInstances[$instanceName]["setterBinds"] = array();
+				$this->declaredInstances[$instanceName]["comment"] = "";
+			} elseif ($mode == self::DECLARE_ON_EXIST_KEEP_ALL) {
+				// Do nothing
+			}
+		}
 		$this->declaredInstances[$instanceName]["class"] = $className;
 		$this->declaredInstances[$instanceName]["external"] = $external;
 	}
