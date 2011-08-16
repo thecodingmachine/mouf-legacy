@@ -65,7 +65,7 @@ class TdbmController extends AbstractMoufInstanceController {
 	 * This function generates the DAOs and Beans for the TDBM service passed in parameter. 
 	 * 
 	 */
-	public static function generateDaos($moufManager, $name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
+	public static function generateDaos(MoufManager $moufManager, $name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
 		$moufManager->setVariable("tdbmDefaultDaoDirectory", $daodirectory);
 		$moufManager->setVariable("tdbmDefaultBeanDirectory", $beandirectory);
 		$moufManager->setVariable("tdbmDefaultDaoFactoryName", $daofactoryclassname);
@@ -100,16 +100,17 @@ class TdbmController extends AbstractMoufInstanceController {
 			throw new Exception("An error occured while retrieving message: ".$response);
 		}
 
-		$moufManager->declareComponent($daofactoryinstancename, $daofactoryclassname);
+		$moufManager->declareComponent($daofactoryinstancename, $daofactoryclassname, false, MoufManager::DECLARE_ON_EXIST_KEEP_INCOMING_LINKS);
 		
 		foreach ($xmlRoot->table as $table) {
 			$daoName = TDBMDaoGenerator::getDaoNameFromTableName($table);
 			$moufManager->addRegisteredComponentFile($daodirectory."/".$daoName.".php");
 
 			$instanceName = TDBMDaoGenerator::toVariableName($daoName);
-			$moufManager->declareComponent($instanceName, $daoName);
+			if (!$moufManager->instanceExists($instanceName)) {
+				$moufManager->declareComponent($instanceName, $daoName);
+			}
 			$moufManager->bindComponentViaSetter($instanceName, "setTdbmService", $name);
-
 			$moufManager->bindComponentViaSetter($daofactoryinstancename, "set".$daoName, $instanceName);
 		}
 		

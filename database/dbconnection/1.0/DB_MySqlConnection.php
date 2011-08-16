@@ -117,15 +117,15 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		
 		// In MySQL, if we are doing UTF8, there is an additional command to run!
-		$charset = strtolower($this->charset);
+		/*$charset = strtolower($this->charset);
 		if (empty($charset)) {
 			$charset = "utf-8";
 		}		
 		if ($charset == 'utf8' || $charset == 'utf-8') {
 			// Workaround for a bug in PHP 5.3.0: replace PDO::MYSQL_ATTR_INIT_COMMAND with 1002
 			//$options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
-			$options[1002] = "SET NAMES utf8";
-		}
+			$options[1002] = "SET NAMES 'utf8'";
+		}*/
 		
 		return $options;
 	}
@@ -678,6 +678,29 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	public function escapeDBItem($string) {
 		return '`'.$string.'`';
 	}
+	
+	/**
+	 * Performs the connection to the the database.
+	 * This is overloaded because we might want to call 'SET NAMES utf8;'
+	 * to set the connection in UTF8. We might have used 
+	 * $options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8";
+	 * or $options[1002] = "SET NAMES utf8";
+	 * but this still fails on some computers (especially in Wamp with PHP 5.3.0)
+	 *
+	 */
+	public function connect() {
+		parent::connect();
+		
+		
+		$charset = strtolower($this->charset);
+		if (empty($charset)) {
+			$charset = "utf-8";
+		}		
+		if ($charset == 'utf8' || $charset == 'utf-8') {
+			$this->dbh->exec("SET NAMES utf8;");
+		}
+	}
+	
 }
 
 

@@ -18,14 +18,20 @@ class DrupalSessionManager implements SessionManagerInterface {
 		if (isset($_SESSION)) {
 			return false;
 		}
+
+		// Let's lie to Drupal and pretend it started the app
+		$oldScriptName = $_SERVER['SCRIPT_NAME'];
+		$_SERVER['SCRIPT_NAME'] = ROOT_URL.'/index.php';
 		
 		$olddir = getcwd();
 		chdir(dirname(__FILE__)."/../../../../../");
 		
+		define('DRUPAL_ROOT', getcwd());
 		require_once dirname(__FILE__)."/../../../../../includes/bootstrap.inc";
 		drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
 		
 		chdir($olddir);
+		$_SERVER['SCRIPT_NAME'] = $oldScriptName;
 	}
 	
 	/**

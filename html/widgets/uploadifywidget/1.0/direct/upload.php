@@ -1,4 +1,6 @@
 <?php 
+session_name($_POST['sessionName']);
+session_id($_POST['sessionId']);
 //setcookie($_POST['sessionName'], $_POST['sessionId']);
 $_COOKIE[$_POST['sessionName']] = $_POST['sessionId'];
 
@@ -8,8 +10,7 @@ require_once dirname(__FILE__)."/../../../../../../Mouf.php";
 //error_log("SESSIONID". $_POST['sessionId']);
 //error_log("SESSIONID from sessionname". session_id());
 
-/*session_name($_POST['sessionName']);
-session_id($_POST['sessionId']);*/
+/*session_id($_POST['sessionId']);*/
 
 
 Mouf::getSessionManager()->start();
@@ -17,6 +18,8 @@ Mouf::getSessionManager()->start();
 $uniqueId = $_POST['uniqueId'];
 //error_log("UNIQUE ID ".$uniqueId);
 //error_log("SESSION ".var_export($_SESSION, true));
+
+error_log(var_export($_SESSION, true));
 
 if (!isset($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId])) {
 	throw new Exception("Upload security exception.");

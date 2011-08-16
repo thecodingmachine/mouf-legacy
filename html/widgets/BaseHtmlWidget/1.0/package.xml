@@ -18,17 +18,17 @@
 		<dependency>
 			<group>html</group>
 			<name>htmlelement</name>
-			<version>1.0</version>
+			<version>&gt;=1.0</version>
 		</dependency>
 		<dependency>
 			<group>html/widgets</group>
 			<name>basewidget</name>
-			<version>1.0</version>
+			<version>&gt;=1.0</version>
 		</dependency>
 		<dependency>
 			<group>utils/common</group>
 			<name>getvars</name>
-			<version>1.0</version>
+			<version>&gt;=1.0</version>
 		</dependency>
 	</dependencies>
 	<requires>
