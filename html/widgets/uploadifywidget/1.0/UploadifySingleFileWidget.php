@@ -55,6 +55,8 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 	 * Most of the time, you will set this value dynamically, in your code, using
 	 * <pre>$instance->fileName = "myFileName.ext";</pre>
 	 * 
+	 * If not set, the name of the file provided by the user is used instead.
+	 * 
 	 * @Property
 	 * @var string
 	 */

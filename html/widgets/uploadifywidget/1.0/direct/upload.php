@@ -30,7 +30,8 @@ $targetFile = $sessArray["path"];
 
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
-
+	$uploadedFileName = $_FILES['Filedata']['name'];
+	
 	// $fileTypes  = str_replace('*.','',$_REQUEST['fileext']);
 	// $fileTypes  = str_replace(';','|',$fileTypes);
 	// $typesArray = split('\|',$fileTypes);
@@ -44,11 +45,16 @@ if (!empty($_FILES)) {
 	
 	if (!empty($sessArray['instanceName'])) {
 		$instance = MoufManager::getMoufManager()->getInstance($sessArray['instanceName']);
+		
 		/* @var $instance UploadifySingleFileWidget */
+		if (empty($instance->fileName)) {
+			$instance->fileName = $uploadedFileName;
+		}
+		
 		if (is_array($instance->listeners)) {
 			foreach ($instance->listeners as $listener) {
 				/* @var $listener UploadifyOnUploadInterface */
-				$result = $listener->onUpload($tempFile, $targetFile, $sessArray["fileId"], $instance, $returnArray);
+				$result = $listener->onUpload($tempFile, $targetFile, $sessArray["fileId"], $instance, $returnArray, $uploadedFileName);
 				if (!$result) {
 					$returnArray['status'] = 'error';
 					break; 

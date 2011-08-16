@@ -21,11 +21,12 @@ interface UploadifyOnUploadInterface {
 	 * <pre>$result = array("status"=>"error|ok")</pre>
 	 * 
 	 * @param string $tmpFile The temporary path to the uploaded file.
-	 * @param string $destFile The final path of the uploaded file. When the onUpload method is called, the file is not yet there.
+	 * @param string $destFile The final path of the uploaded file. When the onUpload method is called, the file is not yet there. In this function, you can change the value of $destFile since it is passed by reference
 	 * @param string $fileId The fileId that was set in the uploadify widget (see UploadifySingleFileWidget::fileId)
 	 * @param UploadifySingleFileWidget $widget
 	 * @param array $result The result array that will be returned to the page as a JSON object.
+	 * @param string $uploadedFileName The name of the uploaded file
 	 * @return boolean Return false to cancel the upload
 	 */
-	public function onUpload($tmpFile, $destFile, $fileId, UploadifySingleFileWidget $widget, array &$result);
+	public function onUpload($tmpFile, &$destFile, $fileId, UploadifySingleFileWidget $widget, array &$result, $uploadedFileName);
 }
