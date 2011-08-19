@@ -91,7 +91,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 		if (isset($this->msg[$message])) {
 			$value = $this->msg[$message];
 			for ($i=1;$i<count($args);$i++){
-				$value = str_replace('{'.($i-1).'}', plainstring_to_htmlprotected($args[$i]), $value);
+				$value = str_replace('{'.($i-1).'}', $args[$i], $value);
 			}
 		} else {
 			$value = "???".$message;
@@ -135,7 +135,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 		if (isset($this->msg[$message])) {
 			$value = $this->msg[$message];
 			for ($i=1;$i<count($args);$i++){
-				$value = str_replace('{'.($i-1).'}', plainstring_to_htmlprotected($args[$i]), $value);
+				$value = str_replace('{'.($i-1).'}', $args[$i], $value);
 			}
 		} else {
 			$value = "???".$message;
