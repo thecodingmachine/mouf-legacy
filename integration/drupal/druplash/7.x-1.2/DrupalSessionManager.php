@@ -9,6 +9,14 @@
 class DrupalSessionManager implements SessionManagerInterface {
 	
 	/**
+	 * 
+	 * Tells the Session manager if the bootstrap should be full or session only (set to true if you need to use Drupal functions for example)
+	 * @Property 
+	 * @var bool
+	 */
+	public $bootstrapFull = false;
+	
+	/**
 	 * Starts the session.
 	 *
 	 * @see session_start
@@ -28,7 +36,7 @@ class DrupalSessionManager implements SessionManagerInterface {
 		
 		define('DRUPAL_ROOT', getcwd());
 		require_once dirname(__FILE__)."/../../../../../includes/bootstrap.inc";
-		drupal_bootstrap(DRUPAL_BOOTSTRAP_SESSION);
+		drupal_bootstrap($this->bootstrapFull ? DRUPAL_BOOTSTRAP_FULL : DRUPAL_BOOTSTRAP_SESSION);
 		
 		chdir($olddir);
 		$_SERVER['SCRIPT_NAME'] = $oldScriptName;
