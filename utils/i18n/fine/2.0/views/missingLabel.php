@@ -4,7 +4,7 @@
 		<input type="hidden" name="msginstancename" value="<?php echo plainstring_to_htmlprotected($this->msgInstanceName); ?>" />
 		<input type="hidden" name="selfedit" value="<?php echo plainstring_to_htmlprotected($this->selfedit); ?>" />
 		<p style="text-align: left">Search: <br /><input type="text" name="search" value="" /><br />
-			<select name="language" class="language">
+			<select name="language_search" class="language">
 				<option value="">--</option>
 				<?php
 				foreach ($this->languages as $language) {
