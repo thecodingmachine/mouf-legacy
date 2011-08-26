@@ -231,7 +231,10 @@ class Splash {
 
 		if ($controller instanceof Controller) {
 			// Let's pass everything to the controller:
-			$controller->callAction($action);			
+			if(method_exists($controller, $action.'__'.$_SERVER['REQUEST_METHOD']))
+				$controller->callAction($action.'__'.$_SERVER['REQUEST_METHOD']);
+			else
+				$controller->callAction($action);
 		} elseif ($controller instanceof WebServiceInterface) {
 			$this->handleWebservice($controller);
 		} else {
