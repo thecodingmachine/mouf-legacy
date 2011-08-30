@@ -87,7 +87,7 @@ public function onUpload($tmpFile, &$destFile, $fileId, UploadifySingleFileWidge
 	$file_info = getimagesize($tmpFile);
 	if(empty($file_info)) // No Image?
 	{
-		$result['msg'] = 'The uploaded file doesn't seem to be an image'; 
+		$result['msg'] = "The uploaded file doesn't seem to be an image"; 
 		return false;
 	}
 	
