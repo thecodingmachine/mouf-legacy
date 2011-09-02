@@ -3,6 +3,9 @@
  * This page generates the DAOS (via direct access)
  * 
  */
+ini_set("display_errors", 1);
+error_reporting(error_reporting() | E_ERROR);
+
 require_once 'utils/dao_generator.php';
 
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {

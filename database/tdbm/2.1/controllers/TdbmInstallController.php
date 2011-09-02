@@ -118,8 +118,8 @@ class TdbmInstallController extends Controller {
 		
 		if (!$this->moufManager->instanceExists("tdbmService")) {
 			$this->moufManager->declareComponent("tdbmService", "TDBM_Service");
-			$this->moufManager->bindComponentViaSetter("tdbmService", "connection", "dbConnection");
-			$this->moufManager->bindComponentViaSetter("tdbmService", "cacheService", "noCacheService");
+			$this->moufManager->bindComponentViaSetter("tdbmService", "setConnection", "dbConnection");
+			$this->moufManager->bindComponentViaSetter("tdbmService", "setCacheService", "noCacheService");
 		}
 		
 		$this->moufManager->rewriteMouf();
