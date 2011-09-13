@@ -19,7 +19,7 @@ $uniqueId = $_POST['uniqueId'];
 //error_log("UNIQUE ID ".$uniqueId);
 //error_log("SESSION ".var_export($_SESSION, true));
 
-error_log(var_export($_SESSION, true));
+//error_log(var_export($_SESSION, true));
 
 if (!isset($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId])) {
 	throw new Exception("Upload security exception.");
