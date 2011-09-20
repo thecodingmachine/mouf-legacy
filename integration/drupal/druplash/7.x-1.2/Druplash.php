@@ -48,7 +48,7 @@ class Druplash {
 			
 				if (isset($items[$url])) {
 					// FIXME: support different 'access arguments' for different HTTP methods!
-					$items[$url]['page arguments'][$httpMethod] = array($urlCallback->controllerInstanceName, $urlCallback->methodName);
+					$items[$url]['page arguments'][0][$httpMethod] = array("instance"=>$urlCallback->controllerInstanceName, "method"=>$urlCallback->methodName);
 				} else {
 					$items[$url] = array(
 					    'title' => $title,
