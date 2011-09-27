@@ -4,6 +4,11 @@
  * along additional interesting infos (subclasses, name of the declaration file, etc...)
  */
 
+
+ini_set('display_errors', 1);
+// Add E_ERROR to error reporting it it is not already set
+error_reporting(E_ERROR | error_reporting());
+
 // Disable output buffering
 while (ob_get_level() != 0) {
 	ob_end_clean();

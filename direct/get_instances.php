@@ -3,6 +3,11 @@
  * Returns a serialized string representing the array for all components declares (classes with the @Component annotation)
  */
 
+
+ini_set('display_errors', 1);
+// Add E_ERROR to error reporting it it is not already set
+error_reporting(E_ERROR | error_reporting());
+
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {
 	//echo "mouf";
 	require_once '../../Mouf.php';

@@ -26,8 +26,7 @@ if (!extension_loaded("curl")) {
 
 		<p>In order to run Mouf, you will first need to enable the "php_curl" extension on your server.</p>
 		<p>Please enable this extension and refresh this page.</p>
-                <p>Windows clients : You sould modify the "php.ini" file so the line ";extension=php_curl.dll" sould be "extension=php_curl.dll", then restart your apache deamon.</p>
-                <p>Debian/Ubuntu clients: <a href="apt://php5-curl">Setup php_curl</a></p>
+                <p>Help topic : <a href="http://mouf-php.com/node/12" target="_blank">link</a>.</p>
                 </div>
             </div>
 	</body>

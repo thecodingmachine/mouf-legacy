@@ -1,6 +1,10 @@
 <?php
 //require_once('../../MoufUniversalParameters.php');
 
+ini_set('display_errors', 1);
+// Add E_ERROR to error reporting it it is not already set
+error_reporting(E_ERROR | error_reporting());
+
 // This validator checks that all the config parameters defined are present in the config.php file.
 
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {

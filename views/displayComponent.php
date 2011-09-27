@@ -182,12 +182,14 @@ jQuery(document).ready (function() {
 		<span id="instanceNameTextbox" style="display:none" ><input type="text" name="instanceName" value="<?php echo plainstring_to_htmlprotected($this->instanceName) ?>" /></span>
 	</h1>
 	<div>
+
 		<input type="hidden" name="originalInstanceName" value="<?php echo plainstring_to_htmlprotected($this->instanceName) ?>" />
 		<input type="hidden" name="delete" id="delete" value="0" />
 		<input type="hidden" name="selfedit" id="selfedit" value="<?php echo $this->selfedit; ?>" />
-		<a id="modifyInstanceLink" href="javascript:void(0)" onclick="document.getElementById('modifyInstanceLink').style.visibility='hidden';document.getElementById('instanceNameText').style.display='none';document.getElementById('instanceNameTextbox').style.display='inline';">Modify component name</a>
-		<a href="javascript:void(0)" onclick="deleteInstance()">Delete this instance</a>
-		<a href="javascript:void(0)" onclick="displayDuplicateInstanceDialog()">Duplicate this instance</a>
+		
+                <a id="modifyInstanceLink" href="javascript:void(0)" class="button modify" onclick="document.getElementById('modifyInstanceLink').style.visibility='hidden';document.getElementById('instanceNameText').style.display='none';document.getElementById('instanceNameTextbox').style.display='inline';">Modify this instance</a>
+		<a href="javascript:void(0)" class="button delete" onclick="deleteInstance()">Delete this instance</a>
+		<a href="javascript:void(0)" class="button duplicate" onclick="displayDuplicateInstanceDialog()">Duplicate this instance</a>
 	</div>
 	<div class="instance_parameter">
 		<h2>Class <?php echo $this->className ?></h2>
@@ -465,7 +467,7 @@ jQuery(document).ready (function() {
 				<td>
 					<input type="submit" value="Save" />
 					<?php if (get("backto")!=null) {
-						echo '<input type="button" value="Back" onclick="window.location=\''.urlencode(get('backto')).'\';return false;" />';
+						echo '<input class="art-button" type="button" value="Back" onclick="window.location=\''.urlencode(get('backto')).'\';return false;" />';
 					} ?>
 				</td>
 		</tr>

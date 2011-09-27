@@ -174,6 +174,9 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 									// In the special case of a renaming with a recursion inside the object renamed, we must rename to the new name, not the old one. 
 									$values[$key] = $instanceName;
 								}
+                                                                if(empty($value)){
+                                                                    unset($values[$key]);
+                                                                }
 							}
 						}
 						

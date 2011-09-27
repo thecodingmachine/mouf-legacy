@@ -334,3 +334,26 @@ form#componentForm table#instance_properties {
 form#componentForm table#instance_properties td {
 	vertical-align: top;
 }
+
+
+
+a.button.duplicate {
+	background-image: url(images/page_white_copy.png);
+	background-repeat: no-repeat;
+	background-position: 5px center;
+        padding-left: 26px;
+}
+
+a.button.delete {
+	background-image: url(images/cross.png);
+	background-repeat: no-repeat;
+	background-position: 5px center;
+        padding-left: 26px;
+}
+
+a.button.modify {
+	background-image: url(images/wrench.png);
+	background-repeat: no-repeat;
+	background-position: 5px center;
+        padding-left: 26px;
+}

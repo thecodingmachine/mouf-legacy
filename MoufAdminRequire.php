@@ -14,6 +14,10 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'HtmlFromFile' => 'mouf/../plugins/html/htmlelement/1.0/HtmlFromFile.php',
   'HtmlFromFunction' => 'mouf/../plugins/html/htmlelement/1.0/HtmlFromFunction.php',
   'HtmlString' => 'mouf/../plugins/html/htmlelement/1.0/HtmlString.php',
+  'PHPExcel' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
+  'PHPExcel_Autoloader' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
+  'PHPExcel_Shared_ZipStreamWrapper' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
+  'PHPExcel_Shared_String' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
   'BaseTemplate' => 'mouf/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php',
   'Menu' => 'mouf/../plugins/html/widgets/menu/1.0/Menu.php',
   'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
@@ -28,6 +32,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'FixedLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/FixedLanguageDetection.php',
   'CascadingLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/CascadingLanguageDetection.php',
   'FinePHPArrayTranslationService' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/FinePHPArrayTranslationService.php',
+  'FineCurrencyUtils' => 'mouf/../plugins/utils/i18n/fine/2.1/misc/FineCurrencyUtils.php',
   'HtmlJSJQueryAutoGrow' => 'mouf/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php',
   'HtmlJSJQueryUI' => 'mouf/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php',
   'HtmlJSJQueryFileTree' => 'mouf/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php',
@@ -48,6 +53,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'EmailValidator' => 'mouf/../plugins/utils/common/validators/1.0/EmailValidator.php',
   'NumberValidator' => 'mouf/../plugins/utils/common/validators/1.0/NumberValidator.php',
   'FilterUtils' => 'mouf/../plugins/mvc/splash-common/3.2/services/FilterUtils.php',
+  'SplashUtils' => 'mouf/../plugins/mvc/splash-common/3.2/services/SplashUtils.php',
   'AbstractFilter' => 'mouf/../plugins/mvc/splash-common/3.2/filters/AbstractFilter.php',
   'RequireHttpsAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/filters/RequireHttpsAnnotation.php',
   'RedirectToHttpAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/filters/RedirectToHttpAnnotation.php',
@@ -151,6 +157,7 @@ require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlElementInterfa
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlFromFile.php';
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlFromFunction.php';
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlString.php';
+require_once $localFilePath.'/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php';
 require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuInterface.php';
@@ -171,6 +178,7 @@ require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/language/FixedLangu
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/language/CascadingLanguageDetection.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/translate/FinePHPArrayTranslationService.php';
+require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/misc/FineCurrencyUtils.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/msgFunctions.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php';
@@ -200,6 +208,7 @@ require_once $localFilePath.'/../plugins/utils/common/validators/1.0/EmailValida
 require_once $localFilePath.'/../plugins/utils/common/validators/1.0/NumberValidator.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/load.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/services/FilterUtils.php';
+require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/services/SplashUtils.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/services/UrlProviderInterface.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/controllers/Controller.php';
 require_once $localFilePath.'/../plugins/mvc/splash-common/3.2/filters/AbstractFilter.php';
