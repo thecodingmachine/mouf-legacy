@@ -107,6 +107,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return PDOStatement
 	 */
 	public function query($query, $from = null, $limit = null) {
+		if ($this->dbh == null) {
+			$this->connect();
+		}
+		
 		$queryStr = $query;
 		$queryStr .= $this->getFromLimitString($from, $limit);
 
