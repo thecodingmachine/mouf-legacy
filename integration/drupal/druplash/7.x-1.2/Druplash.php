@@ -136,7 +136,7 @@ class Druplash {
 	public static function onUserLogin($edit, $account) {
 		//TODO: an admin page will be necessary to select which user service instance to use.
 		$moufManager = MoufManager::getMoufManager();
-		if($moufManager->instanceExists('userService')) {
+		if($moufManager->instanceExists('userService') && isset($edit['values']['pass'])) {
 			$userService = $moufManager->getInstance('userService');
 			/* @var $userService MoufUserService */
 			$userService->login($account->name, $edit['values']['pass']);
