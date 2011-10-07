@@ -48,6 +48,20 @@ class Druplash {
 			
 				if (isset($items[$url])) {
 					// FIXME: support different 'access arguments' for different HTTP methods!
+					
+					// Check that the URL has not been already declared.
+					if (isset($items[$url]['page arguments'][0][$httpMethod])) {
+						$msg = "Error! The URL '".$url."' ";
+						if ($httpMethod != "default") {
+							$msg .= "for HTTP method '".$httpMethod."' ";
+						}
+						$msg .= " has been declared twice: once for instance '".$urlCallback->controllerInstanceName."' and method '".$urlCallback->methodName."' ";
+						$oldCallback = $items[$url]['page arguments'][0][$httpMethod];
+						$msg .= " and once for instance '".$oldCallback['instance']."' and method '".$oldCallback['method']."'. The instance  '".$oldCallback['instance']."', method '".$oldCallback['method']."' will be ignored.";
+						//throw new MoufException($msg);
+						drupal_set_message($msg, "error");
+					}
+					
 					$items[$url]['page arguments'][0][$httpMethod] = array("instance"=>$urlCallback->controllerInstanceName, "method"=>$urlCallback->methodName);
 				} else {
 					$items[$url] = array(
@@ -139,7 +153,8 @@ class Druplash {
 		if($moufManager->instanceExists('userService') && isset($edit['values']['pass'])) {
 			$userService = $moufManager->getInstance('userService');
 			/* @var $userService MoufUserService */
-			$userService->login($account->name, $edit['values']['pass']);
+			$pass = isset($edit['values'])?$edit['values']['pass']:$edit['pass'];
+			$userService->login($account->name, $pass);
 		}
 	}
 	
