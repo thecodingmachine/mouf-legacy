@@ -33,4 +33,18 @@ class DruplashRightService extends MoufRightService {
 		}
 		return $allPermissions;
 	}
+	
+	/**
+	 * Returns true if the current user has the right passed in parameter.
+	 * This method is overloaded for Drupal, because in Drupal, not authenticated users can have rights too. 
+	 *
+	 * @param string $right
+	 * @param mixed $scope
+	 */
+	public function isAllowed($right, $scope = null) {
+		if ($scope != null) {
+			throw new MoufException("The DruplashRightService does not support scopes");
+		}
+		return user_access($right);
+	}
 }
