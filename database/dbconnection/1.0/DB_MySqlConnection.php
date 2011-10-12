@@ -47,7 +47,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	/**
 	 * Charset used to communicate with the database.
 	 * The database will translate any string into this charset before sending us the string.
-	 * If not set, this will default to UTF-8
+	 * If not set, this will default to UTF8
 	 *
 	 * @Property
 	 * @var string
@@ -79,7 +79,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 		}
 		$charset = $this->charset;
 		if (empty($charset)) {
-			$charset = "UTF-8";
+			$charset = "UTF8";
 		}
 		$dsn .= "charset=".$charset.";";
 		
