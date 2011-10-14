@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>This module is used to contact Apideo server to upload script.</displayName>
+	<shortDescription>This module is used to contact Apideo server to upload script.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>ApideoServerProxy.php</require>
+	</requires>
+</package>
+	
