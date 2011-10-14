@@ -8,6 +8,14 @@
 class ApideoServerProxy {
 	
 	/**
+	 * The Apideo server url, should end with a slash.
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $videoServerURL = "http://video2.apideo.com/apideo_room3/";
+	
+	/**
 	 * Uploads a new JS script that will be automatically triggered when a
 	 * room is opened. 
 	 * 
