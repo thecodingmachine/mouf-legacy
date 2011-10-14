@@ -5,6 +5,7 @@
 	<docUrl></docUrl>
 	<logo>icon.png</logo>
 	<requires>
+		<require>ApideoServerProxyException.php</require>
 		<require>ApideoServerProxy.php</require>
 	</requires>
 </package>

@@ -44,7 +44,7 @@ class ApideoServerProxy {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $fields_string );
 		
 		if( curl_error($ch) ) { 
-			throw new Exception("An error occured: ".curl_error($ch));
+			throw new ApideoServerProxyException("An error occured: ".curl_error($ch));
 		} else {
 			$response = curl_exec( $ch );
 		}
@@ -54,12 +54,12 @@ class ApideoServerProxy {
 		$xmlRoot = simplexml_load_string($response);
 		
 		if ($xmlRoot == null) {
-			throw new Exception("An error occured while uploading script for Apideo key: ".$apideoKey.". Response: ".$response);
+			throw new ApideoServerProxyException("An error occured while uploading script for Apideo key: ".$apideoKey.". Response: ".$response);
 		}
 		
 		// If an error message is returned instead of a message
 		if (!empty($xmlRoot->message)) {
-			throw new Exception("An error occured while uploading script for Apideo key: ".$apideoKey.". ".$xmlRoot->message." - ".$xmlRoot->stacktrace);
+			throw new ApideoServerProxyException("An error occured while uploading script for Apideo key: ".$apideoKey.". ".$xmlRoot->message." - ".$xmlRoot->stacktrace);
 		}
 	}
 	
@@ -92,7 +92,7 @@ class ApideoServerProxy {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $fields_string );
 	
 		if( curl_error($ch) ) {
-			throw new Exception("An error occured: ".curl_error($ch));
+			throw new ApideoServerProxyException("An error occured: ".curl_error($ch));
 		} else {
 			$response = curl_exec( $ch );
 		}
@@ -102,12 +102,12 @@ class ApideoServerProxy {
 		$xmlRoot = simplexml_load_string($response);
 	
 		if ($xmlRoot == null) {
-			throw new Exception("An error occured while retrieving server-side script for Apideo key: ".$apideoKey.". Response: ".$response);
+			throw new ApideoServerProxyException("An error occured while retrieving server-side script for Apideo key: ".$apideoKey.". Response: ".$response);
 		}
 	
 		// If an error message is returned instead of a message
 		if (!empty($xmlRoot->message)) {
-			throw new Exception("An error occured while retrieving server-side script for Apideo key: ".$apideoKey.". ".$xmlRoot->message." - ".$xmlRoot->stacktrace);
+			throw new ApideoServerProxyException("An error occured while retrieving server-side script for Apideo key: ".$apideoKey.". ".$xmlRoot->message." - ".$xmlRoot->stacktrace);
 		}
 		
 		return (string) $xmlRoot->serversidescript;
