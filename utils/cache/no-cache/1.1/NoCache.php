@@ -12,7 +12,6 @@ class NoCache implements CacheInterface {
 	 * The logger used to trace the cache activity.
 	 *
 	 * @Property
-	 * @Compulsory
 	 * @var LogInterface
 	 */
 	public $log;
@@ -24,7 +23,9 @@ class NoCache implements CacheInterface {
 	 * @return mixed
 	 */
 	public function get($key) {
-		$this->log->trace("Retrieving key '$key' from no-cache: no value returned");
+		if ($this->log != null) {
+			$this->log->trace("Retrieving key '$key' from no-cache: no value returned");
+		}
 		return null;
 	}
 	
@@ -36,7 +37,9 @@ class NoCache implements CacheInterface {
 	 * @param float $timeToLive The time to live of the cache, in seconds.
 	 */
 	public function set($key, $value, $timeToLive = null) {
-		$this->log->trace("Storing value in no-cache: key '$key', value '".var_export($value, true)."'. Nothing will be stored.");		
+		if ($this->log != null) {
+			$this->log->trace("Storing value in no-cache: key '$key', value '".var_export($value, true)."'. Nothing will be stored.");
+		}		
 	}
 	
 	/**
@@ -45,7 +48,9 @@ class NoCache implements CacheInterface {
 	 * @param string $key The key of the object
 	 */
 	public function purge($key) {
-		$this->log->trace("Purging key '$key' from no-cache. Nothing to purge.");
+		if ($this->log != null) {
+			$this->log->trace("Purging key '$key' from no-cache. Nothing to purge.");
+		}
 	}
 	
 	/**
@@ -53,7 +58,9 @@ class NoCache implements CacheInterface {
 	 *
 	 */
 	public function purgeAll() {
-		$this->log->trace("Purging all data from no-cache. Nothing to purge.");
+		if ($this->log != null) {
+			$this->log->trace("Purging all data from no-cache. Nothing to purge.");
+		}
 	}
 	
 }
