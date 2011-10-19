@@ -2,20 +2,20 @@
 /*
  Copyright (C) 2006-2009 David Négrier - THE CODING MACHINE
 
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 
 require_once 'TDBM_Exception.php';
 require_once 'TDBM_AmbiguityException.php';
@@ -28,7 +28,7 @@ require_once 'filters/TDBM_Filters.php';
 /**
  * The TDBM_Service class is the main TDBM class. It provides methods to retrieve TDBM_Object instances
  * from the database.
- * 
+ *
  * @author David Negrier
  * @Component
  * @ExtendedAction {"name":"Generate DAOs", "url":"mouf/tdbmadmin/", "default":false}
@@ -40,23 +40,23 @@ class TDBM_Service {
 	 * @var DB_ConnectionInterface
 	 */
 	public $dbConnection;
-	
+
 	/**
 	 * The cache service to cache data.
-	 * 
+	 *
 	 * @var CacheInterface
 	 */
 	public $cacheService;
-	
+
 	/**
 	 * The default autosave mode for the objects
 	 * True to automatically save the object.
-	 * If false, the user must explicitly call the save() method to save the object. 
-	 * 
+	 * If false, the user must explicitly call the save() method to save the object.
+	 *
 	 * @var boolean
 	 */
 	private $autosave_default = true;
-	
+
 	/**
 	 * If TDBM objects are modified, and if they are not saved, they will automatically be saved at the end of the script.
 	 * Of course, if a transaction has been started, and is not ended, at the end of the script, it is likely that the
@@ -64,11 +64,11 @@ class TDBM_Service {
 	 * If commitOnQuit is set to "true", a commit will always be performed at the end of the script.
 	 * This is a dangerous parameter. Indeed, in case of error, it might commit data that would have otherwised been roll-back.
 	 * Use it sparesly.
-	 * 
+	 *
 	 * @var boolean
 	 */
 	private $commitOnQuit = false;
-	
+
 	private $table_descs;
 
 	/**
@@ -82,8 +82,8 @@ class TDBM_Service {
 
 	/**
 	 * Whether we should track execution time or not.
-	 * If true, if the execution time reaches 90% of the allowed execution time, the request will stop with an exception. 
-	 * 
+	 * If true, if the execution time reaches 90% of the allowed execution time, the request will stop with an exception.
+	 *
 	 * @var bool
 	 */
 	private $trackExecutionTime = true;
@@ -108,7 +108,7 @@ class TDBM_Service {
 
 	/// True if the program is exiting (we are in the "exit" statement). False otherwise.
 	private $is_program_exiting = false;
-	
+
 	/**
 	 * The content of the cache variable.
 	 *
@@ -117,11 +117,11 @@ class TDBM_Service {
 	private $cache;
 
 	private $cacheKey = "__TDBM_Cache__";
-	
+
 	public function __construct() {
 		register_shutdown_function(array($this,"completeSaveOnExit"));
 	}
-	
+
 	/**
 	 * Sets up the default connection to the database.
 	 * The parameters of TDBM_Service::setConnection are similar to the parameters used by PEAR DB (since TDBM_Object relies on PEAR DB).
@@ -155,22 +155,22 @@ class TDBM_Service {
 			$this->dbConnection = $connection;
 		}
 	}
-	
+
 	/**
 	 * Returns the object used to connect to the database.
-	 * 
+	 *
 	 * @return DB_ConnectionInterface
 	 */
 	public function getConnection() {
 		return $this->dbConnection;
 	}
-	
+
 	/**
 	 * Sets the cache service.
 	 * The cache service is used to store the structure of the database in cache, which will dramatically improve performances.
 	 * The cache service will also wrap the database connection into a cached connection.
-	 * 
- 	 * @Property
+	 *
+	 * @Property
 	 * @Compulsory
 	 * @param CacheInterface $cacheService
 	 */
@@ -183,11 +183,11 @@ class TDBM_Service {
 			$this->dbConnection = $cachedConnection;
 		}
 	}
-	
+
 	/**
 	 * Returns true if the objects will save automatically by default,
 	 * false if an explicit call to save() is required.
-	 * 
+	 *
 	 * The behaviour can be overloaded by setAutoSaveMode on each object.
 	 *
 	 * @return boolean
@@ -195,7 +195,7 @@ class TDBM_Service {
 	public function getDefaultAutoSaveMode() {
 		return $this->autosave_default;
 	}
-	
+
 	/**
 	 * Sets the autosave mode:
 	 * true if the object will save automatically,
@@ -208,8 +208,8 @@ class TDBM_Service {
 	public function setDefaultAutoSaveMode($autoSave) {
 		$this->autosave_default = $autoSave;
 	}
-	
-	
+
+
 	/**
 	 * If TDBM objects are modified, and if they are not saved, they will automatically be saved at the end of the script.
 	 * Of course, if a transaction has been started, and is not ended, at the end of the script, it is likely that the
@@ -217,19 +217,19 @@ class TDBM_Service {
 	 * If commitOnQuit is set to "true", a commit will always be performed at the end of the script.
 	 * This is a dangerous parameter. Indeed, in case of error, it might commit data that would have otherwised been roll-back.
 	 * Use it sparesly.
-	 * 
+	 *
 	 * @Property
 	 * @Compulsory
 	 * @param boolean $commitOnQuit
 	 */
 	public function setCommitOnQuit($commitOnQuit) {
-	 	$this->commitOnQuit = $commitOnQuit;
+		$this->commitOnQuit = $commitOnQuit;
 	}
-	
+
 	/**
 	 * Whether we should track execution time or not.
-	 * If true, if the execution time reaches 90% of the allowed execution time, the request will stop with an exception. 
-	 * 
+	 * If true, if the execution time reaches 90% of the allowed execution time, the request will stop with an exception.
+	 *
 	 * @Property
 	 * @param boolean $trackExecutionTime
 	 */
@@ -237,7 +237,7 @@ class TDBM_Service {
 		$this->trackExecutionTime = $trackExecutionTime;
 	}
 
-	
+
 	/**
 	 * Loads the cache and stores it (to be reused in this instance).
 	 * Note: the cache is not returned. It is stored in the $cache instance variable.
@@ -250,7 +250,7 @@ class TDBM_Service {
 			$this->cache = $this->cacheService->get($this->cacheKey);
 		}
 	}
-	
+
 	/**
 	 * Saves the cache.
 	 *
@@ -258,7 +258,7 @@ class TDBM_Service {
 	private function saveCache() {
 		$this->cacheService->set($this->cacheKey, $this->cache);
 	}
-	
+
 	/**
 	 * Returns a TDBM_Object associated from table "$table_name".
 	 * If the $filters parameter is an int/string, the object returned will be the object whose primary key = $filters.
@@ -282,12 +282,12 @@ class TDBM_Service {
 	 * 			$user1->name = 'John Doe';
 	 * 			echo $user2->name;
 	 * will return 'John Doe'.
-	 * 
+	 *
 	 * You can use filters instead of passing the primary key. For instance:
 	 * 			$user = $tdbmService->getObject('users',new TDBM_EqualFilter('users', 'login', 'jdoe'));
 	 * This will return the user whose login is 'jdoe'.
 	 * Please note that if 2 users have the jdoe login in database, the method will throw a TDBM_DuplicateRowException.
-	 * 
+	 *
 	 * Also, you can specify the return class for the object (provided the return class extends TDBM_Object).
 	 * For instance:
 	 *  	$user = $tdbmService->getObject('users',1,'User');
@@ -301,7 +301,7 @@ class TDBM_Service {
 	 * @return TDBM_Object
 	 */
 	public function getObject($table_name, $filters, $className = null, $lazy_loading = false) {
-		
+
 		if (is_array($filters) || $filters instanceof TDBM_FilterInterface) {
 			$isFilterBag = false;
 			if (is_array($filters)) {
@@ -316,7 +316,7 @@ class TDBM_Service {
 			} else {
 				$isFilterBag = true;
 			}
-			
+				
 			if ($isFilterBag == true) {
 				// If a filter bag was passer in parameter, let's perform a getObjects.
 				$objects = $this->getObjects($table_name, $filters, null, null, null, $className);
@@ -356,7 +356,7 @@ class TDBM_Service {
 
 		if ($className == null) {
 			$obj = new TDBM_Object($this, $table_name, $id);
-		} else {			
+		} else {
 			if (!is_subclass_of($className, "TDBM_Object")) {
 				throw new TDBM_Exception("Error while calling TDBM_Service->getObject: The class ".$className." should extend TDBM_Object.");
 			}
@@ -367,9 +367,9 @@ class TDBM_Service {
 			// If we are not doing lazy loading, let's load the object:
 			$obj->_dbLoadIfNotLoaded();
 		}
-		
-		$this->objects[$table_name][$id] = $obj;		
-		
+
+		$this->objects[$table_name][$id] = $obj;
+
 		return $obj;
 	}
 
@@ -392,16 +392,16 @@ class TDBM_Service {
 			throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): No connection has been established on the database!");
 		}
 		$table_name = $this->dbConnection->toStandardcase($table_name);
-		
+
 		// Ok, let's verify that the table does exist:
 		try {
 			$data = $this->dbConnection->getTableInfo($table_name);
 		} catch (TDBM_Exception $exception) {
 			$probable_table_name = $this->dbConnection->checkTableExist($table_name);
 			if ($probable_table_name == null)
-				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist.");
+			throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist.");
 			else
-				throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist. Maybe you meant the table '$probable_table_name'.");
+			throw new TDBM_Exception("Error while calling TDBM_Object::getNewObject(): The table named '$table_name' does not exist. Maybe you meant the table '$probable_table_name'.");
 		}
 
 		if ($className == null) {
@@ -445,7 +445,7 @@ class TDBM_Service {
 
 		return $object;
 	}
-	
+
 	/**
 	 * Removes the given object from database.
 	 *
@@ -524,14 +524,24 @@ class TDBM_Service {
 		$result = $this->dbConnection->query($sql, $from, $limit);
 
 		$returned_objects = new TDBM_ObjectArray();
+		$keysStandardCased = array();
+		$firstLine = true;
 
 		while ($fullCaseRow = $result->fetch(PDO::FETCH_ASSOC))
 		{
 			$row = array();
-			foreach ($fullCaseRow as $key=>$value)  {
-				$row[$this->dbConnection->toStandardCaseColumn($key)]=$value;
-			}
 			
+			if ($firstLine) {
+				// $keysStandardCased is an optimization to avoid calling toStandardCaseColumn on every cell of every row.
+				foreach ($fullCaseRow as $key=>$value)  {
+					$keysStandardCased[$key] = $this->dbConnection->toStandardCaseColumn($key);
+				}
+				$firstLine = false;
+			}
+			foreach ($fullCaseRow as $key=>$value)  {
+				$row[$keysStandardCased[$key]]=$value;
+			}
+				
 			$pk_table = $this->primary_keys[$table_name];
 			if (count($pk_table)==1)
 			{
@@ -554,7 +564,7 @@ class TDBM_Service {
 				} elseif (is_string($className)) {
 					if (!is_subclass_of($className, "TDBM_Object")) {
 						throw new TDBM_Exception("Error while calling TDBM: The class ".$className." should extend TDBM_Object.");
-					}			
+					}
 					$obj = new $className($this, $table_name, $id);
 				} else {
 					throw new DB_Exception("Error while casting TDBM_Object to class, the parameter passed is not a string. Value passed: ".$className);
@@ -569,7 +579,7 @@ class TDBM_Service {
 
 		return $returned_objects;
 	}
-	
+
 	/**
 	 * This function performs a save() of all the objects that have been modified.
 	 * This function is automatically called at the end of your script, so you don't have to call it yourself.
@@ -585,7 +595,7 @@ class TDBM_Service {
 	 *
 	 */
 	function completeSave() {
-		
+
 		if (is_array($this->tosave_objects))
 		{
 			foreach ($this->tosave_objects as $key=>$object)
@@ -596,7 +606,7 @@ class TDBM_Service {
 				}
 			}
 		}
-		
+
 		if (is_array($this->objects))
 		{
 			foreach ($this->objects as $table)
@@ -612,19 +622,19 @@ class TDBM_Service {
 					}
 				}
 			}
-			
+				
 			// Now, all the new objects should be added to the list of existing objects.
 			// FIXME: We need to put the newobject into the object table.
 			// To do this, we need the ID!!!!!!
 			/*foreach ($saved_tosave_objects as $object) {
-				if (!is_array($this->objects[$object->_getDbTableName()])) {
-					$this->objects[$object->_getDbTableName()] = array();
-				}
-				$this->objects[$object->_getDbTableName()][$object->]
+			if (!is_array($this->objects[$object->_getDbTableName()])) {
+			$this->objects[$object->_getDbTableName()] = array();
+			}
+			$this->objects[$object->_getDbTableName()][$object->]
 			}*/
-			
+				
 		}
-		
+
 	}
 
 	/**
@@ -635,7 +645,7 @@ class TDBM_Service {
 	public function completeSaveOnExit() {
 		$this->is_program_exiting = true;
 		$this->completeSave();
-		
+
 		// Now, let's commit or rollback if needed.
 		if ($this->dbConnection != null && $this->dbConnection->hasActiveTransaction()) {
 			if ($this->commitOnQuit) {
@@ -646,7 +656,7 @@ class TDBM_Service {
 					echo $e->getTraceAsString();
 				}
 			} else {
-			try  {
+				try  {
 					$this->dbConnection->rollback();
 				} catch (Exception $e) {
 					echo $e->getMessage()."<br/>";
@@ -655,11 +665,11 @@ class TDBM_Service {
 			}
 		}
 	}
-	
+
 	/**
 	 * Function used internally by TDBM.
 	 * Returns true if the program is exiting.
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isProgramExiting() {
@@ -693,7 +703,7 @@ class TDBM_Service {
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Returns transient objects.
@@ -723,7 +733,7 @@ class TDBM_Service {
 		}
 		return $this->dbConnection->getAll($sql, PDO::FETCH_CLASS,$classname);
 	}
-	
+
 
 	private function to_explain_string($path) {
 		$msg = '';
@@ -737,7 +747,7 @@ class TDBM_Service {
 		}
 		return $msg;
 	}
-	
+
 
 	/**
 	 * Returns an array of paths going from "$table" to the tables passed in the array "$tables"
@@ -881,11 +891,11 @@ class TDBM_Service {
 				$found = false;
 				foreach ($flat_path as $path_step_verify) {
 					if ($path_step == $path_step_verify ||
-							($path_step['table1'] == $path_step_verify['table2'] &&
-							$path_step['table2'] == $path_step_verify['table1'] &&
-							$path_step['col1'] == $path_step_verify['col2'] &&
-							$path_step['col2'] == $path_step_verify['col1']
-							)) {
+					($path_step['table1'] == $path_step_verify['table2'] &&
+					$path_step['table2'] == $path_step_verify['table1'] &&
+					$path_step['col1'] == $path_step_verify['col2'] &&
+					$path_step['col2'] == $path_step_verify['col1']
+					)) {
 						$found = true;
 						break;
 					}
@@ -937,7 +947,7 @@ class TDBM_Service {
 
 		/*if ($target_table == $current_table) {
 			return true;
-			}*/
+		}*/
 
 		// Let's start with 1*
 		$constraints = $this->dbConnection->getConstraintsFromTable($current_table);
@@ -950,8 +960,8 @@ class TDBM_Service {
 
 			/*if ($visited[$table1][$col1]==true)
 				continue;
-				else
-				$visited[$table1][$col1]=true;*/
+			else
+			$visited[$table1][$col1]=true;*/
 			// Go through the path to see if we ever have gone through this link
 			$already_done = false;
 			foreach ($path as $previous_constraint)
@@ -989,8 +999,8 @@ class TDBM_Service {
 			$col1 = $constraint['col1'];
 			/*if ($visited[$table2][$col2]==true)
 				continue;
-				else
-				$visited[$table2][$col2]=true;*/
+			else
+			$visited[$table2][$col2]=true;*/
 			$already_done = false;
 			foreach ($path as $previous_constraint)
 			{
@@ -1209,13 +1219,13 @@ class TDBM_Service {
 	public function getObjectsByMode($mode, $table_name, $filter_bag=null, $orderby_bag=null, $from=null, $limit=null, $className=null, $hint_path=null) {
 		$this->completeSave();
 		$this->loadCache();
-		
+
 		// Let's get the filter from the filter_bag
 		$filter = $this->buildFilterFromFilterBag($filter_bag);
 
 		// Let's get the order array from the order_bag
 		$orderby_bag2 = $this->buildOrderArrayFromOrderBag($orderby_bag);
-		
+
 		// Now, let's find the path from the needed tables of the resulting filter.
 
 		// Let's get needed tables from the filters
@@ -1302,15 +1312,15 @@ class TDBM_Service {
 
 			$path = $this->cache['paths'][$table_name][$target_table_table];
 			/*
-			echo 'beuuuh';
-			 var_dump($needed_table_array_for_orderby);
-			 var_dump($path);
-			 var_dump($target_table_table);
-			 */
+			 echo 'beuuuh';
+			var_dump($needed_table_array_for_orderby);
+			var_dump($path);
+			var_dump($target_table_table);
+			*/
 			/**********************************
 			 * Modifier par Marc de *1 vers 1*
-			 * (sur les conseils de David !)
-			 */
+			* (sur les conseils de David !)
+			*/
 			$is_ok = true;
 			foreach ($path as $step) {
 				if ($step["type"]=="1*") {
@@ -1362,13 +1372,13 @@ class TDBM_Service {
 		if ($mode=="getCount") {
 			// Let's get the list of primary keys to perform a DISTINCT request.
 			$pk_table = $this->getPrimaryKeyStatic($table_name);
-			
+				
 			$pk_arr = array();
 			foreach ($pk_table as $pk) {
 				$pk_arr[] = $table_name.'.'.$pk;
 			}
 			$pk_str = implode(',', $pk_arr);
-			
+				
 			$sql = "SELECT COUNT(DISTINCT $pk_str) FROM $sql";
 
 			$where_clause = $filter->toSql($this->dbConnection);
@@ -1398,7 +1408,7 @@ class TDBM_Service {
 	}
 
 	/**
-	 * Takes in input a filter_bag (which can be about anything from a string to an array of TDBM_Objects... see above from documentation), 
+	 * Takes in input a filter_bag (which can be about anything from a string to an array of TDBM_Objects... see above from documentation),
 	 * and gives back a proper Filter object.
 	 *
 	 * @param unknown_type $filter_bag
@@ -1473,12 +1483,12 @@ class TDBM_Service {
 
 		// Third, let's take all the filters and let's apply a huge AND filter
 		$filter = new TDBM_AndFilter($filter_bag2);
-		
+
 		return $filter;
 	}
-	
+
 	/**
-	 * Takes in input an order_bag (which can be about anything from a string to an array of TDBM_OrderByColumn objects... see above from documentation), 
+	 * Takes in input an order_bag (which can be about anything from a string to an array of TDBM_OrderByColumn objects... see above from documentation),
 	 * and gives back an array of TDBM_OrderByColumn / TDBM_OrderBySQLString objects.
 	 *
 	 * @param unknown_type $orderby_bag
@@ -1489,7 +1499,7 @@ class TDBM_Service {
 		// 4-1 orderby_bag should be an array, if it is a singleton, let's put it in an array.
 
 		if (!is_array($orderby_bag))
-			$orderby_bag = array($orderby_bag);
+		$orderby_bag = array($orderby_bag);
 
 		// 4-2, let's take all the objects out of the orderby bag, and let's make objects from them
 		$orderby_bag2 = array();
@@ -1506,7 +1516,7 @@ class TDBM_Service {
 		}
 		return $orderby_bag2;
 	}
-	
+
 	/**
 	 * Takes in entry an array of table names.
 	 * Throws a TDBM_Exception if one of those table does not exist.
@@ -1539,8 +1549,8 @@ class TDBM_Service {
 
 		/*if ($table_paths[0]['paths'][0][0]['link']=='*1')
 			$tree = new TDBM_DisplayNode($table_paths[0]['paths'][0][0]['table2']);
-			else
-			$tree = new TDBM_DisplayNode($table_paths[0]['paths'][0][0]['table1']);*/
+		else
+		$tree = new TDBM_DisplayNode($table_paths[0]['paths'][0][0]['table1']);*/
 
 		foreach ($table_paths as $table_path) {
 			$path = $table_path['paths'][0];
@@ -1579,8 +1589,8 @@ class TDBM_Service {
 					$current_node = new TDBM_DisplayNode($link['table1'], $current_node, $link['type'], $link['col2'], $link['col1']);
 					/*if ($link['type']=='*1')
 						$current_node = new TDBM_DisplayNode($link['table1'], $current_node, $link['type'], $link['col2'], $link['col1']);
-						else
-						$current_node = new TDBM_DisplayNode($link['table2'], $current_node, $link['type'], $link['col1'], $link['col2']);*/
+					else
+					$current_node = new TDBM_DisplayNode($link['table2'], $current_node, $link['type'], $link['col1'], $link['col2']);*/
 				}
 			}
 
@@ -1613,7 +1623,7 @@ class TDBM_Service {
 		return $str;
 
 	}
-	
+
 	public function getPrimaryKeyStatic($table) {
 		if (!isset($this->primary_keys[$table]))
 		{
@@ -1641,22 +1651,22 @@ class TDBM_Service {
 		}
 		return $this->primary_keys[$table];
 	}
-	
+
 	/**
 	 * This is an internal function, you should not use it in your application.
 	 * This is used internally by TDBM to add an object to the object cache.
-	 * 
+	 *
 	 * @param TDBM_Object $object
 	 */
 	public function _addToCache(TDBM_Object $object) {
 		$this->objects[$object->_getDbTableName()][$object->TDBM_Object_id] = $object;
 	}
-	
+
 	/**
 	 * This is an internal function, you should not use it in your application.
 	 * This is used internally by TDBM to remove the object from the list of objects that have been
 	 * created/updated but not saved yet.
-	 * 
+	 *
 	 * @param TDBM_Object $myObject
 	 */
 	public function _removeFromToSaveObjectList(TDBM_Object $myObject) {
@@ -1673,13 +1683,13 @@ class TDBM_Service {
 	 * This is an internal function, you should not use it in your application.
 	 * This is used internally by TDBM to add an object to the list of objects that have been
 	 * created/updated but not saved yet.
-	 * 
+	 *
 	 * @param TDBM_Object $myObject
 	 */
 	public function _addToToSaveObjectList(TDBM_Object $myObject) {
 		$this->tosave_objects[] = $myObject;
 	}
-	
+
 }
 
 TDBM_Service::$script_start_up_time = microtime(true);
