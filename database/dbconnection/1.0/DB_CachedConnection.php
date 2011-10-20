@@ -149,8 +149,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["rootsequencetable"]) || !isset($this->cache["rootsequencetable"][$table_name])) {
 			$this->cache["rootsequencetable"][$table_name] = $this->dbConnection->findRootSequenceTable($table_name);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["rootsequencetable"][$table_name];
 	}
 	
@@ -165,8 +165,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["parenttables"]) || !isset($this->cache["parenttables"][$table_name])) {
 			$this->cache["parenttables"][$table_name] = $this->dbConnection->getParentTable($table_name);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["parenttables"][$table_name];
 	}
 	
@@ -180,8 +180,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["primarykeys"]) || !isset($this->cache["primarykeys"][$table_name])) {
 			$this->cache["primarykeys"][$table_name] = $this->dbConnection->getPrimaryKey($table_name);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["primarykeys"][$table_name];
 	}
 	
@@ -195,8 +195,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["tableinfo"]) || !isset($this->cache["tableinfo"][$tableName])) {
 			$this->cache["tableinfo"][$tableName] = $this->dbConnection->getTableInfo($tableName);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["tableinfo"][$tableName];
 	}
 		
@@ -210,8 +210,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["listoftables"])) {
 			$this->cache["listoftables"] = $this->dbConnection->getListOfTables($ignoreSequences);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["listoftables"];
 	}
 	
@@ -225,8 +225,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["isTableExist"]) || !isset($this->cache["isTableExist"][$tableName])) {
 			$this->cache["isTableExist"][$tableName] = $this->dbConnection->isTableExist($tableName);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["isTableExist"][$tableName];
 	}
 		
@@ -240,8 +240,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["getTableFromDbModel"]) || !isset($this->cache["getTableFromDbModel"][$tableName])) {
 			$this->cache["getTableFromDbModel"][$tableName] = $this->dbConnection->getTableFromDbModel($tableName);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["getTableFromDbModel"][$tableName];
 	}
 	
@@ -259,8 +259,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["getConstraintsOnTable"]) || !isset($this->cache["getConstraintsOnTable"][$table_name]) || !isset($this->cache["getConstraintsOnTable"][$table_name][$column_name])) {
 			$this->cache["getConstraintsOnTable"][$table_name][$column_name] = $this->dbConnection->getConstraintsOnTable($table_name, $column_name);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["getConstraintsOnTable"][$table_name][$column_name];
 	}
 	
@@ -278,8 +278,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["getConstraintsFromTable"]) || !isset($this->cache["getConstraintsFromTable"][$table_name]) || !isset($this->cache["getConstraintsFromTable"][$table_name][$column_name])) {
 			$this->cache["getConstraintsFromTable"][$table_name][$column_name] = $this->dbConnection->getConstraintsFromTable($table_name, $column_name);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["getConstraintsFromTable"][$table_name][$column_name];
 	}
 
@@ -387,8 +387,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["getColumnType"]) || !isset($this->cache["getColumnType"][$table]) || !isset($this->cache["getColumnType"][$table][$column])) {
 			$this->cache["getColumnType"][$table][$column] = $this->dbConnection->getColumnType($table, $column);
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["getColumnType"][$table][$column];
 	}
 	
@@ -480,8 +480,8 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 		$this->loadCache();
 		if (!isset($this->cache["toStandardcase"])) {
 			$this->cache["toStandardcase"] = $this->dbConnection->isCaseSensitive();
+			$this->saveCache();
 		}
-		$this->saveCache();
 		return $this->cache["toStandardcase"];
 	}
 	
