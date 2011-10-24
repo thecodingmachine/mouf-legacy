@@ -10,7 +10,7 @@
         <div id="header">
                 <div id="logo">
                         <a href="/Mouf_Website/">
-                                <img src="/Mouf_Website/mouf/views/images/MoufLogo.png" alt="Mouf" />
+                                <img src="../mouf/views/images/MoufLogo.png" alt="Mouf" />
                         </a>
                 </div>
         </div>
