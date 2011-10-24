@@ -607,7 +607,7 @@ class TDBM_Service {
 			}
 		}
 
-		if (is_array($this->objects))
+		/*if (is_array($this->objects))
 		{
 			foreach ($this->objects as $table)
 			{
@@ -626,14 +626,14 @@ class TDBM_Service {
 			// Now, all the new objects should be added to the list of existing objects.
 			// FIXME: We need to put the newobject into the object table.
 			// To do this, we need the ID!!!!!!
-			/*foreach ($saved_tosave_objects as $object) {
-			if (!is_array($this->objects[$object->_getDbTableName()])) {
-			$this->objects[$object->_getDbTableName()] = array();
-			}
-			$this->objects[$object->_getDbTableName()][$object->]
-			}*/
+// 			foreach ($saved_tosave_objects as $object) {
+// 			if (!is_array($this->objects[$object->_getDbTableName()])) {
+// 			$this->objects[$object->_getDbTableName()] = array();
+// 			}
+// 			$this->objects[$object->_getDbTableName()][$object->]
+// 			}
 				
-		}
+		}*/
 
 	}
 
