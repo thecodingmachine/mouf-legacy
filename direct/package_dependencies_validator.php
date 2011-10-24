@@ -31,27 +31,56 @@ $errorList = array();
 foreach ($packagesXmlFiles as $packageXmlFile) {
 	$packageManager = new MoufPackageManager("../../plugins");
 	$package = $packageManager->getPackage($packageXmlFile);
+        $extensions = $package->getExtension();
+        $phpVersion = $package->getPhpVersion();
 	$dependencies = $package->getDependenciesAsDescriptors();
 	
 	$found = false;
+
+        //*Checking the version of php*/
+         if(strcmp(($phpVersion), "")!=0){
+
+            $currentVersion = str_replace("-", ".", PHP_VERSION);
+            $currentVersion = explode("." , $currentVersion);
+
+            if (version_compare(PHP_VERSION, $phpVersion, '<')) {
+                $errorList[] = "The current version of PHP, ".$currentVersion[0].".".$currentVersion[1].".".$currentVersion[2]." is outdated for this purpose. You need to install PHP ".$phpVersion." or higher. ";
+            }
+        }
+
+        /*Checking if the php extension is activated*/
+        foreach ($extensions as $extension) {
+            if(!extension_loaded ($extension)) {
+                $errorList[] = "The extension '".$extension."' must be enabled.";
+            }
+        }
+
+
 	foreach ($dependencies as $dependency) {
 		$tooLate = false;
 		/* @var $dependency MoufDependencyDescriptor */
 		// Let's test if each dependency is available, and in the first part of the dependencies.
+
+
+
+                //$errorList[] = PHP_VERSION;
+
 		foreach ($packagesXmlFiles as $packageXmlFileCheck) {
 			if ($packageXmlFileCheck == $packageXmlFile) {
 				// After current package, we are too late, we should change the order of the packages. 
 				$tooLate = true;
 			}
-			
+
 			$installedPackageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($packageXmlFileCheck);
 			if ($dependency->getGroup() == $installedPackageDescriptor->getGroup()
 				&& $dependency->getName() == $installedPackageDescriptor->getName()) {
+
+
 				if (!$dependency->isCompatibleWithVersion($installedPackageDescriptor->getVersion())) {
 					$errorList[] = "For package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName().", installed version is ".$installedPackageDescriptor->getVersion().".
 									However, the package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
 									requires the version of this package to be ".$dependency->getVersion().".<br/>";
-				} else {
+				}  else {
 					if ($tooLate) {
 						$errorList[] = "The package ".$package->getDescriptor()->getGroup()."/".$package->getDescriptor()->getName()."/".$package->getDescriptor()->getVersion()."
 								requires the package ".$installedPackageDescriptor->getGroup()."/".$installedPackageDescriptor->getName()."/".$installedPackageDescriptor->getVersion().".

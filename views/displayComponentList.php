@@ -7,7 +7,7 @@ $files = $this->moufManager->getRegisteredComponentFilesParameters();
 $includesAnalyze = $this->analyzeErrors;
 
 if (isset($includesAnalyze["errorType"])) {
-	echo "<div class='error'>".$includesAnalyze["errorMsg"].'</div>';
+	echo "<div class='error'><pre>".htmlspecialchars($includesAnalyze["errorMsg"]).'</pre></div>';
 }
 ?>
 

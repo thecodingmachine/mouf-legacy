@@ -57,7 +57,7 @@ if (count($arr) < 2) {
 
 if ($obj === false) {
 	$jsonObj['code'] = "error";
-	$jsonObj['html'] = "Error while running the required files validator:<br/> ".$msg;
+	$jsonObj['html'] = "Error while running the required files validator:<br/> <pre>".htmlspecialchars($msg)."</pre>";
 	echo json_encode($jsonObj);
 	exit;
 }
@@ -65,7 +65,7 @@ if ($obj === false) {
 $jsonObj = array();
 if (isset($obj['errorType'])) {
 	$jsonObj['code'] = "error";
-	$jsonObj['html'] = "Error while running the required files validator:<br/> ".$obj['errorMsg'];
+	$jsonObj['html'] = "Error while running the required files validator:<br/> <pre>".htmlspecialchars($obj['errorMsg'])."</pre>";
 } else {
 	$jsonObj['code'] = "ok";
 	$jsonObj['html'] = "PHP included files: OK";

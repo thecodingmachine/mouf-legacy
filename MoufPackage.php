@@ -90,8 +90,27 @@ class MoufPackage {
 	 * @var array<MoufDependencyDescriptor>
 	 */
 	private $dependencies;
-	
-	/**
+
+        /**
+         * The list of the required extensions for this package
+         *
+         * @var array<string>
+         *
+         */
+        private $extensions;
+
+
+        /**
+         *
+         * The required php version for this package
+         *
+         * @var string
+         */
+        private $phpVersion;
+
+
+
+        /**
 	 * The list of files to be required, relative to the package directory.
 	 *
 	 * @var array<string, array<string, string>>
@@ -153,12 +172,58 @@ class MoufPackage {
 			throw new MoufException("Unable to load file ".$fileName);
 		}
 		$this->packageDescriptor = MoufPackageDescriptor::getPackageDescriptorFromPackageFile($this->packageFileName);
-		
+
+                libxml_use_internal_errors(true);
+
 		$this->packageSimpleXml = simplexml_load_file($fileName);
+
+                if(!$this->packageSimpleXml) {
+
+                    $xml = explode("\n", file_get_contents($fileName));
+
+                    $errors = libxml_get_errors();
+
+                    $errorsStr = null;
+
+                    foreach ($errors as $error) {
+                        $errorsStr .= $this->display_xml_error($error, $xml);
+                    }
+
+                    libxml_clear_errors();
+
+                    throw new MoufException("Error while parsing '".$fileName."' \n Errors detected : ".$errorsStr);
+                }
 		
 		$this->initFromXml();
 	}
-	
+
+        private function display_xml_error($error, $xml)
+        {
+            $return  = $xml[$error->line - 1] . "\n";
+            $return .= str_repeat('-', $error->column) . "^\n";
+
+            switch ($error->level) {
+                case LIBXML_ERR_WARNING:
+                    $return .= "Warning $error->code: ";
+                    break;
+                 case LIBXML_ERR_ERROR:
+                    $return .= "Error $error->code: ";
+                    break;
+                case LIBXML_ERR_FATAL:
+                    $return .= "Fatal Error $error->code: ";
+                    break;
+            }
+
+            $return .= trim($error->message) .
+                       "\n  Line: $error->line" .
+                       "\n  Column: $error->column";
+
+            if ($error->file) {
+                $return .= "\n  File: $error->file";
+            }
+
+            return "$return\n\n--------------------------------------------\n\n";
+        }
 	
 	/**
 	 * Initializes the MoufPackage variables with the xml string file passed in parameter.
@@ -189,7 +254,8 @@ class MoufPackage {
 		if (!is_numeric($this->revision)) {
 			throw new MoufException("The revision number for package {$this->displayName} must be an integer.");
 		}
-		
+
+                $this->phpVersion = (string)$this->packageSimpleXml->phpVersion;
 		
 		$depList = array();
 		$dependencies = $this->packageSimpleXml->dependencies;
@@ -202,6 +268,11 @@ class MoufPackage {
 				}
 				$depList[] = new MoufDependencyDescriptor((string)$dependencyXml->group,(string)$dependencyXml->name,(string)$dependencyXml->version, $scope, $revision, (string)$dependencyXml->repository);
 			}
+                        $this->extensions = array();
+                        foreach ($dependencies->extension as $extensionXml) {
+                                $this->extensions[] = (string)$extensionXml;
+                        }
+
 		}
 		$this->dependencies = $depList;
 		
@@ -353,7 +424,25 @@ class MoufPackage {
 	public function getPackageDirectory() {
 		return $this->packageDir;
 	}
-	
+
+        /**
+	 * Returns the needed php extension
+	 *
+	 * @return array<string>
+	 */
+	public function getExtension() {
+		return $this->extensions;
+	}
+
+        /**
+         * Return the minimum php version needed
+         *
+         * @return string
+         */
+	public function getPhpVersion() {
+                return $this->phpVersion;
+        }
+
 	/**
 	 * Returns an array of MoufDependencyDescriptor.
 	 *
@@ -428,7 +517,7 @@ class MoufPackage {
 	}
 	
 	/**
-	 * Returns if the file for the admin in parameter is autolodable. There are 3 possibles values: auto, never, force
+	 * Returns if the file for the admin in parameter is autoloadable. There are 3 possibles values: auto, never, force
 	 *
 	 * @return string
 	 */

@@ -58,8 +58,9 @@ if ($missingPackages) {
 	$moufDeclaredClasses = get_declared_classes();
 	$moufDeclaredFunctions = get_defined_functions();
 	$moufDeclaredInterfaces = get_declared_interfaces();
-	
+
 	foreach (MoufManager::getMoufManager()->getFilesListRequiredByPackages() as $packageFile) {
+            
 		require_once ROOT_PATH.$packageFile;
 		
 		$moufDeclaredClassesNew = get_declared_classes();
@@ -74,7 +75,7 @@ if ($missingPackages) {
 		$moufDeclaredInterfacesByPackagesFiles[$packageFile] = array_diff($moufDeclaredInterfacesNew, $moufDeclaredInterfaces);
 		$moufDeclaredInterfaces = $moufDeclaredInterfacesNew;
 	}
-	
+
 	$moufDeclaredClassesByFiles = array();
 	$moufDeclaredFunctionsByFiles = array();
 	$moufDeclaredInterfacesByFiles = array();
