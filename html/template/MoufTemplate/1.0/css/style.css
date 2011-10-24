@@ -218,3 +218,34 @@ div.info {
 	background-position: 5px 5px;
 	margin-bottom: 2px;
 }
+
+button, a.button, input[type=submit], input[type=button] {
+	color: #FEECEF;
+	background-color: #C20F30;
+	padding-top: 5px;
+	padding-bottom: 5px; 
+	padding-left: 9px;
+	padding-right: 9px;
+	border-radius: 7px;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #B6B6B6;
+	
+}
+
+a.button:hover, a.button:hover, input[type=submit]:hover, input[type=button]:hover  {
+	background-color: #EE1B42;
+	text-shadow: 1px 1px 1px #C20F30;
+	text-decoration: none;
+}
+
+a.button:active, a.button:active, input[type=submit]:active, input[type=button]:active {
+	background-color: #828282;
+	text-shadow: 1px 1px 1px #666666;
+	text-decoration: none;
+}
+
+
+/* end Button */

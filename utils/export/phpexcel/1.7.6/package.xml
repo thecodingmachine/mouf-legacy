@@ -16,5 +16,5 @@
 	</requires>
 	<adminRequires>
 		<require>PHPExcel/IOFactory.php</require>
-	</adminRequires>	
+	</adminRequires>
 </package>
