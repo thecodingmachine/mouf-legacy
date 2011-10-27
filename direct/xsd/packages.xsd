@@ -83,6 +83,7 @@
     <xsd:complexType name="RequireList">
     	<xsd:sequence>
     		<xsd:element name="require" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+                <xsd:element name="extension" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
     	</xsd:sequence>
     </xsd:complexType>
 
