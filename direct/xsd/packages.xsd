@@ -18,7 +18,12 @@
     		</xsd:element>
     		<xsd:element name="logo" type="xsd:anyURI" maxOccurs="1"
     			minOccurs="0">
+                </xsd:element>
+                <!--Debut Add-->
+                <xsd:element name="phpVersion" type="xsd:string" maxOccurs="1"
+    			minOccurs="0">
     		</xsd:element>
+                <!--Fin Add-->
     		<xsd:element name="dependencies" type="Dependencies"
     			maxOccurs="1" minOccurs="0">
     		</xsd:element>
