@@ -23,11 +23,11 @@ class DrupalDynamicBlock implements DrupalDynamicBlockInterface, Scopable {
 	/**
 	 * The caching strategy for this block.
 	 * A bitmask of flags describing how the block should behave with respect to block caching. The following shortcut bitmasks are provided as constants in block.module:
-     * 	BLOCK_CACHE_PER_ROLE (default): The block can change depending on the roles the user viewing the page belongs to.
-     * 	BLOCK_CACHE_PER_USER: The block can change depending on the user viewing the page. This setting can be resource-consuming for sites with large number of users, and should only be used when BLOCK_CACHE_PER_ROLE is not sufficient.
-     * 	BLOCK_CACHE_PER_PAGE: The block can change depending on the page being viewed.
-     * 	BLOCK_CACHE_GLOBAL: The block is the same for every user on every page where it is visible.
-     * 	BLOCK_NO_CACHE: The block should not get cached.
+     * 	DRUPAL_CACHE_PER_ROLE (default): The block can change depending on the roles the user viewing the page belongs to.
+     * 	DRUPAL_CACHE_PER_USER: The block can change depending on the user viewing the page. This setting can be resource-consuming for sites with large number of users, and should only be used when BLOCK_CACHE_PER_ROLE is not sufficient.
+     * 	DRUPAL_CACHE_PER_PAGE: The block can change depending on the page being viewed.
+     * 	DRUPAL_CACHE_GLOBAL: The block is the same for every user on every page where it is visible.
+     * 	DRUPAL_NO_CACHE: The block should not get cached.
 	 * 
 	 * @Property
 	 * @var int
@@ -104,15 +104,19 @@ class DrupalDynamicBlock implements DrupalDynamicBlockInterface, Scopable {
 	/**
 	 * Returns the caching strategy for this block.
 	 * A bitmask of flags describing how the block should behave with respect to block caching. The following shortcut bitmasks are provided as constants in block.module:
-     * 	BLOCK_CACHE_PER_ROLE (default): The block can change depending on the roles the user viewing the page belongs to.
-     * 	BLOCK_CACHE_PER_USER: The block can change depending on the user viewing the page. This setting can be resource-consuming for sites with large number of users, and should only be used when BLOCK_CACHE_PER_ROLE is not sufficient.
-     * 	BLOCK_CACHE_PER_PAGE: The block can change depending on the page being viewed.
-     * 	BLOCK_CACHE_GLOBAL: The block is the same for every user on every page where it is visible.
-     * 	BLOCK_NO_CACHE: The block should not get cached.
+     * 	DRUPAL_CACHE_PER_ROLE (default): The block can change depending on the roles the user viewing the page belongs to.
+     * 	DRUPAL_CACHE_PER_USER: The block can change depending on the user viewing the page. This setting can be resource-consuming for sites with large number of users, and should only be used when BLOCK_CACHE_PER_ROLE is not sufficient.
+     * 	DRUPAL_CACHE_PER_PAGE: The block can change depending on the page being viewed.
+     * 	DRUPAL_CACHE_GLOBAL: The block is the same for every user on every page where it is visible.
+     * 	DRUPAL_NO_CACHE: The block should not get cached.
 	 * 
 	 * @return int
 	 */
 	public function getCache() {
+		if (is_string($this->cache) && defined($this->cache)) {
+			return constant($this->cache);
+		}
+		
 		return $this->cache;
 	}
 	
