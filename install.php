@@ -55,7 +55,7 @@ if (!file_exists("../MoufComponents.php")) {
 		0 => 
 		array (
 		  'name' => 'mouf',
-		  'url' => 'http://www.mouf-php.com/mouf',
+		  'url' => 'http://mouf-php.com/mouf',
 		),
 	  ),
 	));
