@@ -148,7 +148,7 @@ class PackageDownloadController extends Controller implements DisplayPackageList
 				}
 				echo "</form>";
 			} else if (!$isPackageEnabled) {
-				echo "<form action='enablePackage' method='POST'>";
+				echo "<form action='".ROOT_URL."mouf/packages/enablePackage' method='POST'>";
 				echo "<input type='hidden' name='selfedit' value='".$this->selfedit."' />";
 				echo "<input type='hidden' name='group' value='".htmlentities($group)."' />";
 				echo "<input type='hidden' name='name' value='".htmlentities($package->getDescriptor()->getName())."' />";
