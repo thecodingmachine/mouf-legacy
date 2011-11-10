@@ -8,6 +8,15 @@
  */
 class MoufTemplate extends BaseTemplate  {
 
+	/**
+	 * The URL of the favicon, relative to the ROOT_URL.
+	 * If empty, no favicon is passed.
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $favIconUrl = "plugins/html/template/MoufTemplate/1.0/images/favicon.png";
+	
 	protected $templateRootUrl;
 	
 	/**

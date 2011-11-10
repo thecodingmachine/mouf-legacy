@@ -2,6 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<?php if ($this->favIconUrl) { ?>
+		<link rel="icon" type="image/png" href="<?php echo ROOT_URL.$this->favIconUrl; ?>" />
+		<?php } ?>
 		<title><?php print $this->title ?></title>
 		<?php print $this->getCssFiles() ?>
 		<?php $this->drawArray($this->head); ?>
