@@ -49,10 +49,12 @@ foreach ($packagesXmlFiles as $packageXmlFile) {
         }
 
         /*Checking if the php extension is activated*/
-        foreach ($extensions as $extension) {
-            if(!extension_loaded ($extension)) {
-                $errorList[] = "The extension '".$extension."' must be enabled.";
-            }
+        if (!empty($extensions)) {
+	        foreach ($extensions as $extension) {
+	            if(!extension_loaded ($extension)) {
+	                $errorList[] = "The extension '".$extension."' must be enabled.";
+	            }
+	        }
         }
 
 
