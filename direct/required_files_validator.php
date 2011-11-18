@@ -14,7 +14,7 @@ require_once 'utils/check_rights.php';
 // This validator calls the "analyze_includes" file and returns the result adapted to the display of a validator (JSON format).
 
 if (isset($_SERVER['HTTPS'])) {
-	$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/analyze_includes.php";
+	$url = "https://".$_SERVER['SERVER_NAME'].ROOT_URL."mouf/direct/analyze_includes.php";
 } else {
 	$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL."mouf/direct/analyze_includes.php";
 }
