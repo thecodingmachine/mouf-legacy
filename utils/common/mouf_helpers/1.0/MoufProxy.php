@@ -68,6 +68,11 @@ class MoufProxy {
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 		} else
 			curl_setopt($ch, CURLOPT_POST, false);
+			
+		if (isset($_SERVER['HTTPS'])) {
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		}
 		$response = curl_exec($ch );
 		
 		if( curl_error($ch) ) { 
