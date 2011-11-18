@@ -175,6 +175,11 @@ class MoufReflectionProxy {
 		curl_setopt( $ch, CURLOPT_POST, FALSE );
 		//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		//curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
+	
+		if (isset($_SERVER['HTTPS'])) {
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		}
 		
 		$response = curl_exec( $ch );
 		
@@ -188,7 +193,7 @@ class MoufReflectionProxy {
 	
 	public static function getLocalUrlToProject(){
 		if (isset($_SERVER['HTTPS'])) {
-			$url = "http://".$_SERVER['SERVER_NAME'].ROOT_URL;
+			$url = "https://".$_SERVER['SERVER_NAME'].ROOT_URL;
 		} else {
 			$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].ROOT_URL;
 		}
