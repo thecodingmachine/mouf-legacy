@@ -1,0 +1,151 @@
+<h1>Generating DAOs</h1>
+
+<p>Starting with TDBM v2.0, TDBM can automatically generate DAOs and beans for you. 
+This feature will allow you to cleanly separate the database code (that you will put in DAOs) from the rest of your code.</p>
+
+<h2>Getting started</h2>
+
+<h3>Create the TDBM_Service instance</h3>
+
+<p>The first step to get started with TDBM 2.0 is to create a <code>TDBM_Service</code> instance.</p>
+
+<p>Click on "Create a new instance". In this example, we will name our instance "<code>tdbmService</code>".</p>
+<img src="images/create_instance.png" alt="" />
+
+<p>Now, we need to configure this instance. A <code>TDBM_Service</code> must be connected to a database connection, and to a caching service.</p>
+<img src="images/tdbm_service_instance.png" alt="" />
+
+<h3>Setting up the database connection</h3>
+
+<p>First, we will create the database connection. We have a choice amongst several database, we will choose MySQL for this example.<br/>
+Click on the "connection" dropdown, then on "Create a new instance".<br/>
+Name the new instance "dbConnection", and make it a DB_MySQLConnection.</p>
+<img src="images/create_db_connection.png" alt="" />
+
+<p>You can enter input the connection details directly in the DB_MySQLConnection instance. This is fine for a simple project. However, if you 
+want to share your project with other people, or if you want to install it on several environments, you want to avoid having 
+specific configuration (your db login and password) inside the Mouf configuration file (MoufComponents.php). Indeed, if you share this
+file, you will share your configuration, which is a bad practice. Therefore, a good practice is to put the database related settings
+into the configuration file. We will do that now.</p>
+
+<p>Click on the "Edit configuration" link. We will create 4 configuration variables: DB_HOST (the URL to the database), 
+DB_USER (the database user), DB_PASSWORD (the password), DB_NAME (the database name). You will notice that for each value
+you create, you can provide the value for your system, and a "default" value that will be used to create a default config.php file
+when there is no config.php file set (this is useful when you install your application on another system)</p>
+
+<p>After creating all the configuration variables, your screen should look like this:</p>
+
+<img src="images/db_conf.png" alt="" />
+
+<p>We will now instruct the "dbConnection" instance to use these configuration.<br/>
+Click on the "View declared instances" menu and select our "dbConnection" instance.
+You might need to click the "View properties" menu to access the properties screen.<br/>
+For each configuration value, click on the tools icon on the right of the textfield.</p>
+
+<img src="images/db_connection_config.png" alt="" />
+
+<p>Select "config" in the "Source" drop-down, then select the configuration value to bind the field to.</p>
+<p>You should end up with this:</p>
+
+<img src="images/db_connection_done.png" alt="" />
+
+<p>We are now done configuring the database, let's go back and continue configure the <code>TDBM_Service</code> instance by clicking
+the "<code>tdbmService</code>" link in the "Reffered by instances:" section.</p>
+<p>We have configured the database connection, we need to configure the cache service.</p>
+
+<h3>Setting up the cache service</h3>
+
+<p>TDBM requires a cache in order to store database related data. Indeed TDBM stores in cache the structure of the database,
+and relies heavily on declared foreign keys to perform the "smartest" queries. Instead of querying the database for those
+foreign keys, it will query them once, and put them in cache. This means that if you modify the database model, you will
+need to purge the TDBM cache.</p>
+
+<p>TDBM does not provide itself the caching mechanism. You are free to choose the best one amongst the Mouf components 
+implementing the CacheInterface interface. Mouf provides a number of cache implementations:</p>
+<ul>
+	<li><code>SessionCache</code>: use the user's cache as a session.  Very easy to set-up, but limited, since the cache is 
+	not shared between users.</li>
+	<li><code>FileCache</code>: stores data in a file on the server's file system. Pretty efficient.</li>
+	<li><code>APCCache</code>: uses the APC caching system. The most efficient way to perform caching, but you will need
+	to have the APC extension installed on your system to use it.</li>
+	<li><code>NoCache</code>: this is a caching system that... does not cache anything! You should never use it in 
+	a production environment, but it can be pretty useful in a development environment when you are frequently
+	changing your database model and are not willing to purge the cache each time you make a change.</li>
+</ul>
+<p>In this example, we will use the NoCache implementation because we don't want to bother with a cache for development.</p>
+
+<p>The first step is to <b>download the NoCache package, in the utils/cache group</b>.</p>
+
+<p>When this is done, go back to the "<code>tdbmService</code>" instance. You can now set the cacheService of TDBM to a noCache instance:</p>
+
+<img src="images/tdbm_service_no_cache.png" alt="" />
+
+<p>The "noCache" instance requires a logger to be set up. So we need to add a logger package. For this example, we will
+use the ErrorLogLogger logger (that logs messages to the PHP error log).</p>
+
+<p>So we have to <b>download the ErrorLogLogger package in the utils/logger group</b>.</p>
+
+<p>Once this is done, we can bind a logger instance to the "noCache" instance:</p>
+
+<img src="images/cache_error_log.png" alt="" />
+
+<p>Finally, you can configure the logger to log only messages that reach a certain severity level.</p>
+
+<img src="images/errorlog.png" alt="" />
+
+<h2>Generating the DAOs</h2>
+
+<p>In this chapter, we will see how to generate DAOs and beans, using the <code>TDBM_Service</code> instance we installed in the last chapter.</p>
+<p>First, go to the "<code>tdbmService</code>" instance page (select it from the "View declared instances", or use the full-text search feature).</p>
+
+<p>On the right part of the screen, select the "Generate DAOs" link.</p>
+
+<img src="images/generate_daos.png" alt="" />
+
+<p>On this screen, you can choose the directory that will contain the DAO classes, and the directory that will contain the Beans. Also,
+a DAOFactory object (that allows easy access to each DAO) will be generated. Let's just keep the default settings and click the
+"Generate DAOs" button.</p>
+
+<p>That's it, we generated all the DAOs for our database. Let's have a closer look at what was generated.</p>
+
+<p>Note: if you are using Eclipse, we strongly recommend you to refresh your project, to load the new classes.</p>
+
+<h2>The DAOs structure</h2>
+
+<p>For each table in your database, TDBM will generate a DAO and a bean. The DAO is the object you will use to
+query the database. Each row of the database will be mapped to a bean object.</p>
+
+<p>Both DAOs and beans are divided in 2 parts. Let's assume you have a "users" table. TDBM will generate those classes for you:</p>
+
+<ul>
+	<li><code>UserDaoBase</code>: the base class that contains methods to access the "users" table. It is generated by TDBM and you should
+	never modify this class.</li>
+	<li><code>UserDao</code>: this class extends UserDaoBase. If you have some custom requests, you should perform them in this class. You can
+	edit it as TDBM will never overwrite it.</li>
+	<li><code>UserBaseBean</code>: the bean mapping the columns of the "users" table. This class contains getters and setters for each and every
+	column of the "users" table. It is generated by TDBM and you should
+	never modify this class.</li>
+	<li><code>UserBean</code>: this class extends UserBaseBean. If you have some custom getters and setters, you should implement them in this class. You can
+	edit it as TDBM will never overwrite it.</li>
+</ul>
+
+<p>Let's now have a closer look at the methods that are available in the "UserDao" class:</p>
+
+<ul>
+	<li><code>public function getNewUser()</code> : returns a new UserBean object ready to be added in the database.</li>
+	<li><code>public function saveUser(UserBean $obj)</code> : saves a UserBean object in database (TDBM can also decide to save the object by
+	itself so most of the time, you don't need to call this function explicitly)</li>
+	<li><code>public function getUserList()</code> : returns all users records as an array of "UserBean" objects.</li>
+	<li><code>public function getUserById($id, $lazyLoading = false)</code> : Get a UserBean specified by its ID (its primary key)</li>
+	<li><code>public function deleteUser($obj)</code> : Deletes the UserBean passed in parameter.</li>
+</ul>
+
+<p>The last 2 functions are <b>protected</b>. It means they are designed to be used in the UserDao class.</p>
+
+<ul>
+	<li><code>protected function getUserListByFilter($filterBag=null, $orderbyBag=null, $from=null, $limit=null)</code> : returns a list of
+	users based on a filter bag (see the <code>TDBM_Service</code> documentation to learn more about filter bags). You can also
+	provide an order, and an offset / limit range.</li>
+	<li><code>protected function getUserByFilter($filterBag=null)</code> : this has exactly the same purpose as getUserListByFilter except
+	it returns only 1 bean object instead of a list of bean objects.</li>
+</ul>
