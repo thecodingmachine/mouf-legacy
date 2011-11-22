@@ -44,7 +44,21 @@ class Menu implements MenuInterface {
 	 */
 	public function getChildren() {
 		if ($this->sorted == false && $this->children) {
-			usort($this->children, array($this, "compareMenuItems"));
+			// First, let's make 2 arrays: the array of children with a priority, and the array without.
+			$childrenWithPriorities = array();
+			$childrenWithoutPriorities = array();
+			foreach ($this->children as $child) {
+				/* @var $child MenuItemInterface */
+				$priority = $child->getPriority();
+				if ($priority === null || $priority === "") {
+					$childrenWithoutPriorities[] = $child;
+				} else {
+					$childrenWithPriorities[] = $child;
+				}
+			}
+			
+			usort($childrenWithPriorities, array($this, "compareMenuItems"));
+			$this->children = array_merge($childrenWithPriorities, $childrenWithoutPriorities);
 			$this->sorted = true;
 		}
 		return $this->children;
@@ -53,10 +67,10 @@ class Menu implements MenuInterface {
 	public function compareMenuItems(MenuItem $item1, MenuItem $item2) {
 		$priority1 = $item1->getPriority();
 		$priority2 = $item2->getPriority();
-		if ($priority1 === null && $priority2 === null) {
+		/*if ($priority1 === null && $priority2 === null) {
 			// If no priority is set, let's keep the default ordering (which happens is usort by always returning positive numbers...) 
 			return 1;	
-		}
+		}*/
 		return $priority1 - $priority2;
 	}
 	
