@@ -129,6 +129,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'PackageDownloadController' => 'mouf/controllers/PackageDownloadController.php',
   'DocumentationController' => 'mouf/controllers/DocumentationController.php',
   'MoufPackageDownloadService' => 'mouf/MoufPackageDownloadService.php',
+  'MoufNetworkException' => 'mouf/MoufNetworkException.php',
   'MoufRepository' => 'mouf/MoufRepository.php',
   'MoufUtils' => 'mouf/MoufUtils.php',
   'PhpInfoController' => 'mouf/controllers/PhpInfoController.php',
@@ -262,6 +263,7 @@ require_once $localFilePath.'/controllers/RepositorySourceController.php';
 require_once $localFilePath.'/controllers/PackageDownloadController.php';
 require_once $localFilePath.'/controllers/DocumentationController.php';
 require_once $localFilePath.'/MoufPackageDownloadService.php';
+require_once $localFilePath.'/MoufNetworkException.php';
 require_once $localFilePath.'/MoufRepository.php';
 require_once $localFilePath.'/MoufUtils.php';
 require_once $localFilePath.'/controllers/PhpInfoController.php';

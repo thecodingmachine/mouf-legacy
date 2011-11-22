@@ -71,7 +71,7 @@ class MoufPackageDownloadService {
 		$response = curl_exec( $ch );
 		
 		if( curl_error($ch) ) { 
-			throw new MoufException("An error occured: ".curl_error($ch));
+			throw new MoufNetworkException("An error occured: ".curl_error($ch));
 		}
 		curl_close( $ch );
 		
@@ -166,7 +166,7 @@ class MoufPackageDownloadService {
 			curl_exec( $ch );
 			
 			if( curl_error($ch) ) { 
-				throw new MoufException("An error occured (CURL): ".curl_error($ch));
+				throw new MoufNetworkException("An error occured (CURL): ".curl_error($ch));
 			}
 			curl_close( $ch );
 			

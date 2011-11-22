@@ -322,45 +322,48 @@ class MoufPackageManager {
 					
 					foreach ($repositories as $repository) {
 						/* @var $repository MoufRepository  */
-						
-						// Let's get all the REMOTE versions available for current explored repository, and see if one version matches the dependency requirements.
-						$versions = $repository->getVersionsForPackage($dependency->getGroup(), $dependency->getName());
-						// Note: the $versions are sorted in reverse order, which is exactly what we need.
-						if (!empty($versions->packages)) {
-							$packageFound = true;
-						}
-						if ($versions != null) {
-							foreach ($versions->packages as $version=>$myPackage) {
-								/* @var $myPackage MoufPackage */
-								
-								// Let's test each version.
-								if ($dependency->isCompatibleWithVersion($version)) {
-									// We found a compatible version! Yeah!
-									$newPackageDependencies = $packageDependencies;
-		
-									$toAddPackage = $versions->getPackage($version);
+						try {
+							// Let's get all the REMOTE versions available for current explored repository, and see if one version matches the dependency requirements.
+							$versions = $repository->getVersionsForPackage($dependency->getGroup(), $dependency->getName());
+							// Note: the $versions are sorted in reverse order, which is exactly what we need.
+							if (!empty($versions->packages)) {
+								$packageFound = true;
+							}
+							if ($versions != null) {
+								foreach ($versions->packages as $version=>$myPackage) {
+									/* @var $myPackage MoufPackage */
 									
-									// Let's recurse
-									try {
-										$packageDependencies = $this->getRecursiveDependencies($myPackage, $scope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
-									} catch (MoufIncompatiblePackageException $ex) {
-										// If there is a problem, we try the next version.
-										$encounteredExceptions[] = $ex; 
-										continue;
+									// Let's test each version.
+									if ($dependency->isCompatibleWithVersion($version)) {
+										// We found a compatible version! Yeah!
+										$newPackageDependencies = $packageDependencies;
+			
+										$toAddPackage = $versions->getPackage($version);
+										
+										// Let's recurse
+										try {
+											$packageDependencies = $this->getRecursiveDependencies($myPackage, $scope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
+										} catch (MoufIncompatiblePackageException $ex) {
+											// If there is a problem, we try the next version.
+											$encounteredExceptions[] = $ex; 
+											continue;
+										}
+			
+										// TODO: the line below has been replaced with line below, check this is correct. 
+										//$newPackageDependencies[$dependencyRealScope][] = $toAddPackage;
+										$packageDependencies[$dependencyRealScope][] = $toAddPackage;
+										
+										// If there is no problem, we go to the next dependency for the package $package.
+										$foundCorrectVersion = true;
+										break;
 									}
-		
-									// TODO: the line below has been replaced with line below, check this is correct. 
-									//$newPackageDependencies[$dependencyRealScope][] = $toAddPackage;
-									$packageDependencies[$dependencyRealScope][] = $toAddPackage;
-									
-									// If there is no problem, we go to the next dependency for the package $package.
-									$foundCorrectVersion = true;
-									break;
 								}
 							}
-						}
-						if ($foundCorrectVersion) {
-							break;
+							if ($foundCorrectVersion) {
+								break;
+							}
+						} catch (MoufNetworkException $e) {
+							// Ignore any network exception. We will do as if the repository was not available.
 						}
 					}
 	
