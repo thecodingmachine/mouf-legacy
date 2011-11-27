@@ -10,6 +10,14 @@
 	Usually, templates will provide their own menu renderers.</shortDescription>
 	<docUrl></docUrl>
 	<logo>logo.png</logo>
+    <dependencies>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>&gt;=2.1</version>
+
+		</dependency>
+    </dependencies>
 	<requires>
 		<require>MenuInterface.php</require>
 		<require>MenuItemInterface.php</require>
@@ -18,12 +26,4 @@
 		<require>MenuItem.php</require>
 		<require>MenuItemStyleIcon.php</require>
 	</requires>
-        <dependencies>
-		<dependency>
-			<group>utils/i18n</group>
-			<name>fine</name>
-			<version>&gt;=2.1</version>
-
-		</dependency>
-        </dependencies>
 </package>
