@@ -39,6 +39,18 @@ class DB_ConnectionProxy implements DB_ConnectionInterface {
 	}
 	
 	/**
+	 * Releases the connection to the database.
+	 * Usually, it is not required to close the connection explicitly. The connection will be released at the end of the script.
+	 * However, if you have a long running script, at might be a good idea to release the connection as soon as possible so the
+	 * connection can be used by other apache processes.
+	 *
+	 */
+	public function close() {
+		return $this->proxyCall();
+	}
+	
+	
+	/**
 	 * Runs the query against the database.
 	 *
 	 * @param string $query The query to run
