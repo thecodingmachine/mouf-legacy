@@ -242,6 +242,10 @@ class TDBM_Object implements ArrayAccess, Iterator {
 			}
 
 			$fullCaseRow = $result->fetchAll(PDO::FETCH_ASSOC);
+			
+			$result->closeCursor();
+			$result = null;
+				
 			$this->db_row = array();
 			foreach ($fullCaseRow[0] as $key=>$value)  {
 				$this->db_row[$this->db_connection->toStandardCaseColumn($key)]=$value;

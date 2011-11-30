@@ -99,7 +99,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	}
 
 	/**
-	 * Performs a PDO request
+	 * Performs a PDO request.
+	 * Note: the responsibility of closing the statement is left to the caller.
 	 *
 	 * @param string $query
 	 * @param int $from

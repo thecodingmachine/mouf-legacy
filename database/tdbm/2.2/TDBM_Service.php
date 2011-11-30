@@ -569,6 +569,9 @@ class TDBM_Service {
 			$returned_objects[] = $this->objects[$table_name][$id];
 		}
 
+		$result->closeCursor();
+		$result = null;
+			
 		return $returned_objects;
 	}
 
