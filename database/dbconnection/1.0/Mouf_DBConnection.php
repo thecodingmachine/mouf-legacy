@@ -81,6 +81,17 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	public function connect() {
 		$this->dbh = new PDO($this->getDsn(), $this->getUserName(), $this->getPassword(), $this->getOptions());
 	}
+	
+	/**
+	 * Releases the connection to the database.
+	 * Usually, it is not required to close the connection explicitly. The connection will be released at the end of the script.
+	 * However, if you have a long running script, at might be a good idea to release the connection as soon as possible so the 
+	 * connection can be used by other apache processes. 
+	 * 
+	 */
+	public function close() {
+		$this->dbh = null;
+	}
 
 
 	/**
