@@ -60,12 +60,12 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 * will not be closed when the script stops and will be reused on the next connection.
 	 * This will help improve your application's performance. 
 	 *
-	 * This defaults to "true"
+	 * This defaults to "false"
 	 * 
 	 * @Property
 	 * @var boolean
 	 */
-	public $isPersistentConnection = true;
+	public $isPersistentConnection = false;
 	
 	/**
 	 * Returns the DSN for this connection.
