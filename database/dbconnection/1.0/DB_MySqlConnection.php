@@ -111,7 +111,7 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	 */
 	public function getOptions() {
 		$options = array();
-		if ($this->isPersistentConnection != "No") {
+		if ($this->isPersistentConnection == true) {
 			$options[PDO::ATTR_PERSISTENT] = true;
 		}
 		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
