@@ -10,16 +10,16 @@
  */
 class Mail implements MailInterface {
 	
-	private $bodyText;
-	private $bodyHtml;
-	private $title;
-	private $from;
-	private $toRecipients = array();
-	private $ccRecipients = array();
-	private $bccRecipients = array();
-	private $attachements = array();
-	private $encoding = "utf-8";
-	private $autocreateMissingText = false;
+	protected $bodyText;
+	protected $bodyHtml;
+	protected $title;
+	protected $from;
+	protected $toRecipients = array();
+	protected $ccRecipients = array();
+	protected $bccRecipients = array();
+	protected $attachements = array();
+	protected $encoding = "utf-8";
+	protected $autocreateMissingText = false;
 	
 	/**
 	 * Returns the mail text body.
@@ -30,7 +30,7 @@ class Mail implements MailInterface {
 		if ($this->bodyText != null) {
 			return $this->bodyText;
 		} elseif ($this->autocreateMissingText == true) {
-			return $this->removeHtml($this->bodyHtml);
+			return $this->removeHtml($this->getBodyHtml());
 		}
 	}
 	
