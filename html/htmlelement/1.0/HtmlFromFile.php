@@ -1,6 +1,4 @@
 <?php
-require_once 'HtmlElementInterface.php';
-require_once 'Scopable.php';
 
 /**
  * This class loads a file, and displays it as Html.

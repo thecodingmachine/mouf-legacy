@@ -1,5 +1,4 @@
 <?php
-require_once 'HtmlElementInterface.php';
 
 /**
  * An Html string that can be embedded in any container accepting HtmlElements.

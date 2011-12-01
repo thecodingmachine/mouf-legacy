@@ -1,6 +1,4 @@
 <?php
-require_once 'HtmlElementInterface.php';
-require_once 'Scopable.php';
 
 /**
  * This class executes a function that will display some html.
