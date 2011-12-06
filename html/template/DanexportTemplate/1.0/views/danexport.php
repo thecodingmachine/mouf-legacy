@@ -80,9 +80,6 @@
                             <div class="art-post">
                                 <div class="art-post-body">
                             <div class="art-post-inner art-article">
-                                            <h2 class="art-postheader">
-                                                Welcome
-                                            </h2>
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
                                                 <?php $this->drawArray($this->content); ?>
