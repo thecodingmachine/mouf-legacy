@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Mouf Image</displayName>
+	<shortDescription>Images handler interface for resizing, croping, or any other action</shortDescription>
+	<docUrl>http://www.google.com/</docUrl>
+	<logo>logo.png</logo>
+	<requires>
+		<require>MoufImageInterface.php</require>
+		<require>filters/MoufImageFromFile.php</require>
+		<require>filters/MoufImageResize.php</require>
+		<require>render/StaticImageDisplayer.php</require>
+	</requires>
+	<dependencies>
+	</dependencies>
+</package>
