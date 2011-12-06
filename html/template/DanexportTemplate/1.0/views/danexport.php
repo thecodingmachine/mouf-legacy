@@ -37,7 +37,7 @@
                 <div class="art-header">
                     <div class="art-header-jpeg"></div>
                     <div class="art-logo">
-                        <h1 id="name-text" class="art-logo-name"><a href="#">Dan’export</a></h1>
+                        <h1 id="name-text" class="art-logo-name"><a href="<?php echo ROOT_URL;?>">Dan’export</a></h1>
                         <div id="slogan-text" class="art-logo-text">The easiest way to get your information</div>
                     </div>
                 </div>
