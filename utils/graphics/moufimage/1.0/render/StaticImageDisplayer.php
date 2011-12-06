@@ -95,7 +95,8 @@ class StaticImageDisplayer{
 			//if sourceFileName contains sub folders, create them
 			$subPath = dirname($this->sourceFileName);
 			if ($subPath != '.'){
-				mkdir(ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $subPath, 0777, true);
+				$dirCreate = mkdir(ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $subPath, 0777, true);
+				if (!$dirCreate) throw new Exception("Could't create subfolders '$subPath' in " . ROOT_PATH . $this->savePath)
 			}
 			
 			//create the image
