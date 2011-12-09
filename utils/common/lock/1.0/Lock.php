@@ -41,12 +41,16 @@ class Lock implements LockInterface {
 		if (!file_exists(sys_get_temp_dir().'/'.$this->fileName)) {
 			touch(sys_get_temp_dir().'/'.$this->fileName);
 		}
-		
+
 		if ($this->fpt = fopen(sys_get_temp_dir().'/'.$this->fileName, 'r'))
 		{
-		
-			$boo = flock($this->fpt, LOCK_EX, $wait);
-		
+			if ($wait) {
+				$lockMode = LOCK_EX;
+			} else {
+				$lockMode = LOCK_EX | LOCK_NB;
+			}
+			$boo = flock($this->fpt, $lockMode, $wait);
+
 			if ($boo == false){
 				// File is locked: the next process did not ended: we do not start
 				throw new LockException('Could not acquire lock. Lock is in use', 1);
