@@ -187,9 +187,17 @@ jQuery(document).ready (function() {
 		<input type="hidden" name="delete" id="delete" value="0" />
 		<input type="hidden" name="selfedit" id="selfedit" value="<?php echo $this->selfedit; ?>" />
 		
-                <a id="modifyInstanceLink" href="javascript:void(0)" class="button modify" onclick="document.getElementById('modifyInstanceLink').style.visibility='hidden';document.getElementById('instanceNameText').style.display='none';document.getElementById('instanceNameTextbox').style.display='inline';">Modify this instance</a>
-		<a href="javascript:void(0)" class="button delete" onclick="deleteInstance()">Delete this instance</a>
-		<a href="javascript:void(0)" class="button duplicate" onclick="displayDuplicateInstanceDialog()">Duplicate this instance</a>
+        <a id="modifyInstanceLink" href="javascript:void(0)" class="button modify" onclick="document.getElementById('modifyInstanceLink').style.visibility='hidden';document.getElementById('instanceNameText').style.display='none';document.getElementById('instanceNameTextbox').style.display='inline';">Rename</a>
+		<a href="javascript:void(0)" class="button delete" onclick="deleteInstance()">Delete</a>
+		<a href="javascript:void(0)" class="button duplicate" onclick="displayDuplicateInstanceDialog()">Duplicate</a>
+	</div>
+	<div>
+		<br/>
+		<?php if ($this->canBeWeak) { ?>
+		 <input type="checkbox" name="weak" <?php if ($this->weak) { echo "checked='true'"; } ?> />Weak instance
+		 <?php } else { ?>
+		 <input type="checkbox" name="weak" disabled="disabled" />Weak instance
+		 <?php } ?>
 	</div>
 	<div class="instance_parameter">
 		<h2>Class <?php echo $this->className ?></h2>

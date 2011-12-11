@@ -76,8 +76,10 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 	 * @param string $instanceClass The type of the new instance to create and attach to the saved object
 	 * @param string $newInstanceKey The key of the new instance (if it is part of an associative array)
 	 * @param string $duplicateInstance If "true", a copy of the instance will be created. This copy will be named after the $newInstanceName param.
+	 * @param string $weak
+	 * @throws Exception
 	 */
-	public function saveComponent($originalInstanceName, $instanceName, $delete, $selfedit, $newInstanceName=null, $createNewInstance=null, $bindToProperty=null, $instanceClass=null, $newInstanceKey=null, $duplicateInstance=null) {
+	public function saveComponent($originalInstanceName, $instanceName, $delete, $selfedit, $newInstanceName=null, $createNewInstance=null, $bindToProperty=null, $instanceClass=null, $newInstanceKey=null, $duplicateInstance=null, $weak=false) {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -107,6 +109,8 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 		//$this->properties = Moufspector::getPropertiesForClass($this->className);
 		
 		$this->moufManager->unsetAllParameters($instanceName);
+		
+		$this->moufManager->setInstanceWeakness($instanceName, (bool) $weak);
 		
 		foreach ($this->properties as $property) {
 			if ($property->hasType()) {

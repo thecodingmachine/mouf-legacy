@@ -123,11 +123,12 @@ class MoufManager {
 	 * $declaredInstance["instanceName"] = $instanceDefinitionArray;
 	 * 
 	 * $instanceDefinitionArray["class"] = "string"
-	 * $instanceDefinitionArray["fieldProperties"] = array("propertyName", $property);
-	 * $instanceDefinitionArray["setterProperties"] = array("propertyName", $property);
-	 * $instanceDefinitionArray["fieldBinds"] = array("propertyName", $property);
-	 * $instanceDefinitionArray["setterBinds"] = array("propertyName", $property);
+	 * $instanceDefinitionArray["fieldProperties"] = array("propertyName" => $property);
+	 * $instanceDefinitionArray["setterProperties"] = array("setterName" => $property);
+	 * $instanceDefinitionArray["fieldBinds"] = array("propertyName" => "instanceName");
+	 * $instanceDefinitionArray["setterBinds"] = array("setterName" => "instanceName");
 	 * $instanceDefinitionArray["comment"] = "string"
+	 * $instanceDefinitionArray["weak"] = true|false (if true, object can be garbage collected if not referenced)
 	 * $instanceDefinitionArray["external"] = true|false
 	 * 
 	 * $property["type"] = "string|config|request|session";
@@ -298,8 +299,10 @@ class MoufManager {
 	 * @param string $instanceName
 	 * @param string $className
 	 * @param boolean $external Whether the component is external or not. Defaults to false.
+	 * @param int $mode Depending on the mode, the behaviour will be different if an instance with the same name already exists.
+	 * @param bool $weak If the object is weak, it will be destroyed if it is no longer referenced.
 	 */
-	public function declareComponent($instanceName, $className, $external = false, $mode = self::DECLARE_ON_EXIST_EXCEPTION) {
+	public function declareComponent($instanceName, $className, $external = false, $mode = self::DECLARE_ON_EXIST_EXCEPTION, $weak = false) {
 		if (isset($this->declaredInstances[$instanceName])) {
 			if ($mode == self::DECLARE_ON_EXIST_EXCEPTION) {
 				throw new MoufException("Unable to create Mouf istance named '".$instanceName."'. An instance with this name already exists.");
@@ -308,6 +311,7 @@ class MoufManager {
 				$this->declaredInstances[$instanceName]["setterProperties"] = array();
 				$this->declaredInstances[$instanceName]["fieldBinds"] = array();
 				$this->declaredInstances[$instanceName]["setterBinds"] = array();
+				$this->declaredInstances[$instanceName]["weak"] = $weak;
 				$this->declaredInstances[$instanceName]["comment"] = "";
 			} elseif ($mode == self::DECLARE_ON_EXIST_KEEP_ALL) {
 				// Do nothing
@@ -778,6 +782,9 @@ class MoufManager {
 			$filename = basename(dirname(__FILE__)."/".$this->requireFileName);
 			throw new MoufException("Error, unable to write file ".$dirname."/".$filename);
 		}
+		
+		// Let's start by garbage collecting weak instances.
+		$this->purgeUnreachableWeakInstances();
 		
 		$fp = fopen(dirname(__FILE__)."/".$this->componentsFileName, "w");
 		fwrite($fp, "<?php\n");
@@ -1757,5 +1764,80 @@ class ".$this->mainClassName." {
 	public function getScope() {
 		return $this->scope;
 	}
+	
+	/**
+	 * This function will delete any weak instance that would not be referred anymore.
+	 * This is used to garbage-collect any unused weak instances.
+	 */
+	private function purgeUnreachableWeakInstances() {
+		foreach ($this->declaredInstances as $key=>$instance) {
+			if (!isset($instance['weak']) || $instance['weak'] == false) {
+				$this->walkForGarbageCollection(&$this->declaredInstances[$key]);
+			}
+		}
+		
+		// At this point any instance with the "noGarbageCollect" attribute should be kept. Others should be eliminated.
+		$keptInstances = array();
+		foreach ($this->declaredInstances as $key=>$instance) {
+			if (isset($instance['noGarbageCollect']) && $instance['noGarbageCollect'] == true) {
+				// Let's clear the flag
+				unset($this->declaredInstances[$key]['noGarbageCollect']);
+			} else {
+				// Let's delete the weak instance
+				unset($this->declaredInstances[$key]);
+			}
+		}
+		
+		
+	}
+	
+	/**
+	 * Recursive function that mark this instance as NOT garbage collectable and go through referred nodes.
+	 * 
+	 * @param array $instance
+	 */
+	private function walkForGarbageCollection(&$instance) {
+		if (isset($instance['noGarbageCollect']) && $instance['noGarbageCollect'] == true) {
+			// No need to go through already visited nodes.
+			return;
+		}
+		
+		$instance['noGarbageCollect'] = true;
+		
+		if (isset($instance['fieldBinds'])) {
+			foreach ($instance['fieldBinds'] as $prop) {
+				$this->walkForGarbageCollection(&$this->declaredInstances[$prop]);
+			}
+		}
+		if (isset($instance['setterBinds'])) {
+			foreach ($instance['setterBinds'] as $prop) {
+				$this->walkForGarbageCollection(&$this->declaredInstances[$prop]);
+			}
+		}
+	}
+	
+	/**
+	 * Returns true if the instance is week
+	 * 
+	 * @param string $instanceName
+	 * @return bool
+	 */
+	public function isInstanceWeak($instanceName) {
+		if (isset($this->declaredInstances[$instanceName]['weak'])) {
+			return $this->declaredInstances[$instanceName]['weak'];
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Decides whether an instance should be weak or not.
+	 * @param string $instanceName
+	 * @param bool $weak
+	 */
+	public function setInstanceWeakness($instanceName, $weak) {
+		$this->declaredInstances[$instanceName]['weak'] = $weak;
+	}
+	
 }
 ?>

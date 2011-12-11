@@ -94,6 +94,15 @@ class Moufspector {
 				if ($found) {
 					$arr = array();
 					$arr["filename"] = $refClass->getFileName();
+					/*if ($refClass->hasAnnotation("Logo")) {
+						$logos = $refClass->getAnnotations("Logo");
+						if (count($logos)>1) {
+							throw new MoufException("Error. In class ".$className.", only one @Logo annotation is allowed.");
+						}
+						$logo = $logos[0];
+						// Since we did not import a LogoAnnotation class, the annotation is returned as a string.
+						$arr["logo"] = $logo;
+					}*/
 					$componentsList[$className] = $arr;
 					continue;
 				}

@@ -25,6 +25,13 @@ abstract class AbstractMoufInstanceController extends Controller {
 	public $properties;
 	public $reflectionClass;
 	public $selfedit;
+	public $weak;
+	/**
+	 * Whether the instance can be declared weak or not.
+	 * An instance that has noone referencing it cannot be weak.
+	 * @var bool
+	 */
+	public $canBeWeak;
 	
 	/**
 	 * The active MoufManager to be edited/viewed
@@ -65,6 +72,8 @@ abstract class AbstractMoufInstanceController extends Controller {
 		$this->className = $this->moufManager->getInstanceType($this->instanceName);		
 		$this->reflectionClass = MoufReflectionProxy::getClass($this->className, $selfedit=="true");
 		$this->properties = Moufspector::getPropertiesForClass($this->reflectionClass);
+		$this->weak = $this->moufManager->isInstanceWeak($this->instanceName);
+		
 		
 		// Init the right menu:
 		$extendedActions = $this->reflectionClass->getAnnotations("ExtendedAction");
@@ -106,7 +115,9 @@ abstract class AbstractMoufInstanceController extends Controller {
 	public function displayComponentParents() {
 		$componentsList = $this->moufManager->getOwnerComponents($this->instanceName);
 		
+		$this->canBeWeak = false;
 		if (!empty($componentsList)) {
+			$this->canBeWeak = true;
 			$children = array();
 			foreach ($componentsList as $component) {
 				$child = new MenuItem($component, ROOT_URL.'mouf/mouf/displayComponent?name='.urlencode($component));
