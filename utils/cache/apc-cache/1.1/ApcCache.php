@@ -158,7 +158,7 @@ class ApcCache implements CacheInterface {
 	 *
 	 */
 	public function purgeAll() {
-		throw new Exception("Purgeall is not implemented in ApcCache (and cannot be efficiently implemented)");
+		apc_clear_cache('user');
 	}
 	
 }
