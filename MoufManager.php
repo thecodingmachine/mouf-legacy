@@ -1772,7 +1772,7 @@ class ".$this->mainClassName." {
 	private function purgeUnreachableWeakInstances() {
 		foreach ($this->declaredInstances as $key=>$instance) {
 			if (!isset($instance['weak']) || $instance['weak'] == false) {
-				$this->walkForGarbageCollection(&$this->declaredInstances[$key]);
+				$this->walkForGarbageCollection($this->declaredInstances[$key]);
 			}
 		}
 		
@@ -1806,12 +1806,12 @@ class ".$this->mainClassName." {
 		
 		if (isset($instance['fieldBinds'])) {
 			foreach ($instance['fieldBinds'] as $prop) {
-				$this->walkForGarbageCollection(&$this->declaredInstances[$prop]);
+				$this->walkForGarbageCollection($this->declaredInstances[$prop]);
 			}
 		}
 		if (isset($instance['setterBinds'])) {
 			foreach ($instance['setterBinds'] as $prop) {
-				$this->walkForGarbageCollection(&$this->declaredInstances[$prop]);
+				$this->walkForGarbageCollection($this->declaredInstances[$prop]);
 			}
 		}
 	}
