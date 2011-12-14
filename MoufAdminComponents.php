@@ -30,11 +30,11 @@ $moufManager->setPackagesByXmlFile(array (
   4 => 'utils/export/phpexcel/1.7.5/package.xml',
   5 => 'utils/icons/famfamfam/1.3/package.xml',
   6 => 'html/template/BaseTemplate/1.0/package.xml',
-  7 => 'html/widgets/menu/1.0/package.xml',
-  8 => 'html/template/SplashTemplate/2.0/package.xml',
-  9 => 'javascript/jquery/jquery/1.3.2/package.xml',
-  10 => 'javascript/jquery/jquery-fixedheadertable/1.3/package.xml',
-  11 => 'utils/i18n/fine/2.1/package.xml',
+  7 => 'javascript/jquery/jquery/1.6/package.xml',
+  8 => 'javascript/jquery/jquery-fixedheadertable/1.3/package.xml',
+  9 => 'utils/i18n/fine/2.1/package.xml',
+  10 => 'html/widgets/menu/1.0/package.xml',
+  11 => 'html/template/SplashTemplate/2.0/package.xml',
   12 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
   13 => 'javascript/jquery/jquery-ui/1.7.2/package.xml',
   14 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
@@ -60,7 +60,7 @@ $moufManager->setPackagesByXmlFileInAdminScope(array (
 ));
 
 require dirname(__FILE__).'/../plugins/utils/common/conditioninterface/1.0/ConditionsExternalComponent.php';
-require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.3.2/JQueryExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.6/JQueryExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/JQueryFixedHeaderTableExternalComponent.php';
 require dirname(__FILE__).'/../plugins/utils/i18n/fine/2.1/FineExternalComponents.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/JQueryAutoGrowExternalComponent.php';
@@ -3362,6 +3362,83 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return MySqlConnectionEditController
+	 */
+	 public static function getMysqlconnectionedit() {
+	 	return MoufManager::getMoufManager()->getInstance('mysqlconnectionedit');
+	 }
+
+	/**
+	 * @return DbConnectionInstallController
+	 */
+	 public static function getDbconnectioninstall() {
+	 	return MoufManager::getMoufManager()->getInstance('dbconnectioninstall');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getUtilsMainMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('utilsMainMenu');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getUtilsCacheInterfaceMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('utilsCacheInterfaceMenu');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getUtilsCacheInterfacePurgeAllCachesMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('utilsCacheInterfacePurgeAllCachesMenuItem');
+	 }
+
+	/**
+	 * @return PurgeCacheController
+	 */
+	 public static function getPurgeCaches() {
+	 	return MoufManager::getMoufManager()->getInstance('purgeCaches');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getDbMainMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbMainMenu');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getDbTDBMAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbTDBMAdminSubMenu');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getDbTDBMGenereateDAOAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbTDBMGenereateDAOAdminSubMenu');
+	 }
+
+	/**
+	 * @return TdbmController
+	 */
+	 public static function getTdbmadmin() {
+	 	return MoufManager::getMoufManager()->getInstance('tdbmadmin');
+	 }
+
+	/**
+	 * @return TdbmInstallController
+	 */
+	 public static function getTdbminstall() {
+	 	return MoufManager::getMoufManager()->getInstance('tdbminstall');
+	 }
+
+	/**
 	 * @return MenuItem
 	 */
 	 public static function getHtmlMainMenu() {
@@ -3413,29 +3490,50 @@ class MoufAdmin {
 	/**
 	 * @return MenuItem
 	 */
-	 public static function getUtilsMainMenu() {
-	 	return MoufManager::getMoufManager()->getInstance('utilsMainMenu');
+	 public static function getHtmlBaseWidgetAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('htmlBaseWidgetAdminSubMenu');
 	 }
 
 	/**
 	 * @return MenuItem
 	 */
-	 public static function getUtilsCacheInterfaceMenu() {
-	 	return MoufManager::getMoufManager()->getInstance('utilsCacheInterfaceMenu');
+	 public static function getHtmlBaseWidgetSplashAdminApacheConfig2Item() {
+	 	return MoufManager::getMoufManager()->getInstance('htmlBaseWidgetSplashAdminApacheConfig2Item');
+	 }
+
+	/**
+	 * @return BaseWidgetController
+	 */
+	 public static function getBaseWidget() {
+	 	return MoufManager::getMoufManager()->getInstance('baseWidget');
 	 }
 
 	/**
 	 * @return MenuItem
 	 */
-	 public static function getUtilsCacheInterfacePurgeAllCachesMenuItem() {
-	 	return MoufManager::getMoufManager()->getInstance('utilsCacheInterfacePurgeAllCachesMenuItem');
+	 public static function getDbSqlDatasourceAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbSqlDatasourceAdminSubMenu');
 	 }
 
 	/**
-	 * @return PurgeCacheController
+	 * @return MenuItem
 	 */
-	 public static function getPurgeCaches() {
-	 	return MoufManager::getMoufManager()->getInstance('purgeCaches');
+	 public static function getDbSqlDatasourceAdminGenerateColumnBaseSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbSqlDatasourceAdminGenerateColumnBaseSubMenu');
+	 }
+
+	/**
+	 * @return MoufDatasourceInstanceController
+	 */
+	 public static function getDatasourceadmin() {
+	 	return MoufManager::getMoufManager()->getInstance('datasourceadmin');
+	 }
+
+	/**
+	 * @return SplashViewUrlsController
+	 */
+	 public static function getSplashViewUrls() {
+	 	return MoufManager::getMoufManager()->getInstance('splashViewUrls');
 	 }
 
 	/**
@@ -3460,45 +3558,66 @@ class MoufAdmin {
 	 }
 
 	/**
-	 * @return SplashViewUrlsController
+	 * @return SmtpMailServiceInstallController
 	 */
-	 public static function getSplashViewUrls() {
-	 	return MoufManager::getMoufManager()->getInstance('splashViewUrls');
-	 }
-
-	/**
-	 * @return SplashGenerateService
-	 */
-	 public static function getSplashGenerateService() {
-	 	return MoufManager::getMoufManager()->getInstance('splashGenerateService');
-	 }
-
-	/**
-	 * @return SplashAdminApacheConfigureController
-	 */
-	 public static function getSplashApacheConfig() {
-	 	return MoufManager::getMoufManager()->getInstance('splashApacheConfig');
-	 }
-
-	/**
-	 * @return SplashInstallController
-	 */
-	 public static function getSplashinstall() {
-	 	return MoufManager::getMoufManager()->getInstance('splashinstall');
-	 }
-
-	/**
-	 * @return MoufBasicValidationProvider
-	 */
-	 public static function getSplashHtaccessValidator() {
-	 	return MoufManager::getMoufManager()->getInstance('splashHtaccessValidator');
+	 public static function getSmtpmailserviceinstall() {
+	 	return MoufManager::getMoufManager()->getInstance('smtpmailserviceinstall');
 	 }
 
 	/**
 	 * @return MenuItem
 	 */
-	 public static function getMvcSplashAdminApacheConfig2Item() {
-	 	return MoufManager::getMoufManager()->getInstance('mvcSplashAdminApacheConfig2Item');
+	 public static function getUtilsTaskManagerSubMenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('utilsTaskManagerSubMenuItem');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getUtilsTaskManagerInstall2MenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('utilsTaskManagerInstall2MenuItem');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getUtilsTaskManagerViewAwaitingTasks2MenuItem() {
+	 	return MoufManager::getMoufManager()->getInstance('utilsTaskManagerViewAwaitingTasks2MenuItem');
+	 }
+
+	/**
+	 * @return TaskManagerController
+	 */
+	 public static function getTaskManager() {
+	 	return MoufManager::getMoufManager()->getInstance('taskManager');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getDbStatsAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbStatsAdminSubMenu');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getDbStatsGenerateStatAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbStatsGenerateStatAdminSubMenu');
+	 }
+
+	/**
+	 * @return MenuItem
+	 */
+	 public static function getDbStatsRecomputeStatAdminSubMenu() {
+	 	return MoufManager::getMoufManager()->getInstance('dbStatsRecomputeStatAdminSubMenu');
+	 }
+
+	/**
+	 * @return DbStatsController
+	 */
+	 public static function getDbStatsAdmin() {
+	 	return MoufManager::getMoufManager()->getInstance('dbStatsAdmin');
 	 }
 
 }

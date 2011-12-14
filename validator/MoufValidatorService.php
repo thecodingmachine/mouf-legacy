@@ -30,7 +30,6 @@ class MoufValidatorService implements HtmlElementInterface {
 		<script type="text/javascript">
 				
 		function addValidator(name, url) {
-// FIXME:  todo: detect bad JSON and display an error message!
 
 			if (typeof(window.moufNbValidators) == "undefined") {
 				window.moufNbValidators = 0;
@@ -41,20 +40,34 @@ class MoufValidatorService implements HtmlElementInterface {
 			jQuery('#validators').append("<div id='validator"+validatorNb+"' class='validator'><div class='loading'>Running "+name+"</div></div>");
 
 
-			jQuery.ajaxSetup({
-			  "error":function() {   
-				jQuery('#validator'+validatorNb).html("<div class='error'>Unable to run '"+name+"'</div>");
-			}});	
-			jQuery.getJSON("<?php echo ROOT_URL ?>"+url, null, function(json){
-				if (json.code == "ok") {
-					jQuery('#validator'+validatorNb).html("<div class='good'>"+json.html+"</div>");
-				} else if (json.code == "warn") {
-					jQuery('#validator'+validatorNb).html("<div class='warning'>"+json.html+"</div>");
-				} else {
-					jQuery('#validator'+validatorNb).html("<div class='error'>"+json.html+"</div>");
+			jQuery(".seeErrorDetails").live("click", function(evt) {
+				jQuery(evt.target).parent().find("pre").toggle();
+			});
+
+			jQuery.ajax({
+				url: "<?php echo ROOT_URL ?>"+url,
+				success: function(text){
+
+					try {
+						var json = jQuery.parseJSON(text);
+						
+						if (json.code == "ok") {
+							jQuery('#validator'+validatorNb).html("<div class='good'>"+json.html+"</div>");
+						} else if (json.code == "warn") {
+							jQuery('#validator'+validatorNb).html("<div class='warning'>"+json.html+"</div>");
+						} else {
+							jQuery('#validator'+validatorNb).html("<div class='error'>"+json.html+"</div>");
+						}
+					} catch (e) {
+						jQuery('#validator'+validatorNb).html("<div class='error'>Error while running '"+name+"', invalid message returned. <a class='seeErrorDetails' href='#'>See details</a><pre style='display:none'></pre></div>").find("pre").text(text);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					jQuery('#validator'+validatorNb).html("<div class='error'>Unable to run '"+name+"': "+textStatus+"</div>");
 				}
 								
 			});
+			
 		}
 		jQuery(document).ready(function() {
 <?php 

@@ -19,12 +19,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'PHPExcel_Shared_ZipStreamWrapper' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
   'PHPExcel_Shared_String' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
   'BaseTemplate' => 'mouf/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php',
-  'Menu' => 'mouf/../plugins/html/widgets/menu/1.0/Menu.php',
-  'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
-  'MenuItemStyleIcon' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon.php',
-  'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php',
-  'SplashMenuRenderer' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php',
-  'HtmlJSJQuery' => 'mouf/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php',
+  'HtmlJSJQuery' => 'mouf/../plugins/javascript/jquery/jquery/1.6/HtmlJSJQuery.php',
   'HtmlJSJQueryFixedHeaderTable' => 'mouf/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/HtmlJSJQueryFixedHeaderTable.php',
   'FineMessageLanguage' => 'mouf/../plugins/utils/i18n/fine/2.1/FineMessageLanguage.php',
   'BrowserLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/BrowserLanguageDetection.php',
@@ -33,6 +28,11 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'CascadingLanguageDetection' => 'mouf/../plugins/utils/i18n/fine/2.1/language/CascadingLanguageDetection.php',
   'FinePHPArrayTranslationService' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/FinePHPArrayTranslationService.php',
   'FineCurrencyUtils' => 'mouf/../plugins/utils/i18n/fine/2.1/misc/FineCurrencyUtils.php',
+  'Menu' => 'mouf/../plugins/html/widgets/menu/1.0/Menu.php',
+  'MenuItem' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItem.php',
+  'MenuItemStyleIcon' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon.php',
+  'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php',
+  'SplashMenuRenderer' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php',
   'HtmlJSJQueryAutoGrow' => 'mouf/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php',
   'HtmlJSJQueryUI' => 'mouf/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php',
   'HtmlJSJQueryFileTree' => 'mouf/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php',
@@ -82,11 +82,11 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'Scopable' => 'mouf/../plugins/html/htmlelement/1.0/Scopable.php',
   'HtmlElementInterface' => 'mouf/../plugins/html/htmlelement/1.0/HtmlElementInterface.php',
   'TemplateInterface' => 'mouf/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php',
+  'LanguageDetectionInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface.php',
+  'LanguageTranslationInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface.php',
   'MenuInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuInterface.php',
   'MenuItemInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemInterface.php',
   'MenuItemStyleInterface' => 'mouf/../plugins/html/widgets/menu/1.0/MenuItemStyleInterface.php',
-  'LanguageDetectionInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface.php',
-  'LanguageTranslationInterface' => 'mouf/../plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface.php',
   'AuthenticationListenerInterface' => 'mouf/../plugins/security/userservice/1.0/AuthenticationListenerInterface.php',
   'UserInterface' => 'mouf/../plugins/security/userservice/1.0/UserInterface.php',
   'UserWithMailInterface' => 'mouf/../plugins/security/userservice/1.0/UserWithMailInterface.php',
@@ -161,15 +161,7 @@ require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlString.php';
 require_once $localFilePath.'/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuInterface.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemInterface.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleInterface.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/Menu.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItem.php';
-require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon.php';
-require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php';
-require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php';
-require_once $localFilePath.'/../plugins/javascript/jquery/jquery/1.3.2/HtmlJSJQuery.php';
+require_once $localFilePath.'/../plugins/javascript/jquery/jquery/1.6/HtmlJSJQuery.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/HtmlJSJQueryFixedHeaderTable.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/FineMessageLanguage.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface.php';
@@ -181,6 +173,14 @@ require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/translate/LanguageT
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/translate/FinePHPArrayTranslationService.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/misc/FineCurrencyUtils.php';
 require_once $localFilePath.'/../plugins/utils/i18n/fine/2.1/msgFunctions.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuInterface.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemInterface.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleInterface.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/Menu.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItem.php';
+require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon.php';
+require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php';
+require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php';
