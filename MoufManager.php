@@ -1806,12 +1806,26 @@ class ".$this->mainClassName." {
 		
 		if (isset($instance['fieldBinds'])) {
 			foreach ($instance['fieldBinds'] as $prop) {
-				$this->walkForGarbageCollection($this->declaredInstances[$prop]);
+				if(is_array($prop)) {
+					foreach ($prop as $singleProp) {
+						$this->walkForGarbageCollection($this->declaredInstances[$singleProp]);
+					}
+				}
+				else {
+					$this->walkForGarbageCollection($this->declaredInstances[$prop]);
+				}
 			}
 		}
 		if (isset($instance['setterBinds'])) {
 			foreach ($instance['setterBinds'] as $prop) {
-				$this->walkForGarbageCollection($this->declaredInstances[$prop]);
+				if(is_array($prop)) {
+					foreach ($prop as $singleProp) {
+						$this->walkForGarbageCollection($this->declaredInstances[$singleProp]);
+					}
+				}
+				else {
+					$this->walkForGarbageCollection($this->declaredInstances[$prop]);
+				}
 			}
 		}
 	}
