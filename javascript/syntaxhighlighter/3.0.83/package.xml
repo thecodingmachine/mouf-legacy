@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+
+	<displayName>SyntaxHighligther</displayName>
+	<shortDescription>This package contains the SyntaxHighligther javascript library, along a PHP wrapper class
+	to include SyntaxHighligther easily in your web pages. SyntaxHighligther can be used to highligth code samples.</shortDescription>
+	<docUrl>http://alexgorbatchev.com/SyntaxHighlighter</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSSyntaxHighlighter.php</require>
+	</requires>
+	<install>
+		<file>install.php</file>
+	</install>	
+</package>
