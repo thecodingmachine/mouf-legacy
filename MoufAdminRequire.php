@@ -77,6 +77,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'GrayMenuItem' => 'mouf/../plugins/html/template/MoufTemplate/1.0/MoufMenuItem.php',
   'TopRibbonMenuRenderer' => 'mouf/../plugins/html/template/menus/topribbonmenu/1.0/TopRibbonMenuRenderer.php',
   'HtmlMenuTopRibbonHead' => 'mouf/../plugins/html/template/menus/topribbonmenu/1.0/HtmlMenuTopRibbonHead.php',
+  'HtmlJSSyntaxHighlighter' => 'mouf/../plugins/javascript/syntaxhighlighter/3.0.83/HtmlJSSyntaxHighlighter.php',
   'LogInterface' => 'mouf/../plugins/utils/log/log_interface/1.1/LogInterface.php',
   'ConditionInterface' => 'mouf/../plugins/utils/common/conditioninterface/1.0/ConditionInterface.php',
   'Scopable' => 'mouf/../plugins/html/htmlelement/1.0/Scopable.php',
@@ -232,6 +233,7 @@ require_once $localFilePath.'/../plugins/html/template/MoufTemplate/1.0/MoufMenu
 require_once $localFilePath.'/../plugins/html/template/MoufTemplate/1.0/MoufMenuItem.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topribbonmenu/1.0/TopRibbonMenuRenderer.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topribbonmenu/1.0/HtmlMenuTopRibbonHead.php';
+require_once $localFilePath.'/../plugins/javascript/syntaxhighlighter/3.0.83/HtmlJSSyntaxHighlighter.php';
 
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';

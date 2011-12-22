@@ -54,6 +54,7 @@ $moufManager->setPackagesByXmlFile(array (
   28 => 'html/widgets/scripttagwidget/1.0/package.xml',
   29 => 'html/template/MoufTemplate/1.0/package.xml',
   30 => 'html/template/menus/topribbonmenu/1.0/package.xml',
+  31 => 'javascript/syntaxhighlighter/3.0.83/package.xml',
 ));
 
 $moufManager->setPackagesByXmlFileInAdminScope(array (
@@ -1839,6 +1840,7 @@ $moufManager->addComponentInstances(array (
         4 => 'jquery-autogrow-1.2.2',
         5 => 'chooseInstancePopupJs',
         6 => 'htmlMenuTopRibbonHead',
+        7 => 'syntaxHighlighter',
       ),
       'left' => 
       array (
@@ -1854,6 +1856,14 @@ $moufManager->addComponentInstances(array (
     ),
     'fieldProperties' => 
     array (
+      'favIconUrl' => 
+      array (
+        'value' => 'plugins/html/template/MoufTemplate/1.0/images/favicon.png',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
       'logoImg' => 
       array (
         'value' => 'mouf/views/images/MoufLogo.png',
@@ -2351,6 +2361,61 @@ $moufManager->addComponentInstances(array (
     'setterBinds' => 
     array (
       'setLanguageDetection' => 'splashBrowserLanguageDetection',
+    ),
+  ),
+  'syntaxHighlighter' => 
+  array (
+    'class' => 'HtmlJSSyntaxHighlighter',
+    'external' => false,
+    'fieldProperties' => 
+    array (
+      'brushes' => 
+      array (
+        'value' => 
+        array (
+          'applescript' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushAppleScript.js',
+          'as3' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushAS3.js',
+          'bash' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushBash.js',
+          'coldfusion' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushColdFusion.js',
+          'cpp' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushCpp.js',
+          'csharp' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushCSharp.js',
+          'css' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushCss.js',
+          'delphi' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushDelphi.js',
+          'diff' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrush.js',
+          'erlang' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushErlang.js',
+          'groovy' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushGroovy.js',
+          'java' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushJava.js',
+          'javaFX' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrush.js',
+          'jscript' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js',
+          'javascript' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js',
+          'js' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushJScript.js',
+          'perl' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushPerl.js',
+          'php' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushPhp.js',
+          'plain' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushPlain.js',
+          'powershell' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushPowerShell.js',
+          'python' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushPython.js',
+          'ruby' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushRuby.js',
+          'sass' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushSass.js',
+          'scala' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushScala.js',
+          'sql' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushSql.js',
+          'vb' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushVb.js',
+          'xml' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushXml.js',
+          'html' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushXml.js',
+          'xhtml' => 'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shBrushXml.js',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'theme' => 
+      array (
+        'value' => 'plugins/javascript/syntaxhighlighter/3.0.83/styles/shCoreDefault.css',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
     ),
   ),
   'topRibbonMenuRenderer' => 
@@ -3289,6 +3354,13 @@ class MoufAdmin {
 	 */
 	 public static function getSplashTranslateService() {
 	 	return MoufManager::getMoufManager()->getInstance('splashTranslateService');
+	 }
+
+	/**
+	 * @return HtmlJSSyntaxHighlighter
+	 */
+	 public static function getSyntaxHighlighter() {
+	 	return MoufManager::getMoufManager()->getInstance('syntaxHighlighter');
 	 }
 
 	/**
