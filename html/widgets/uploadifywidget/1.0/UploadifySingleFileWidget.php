@@ -133,7 +133,10 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 				  "cancelImg" : "'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/cancel.png",
 				  "scriptData"    : {"uniqueId": "'.$uniqueId.'",
 									 "sessionName": "'.session_name().'",
-									 "sessionId": "'.session_id().'"},
+									 "sessionId": "'.session_id().'",
+										"path" : "'.$this->getUploadedFilePath().'",
+										"fileId" :"'.$this->fileId.'",
+										"instanceName" : "'.$thisInstanceName.'"},
 			';
 		if (!empty($this->fileExtensions)) {
 			echo '"fileExt"   : "'.plainstring_to_htmlprotected($this->fileExtensions).'",';

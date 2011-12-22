@@ -21,10 +21,13 @@ $uniqueId = $_POST['uniqueId'];
 
 //error_log(var_export($_SESSION, true));
 
-if (!isset($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId])) {
-	throw new Exception("Upload security exception.");
-}
-$sessArray = $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId];
+//if (!isset($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId])) {
+	//throw new Exception("Upload security exception.");
+//}
+$sessArray = array("path"=>$_POST['path'],
+					"fileId"=>$_POST['fileId'],
+					"instanceName"=>$_POST['instanceName']);
+// $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId];
 $targetFile = $sessArray["path"];
 
 
