@@ -72,24 +72,36 @@ class StaticImageDisplayer{
 	public $jpegQuality = 75;
 	
 	/**
+	 * The Quality that should be applied in case the original image is of PNG type (0 to 9).
+	 * @Property
+	 * @var int $pngQuality
+	 */
+	public $pngQuality = 6;
+	
+	/**
 	 * Output the image: 
 	 *   - original image is loaded by the $initialImageFilter, 
 	 *   - final image (given by the $imageSource) is outputed (and saved if it doesn't exist yet)
 	 * @throws Exception
 	 */
 	public function outputImage(){
+		//Prevent from acessing parent folders
 		if (strpos($this->sourceFileName, '..')) throw new Exception("Trying to access file in parent folders : '$sourceFileName'");
+		
+		//rebuild the original file pathe from the root image folder and the relative file's pathe
 		$originalFilePath = ROOT_PATH . $this->basePath . DIRECTORY_SEPARATOR . $this->sourceFileName;
 		if (!file_exists($originalFilePath)) throw new Exception("Original file doesn't exist : '$originalFilePath'");
 		$this->initialImageFilter->path = $originalFilePath;
 		
-		
-		$image_info = getimagesize($originalFilePath);
+		//Get the image after all effects have been applied
+		$moufImageResource = $this->imageSource->getResource();
+		$finalImage = $moufImageResource->resource;
+		$image_info = $moufImageResource->originInfo;
 		$image_type = $image_info[2];
 		
-		$finalImage = $this->imageSource->getResource();
-		
+		//Originakl file's relative pat is teh file's Key, so no need to check whether there is already an image with the same file name
 		$finalPath = ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $this->sourceFileName;
+		
 		
 		$created = true;
 		if (!file_exists($finalPath)){
@@ -106,7 +118,7 @@ class StaticImageDisplayer{
 			} elseif( $image_type == IMAGETYPE_GIF ) {
 				$created = imagegif($finalImage, $finalPath);
 			} elseif( $image_type == IMAGETYPE_PNG ) {
-				$created = imagepng($finalImage, $finalPath);
+				$created = imagepng($finalImage, $finalPath, $this->pngQuality);
 			}
 		}
 		
@@ -122,7 +134,6 @@ class StaticImageDisplayer{
 			header('Content-Type: image/jpeg');
 			imagepng($finalImage);
 		}
-		
 		imagedestroy($finalImage);
 	}
 	

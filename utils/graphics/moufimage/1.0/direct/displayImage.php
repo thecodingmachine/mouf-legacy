@@ -7,5 +7,4 @@ $sourceFileName = $_GET['url'];
 $imageDisplay = MoufManager::getMoufManager()->getInstance($diplayerInstance);
 
 $imageDisplay->sourceFileName = $sourceFileName;
-
 $imageDisplay->outputImage();

@@ -6,6 +6,7 @@
 	<logo>logo.png</logo>
 	<requires>
 		<require>MoufImageInterface.php</require>
+		<require>MoufImageResource.php</require>
 		<require>filters/MoufImageFromFile.php</require>
 		<require>filters/MoufImageResize.php</require>
 		<require>render/StaticImageDisplayer.php</require>

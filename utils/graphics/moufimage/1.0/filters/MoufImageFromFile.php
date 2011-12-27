@@ -14,11 +14,9 @@ class MoufImageFromFile implements MoufImageInterface{
 	 */
 	public $path;
 	
-	private $image = null;
-	
 	/**
 	 * Get the GD Image resource loaded
-	 * @return $image, the GD resource image
+	 * @return $resource : the MoufImageResource
 	 */
 	public function getResource(){
 		$image_info = getimagesize($this->path);
@@ -27,13 +25,18 @@ class MoufImageFromFile implements MoufImageInterface{
 		
 		$image_type = $image_info[2];
 		if( $image_type == IMAGETYPE_JPEG ) {
-			$this->image = imagecreatefromjpeg($this->path);
+			$image = imagecreatefromjpeg($this->path);
 		} elseif( $image_type == IMAGETYPE_GIF ) {
-			$this->image = imagecreatefromgif($this->path);
+			$image = imagecreatefromgif($this->path);
 		} elseif( $image_type == IMAGETYPE_PNG ) {
-			$this->image = imagecreatefrompng($this->path);
+			$image = imagecreatefrompng($this->path);
 		}
 		
-		return $this->image;
+		$imageResource = new MoufImageResource();
+		$imageResource->resource = $image;
+		$imageResource->originPath = $this->path;
+		$imageResource->originInfo = $image_info;
+		
+		return $imageResource;
 	}
 }
