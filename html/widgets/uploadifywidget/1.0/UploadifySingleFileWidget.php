@@ -126,17 +126,19 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 		$uniqueId = rand();
 		$thisInstanceName = MoufManager::getMoufManager()->findInstanceName($this);
 		
+		$scriptDataArray = array("uniqueId"=>$uniqueId,
+								"sessionName"=>session_name(),
+								"sessionId"=>session_id(),
+								"path" =>$this->getUploadedFilePath(),
+								"fileId" =>$this->fileId,
+								"instanceName" =>$thisInstanceName);
+		
 		echo '<script type="text/javascript">jQuery(function() {
 			jQuery( "#'.plainstring_to_htmlprotected($id).'" ).uploadify({
 				  "uploader"  : "'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/uploadify.swf",
 				  "script"    : "'.ROOT_URL.'plugins/html/widgets/uploadifywidget/'.$version.'/direct/upload.php?'.htmlspecialchars(session_name()."=".session_id()).'",
 				  "cancelImg" : "'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/cancel.png",
-				  "scriptData"    : {"uniqueId": "'.$uniqueId.'",
-									 "sessionName": "'.session_name().'",
-									 "sessionId": "'.session_id().'",
-										"path" : "'.$this->getUploadedFilePath().'",
-										"fileId" :"'.$this->fileId.'",
-										"instanceName" : "'.$thisInstanceName.'"},
+				  "scriptData"    : '.json_encode($scriptDataArray).',
 			';
 		if (!empty($this->fileExtensions)) {
 			echo '"fileExt"   : "'.plainstring_to_htmlprotected($this->fileExtensions).'",';
