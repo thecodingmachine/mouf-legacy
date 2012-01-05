@@ -94,15 +94,16 @@ class Moufspector {
 				if ($found) {
 					$arr = array();
 					$arr["filename"] = $refClass->getFileName();
-					/*if ($refClass->hasAnnotation("Logo")) {
+					if ($refClass->hasAnnotation("Logo")) {
 						$logos = $refClass->getAnnotations("Logo");
 						if (count($logos)>1) {
 							throw new MoufException("Error. In class ".$className.", only one @Logo annotation is allowed.");
 						}
 						$logo = $logos[0];
 						// Since we did not import a LogoAnnotation class, the annotation is returned as a string.
-						$arr["logo"] = $logo;
-					}*/
+						// We expect the @Logo parameters to be passed as a JSON object (this can be a simple string)
+						$arr["logo"] = json_decode($logo);
+					}
 					$componentsList[$className] = $arr;
 					continue;
 				}
@@ -116,35 +117,10 @@ class Moufspector {
 	 * Returns the list of properties the class $className does contain. 
 	 *
 	 * @param MoufXmlReflectionClass $class
-	 * @return array An array containing MoufXmlReflectionProperty objects.
+	 * @return array<MoufPropertyDescriptor> An array containing MoufXmlReflectionProperty objects.
 	 */
 	public static function getPropertiesForClass(MoufXmlReflectionClass $refClass) {
-		//$refClass = new MoufReflectionClass($className);
-		
-		$propertiesList = array();
-		
-		foreach($refClass->getProperties() as $attribute) {
-			//$t = new stubReflectionProperty();
-			if ($attribute->hasAnnotation("Property")) {
-				$propertyDescriptor = new MoufPropertyDescriptor($attribute);
-				//$propertiesList[] = $attribute;
-				$propertiesList[] = $propertyDescriptor;
-			}
-		}
-		
-		foreach($refClass->getMethods() as $method) {
-			//$t = new stubReflectionProperty();
-			if ($method->hasAnnotation("Property")) {
-				$propertyDescriptor = new MoufPropertyDescriptor($method);
-				//$propertiesList[] = $attribute;
-				$propertiesList[] = $propertyDescriptor;
-			}
-		}
-		
-		// TODO: transform Property into a MoufProperty object (name + source (getter or public property) + type variable).
-		
-		
-		return $propertiesList;
+		return $refClass->getMoufProperties();
 	}
 	
 	/**

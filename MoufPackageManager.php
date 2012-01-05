@@ -642,12 +642,12 @@ class MoufPackageManager {
 			}
 			
 			// Ignore version control directories
-			if ($file == ".svn" || $file == ".cvs") {
+			if ($file == ".svn" || $file == ".cvs" || $file == ".git") {
 				continue;
 			}
 			
 			if (is_dir($file)) {
-				$this->recurseAddDir($zip, $currentDir."/".$file);
+				$this->recurseAddDir($zip, $file);
 			} else {
 				//echo "Adding ".$file."<br/>";
 				$result = $zip->addFile($file, $file);

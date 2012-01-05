@@ -129,6 +129,7 @@ class MoufManager {
 	 * $instanceDefinitionArray["setterBinds"] = array("setterName" => "instanceName");
 	 * $instanceDefinitionArray["comment"] = "string"
 	 * $instanceDefinitionArray["weak"] = true|false (if true, object can be garbage collected if not referenced)
+	 * $instanceDefinitionArray["anonymous"] = true|false (if true, object name should not be displayed. Object becomes "weak")
 	 * $instanceDefinitionArray["external"] = true|false
 	 * 
 	 * $property["type"] = "string|config|request|session";
@@ -328,6 +329,7 @@ class MoufManager {
 	 * @param string $instanceName
 	 */
 	public function removeComponent($instanceName) {
+		unset($this->instanceDescriptors[$instanceName]);
 		unset($this->declaredInstances[$instanceName]);
 		foreach ($this->declaredInstances as $declaredInstanceName=>$declaredInstance) {
 			if (isset($declaredInstance["fieldBinds"])) {
@@ -876,7 +878,6 @@ class ".$this->mainClassName." {
 		fclose($fp);
 		
 		// Analyze includes to manage autoloadable files.
-		// TODO: change the detection of the $selfEdit mode. We should have a "scope" notion.
 		$selfEdit = ($this->scope == MoufManager::SCOPE_ADMIN); 
 		$analyzeResults = MoufReflectionProxy::analyzeIncludes($selfEdit);
 
@@ -899,7 +900,7 @@ class ".$this->mainClassName." {
 					$autoloadableFiles[$file] = false;
 			}
 		
-			// Check the configuration of package, it s possible some require must never or force autoload
+			// Check the configuration of package, it is possible some require must never or force autoload
 			foreach ($this->packagesList as $fileName) {
 				$package = $packageManager->getPackage($fileName);
 				$packagePath = $this->pathToMouf."../plugins/".$package->getPackageDirectory().'/';
@@ -975,6 +976,13 @@ class ".$this->mainClassName." {
 				}
 			}
 		}
+		
+		// Finally, let's add Mouf classes to the list of autoloadable classes:
+		$classesFiles['MoufInstanceDescriptor']='mouf/MoufInstanceDescriptor.php';
+		$classesFiles['MoufInstancePropertyDescriptor']='mouf/MoufInstancePropertyDescriptor.php';
+		$classesFiles['MoufPropertyDescriptor']='mouf/MoufPropertyDescriptor.php';
+		$classesFiles['varAnnotation']='mouf/annotations/varAnnotation.php';
+		$classesFiles['paramAnnotation']='mouf/annotations/paramAnnotation.php';
 		
 		// Now, let's write the MoufRequire file that contains all the "require_once" stuff.
 		$fp2 = fopen(dirname(__FILE__)."/".$this->requireFileName, "w");
@@ -1853,5 +1861,114 @@ class ".$this->mainClassName." {
 		$this->declaredInstances[$instanceName]['weak'] = $weak;
 	}
 	
+	
+	/**
+	 * Returns true if the instance is anonymous
+	 *
+	 * @param string $instanceName
+	 * @return bool
+	 */
+	public function isInstanceAnonymous($instanceName) {
+		if (isset($this->declaredInstances[$instanceName]['anonymous'])) {
+			return $this->declaredInstances[$instanceName]['anonymous'];
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Decides whether an instance is anonymous or not.
+	 * @param string $instanceName
+	 * @param bool $anonymous
+	 */
+	public function setInstanceAnonymousness($instanceName, $anonymous) {
+		if ($anonymous) {
+			$this->declaredInstances[$instanceName]['anonymous'] = true;
+			// An anonymous object must be weak.
+			$this->declaredInstances[$instanceName]['weak'] = true;
+		} else {
+			unset($this->declaredInstances[$instanceName]['anonymous']);
+		}
+	}
+	
+	/**
+	 * Returns an "anonymous" name for an instance.
+	 * "anonymous" names start with "__anonymous__" and is followed by a number.
+	 * This function will return a name that is not already used.
+	 * 
+	 * @return string
+	 */
+	public function getFreeAnonymousName() {
+		
+		$i=0;
+		do {
+			$anonName = "__anonymous__".$i;
+			if (!isset($this->declaredInstances[$anonName])) {
+				break;
+			}
+			$i++;
+		} while (true);
+		
+		return $anonName;
+	}
+	
+	/**
+	 * An array of instanciated MoufInstanceDescriptor objects.
+	 * These descriptors are created by getInstanceDescriptor or createInstance function.
+	 * 
+	 * @var array<string, MoufInstanceDescriptor>
+	 */
+	private $instanceDescriptors;
+	
+	/**
+	 * Returns an object describing the instance whose name is $name.
+	 * 
+	 * @param string $name
+	 * @return MoufInstanceDescriptor
+	 */
+	public function getInstanceDescriptor($name) {
+		if (isset($this->instanceDescriptors[$name])) {
+			return $this->instanceDescriptors[$name];
+		} elseif (isset($this->declaredInstances[$name])) {
+			return new MoufInstanceDescriptor($this, $name);
+		} else {
+			throw new MoufException("Instance '".$name."' does not exist.");
+		}
+	}
+	
+	/**
+	 * Creates a new instance and returns the instance descriptor.
+	 * @param string $className The name of the class of the instance.
+	 * @param int $mode Depending on the mode, the behaviour will be different if an instance with the same name already exists.
+	 * @return MoufInstanceDescriptor
+	 */
+	public function createInstance($className, $mode = self::DECLARE_ON_EXIST_EXCEPTION) {
+		$name = $this->getFreeAnonymousName();
+		$this->declareComponent($name, $className, false, $mode);
+		$this->setInstanceAnonymousness($name, true);
+		return $this->getInstanceDescriptor($name);
+	}
+	
+	/**
+	 * A list of descriptors.
+	 * 
+	 * @var array<string, MoufXmlReflectionClass>
+	 */
+	private $classDescriptors = array();
+	
+	/**
+	 * Returns an object describing the class passed in parameter.
+	 * The class must be included by Mouf (using the "include PHP files" features, or be part of an enabled package)
+	 * This method should only be called in the context of the Mouf administration UI.
+	 *   
+	 * @param string $className The name of the class to import
+	 * @return MoufXmlReflectionClass
+	 */
+	public function getClassDescriptor($className) {
+		if (!isset($this->classDescriptors[$className])) {
+			$this->classDescriptors[$className] = MoufReflectionProxy::getClass($className, $this->getScope() == self::SCOPE_ADMIN);
+		}
+		return $this->classDescriptors[$className];
+	}
 }
 ?>

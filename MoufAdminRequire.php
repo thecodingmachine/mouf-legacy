@@ -141,6 +141,11 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'MoufSearchable' => 'mouf/MoufSearchable.php',
   'MoufActionProviderInterface' => 'mouf/actions/MoufActionProvider.php',
   'MoufActionResultInteface' => 'mouf/actions/MoufActionResultInterface.php',
+  'MoufInstanceDescriptor' => 'mouf/MoufInstanceDescriptor.php',
+  'MoufInstancePropertyDescriptor' => 'mouf/MoufInstancePropertyDescriptor.php',
+  'MoufPropertyDescriptor' => 'mouf/MoufPropertyDescriptor.php',
+  'varAnnotation' => 'mouf/annotations/varAnnotation.php',
+  'paramAnnotation' => 'mouf/annotations/paramAnnotation.php',
 ));
 spl_autoload_register(array(MoufManager::getMoufManager(), "autoload"));
 // Packages dependencies

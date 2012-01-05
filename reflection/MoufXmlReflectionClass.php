@@ -217,6 +217,62 @@ class MoufXmlReflectionClass {
     }
 
     /**
+     * The list of Mouf properties this class contains.
+     * This is initialized by a call to getMoufProperties()
+     * 
+     * @var array<MoufPropertyDescriptor> An array containing MoufXmlReflectionProperty objects.
+     */
+    private $moufProperties = null;
+    
+    /**
+     * Returns a list of properties that have the @Property annotation (and a list of setter that have the @Property annotation) 
+     * 
+     * @return array<string, MoufPropertyDescriptor> An array containing MoufXmlReflectionProperty objects.
+     */
+    public function getMoufProperties() {
+    	if ($this->moufProperties === null) {
+    		$this->moufProperties = array();
+    		 
+    		foreach($this->getProperties() as $attribute) {
+    			/* @var $attribute MoufXmlReflectionProperty */
+    			if ($attribute->hasAnnotation("Property")) {
+    				$propertyDescriptor = new MoufPropertyDescriptor($attribute);
+    				//$this->moufProperties[] = $attribute;
+    				$this->moufProperties[$attribute->getName()] = $propertyDescriptor;
+    			}
+    		}
+    		 
+    		foreach($this->getMethods() as $method) {
+    			/* @var $attribute MoufXmlReflectionProperty */
+    			if ($method->hasAnnotation("Property")) {
+    				$propertyDescriptor = new MoufPropertyDescriptor($method);
+    				//$this->moufProperties[] = $attribute;
+    				$this->moufProperties[$attribute->getName()] = $propertyDescriptor;
+    			}
+    		}
+    	}
+    	
+    	return $this->moufProperties;
+    }
+    
+    /**
+     * Returns the Mouf property whose name is $name
+     * The property name is the "name" of the public property, or the "setter function name" of the setter-based property.
+     * 
+     * @param string $name
+     * @return MoufPropertyDescriptor
+     */
+    public function getMoufProperty($name) {
+    	$moufProperties = $this->getMoufProperties();
+    	if (isset($moufProperties[$name])) {
+    		return $moufProperties[$name];
+    	} else {
+    		return null;
+    	}
+    	
+    }
+    
+    /**
      * returns a list of all properties which satify the given matcher
      *
      * @param   MoufPropertyMatcher            $propertyMatcher

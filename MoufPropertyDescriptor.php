@@ -254,5 +254,38 @@ class MoufPropertyDescriptor {
 		return $this->methodName;
 	}
 	
+	/**
+	 * Returns true if the type passed in parameter is primitive.
+	 * It will return false if this is an array or an object.
+	 * 
+	 * Accepted primitive types: string, char, bool, boolean, int, integer, double, float, real, mixed
+	 * 
+	 * @param string $type
+	 * @return bool
+	 */
+	private static function isPrimitiveTypeStatic($type) {
+ 		$lowerVarType = strtolower($type);
+		return in_array($lowerVarType, array('string', 'char', 'bool', 'boolean', 'int', 'integer', 'double', 'float', 'real', 'mixed'));
+	}
+	
+	/**
+	 * Returns true of the type of the property is a primitive type.
+	 * 
+	 * Accepted primitive types: string, char, bool, boolean, int, integer, double, float, real, mixed
+	 * @return bool
+	 */
+	public function isPrimitiveType() {
+		return self::isPrimitiveTypeStatic($this->getType());
+	}
+	
+	/**
+	 * Returns true of the type of the property is an array of primitive types.
+	 *
+	 * Accepted primitive types: string, char, bool, boolean, int, integer, double, float, real, mixed
+	 * @return bool
+	 */
+	public function isArrayOfPrimitiveTypes() {
+		return self::isPrimitiveTypeStatic($this->getSubType());
+	}
 }
 ?>

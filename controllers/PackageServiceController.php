@@ -98,6 +98,14 @@ class PackageServiceController extends Controller {
 			$zipFilePath = $packageManager->compressPackage($package);
 		}
 		
+		
+		
+		// This is a zip file, not PHP
+		header('Content-type: application/zip');
+		// It will be called the name of the package
+		header('Content-Disposition: attachment; filename="'.$name.'-'.$version.'.zip"');
+		header('Content-Length: '.filesize($zipFilePath));
+		//header("application/octet-stream")
 		readfile($zipFilePath);
 	}
 }

@@ -93,4 +93,21 @@
     		<xsd:element name="file" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
     	</xsd:choice>
     </xsd:complexType>
+
+
+    <xsd:complexType name="Require">
+    	<xsd:simpleContent>
+    		<xsd:extension base="xsd:string">
+    			<xsd:attribute name="autoload">
+    				<xsd:simpleType>
+    					<xsd:restriction base="xsd:string">
+    						<xsd:enumeration value="auto"></xsd:enumeration>
+    						<xsd:enumeration value="never"></xsd:enumeration>
+    						<xsd:enumeration value="force"></xsd:enumeration>
+    					</xsd:restriction>
+    				</xsd:simpleType>
+    			</xsd:attribute>
+    		</xsd:extension>
+    	</xsd:simpleContent>
+    </xsd:complexType>
 </xsd:schema>
