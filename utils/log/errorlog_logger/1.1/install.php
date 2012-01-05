@@ -8,8 +8,14 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 // Let's create the instance
 $moufManager = MoufManager::getMoufManager();
 if (!$moufManager->instanceExists("errorLogLogger")) {
-	$moufManager->declareComponent("errorLogLogger", "ErrorLogLogger");
-	$moufManager->setParameter("errorLogLogger", "level", 4);
+	
+	$errorLogLogger = $moufManager->createInstance("ErrorLogLogger");
+	// Let's set a name for this instance (otherwise, it would be anonymous)
+	$errorLogLogger->setName("errorLogLogger");
+	$errorLogLogger->getProperty("level")->setValue(4);
+	
+	/*$moufManager->declareComponent("errorLogLogger", "ErrorLogLogger");
+	$moufManager->setParameter("errorLogLogger", "level", 4);*/
 }
 
 // Let's rewrite the MoufComponents.php file to save the component

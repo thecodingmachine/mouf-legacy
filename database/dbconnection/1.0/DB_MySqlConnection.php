@@ -6,6 +6,7 @@ require_once('Mouf_DBConnection.php');
  *
  * @Component
  * // @ExtendedAction {"name":"Edit", "url":"mouf/mysqlconnectionedit/", "default":true}
+ * @Logo "mylogo.png"
  */
 class DB_MySqlConnection extends Mouf_DBConnection {
 	

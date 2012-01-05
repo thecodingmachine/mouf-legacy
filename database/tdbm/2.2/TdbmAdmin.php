@@ -9,4 +9,5 @@ MoufManager::getMoufManager()->bindComponents('tdbmadmin', 'template', 'moufTemp
 
 MoufManager::getMoufManager()->declareComponent('tdbminstall', 'TdbmInstallController', true);
 MoufManager::getMoufManager()->bindComponents('tdbminstall', 'template', 'installTemplate');
+
 ?>
