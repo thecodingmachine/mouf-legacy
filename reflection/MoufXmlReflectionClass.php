@@ -247,7 +247,7 @@ class MoufXmlReflectionClass {
     			if ($method->hasAnnotation("Property")) {
     				$propertyDescriptor = new MoufPropertyDescriptor($method);
     				//$this->moufProperties[] = $attribute;
-    				$this->moufProperties[$attribute->getName()] = $propertyDescriptor;
+    				$this->moufProperties[$method->getName()] = $propertyDescriptor;
     			}
     		}
     	}
