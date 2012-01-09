@@ -53,6 +53,14 @@ class SimpleMailService implements MailServiceInterface {
 	 */
 	public function send(MailInterface $mail) {
 		$to = "nguyenket@gmail.com";
+		$text = $mail->getBodyText();
+		$html = $mail->getBodyHtml();
+		
+		if (empty($text)){
+			$text = html_entity_decode($html, ENT_COMPAT, "UTF-8");
+		}if (empty($html)){
+			$html = htmlentities($text, ENT_COMPAT, "UTF-8");
+		}
 		
 		$from = $this->fromString." <".$this->fromAddress.">";
 		
@@ -74,13 +82,13 @@ class SimpleMailService implements MailServiceInterface {
 		$message .= "Content-Type: text/plain\n";
 		$message .= "charset=\"utf-8\"\n";
 		$message .= "Content-Transfer-Encoding: 8bit\n\n";
-		$message .= "bibobobo";
+		$message .= $text;
 		
 		$message .= "\n\n--".$limite."\n";
 		$message .= "Content-Type: text/html; ";
 		$message .= "charset=\"iso-8859-1\"; ";
 		$message .= "Content-Transfer-Encoding: 8bit;\n\n";
-		$message .= "bibibi";
+		$message .= $html;
 		
 		$message .= "\n--".$limite."--";
 		mail($to, $mail->getTitle(), $message, $header);
