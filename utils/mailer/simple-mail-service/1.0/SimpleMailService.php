@@ -89,8 +89,8 @@ class SimpleMailService implements MailServiceInterface {
 		$header .= "Date: ".date("D, j M Y G:i:s O")."\n";
 		$header .= "MIME-Version: 1.0\n";
 		$header .= "Content-Type: multipart/alternative; boundary=\"".$limite."\"";
-		$header .= "Cc: $cc" . "\r\n";
-		$header .= "Bcc: $bcc" . "\r\n";
+		$addheader = "Cc: $cc" . "\r\n";
+		$addheader .= "Bcc: $bcc" . "\r\n";
 		
 		$message = "";
 		
@@ -107,7 +107,7 @@ class SimpleMailService implements MailServiceInterface {
 		$message .= $html;
 		
 		$message .= "\n--".$limite."--";
-		mail($to, $mail->getTitle(), $message, $header);
+		mail($to, $mail->getTitle(), $message, $header, $addheader);
 	}
 	
 }
