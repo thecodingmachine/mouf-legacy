@@ -60,12 +60,14 @@ class SimpleMailService implements MailServiceInterface {
 		foreach ($mail->getCcRecipients() as $recipient) {
 			$recipientMailsCC[] = $recipient->getMail();
 		}
-		$cc = implode(", ", $recipientMailsCC);
+		if(!empty($recipientMailsCC))
+			$cc = implode(", ", $recipientMailsCC);
 		
 		foreach ($mail->getBccRecipients() as $recipient) {
 			$recipientMailsBCC[] = $recipient->getMail();
 		}
-		$bcc = implode(", ", $recipientMailsBCC);
+		if(!empty($recipientMailsBCC))
+			$bcc = implode(", ", $recipientMailsBCC);
 		
 		$text = $mail->getBodyText();
 		$html = $mail->getBodyHtml();
@@ -89,8 +91,11 @@ class SimpleMailService implements MailServiceInterface {
 		$header .= "Date: ".date("D, j M Y G:i:s O")."\n";
 		$header .= "MIME-Version: 1.0\n";
 		$header .= "Content-Type: multipart/alternative; boundary=\"".$limite."\"";
-		$addheader = "Cc: $cc" . "\r\n";
-		$addheader .= "Bcc: $bcc" . "\r\n";
+		$addheader = null;
+		if(!empty($cc))
+			$addheader = "Cc: $cc" . "\r\n";
+		if(!empty($bcc))
+			$addheader .= "Bcc: $bcc" . "\r\n";
 		
 		$message = "";
 		
