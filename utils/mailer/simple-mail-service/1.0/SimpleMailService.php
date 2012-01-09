@@ -36,6 +36,15 @@ class SimpleMailService implements MailServiceInterface {
 	 */
 	public $fromAddress;
 	
+	/**
+	 * The domain name.
+	 *
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $domainName;
+	
 	
 	/**
 	 * Sends the mail passed in parameter.
@@ -43,23 +52,38 @@ class SimpleMailService implements MailServiceInterface {
 	 * @param MailInterface $mail The mail to send.
 	 */
 	public function send(MailInterface $mail) {
-		$boundary = "nextPart";
-
-		$headers = "MIME-Version: 1.0\r\n";
-		$headers .= "From: $fromString <$fromAddress>\r\n";
-		$headers .= "Content-Type: multipart/alternative; boundary = $boundary\r\n";
+		$to = "nguyenket@gmail.com";
 		
-		//text version
-		$headers .= "\n--$boundary\n"; // beginning \n added to separate previous content
-		$headers .= "Content-type: text/plain; charset=utf-8\r\n";
-		$headers .= "This is the plain version";
+		$from = $this->fromString." <".$this->fromAddress.">";
 		
-		//html version
-		$headers .= "\n--$boundary\n";
-		$headers .= "Content-type: text/html; charset=utf-8\r\n";
-		$headers .= "This is the <b>HTML</b> version";
-
-		return mail("nguyenket@gmail.com", $mail->getTitle(), "", $headers);
+		$limite = "_----------=_parties_".md5(uniqid (rand()));
+		
+		$header  = "Reply-to: ".$from."\n";
+		$header .= "From: ".$from."\n";
+		$header .= "X-Sender: <".$this->domainName.">\n";
+		$header .= "X-Mailer: PHP\n";
+		$header .= "X-auth-smtp-user: ".$from." \n";
+		$header .= "X-abuse-contact: ".$from." \n";
+		$header .= "Date: ".date("D, j M Y G:i:s O")."\n";
+		$header .= "MIME-Version: 1.0\n";
+		$header .= "Content-Type: multipart/alternative; boundary=\"".$limite."\"";
+		
+		$message = "";
+		
+		$message .= "--".$limite."\n";
+		$message .= "Content-Type: text/plain\n";
+		$message .= "charset=\"utf-8\"\n";
+		$message .= "Content-Transfer-Encoding: 8bit\n\n";
+		$message .= $mail->getBodyText();
+		
+		$message .= "\n\n--".$limite."\n";
+		$message .= "Content-Type: text/html; ";
+		$message .= "charset=\"iso-8859-1\"; ";
+		$message .= "Content-Transfer-Encoding: 8bit;\n\n";
+		$message .= $mail->getBodyHtml();
+		
+		$message .= "\n--".$limite."--";
+		mail($to, $mail->getTitle(), $message, $header);
 	}
 	
 }
