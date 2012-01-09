@@ -52,7 +52,10 @@ class SimpleMailService implements MailServiceInterface {
 	 * @param MailInterface $mail The mail to send.
 	 */
 	public function send(MailInterface $mail) {
-		$to = "nguyenket@gmail.com";
+		foreach ($mail->getToRecipients() as $recipient) {
+			$recipientMails[] = $recipient->getMail();
+		}
+		$to = implode(", ", $recipientMails);
 		$text = $mail->getBodyText();
 		$html = $mail->getBodyHtml();
 		
