@@ -56,6 +56,17 @@ class SimpleMailService implements MailServiceInterface {
 			$recipientMails[] = $recipient->getMail();
 		}
 		$to = implode(", ", $recipientMails);
+		
+		foreach ($mail->getCcRecipients() as $recipient) {
+			$recipientMailsCC[] = $recipient->getMail();
+		}
+		$cc = implode(", ", $recipientMailsCC);
+		
+		foreach ($mail->getBccRecipients() as $recipient) {
+			$recipientMailsBCC[] = $recipient->getMail();
+		}
+		$bcc = implode(", ", $recipientMailsBCC);
+		
 		$text = $mail->getBodyText();
 		$html = $mail->getBodyHtml();
 		
@@ -78,6 +89,8 @@ class SimpleMailService implements MailServiceInterface {
 		$header .= "Date: ".date("D, j M Y G:i:s O")."\n";
 		$header .= "MIME-Version: 1.0\n";
 		$header .= "Content-Type: multipart/alternative; boundary=\"".$limite."\"";
+		$header .= "Cc: $cc" . "\r\n";
+		$header .= "Bcc: $bcc" . "\r\n";
 		
 		$message = "";
 		
