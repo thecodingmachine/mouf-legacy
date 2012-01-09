@@ -13,12 +13,12 @@
 		<dependency>
 			<group>security</group>
 			<name>userservice</name>
-			<version>1.0</version>
+			<version>>=1.0</version>
 		</dependency>
 		<dependency>
 			<group>utils/common</group>
 			<name>conditioninterface</name>
-			<version>1.0</version>
+			<version>>=1.0</version>
 		</dependency>
 	</dependencies>
 	<requires>

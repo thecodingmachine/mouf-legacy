@@ -14,7 +14,7 @@
 		<dependency>
 			<group>utils/common</group>
 			<name>getvars</name>
-			<version>1.0</version>
+			<version>>=1.0</version>
 		</dependency>
 	</dependencies>
 	<requires>
