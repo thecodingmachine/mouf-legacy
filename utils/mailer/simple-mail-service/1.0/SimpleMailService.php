@@ -74,13 +74,13 @@ class SimpleMailService implements MailServiceInterface {
 		$message .= "Content-Type: text/plain\n";
 		$message .= "charset=\"utf-8\"\n";
 		$message .= "Content-Transfer-Encoding: 8bit\n\n";
-		$message .= $mail->getBodyText();
+		$message .= "bibobobo";
 		
 		$message .= "\n\n--".$limite."\n";
 		$message .= "Content-Type: text/html; ";
 		$message .= "charset=\"iso-8859-1\"; ";
 		$message .= "Content-Transfer-Encoding: 8bit;\n\n";
-		$message .= $mail->getBodyHtml();
+		$message .= "bibibi";
 		
 		$message .= "\n--".$limite."--";
 		mail($to, $mail->getTitle(), $message, $header);
