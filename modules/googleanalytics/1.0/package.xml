@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Google Analytics Integration Module</displayName>
+	<shortDescription>This module is used to add Google Analytics integration javascript into your web site.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html</group>
+			<name>htmlelement</name>
+			<version>>=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>GoogleAnalyticsScript.php</require>
+	</requires>
+</package>
