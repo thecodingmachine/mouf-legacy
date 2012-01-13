@@ -29,10 +29,7 @@ $sessArray = array("path"=>$_POST['path'],
 					"instanceName"=>$_POST['instanceName']);
 // $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId];
 $targetFile = $sessArray["path"];
-error_log(var_export($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId],true));
-error_log(var_export($sessArray,true));
 $diff = array_diff($sessArray, $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId]);
-error_log(count($diff));
 if(count($diff)){
 	$returnArray['status'] = 'error';
 	echo json_encode($returnArray);
