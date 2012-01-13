@@ -29,10 +29,23 @@ $sessArray = array("path"=>$_POST['path'],
 					"instanceName"=>$_POST['instanceName']);
 // $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId];
 $targetFile = $sessArray["path"];
-
+error_log(var_export($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId],true));
+error_log(var_export($sessArray,true));
+$diff = array_diff($sessArray, $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId]);
+error_log(count($diff));
+if(count($diff)){
+	$returnArray['status'] = 'error';
+	echo json_encode($returnArray);
+	exit;
+}
 
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
+	if($_FILES['Filedata']['error']!==UPLOAD_ERR_OK){
+		$returnArray['status'] = 'error';
+		echo json_encode($returnArray);
+		exit;
+	}
 	$uploadedFileName = $_FILES['Filedata']['name'];
 	
 	// $fileTypes  = str_replace('*.','',$_REQUEST['fileext']);
