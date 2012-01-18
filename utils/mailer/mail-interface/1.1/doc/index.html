@@ -1,0 +1,67 @@
+<h1>Mouf Mail system</h1>
+
+<p>The Mouf framework is only an IOC framework. As such, it does not provide any means for managing any kind of cache. Hopefully,
+the Mouf team provides also a range of packages to manage sending mails.</p>
+
+<h2>The mail architecture</h2>
+
+<p>In Mouf, <em>emails</em> are sent using <em>MailServices</em>.<br/>
+Mouf provides 2 implementations of mail services. You can provide your own if you want.
+</p>
+
+<p>By default, Mouf provides these 2 implementations:</p>
+<ul>
+  <li><b>SmtpMailService</b>: a mail service that uses a SMTP server to send mails (this is a wrapper using the Zend_Mail library). It 
+  is available in the package <em>utils/mailer/smtp-mail-service</em>.</li>
+  <li><b>NullMailService</b>: a mail service that does not send any mails. This is useful to disable the sending of mails when developing an application. It 
+  is available in the package <em>utils/mailer/null-mail-service</em>.</li>
+</ul>
+
+<p>Each mail service must extend the <code>MailServiceInterface</code> interface that is part of the
+package utils/mailer/mail-interface.</p>
+
+<h2>The mail service interface</h2>
+
+<p>Each class implementing the <code>MailServiceInterface</code> provides one simple method to send mails:</p>
+<pre>
+interface MailServiceInterface {
+	
+	/**
+	 * Sends the mail passed in parameter.
+	 *
+	 * @param MailInterface $mail The mail to send.
+	 */
+	function send(MailInterface $mail);
+}
+</pre>
+
+<p>The mail passed in parameter must implement the <code>MailInterface</code> interface. Hopefully, Mouf provides a <code>Mail</code> class
+that does just that!</p>
+<p>
+For instance, to send a mail, you just need to write:
+</p>
+<pre>
+$mailService = Mouf::getSmtpMailService();
+
+$mail = new Mail();
+$mail->setBodyText("This is my mail!");
+$mail->setBodyHtml("This is my &lt;b&gt;mail&lt;/b&gt;!");
+$mail->setFrom(new MailAddress("my@server.com", "Server"));
+$mail->addToRecipient(new MailAddress("david@email.com", "David"));
+$mail->setTitle("My mail");
+
+$mailService->send($mail);
+</pre>
+<p>The code above assumes that you configured an instance in Mouf called "smtpMailService".</p>
+
+<p>The <code>MailInterface</code> interface supports:</p>
+<ul>
+  <li>Text/Html mails (<code>setBodyText</code> and <code>setBodyHtml</code> methods)</li>
+  <li>Multiple recipients (<code>addToRecipient</code> method)</li>
+  <li>Multiple Cc recipients (<code>addCcRecipient</code> method)</li>
+  <li>Multiple Bcc recipients (<code>addBccRecipient</code> method)</li>
+  <li>File attachments (<code>addAttachment</code> method)</li>
+</ul>
+
+<p>Mail addresses are passed as a <code>MailAddress</code> object, that contains 2 strings: the mail address and the alias.</p>
+

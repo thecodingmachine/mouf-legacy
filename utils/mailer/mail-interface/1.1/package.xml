@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Mail Interface</displayName>
+	<shortDescription>This package contains interfaces and classes describing mails. It also contains the MailerService interface that should be implemented by any service that can send mails. You should use a package implementing this interface (like the SmtpMailer package.</shortDescription>
+	<docUrl></docUrl>
+	<doc>
+		<page title="Introduction to Mouf's mail architecture" url="index.html" />
+	</doc>
+	<logo>logo.png</logo>
+	
+	<dependencies>
+		<dependency>
+			<group>html/utils</group>
+			<name>emogrifier</name>
+			<version>2011-10-26</version>
+		</dependency>
+	</dependencies>
+	
+	<requires>
+		<require>MailAttachmentInterface.php</require>
+		<require>MailAttachment.php</require>
+		<require>MailAddressInterface.php</require>
+		<require>MailAddress.php</require>
+		<require>MailInterface.php</require>
+		<require>Mail.php</require>
+		<require>MailServiceInterface.php</require>
+	</requires>
+	
+</package>
