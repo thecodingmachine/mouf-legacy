@@ -18,7 +18,7 @@
 		<dependency>
 			<group>utils/mailer</group>
 			<name>mail-interface</name>
-			<version>1.0</version>
+			<version>>=1.0</version>
 		</dependency>
 		<dependency>
 			<group>utils/log</group>
@@ -28,7 +28,7 @@
 		<dependency>
 			<group>framework</group>
 			<name>zend</name>
-			<version>1.8.4-patch1</version>
+			<version>>=1.8.4-patch1</version>
 		</dependency>
 	</dependencies>
 	<requires>
