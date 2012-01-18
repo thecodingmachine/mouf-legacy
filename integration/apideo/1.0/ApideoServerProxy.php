@@ -112,5 +112,68 @@ class ApideoServerProxy {
 		
 		return (string) $xmlRoot->serversidescript;
 	}
+	
+	/**
+	 * Executes a remote function, server-side, on Apideo servers.
+	 * 
+	 * 
+	 * @param string $apideoKey
+	 * @param string $securityPhrase
+	 * @param string $roomName
+	 * @param string $functionName
+	 * Note: you can pass additional arguments, they will be passed to the server-side function.
+	 */
+	public function execRemoteFunction($apideoKey, $securityPhrase, $roomName, $functionName) {
+		$url = $this->videoServerURL."execScript.do";
+		
+		// Note: the adminsecurityphrase is stored directly in the program below, and in the Java code on the videoserver side.
+		$params = array("apideokey"=>$apideoKey, "securityphrase"=>$securityPhrase, "roomname"=>$roomName, "function"=>$functionName);
+				
+		$fields_string = "";
+		foreach($params as $key=>$value) {
+			$fields_string  .= $key.'='.urlencode($value).'&';
+		}
+		
+		$functionArguments = func_get_args();
+		// Let's remove the 4 first arguments of the function
+		array_shift($functionArguments);
+		array_shift($functionArguments);
+		array_shift($functionArguments);
+		array_shift($functionArguments);
+		
+		foreach($functionArguments as $value) {
+			$fields_string  .= 'param[]='.urlencode($value).'&';
+		}
+		
+		rtrim($fields_string,'&');
+		
+		// preparation de l'envoi
+		$ch = curl_init();
+		
+		curl_setopt( $ch, CURLOPT_URL, $url);
+		
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
+		curl_setopt( $ch, CURLOPT_POST, TRUE );
+		curl_setopt( $ch, CURLOPT_POSTFIELDS, $fields_string );
+		
+		if( curl_error($ch) ) {
+			throw new ApideoServerProxyException("An error occured while executing remote function '".$functionName."' for Apideo key: ".$apideoKey.", room '".$roomName."': ".curl_error($ch));
+		}
+		
+		$response = curl_exec( $ch );
+		if( curl_error($ch) ) {
+			throw new ApideoServerProxyException("An error occured while executing remote function '".$functionName."' for Apideo key: ".$apideoKey.", room '".$roomName."': ".curl_error($ch));
+		}
+	
+		curl_close( $ch );
+		
+		$jsonObj = json_decode($response);
+		
+		if (json_last_error() != JSON_ERROR_NONE) {
+			throw new ApideoServerProxyException("An error occured while executing remote function '".$functionName."' for Apideo key: ".$apideoKey.", room '".$roomName."'. Response: ".$response);
+		} 
+		
+		return $jsonObj;
+	}
 }
 ?>
