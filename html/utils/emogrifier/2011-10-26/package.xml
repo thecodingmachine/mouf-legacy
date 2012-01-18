@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Emogrifier</displayName>
+	<shortDescription>Emogrifier is a PHP class that takes CSS and HTML in input, and gives some HTML with inline CSS in output.
+	You might want to merge CSS into HTML when sending mails, because some mail clients (namely Outlook 2007 and Gmail) do not
+	support the HTML style tag.</shortDescription>
+	<docUrl>http://www.pelagodesign.com/sidecar/emogrifier/</docUrl>
+	<logo>emogrifier.png</logo>
+	<requires>
+		<require>emogrifier.php</require>
+		<extension>DOM</extension>
+	</requires>
+</package>
