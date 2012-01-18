@@ -232,7 +232,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 		foreach ($this->upgradePackageList as $myScope=>$innerList) {
 			foreach ($innerList as $toUpgradePackage) {
 				/* @var $toUpgradePackage MoufPackage */
-				$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($toUpgradePackage, $this->upgradePackageList, myScope);
+				$toProposeUpgrade = $this->packageManager->getParentPackagesRequiringUpdate($toUpgradePackage, $this->upgradePackageList, $myScope);
 				$this->toProposeUpgradePackage = array_merge($this->toProposeUpgradePackage, $toProposeUpgrade);		
 			}
 		}
