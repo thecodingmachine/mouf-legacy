@@ -226,7 +226,7 @@ class MenuItem implements MenuItemInterface {
 		//var_dump(parse_url(ROOT_URL.$this->url));
 		
 		$requestUrl = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
-		error_log($_SERVER['REQUEST_URI'].' - '.$requestUrl.' - '.ROOT_URL.$this->url);
+		//error_log($_SERVER['REQUEST_URI'].' - '.$requestUrl.' - '.ROOT_URL.$this->url);
 		if($this->activateBasedOnUrl) {
 			if($_SERVER['REQUEST_URI'] == ROOT_URL.$this->url)
 				return true;
