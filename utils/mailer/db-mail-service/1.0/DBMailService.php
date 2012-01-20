@@ -53,9 +53,11 @@ class DBMailService implements MailServiceInterface {
 	 * @param MailInterface $mail The mail to send.
 	 */
 	public function send(MailInterface $mail) {
-		try {
+		// Transactions have been disabled. This is because we might want to send a mail as part of a wider
+		// transaction and that there is only one transaction allowed at a time. 
+		/*try {
 			$this->datasource->beginTransaction();
-			
+			*/
 			if ($mail instanceof DBMailInterface) {
 				$category = $mail->getCategory();
 				$type = $mail->getType();
@@ -93,9 +95,7 @@ class DBMailService implements MailServiceInterface {
 				$this->insertIntoOutgoingMailAddresses($mailId, $bccRecipient, 'bcc');
 			}
 			
-			$this->datasource->commit();
-		
-				
+					
 			// Let's log the mail:
 			$recipients = array_merge($mail->getToRecipients(), $mail->getCcRecipients(), $mail->getBccRecipients());
 			$recipientMails = array();
@@ -110,11 +110,16 @@ class DBMailService implements MailServiceInterface {
 				$this->forwardTo->send($mail);
 			}
 		
+		/*	$this->datasource->commit();
 		} catch (Exception $e) {
 			// Note: if an exception is thrown while logging or forwarding the mail, the database will be roll-backed
-			$this->datasource->rollback();
+			try {
+				$this->datasource->rollback();
+			} catch (Exception $e) {
+				// Ignore rollback error, we want to know what went wrong before.
+			}
 			throw $e;
-		}
+		}*/
 	}
 	
 	/**

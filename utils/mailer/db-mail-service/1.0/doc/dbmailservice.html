@@ -50,3 +50,16 @@ $mailService->send($mail);
 You just need to click on the <b>Utils</b> menu and click the <b>View outgoing mails</b> submenu.</p>
 
 <img src="outgoing_mails.png" alt="Mouf's DBMailService Outgoing Mails screenshot" />
+
+<p>As you can see in the screenshot, you can view the list of sent mails. A full-text search box will search
+the whole outgoing mails.</p>
+
+<h2>Forwarding mails</h2>
+
+<p>The DBMailService is very useful because it stores the mails in database.
+Obviously, you can use it for debugging purposes. However, most of the time, you will want
+to store the mail in database AND send it. For this, the DBMailService can <strong>forward</strong> the
+mail to another mail service. You just need to edit the Mouf's instance of the service and set the
+forward service:</p>
+
+<img src="dbmailservice_instance_forward.png" alt="Mouf's DBMailService instance" />
