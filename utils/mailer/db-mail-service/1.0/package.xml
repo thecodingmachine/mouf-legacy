@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>DB Mail Service</displayName>
+	<shortDescription>This package contains a mailer that does not send any mail! Instead, it stores the mail to
+	be sent in a database "mails" table. The DB mailer can later forward the mail to a real mailer that will indeed
+	send the mail.</shortDescription>
+	<docUrl></docUrl>
+	<doc>
+		<page title="Storing sent mails using the DB Mail Service" url="dbmailservice.html" />
+	</doc>	
+	<logo>logo.png</logo>
+	
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>mouf_helpers</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/mailer</group>
+			<name>mail-interface</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/mailer</group>
+			<name>mail-interface</name>
+			<version>>=1.0</version>
+			<scope>admin</scope>
+		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>errorlog_logger</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>dbconnection</name>
+			<version>>=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>DBMailInterface.php</require>
+		<require>DBMail.php</require>
+		<require>DBMailService.php</require>
+	</requires>
+	<adminRequires>
+		<require>controllers/DBMailServiceInstallController.php</require>
+		<require>controllers/DBMailServiceListController.php</require>
+		<require>DBMailInterface.php</require>
+		<require>DBMail.php</require>
+		<require>DBMailServiceAdmin.php</require>
+	</adminRequires>
+	<install>
+		<url>mouf/dbmailserviceinstall/</url>
+	</install>
+</package>

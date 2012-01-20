@@ -65,7 +65,7 @@ class Mail implements MailInterface {
 			$emogrifier = new Emogrifier($this->getBodyHtmlBeforeEmogrify(), $this->css);
 			$finalHtml = $emogrifier->emogrify();
 		} else {
-			$finalHtml = $this->getBodyHtmlBeforeEmogrify();;
+			$finalHtml = $this->getBodyHtmlBeforeEmogrify();
 		}
 		
 		return $finalHtml;
@@ -103,7 +103,7 @@ class Mail implements MailInterface {
 	/**
 	 * Returns the "From" email address
 	 *
-	 * @return MailInterface The first element is the email address, the second the name to display.
+	 * @return MailAddressInterface The first element is the email address, the second the name to display.
 	 */
 	public function getFrom() {
 		return $this->from;

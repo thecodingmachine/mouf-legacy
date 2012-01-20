@@ -1,0 +1,52 @@
+<h1>Mouf's DBMailService</h1>
+
+<h2>Storing outgoing mails</h2>
+
+<p>In Mouf, <em>emails</em> are sent using <em>MailServices</em>.<br/>
+This package contains a mailer that does not send any mail! Instead, it stores the mail to
+be sent in a database "mails" table. The DB mailer can later forward the mail to a real mailer that will indeed send the mail.
+</p>
+
+<p>Mails are stored in the <strong>outgoing_mails</strong> table while "from", "to", "cc" and "bcc" fields are stored in the 
+<strong>outgoing_mail_addresses</strong> table.</p>
+<p>The stored mails can later be viewed using the Mouf user interface and can also be accessed through
+methods of this class.</p>
+<p>If you pass an instance of <strong>DBMailInterface</strong> (instead of simply a MailInterface), you can add a category and a type
+to your mail. That could be used to sort sent mails later. The <strong>DBMail</strong> class is the default implementation of the <strong>DBMailInterface</strong>
+interface.</p>
+
+<h2>Installing DBMailService</h2>
+
+<p>There is an install process for this package. It will require to provide a valid <strong>DB_MySqlConnection</strong>. The install
+process will create 3 tables if they are not alreay there: <strong>outgoing_mails</strong>, <strong>outgoing_mail_addresses</strong> 
+and <strong>outgoing_mail_blacklist</strong>.</p>
+
+<h2>Usage sample</h2>
+
+<p>You use this service as you would use any MailService.</p>
+
+<p>
+For instance, to send a mail, you just need to write:
+</p>
+<pre class="brush:php">
+$mailService = Mouf::getDBMailService();
+
+$mail = new DBMail();
+$mail->setBodyText("This is my mail!");
+$mail->setBodyHtml("This is my &lt;b&gt;mail&lt;/b&gt;!");
+$mail->setFrom(new MailAddress("my@server.com", "Server"));
+$mail->addToRecipient(new MailAddress("david@email.com", "David"));
+$mail->setTitle("My mail");
+$mail->setCategory("My category");
+$mail->setType("My type");
+
+$mailService->send($mail);
+</pre>
+<p>The code above assumes that you configured an instance in Mouf called "dbMailService".</p>
+
+<h2>Accessing the sent mails database</h2>
+
+<p>You can access the sent mails database directly from the Mouf administration interface.
+You just need to click on the <b>Utils</b> menu and click the <b>View outgoing mails</b> submenu.</p>
+
+<img src="outgoing_mails.png" alt="Mouf's DBMailService Outgoing Mails screenshot" />

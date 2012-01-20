@@ -47,5 +47,16 @@ class MailAddress implements MailAddressInterface {
 		$this->setDisplayAs($displayAs);
 	}
 	
+	/**
+	 * Renders the mail address as Name <mail@example.com> if there is a diplay name, or simply as mail@example.com if there is no display name.
+	 * @return string
+	 */
+	public function __toString() {
+		if ($this->displayAs) {
+			return $this->displayAs.' <'.$this->mail.'>';
+		} else {
+			return $this->mail;
+		}
+	}
 }
 ?>

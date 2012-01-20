@@ -6,13 +6,18 @@ the Mouf team provides also a range of packages to manage sending mails.</p>
 <h2>The mail architecture</h2>
 
 <p>In Mouf, <em>emails</em> are sent using <em>MailServices</em>.<br/>
-Mouf provides 2 implementations of mail services. You can provide your own if you want.
+Mouf provides 4 implementations of mail services. You can provide your own if you want.
 </p>
 
-<p>By default, Mouf provides these 2 implementations:</p>
+<p>By default, Mouf provides these 4 implementations:</p>
 <ul>
   <li><b>SmtpMailService</b>: a mail service that uses a SMTP server to send mails (this is a wrapper using the Zend_Mail library). It 
   is available in the package <em>utils/mailer/smtp-mail-service</em>.</li>
+  <li><b>SimpleMailService</b>: a mail service that uses the PHP <code>mail</code> function to send mails. It 
+  is available in the package <em>utils/mailer/simple-mail-service</em>.</li>
+  <li><b>DBMailService</b>: a mail service that does not send any mails. Instead, it writes the mail in a MySQL database. It 
+  can forward the mail later to another mail service that will actually send the mail. This mail server is available in the 
+  package <em>utils/mailer/db-mail-service</em>.</li>
   <li><b>NullMailService</b>: a mail service that does not send any mails. This is useful to disable the sending of mails when developing an application. It 
   is available in the package <em>utils/mailer/null-mail-service</em>.</li>
 </ul>
@@ -23,7 +28,7 @@ package utils/mailer/mail-interface.</p>
 <h2>The mail service interface</h2>
 
 <p>Each class implementing the <code>MailServiceInterface</code> provides one simple method to send mails:</p>
-<pre>
+<pre class="brush:php">
 interface MailServiceInterface {
 	
 	/**
@@ -40,7 +45,7 @@ that does just that!</p>
 <p>
 For instance, to send a mail, you just need to write:
 </p>
-<pre>
+<pre class="brush:php">
 $mailService = Mouf::getSmtpMailService();
 
 $mail = new Mail();
