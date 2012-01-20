@@ -1,4 +1,11 @@
 <?php 
+if (!isset($_POST['sessionId'])) {
+	$returnArray['status'] = 'error';
+	$returnArray['msg'] = 'The posted file size exceed the post_max_size php.ini directive value';
+	echo json_encode($returnArray);
+	exit;
+}
+
 session_name($_POST['sessionName']);
 session_id($_POST['sessionId']);
 //setcookie($_POST['sessionName'], $_POST['sessionId']);
@@ -29,6 +36,12 @@ $sessArray = array("path"=>$_POST['path'],
 					"instanceName"=>$_POST['instanceName']);
 // $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId];
 $targetFile = $sessArray["path"];
+if(!is_array($_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId])){
+	$returnArray['status'] = 'error';
+	$returnArray['msg'] = 'session error';
+	echo json_encode($returnArray);
+	exit;
+}
 $diff = array_diff($sessArray, $_SESSION["mouf_uploadify_autorizeduploads"][$uniqueId]);
 if(count($diff)){
 	$returnArray['status'] = 'error';
@@ -40,6 +53,7 @@ if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
 	if($_FILES['Filedata']['error']!==UPLOAD_ERR_OK){
 		$returnArray['status'] = 'error';
+		$returnArray['msg'] = 'The file is not uploaded completely';
 		echo json_encode($returnArray);
 		exit;
 	}
