@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `outgoing_mail_addresses` (
 -- Contraintes pour la table `outgoing_mail_addresses`
 --
 ALTER TABLE `outgoing_mail_addresses`
-  ADD CONSTRAINT `outgoing_mail_addresses_ibfk_1` FOREIGN KEY (`outgoing_mail_id`) REFERENCES `outgoing_mail_addresses` (`id`);
+  ADD CONSTRAINT `outgoing_mail_addresses_ibfk_1` FOREIGN KEY (`outgoing_mail_id`) REFERENCES `outgoing_mails` (`id`);
   
   
 
