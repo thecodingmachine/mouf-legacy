@@ -41,5 +41,4 @@ interface DBMailInterface extends MailInterface {
 	 * @param int $dbId
 	 */
 	function setDbId($dbId);
-	
 }

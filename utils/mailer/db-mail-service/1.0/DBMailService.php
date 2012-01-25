@@ -47,6 +47,8 @@ class DBMailService implements MailServiceInterface {
 	 */
 	public $log;
 	
+	
+	
 	/**
 	 * Sends the mail passed in parameter to the database and eventually forwards the mail.
 	 *
@@ -213,7 +215,7 @@ class DBMailService implements MailServiceInterface {
 	 * Returns a DBMail object representing the mail.
 	 * 
 	 * @param int $mailId
-	 * @throws DBMailException
+	 * @throws DBMailServiceException
 	 * @return DBMail
 	 */
 	public function getMail($mailId) {
@@ -242,14 +244,14 @@ class DBMailService implements MailServiceInterface {
 	* Returns a DBMail object representing the mail from a SQL request that returns only one mail row.
 	*
 	* @param string $sql
-	* @throws DBMailException
+	* @throws DBMailServiceException
 	* @return DBMail
 	*/
 	private function getMailBySql($sql) {
 	
 		$mailsArr = $this->datasource->getAll($sql);
 		if (count($mailsArr) == 0) {
-			throw new DBMailException("Unable to find mail in database.");
+			throw new DBMailServiceException("Unable to find mail in database.");
 		}
 	
 		$mailArr = $mailsArr[0];

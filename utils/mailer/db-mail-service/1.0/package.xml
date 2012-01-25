@@ -42,6 +42,7 @@
 	<requires>
 		<require>DBMailInterface.php</require>
 		<require>DBMail.php</require>
+		<require>DBMailServiceException.php</require>
 		<require>DBMailService.php</require>
 	</requires>
 	<adminRequires>
