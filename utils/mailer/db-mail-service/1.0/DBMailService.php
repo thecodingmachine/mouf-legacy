@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Zend/Mail.php';
-require_once 'Zend/Mail/Transport/Smtp.php';
-
 /**
  * This class does not send mails; instead it stores the mails in database.<br/>
  * <br/>

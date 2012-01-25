@@ -25,12 +25,17 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	private $msg = null;
 	
 	/**
-	 * Set the path file of resources message. This file contain an array variable named $msg. The key is the code or message id, the value is translation.
-	 * example :
-	 * $msg["home.title"] = "Hello world";<br />
-	 * $msg["home.text"] = "News 1, news 2 and news 3";
+	 * The path to the directory storing the translations.
+	 * <p>The directory path should end with a "/".</p>
+	 * <p>Each file in this directory is a PHP file containing an array variable named $msg. The key is the code or message id, the value is translation.<br/>
+	 * Example :
+	 * </p>
+	 * <pre class="brush:php">$msg["home.title"] = "Hello world";<br />
+	 * $msg["home.text"] = "News 1, news 2 and news 3";</pre>
+	 * 
 	 * 
 	 * @Property
+	 * @Compulsory
 	 * @var string
 	 */
 	public $i18nMessagePath = "resources/";
@@ -43,7 +48,9 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	private $msg_edition_mode = null;
 	
 	/**
-	 * Save the object of LanguageDetectionInterface. This class retrieve the language code detected
+	 * The languageDetection object is used to define what language to use when performing translations.
+	 * <p>If no object is defined, an instance of BrowserLanguageDetection is used, which means
+	 * the language used will be the default language of the browser (this is a good default choice)</p>
 	 * 
 	 * @Property
 	 * @param LanguageDetectionInterface $languageDetection

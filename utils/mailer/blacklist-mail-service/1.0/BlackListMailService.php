@@ -1,8 +1,5 @@
 <?php
 
-require_once 'Zend/Mail.php';
-require_once 'Zend/Mail/Transport/Smtp.php';
-
 /**
  * This class does not send mails; Instead, it modifies	your mail to add a "unsubscribe this mailing list" link at the end of your mail,
  * then forwards your mail to a "real" mail service that will indeed send the mail. 

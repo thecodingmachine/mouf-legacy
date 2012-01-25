@@ -116,7 +116,9 @@ class BlackListMailServiceInstallController extends Controller  {
 				$languageTranslationInstanceDescriptor = $moufManager->createInstance("FinePHPArrayTranslationService");
 				$languageTranslationInstanceDescriptor->setName("blacklistTranslationService");
 				$languageTranslationInstanceDescriptor->getProperty("i18nMessagePath")->setValue("plugins/utils/mailer/blacklist-mail-service/1.0/resources/");
-				$languageTranslationInstanceDescriptor->getProperty("languageDetection")->setValue($moufManager->getInstanceDescriptor("defaultLanguageDetection"));
+				if ($moufManager->instanceExists("defaultLanguageDetection")) {
+					$languageTranslationInstanceDescriptor->getProperty("languageDetection")->setValue($moufManager->getInstanceDescriptor("defaultLanguageDetection"));
+				}
 				$instanceDescriptor->getProperty("languageTranslationService")->setValue($languageTranslationInstanceDescriptor);
 			}
 			$instanceDescriptor->getProperty("unsubscribeHtmlText")->setValue("blacklistmailservice.mail.htmltext");
