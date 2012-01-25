@@ -300,7 +300,7 @@ class MoufPackageManager {
 						
 						// Let's recurse
 						try {
-							$packageDependencies = $this->getRecursiveDependencies($myPackage, $scope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
+							$packageDependencies = $this->getRecursiveDependencies($myPackage, $dependencyRealScope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
 						} catch (Exception $ex) {
 							// If there is a problem, we try the next version.
 							$encounteredExceptions[] = $ex; 
@@ -342,7 +342,7 @@ class MoufPackageManager {
 										
 										// Let's recurse
 										try {
-											$packageDependencies = $this->getRecursiveDependencies($myPackage, $scope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
+											$packageDependencies = $this->getRecursiveDependencies($myPackage, $dependencyRealScope, $newPackageDependencies, /*$moufManager,*/ $orderedPackageList, $packageDownloadService, $upgradeList);
 										} catch (MoufIncompatiblePackageException $ex) {
 											// If there is a problem, we try the next version.
 											$encounteredExceptions[] = $ex; 

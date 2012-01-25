@@ -74,7 +74,6 @@ abstract class AbstractMoufInstanceController extends Controller {
 		$this->properties = Moufspector::getPropertiesForClass($this->reflectionClass);
 		$this->weak = $this->moufManager->isInstanceWeak($this->instanceName);
 		
-		
 		// Init the right menu:
 		$extendedActions = $this->reflectionClass->getAnnotations("ExtendedAction");
 		if (!empty($extendedActions)) {

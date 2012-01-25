@@ -204,7 +204,17 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 
 		// Let's get the list of all packages that will be upgraded in the process (requested by the user).
 		$this->upgradePackageList = array();
-		foreach ($upgradeList as $myScope => $upgradeInnerList) {
+		
+		// Let's start by admin scope, and then, let's go to the app scope.
+		$myUpgradeList = array();
+		if (isset($upgradeList['admin'])) {
+			$myUpgradeList['admin'] = $upgradeList['admin'];
+		}
+		if (isset($upgradeList['app'])) {
+			$myUpgradeList['app'] = $upgradeList['app'];
+		}
+		
+		foreach ($myUpgradeList as $myScope => $upgradeInnerList) {
 			foreach ($upgradeInnerList as $upgrade) {
 				if (isset($upgrade['origin']) && $upgrade['origin'] != "") {
 					// TODO: move $packageDownloadService as a property
@@ -275,7 +285,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 
 			
 			// Upgrading goes first (TODO: check this).
-			foreach ($upgradeList as $myScope=>$innerList) {
+			foreach ($myUpgradeList as $myScope=>$innerList) {
 				foreach ($innerList as $upgradeOrder) {
 					// special case: let's not make the upgrade if this is the main package to be installed (don't do it twice).
 					if ($upgradeOrder['group'] == $group && $upgradeOrder['name'] == $name && $upgradeOrder['version'] == $version) {
@@ -326,7 +336,16 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 				}
 			}
 			
-			foreach ($this->moufDependencies as $myScope=>$innerList) {
+			// Let's start by admin scope, and then, let's go to the app scope.
+			$moufDependencies = array();
+			if (isset($this->moufDependencies['admin'])) {
+				$moufDependencies['admin'] = $this->moufDependencies['admin'];
+			}
+			if (isset($this->moufDependencies['app'])) {
+				$moufDependencies['app'] = $this->moufDependencies['app'];
+			}
+			
+			foreach ($moufDependencies as $myScope=>$innerList) {
 				foreach ($innerList as $dependency) {
 					/* @var $dependency MoufPackage */
 					if ($dependency->getCurrentLocation() != null) {
@@ -368,7 +387,7 @@ class PackageController extends Controller implements DisplayPackageListInterfac
 			$url = ROOT_URL."mouf/packages/?selfedit=".$selfedit."&validation=enable";
 			$msg = "Packages successfully enabled: ";
 			$msgArr = array();
-			foreach ($this->moufDependencies as $myScope=>$innerList) {
+			foreach ($moufDependencies as $myScope=>$innerList) {
 				foreach ($innerList as $moufDependency) {
 					$url.= "&packageList[]=".$moufDependency->getDescriptor()->getPackageDirectory();
 					$msgArr[] = $moufDependency->getDescriptor()->getPackageDirectory();
