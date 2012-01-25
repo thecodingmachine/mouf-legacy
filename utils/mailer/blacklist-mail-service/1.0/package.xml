@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Blacklist Mail Service</displayName>
+	<shortDescription>This package contains a mailer that does not really send any mail! Instead, it modifies
+	your mail to add a "unsubscribe this mailing list" link at the end of your mail. This will allow
+	your users to unsubscribe from the mailing list. Any attempt to send a mail to this user later
+	will be rejected.</shortDescription>
+	<docUrl></docUrl>
+	<doc>
+		<page title="Storing sent mails using the DB Mail Service" url="dbmailservice.html" />
+	</doc>	
+	<logo>logo.png</logo>
+	
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>mouf_helpers</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/mailer</group>
+			<name>db-mail-service</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/mailer</group>
+			<name>mail-interface</name>
+			<version>>=1.0</version>
+			<scope>admin</scope>
+		</dependency>
+		<dependency>
+			<group>utils/log</group>
+			<name>errorlog_logger</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>dbconnection</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>html/template</group>
+			<name>BaseTemplate</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=2.1</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>BlackListMail.php</require>
+		<require>BlackListMailServiceException.php</require>
+		<require>BlackListMailService.php</require>
+	</requires>
+	<adminRequires>
+		<require>admin/controllers/BlackListMailServiceInstallController.php</require>
+		<require>admin/controllers/BlackListMailServiceListController.php</require>
+		<require>admin/BlackListMailServiceAdmin.php</require>
+	</adminRequires>
+	<install>
+		<url>mouf/blacklistmailserviceinstall/</url>
+	</install>
+</package>
