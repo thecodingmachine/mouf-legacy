@@ -14,12 +14,14 @@ class BlackListMail implements DBMailInterface {
 	private $htmlUnsubscribeLink;
 	private $textUnsubscribeLink;
 	private $needle;
+	private $uniqueKey;
 	
-	public function __construct(MailInterface $mail, $htmlUnsubscribeLink, $textUnsubscribeLink, $needle) {
+	public function __construct(MailInterface $mail, $htmlUnsubscribeLink, $textUnsubscribeLink, $needle, $uniqueKey = null) {
 		$this->mail = $mail;
 		$this->htmlUnsubscribeLink = $htmlUnsubscribeLink;
 		$this->textUnsubscribeLink = $textUnsubscribeLink;
 		$this->needle = $needle;
+		$this->uniqueKey = $uniqueKey;
 	}
 	
 	/**
@@ -73,9 +75,13 @@ class BlackListMail implements DBMailInterface {
 	 */
 	function getHashKey() {
 		if ($this->mail instanceof DBMailInterface) {
-			return $this->mail->getHashKey();
+			$hashKey = $this->mail->getHashKey();
+			if ($hashKey == null) {
+				return $this->uniqueKey;
+			}
+			return $hashKey; 
 		} else {
-			return null;
+			return $this->uniqueKey;
 		}
 	}
 	
@@ -97,7 +103,7 @@ class BlackListMail implements DBMailInterface {
 	*/
 	function getBodyText() {
 		$replaced = false;
-		$text = $this->getBodyText();
+		$text = $this->mail->getBodyText();
 		if ($this->needle) {
 			
 			if (strpos($text, $this->needle) !== false) {
@@ -119,7 +125,7 @@ class BlackListMail implements DBMailInterface {
 	 */
 	function getBodyHtml() {
 		$replaced = false;
-		$html = $this->getBodyHtml();
+		$html = $this->mail->getBodyHtml();
 		if ($html == null) {
 			return null;
 		}

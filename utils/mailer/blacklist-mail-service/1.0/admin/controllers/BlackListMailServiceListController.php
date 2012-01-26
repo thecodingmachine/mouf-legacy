@@ -42,9 +42,9 @@ class BlackListMailServiceListController extends Controller {
 		$this->fullTextSearch = $fullTextSearch;
 		$this->offset = $offset;
 		
-		$dbMailServiceProxy = MoufProxy::getInstance($instanceName, $selfedit=="true");
+		$blacklistMailServiceProxy = MoufProxy::getInstance($instanceName, $selfedit=="true");
 		/* @var $dbMailServiceProxy DBMailService */
-		$this->mailList = $dbMailServiceProxy->getMailsList("sent_date", "DESC", $offset, self::PAGE_SIZE, $fullTextSearch);
+		$this->mailList = $blacklistMailServiceProxy->getMailsBlackList("blacklist_date", "DESC", $offset, self::PAGE_SIZE, $fullTextSearch);
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../views/list.php", $this);
 		$this->template->draw();
@@ -61,34 +61,19 @@ class BlackListMailServiceListController extends Controller {
 	 * @Action
 	 * @Logged
 	 */
-	public function view($id, $instanceName, $fullTextSearch = null, $offset = 0, $selfedit="false") {
-		$this->instanceName = $instanceName;
-		$this->selfedit = $selfedit;
-		$this->fullTextSearch = $fullTextSearch;
-		$this->offset = $offset;
+	public function delete($mailaddress, $category, $type, $instanceName, $fullTextSearch = null, $offset = 0, $selfedit="false") {
 		
-		$dbMailServiceProxy = MoufProxy::getInstance($instanceName, $selfedit=="true");
-		/* @var $dbMailServiceProxy DBMailService */
-		$this->mail = $dbMailServiceProxy->getMail($id);
+		if (empty($category)) {
+			$category = null;
+		}
+		if (empty($type)) {
+			$type = null;
+		}
 		
-		$this->template->addContentFile(dirname(__FILE__)."/../views/view.php", $this);
-		$this->template->draw();
-	}
-	
-	/**
-	 * Admin page used to view the HTML body text (usually in an Iframe).
-	 *
-	 * @Action
-	 * @Logged
-	 */
-	public function getHtmlBody($id, $instanceName, $selfedit="false") {
-		$this->instanceName = $instanceName;
-		$this->selfedit = $selfedit;
-	
-		$dbMailServiceProxy = MoufProxy::getInstance($instanceName, $selfedit=="true");
-		/* @var $dbMailServiceProxy DBMailService */
-		$this->mail = $dbMailServiceProxy->getMail($id);
-	
-		include(dirname(__FILE__)."/../views/viewHtmlBody.php");
+		$blacklistMailServiceProxy = MoufProxy::getInstance($instanceName, $selfedit=="true");
+		/* @var $blacklistMailServiceProxy BlackListMailService */
+		$nbDeleted = $blacklistMailServiceProxy->cancelUnsubscribe($mailaddress, $category, $type);
+		
+		header("Location: .?instanceName=".plainstring_to_urlprotected($instanceName)."&selfedit=".plainstring_to_urlprotected($selfedit)."&fullTextSearch=".plainstring_to_urlprotected($fullTextSearch)."&offset=".plainstring_to_urlprotected($offset));
 	}
 }

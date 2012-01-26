@@ -69,7 +69,7 @@ class BlackListMailService implements MailServiceInterface {
 	 * @Property
 	 * @var string
 	 */
-	public $link = "plugins/utils/mailer/blacklist-mail-service/1.0/direct/unsubscribe.php?id=__UNSUBSCRIBE_LINK__";
+	public $link = "plugins/utils/mailer/blacklist-mail-service/1.0/direct/unsubscribeConfirmBlock.php?id=__UNIQUE_KEY__";
 	
 	/**
 	 * The host name for the server (plus the port if not 80).
@@ -120,19 +120,40 @@ class BlackListMailService implements MailServiceInterface {
 	 * Sends the mail passed in parameter to the database and eventually forwards the mail.
 	 *
 	 * @param MailInterface $mail The mail to send.
+	 * @return boolean Returns true if the mail was sent, and false if the mail was not sent because the user has unsubscribed.
 	 */
 	public function send(MailInterface $mail) {
 		
 		if ($mail instanceof DBMailInterface) {
 			$category = $mail->getCategory();
 			$type = $mail->getType();
+			$uniqueKey = $mail->getHashKey();
 		} else {
 			$category = null;
 			$type = null;
+			$uniqueKey = null;
+		}
+		
+		if ($uniqueKey == null) {
+			$uniqueKey = self::generateUniqueKey();
 		}
 		
 		// TODO: check if mail is blacklisted or not.
+		$toRecipients = $mail->getToRecipients();
 		
+		if (count($toRecipients) != 1) {
+			// If there is more than 1 recipient, let's just ignore the BlackListMailService
+			// It can only be applied when a mail has 1 and only 1 recipient.
+			$this->forwardTo->send($blackListMail);
+			return true;
+		}
+		/* @var $toRecipient MailAddressInterface */
+		$toRecipient = $toRecipients[0];
+		
+		// If the user is blacklisted, let's not send the mail.
+		if ($this->isBlackListed($toRecipient->getMail(), $category, $type)) {
+			return false;
+		}
 		
 		
 		$serverName = $this->serverName;
@@ -144,7 +165,7 @@ class BlackListMailService implements MailServiceInterface {
 		$link = $this->link;
 		$link = str_replace("__UNIQUE_KEY__", $uniqueKey, $link, $count);
 		if ($count == 0) {
-			throw new BlackListMailException("Error: the BlackListMailService is poorly configured. The \$link property should contain the __UNIQUE_KEY__ placeholder that will be used to insert the unique key of the mail.");
+			throw new BlackListMailServiceException("Error: the BlackListMailService is poorly configured. The \$link property should contain the __UNIQUE_KEY__ placeholder that will be used to insert the unique key of the mail.");
 		}
 		
 		if (strpos($link, "http://") !== 0 &&
@@ -153,7 +174,7 @@ class BlackListMailService implements MailServiceInterface {
 			if (strpos($link, "/") !== 0) {
 				$link = ROOT_URL.$link;
 			}
-			$link = $serverName.$link;
+			$link = "http://".$serverName.$link;
 		}
 		
 		if ($this->languageTranslationService) {
@@ -163,7 +184,7 @@ class BlackListMailService implements MailServiceInterface {
 		}
 		$unsubscribeHtmlText = str_replace("__UNSUBSCRIBE_LINK__", $link, $unsubscribeHtmlText, $count);
 		if ($count == 0) {
-			throw new BlackListMailException("Error: the BlackListMailService is poorly configured. The \$unsubscribeHtmlText property should contain the __UNIQUE_KEY__ placeholder that will be used to insert the unique key of the mail.");
+			throw new BlackListMailServiceException("Error: the BlackListMailService is poorly configured. The \$unsubscribeHtmlText property should contain the __UNIQUE_KEY__ placeholder that will be used to insert the unique key of the mail.");
 		}
 		
 		if ($this->languageTranslationService) {
@@ -179,7 +200,7 @@ class BlackListMailService implements MailServiceInterface {
 			$unsubscribeText .= "\n".$this->link;
 		}
 		
-		$blackListMail = new BlackListMail($mail, $htmlUnsubscribeLink, $textUnsubscribeLink, $needle);
+		$blackListMail = new BlackListMail($mail, $unsubscribeHtmlText, $unsubscribeText, $this->needle, $uniqueKey);
 		
 
 		if ($this->log) {
@@ -188,6 +209,22 @@ class BlackListMailService implements MailServiceInterface {
 		
 		$this->forwardTo->send($blackListMail);
 		return true;
+	}
+	
+	/**
+	 * Generates a unique key
+	 * @return string
+	 */
+	private static function generateUniqueKey() {
+		$length = 30;
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+		$string = '';
+		
+		for ($p = 0; $p < $length; $p++) {
+			$string .= $characters[mt_rand(0, strlen($characters)-1)];
+		}
+		
+		return $string;
 	}
 	
 	/**
@@ -230,7 +267,7 @@ class BlackListMailService implements MailServiceInterface {
 	 * @param string $category
 	 * @param string $type
 	 */
-	public function getMailsBlackList($sortby='', $sortorder = "ASC", $offset = 0, $limit = 100, $fullTextSearch = null, $title = null, $from = null, $to = null, $category = null, $type = null) {
+	public function getMailsBlackList($sortby='', $sortorder = "ASC", $offset = 0, $limit = 100, $fullTextSearch = null, $mailAddress = null, $category = null, $type = null) {
 		
 		$whereArr = array();
 		if ($category) {
@@ -239,23 +276,14 @@ class BlackListMailService implements MailServiceInterface {
 		if ($type) {
 			$whereArr[] = " mail_type LIKE ".$this->datasource->quoteSmart("%".$type."%");
 		}
-		if ($title) {
-			$whereArr[] = " title LIKE ".$this->datasource->quoteSmart("%".$title."%");
-		}
-		if ($from) {
-			$whereArr[] = " mfrom.mail_address LIKE ".$this->datasource->quoteSmart("%".$from."%");
-		}
-		// NOTE: only the filtered mail addresse will appear... not perfect
-		if ($to) {
-			$whereArr[] = " mto.mail_address LIKE ".$this->datasource->quoteSmart("%".$to."%");
+		if ($mailAddress) {
+			$whereArr[] = " mail_address LIKE ".$this->datasource->quoteSmart("%".$mailAddress."%");
 		}
 		if ($fullTextSearch) {
 			$whereArr[] = " category LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
 			$whereArr[] = " mail_type LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
-			$whereArr[] = " title LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
-			$whereArr[] = " mfrom.mail_address LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
-			$whereArr[] = " mto.mail_address LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
-			$whereArr[] = " sent_date LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
+			$whereArr[] = " mail_address LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
+			$whereArr[] = " blacklist_date LIKE ".$this->datasource->quoteSmart("%".$fullTextSearch."%");
 		}
 		
 		$where = "";
@@ -263,12 +291,9 @@ class BlackListMailService implements MailServiceInterface {
 			$where = " WHERE ".implode(" OR ", $whereArr);
 		}
 		
-		$sql = "SELECT om.id, `category`, `mail_type`, `title`, mfrom.mail_address AS frommail, GROUP_CONCAT(mto.mail_address) as tos, `sent_date` 
-			FROM `outgoing_mails` om 
-			LEFT JOIN `outgoing_mail_addresses` mfrom ON (om.id = mfrom.outgoing_mail_id AND mfrom.role='from')
-			LEFT JOIN `outgoing_mail_addresses` mto ON (om.id = mto.outgoing_mail_id AND mto.role<>'from')
+		$sql = "SELECT * 
+			FROM `outgoing_mail_blacklist` 
 			$where
-			GROUP BY mto.outgoing_mail_id
 			ORDER BY $sortby $sortorder";
 		// TODO: think about SQL injection in sortby and sortorder
 		
@@ -290,5 +315,74 @@ class BlackListMailService implements MailServiceInterface {
 		return $this->getMailBySql($sql);
 	}
 	
+	/**
+	 * Returns true if the mail address $mailAddress asked to be black listed.
+	 * You can optionnally pass a category and a mail type if you want to check for a category or a type.
+	 * In this case the function will return true if the user asked to be unsubscribed for this mailing list in particular, or for all mailing lists. 
+	 * 
+	 * @param string $mailAddress
+	 * @param string $category
+	 * @param string $type
+	 */
+	public function isBlackListed($mailAddress, $category = null, $type = null) {
+		$sql = "SELECT * FROM outgoing_mail_blacklist WHERE mail_address = ".$this->datasource->quoteSmart($mailAddress)." AND (category IS NULL";
+		if ($category) {
+			$sql .= " OR category = ".$this->datasource->quoteSmart($category);
+		}
+		$sql .= ") AND (mail_type IS NULL ";
+		if ($type) {
+			$sql .= " OR mail_type = ".$this->datasource->quoteSmart($type);
+		}
+		$sql .= ")";
+		
+		$mailsArr = $this->datasource->getAll($sql);
+		if (count($mailsArr) == 0) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Unsubscribes the mail address $mailAddress.
+	 * You can optionnally pass a category and a mail type if you want to unsubscribe only from a category or a type. 
+	 * 
+	 * @param string $mailAddress
+	 * @param string $category
+	 * @param string $type
+	 */
+	public function unsubscribe($mailAddress, $category = null, $type = null) {
+		$isAlreadyBlackListed = $this->isBlackListed($mailAddress, $category, $type);
+		if (!$isAlreadyBlackListed) {
+			$sql = "INSERT INTO outgoing_mail_blacklist (mail_address, category, mail_type) VALUES (".$this->datasource->quoteSmart($mailAddress).",
+					".$this->datasource->quoteSmart($category).", ".$this->datasource->quoteSmart($type).");";
+			
+			$this->datasource->exec($sql);
+		}
+	}
+	
+	/**
+	 * Removes the user from the blacklist.
+	 * 
+	 * @param string $mailAddress
+	 * @param string $category
+	 * @param string $type
+	 */
+	public function cancelUnsubscribe($mailAddress, $category = null, $type = null) {
+		$sql = "DELETE FROM outgoing_mail_blacklist WHERE mail_address = ".$this->datasource->quoteSmart($mailAddress)."
+					AND ";
+		if ($category) {
+			$sql .= "category = ".$this->datasource->quoteSmart($category)." ";
+		} else {
+			$sql .= "category IS NULL ";
+		}
+		$sql .= "AND ";
+		if ($type) {
+			$sql .= "mail_type = ".$this->datasource->quoteSmart($type)." ";
+		} else {
+			$sql .= "mail_type IS NULL ";
+		}
+
+		return $this->datasource->exec($sql);
+	}
 }
 ?>
