@@ -49,7 +49,7 @@ class DBMail extends Mail implements DBMailInterface {
 	 * Sets the type for the mail (stored in DB)
 	 *
 	 * @Property
-	 * @param string $category
+	 * @param string $type
 	 */
 	public function setType($type) {
 		$this->type = $type;
