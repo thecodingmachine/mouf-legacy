@@ -293,12 +293,14 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	public function loadAllMessages() {
 		$files = glob(ROOT_PATH.$this->i18nMessagePath.'message*.php');
 
+		$defaultFound = false;
 		foreach ($files as $file) {
 			$base = basename($file);
 			if ($base == "message.php") {
 				$messageFile = new FineMessageLanguage();
 				$messageFile->loadAllFile(ROOT_PATH.$this->i18nMessagePath);
 				$this->messages['default'] = $messageFile;
+				$defaultFound = true;
 			} else {
 				if(strpos($base, '_custom') === false) {
 					$phpPos = strpos($base, '.php');
@@ -308,6 +310,11 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 					$this->messages[$language] = $messageLanguage;
 				}
 			}
+		}
+		if (!$defaultFound) {
+			$messageFile = new FineMessageLanguage();
+			$messageFile->loadAllFile(ROOT_PATH.$this->i18nMessagePath);
+			$this->messages['default'] = $messageFile;
 		}
 	}
 

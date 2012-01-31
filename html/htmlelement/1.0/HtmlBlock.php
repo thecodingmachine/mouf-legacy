@@ -79,5 +79,18 @@ class HtmlBlock implements HtmlElementInterface {
 		}
 		
 	}
+	
+	/**
+	 * Exactly the same as toHtml except that HTML is returned instead of outputted.
+	 * 
+	 * @return string
+	 */
+	public function getHtml() {
+		ob_start();
+		$this->toHtml();
+		$content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
 }
 ?>

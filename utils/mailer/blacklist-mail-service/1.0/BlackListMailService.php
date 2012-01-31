@@ -138,7 +138,6 @@ class BlackListMailService implements MailServiceInterface {
 			$uniqueKey = self::generateUniqueKey();
 		}
 		
-		// TODO: check if mail is blacklisted or not.
 		$toRecipients = $mail->getToRecipients();
 		
 		if (count($toRecipients) != 1) {
