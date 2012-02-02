@@ -570,10 +570,10 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-	if ($this->transactionLevel == 1) {
-			$this->dbh->rollBack();
-			$this->transactionLevel--;
-	} elseif ($this->transactionLevel > 1) {
+		if ($this->transactionLevel == 1) {
+				$this->dbh->rollBack();
+				$this->transactionLevel--;
+		} elseif ($this->transactionLevel > 1) {
 			$this->dbh->exec("ROLLBACK TO moufDbConnection".$this->transactionLevel);
 			$this->transactionLevel--;
 		} else {
