@@ -35,13 +35,14 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	public $log;
 
 	/**
-	 * True if there is an active transaction (started with beginTransaction(), false otherwise).
+	 * Strictly positive if there is an active transaction (started with beginTransaction(), false otherwise).
+	 * The counter is incremented each time a call to beginTransaction is performed.
 	 * Note: this flag might be false in MySQL. If a DDL query is issued (like "DROP TABLE test"), the current transaction
-	 * will be ended, but the flag will not be set to false).
+	 * will be ended, but the flag will not be set to 0).
 	 *
-	 * @var bool
+	 * @var int
 	 */
-	protected $_hasActiveTransaction = false;
+	protected $transactionLevel = 0;
 
 	/*public $db;
 	 public $dsn;
@@ -517,6 +518,8 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * Begins a transaction. You must use commit or rollback to end the transaction.
 	 * By default, if the scripts finishes and none of commit and rollback have been called,
 	 * the transaction will be rolled-back.
+	 * You can perform more than one beginTransaction() call. In this case, later calls will perform a "SAVEPOINT" and you will have to commit or rollback
+	 * as many times as you called beginTransaction().
 	 *
 	 * @return bool true on success, false on failure.
 	 */
@@ -524,8 +527,18 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-		$this->_hasActiveTransaction = $this->dbh->beginTransaction();
-		return $this->_hasActiveTransaction;
+		if ($this->transactionLevel == 0) {
+			$result = $this->dbh->beginTransaction();
+			if ($result == true) {
+				$this->transactionLevel++;
+			}
+		} else {
+			$this->transactionLevel++;
+			$this->dbh->exec("SAVEPOINT moufDbConnection".$this->transactionLevel);
+			$result = true;
+		}
+		
+		return $result;
 	}
 
 	/**
@@ -537,8 +550,15 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 		if ($this->dbh == null) {
 			$this->connect();
 		}
-		$this->_hasActiveTransaction = false;
-		$this->dbh->commit();
+		if ($this->transactionLevel == 1) {
+			$this->dbh->commit();
+			$this->transactionLevel--;
+		} elseif ($this->transactionLevel > 1) {
+			$this->dbh->exec("RELEASE SAVEPOINT moufDbConnection".$this->transactionLevel);
+			$this->transactionLevel--;
+		} else {
+			throw DB_Exception("Unable to commit transaction: no transaction has been started.");
+		}
 	}
 
 	/**
@@ -547,31 +567,19 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool true on success, false on failure.
 	 */
 	public function rollback() {
-		$this->_hasActiveTransaction = false;
-		$this->dbh->rollBack();
+		if ($this->dbh == null) {
+			$this->connect();
+		}
+	if ($this->transactionLevel == 1) {
+			$this->dbh->rollBack();
+			$this->transactionLevel--;
+	} elseif ($this->transactionLevel > 1) {
+			$this->dbh->exec("ROLLBACK TO moufDbConnection".$this->transactionLevel);
+			$this->transactionLevel--;
+		} else {
+			throw DB_Exception("Unable to commit transaction: no transaction has been started.");
+		}
 	}
-
-	/**
-	 * Commits the current transaction.
-	 *
-	 */
-	/*public function commit() {
-		TDBM_Object::completeSave();
-		$result = $this->db->commit();
-		$this->checkError($result);
-		}*/
-
-	/**
-	 * Rolls back the current transaction.
-	 *
-	 */
-	/*public function rollback() {
-		// TODO: since we are rolling back, we should remove anything in TDBM_Object::$new_objects
-		// instead of inserting in order to roll back.
-		TDBM_Object::completeSave();
-		$result = $this->db->rollback();
-		$this->checkError($result);
-		}*/
 
 	/**
 	 * Returns the column type of the column $column from table $table
@@ -679,7 +687,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 * @return bool
 	 */
 	public function hasActiveTransaction() {
-		return $this->_hasActiveTransaction;
+		return $this->transactionLevel != 0;
 	}
 
 	/**
