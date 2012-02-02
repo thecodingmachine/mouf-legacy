@@ -73,10 +73,27 @@ class TaskManager {
 					 null);";
 		
 		// TODO: are we sure we return the right task?
-		$this->dbConnection->beginTransaction();
-		$this->dbConnection->exec($query);
-		$taskId = $this->dbConnection->getInsertId($this->tableName, 'id');
-		$this->dbConnection->commit();
+		try {
+			$startedTransaction = false; 
+			if (!$this->dbConnection->hasActiveTransaction()) {
+				$startedTransaction = true;
+				$this->dbConnection->beginTransaction();
+			}
+			$this->dbConnection->exec($query);
+			$taskId = $this->dbConnection->getInsertId($this->tableName, 'id');
+			if ($startedTransaction) {
+				$this->dbConnection->commit();
+			}
+		} catch (Exception $e) {
+			try {
+				if ($startedTransaction) {
+					$this->dbConnection->rollback();
+				}
+			} catch (Exception $e2) {
+				// Ignore any further exception.
+			}
+			throw $e;
+		}
 		$task = $this->getTask($taskId);
 		
 		// If we must run the task now, let's do it!
@@ -126,16 +143,24 @@ class TaskManager {
 	 */
 	protected function saveTask(Task $task) {
 		$serializedParams = serialize($task->getParams());
+		$lastTryDate = $task->getLastTryDate();
+		if ($lastTryDate != null) {
+			$lastTryDate = date('c', $lastTryDate);
+		}
+		$nextTryDate = $task->getNextTryDate();
+		if ($nextTryDate != null) {
+			$nextTryDate = date('c', $nextTryDate);
+		}
 		$query = "UPDATE ".$this->tableName." SET instance_name = ".$this->dbConnection->quoteSmart($task->getTaskProcessorName()).",
 					params = ".$this->dbConnection->quoteSmart($serializedParams).",
 					status = ".$this->dbConnection->quoteSmart($task->getStatus()).",
-					last_try_date = ".$this->dbConnection->quoteSmart($task->getLastTryDate()).",
-					next_try_date = ".$this->dbConnection->quoteSmart($task->getNextTryDate()).",
+					last_try_date = ".$this->dbConnection->quoteSmart($lastTryDate).",
+					next_try_date = ".$this->dbConnection->quoteSmart($nextTryDate).",
 					nbtries = '".$task->getNbTries()."',
 					last_output = ".$this->dbConnection->quoteSmart($task->getLastOutput())."
 					WHERE id = ".$this->dbConnection->quoteSmart($task->getId());
 		
-		$this->dbConnection->exec($query);		
+		$this->dbConnection->exec($query);
 	}
 	
 	/**

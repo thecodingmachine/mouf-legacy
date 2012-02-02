@@ -195,4 +195,13 @@ class BlackListMail implements DBMailInterface {
 	function getAttachements() {
 		return $this->mail->getAttachements();
 	}
+	
+	/**
+	 * Returns the encoding of the mail.
+	 *
+	 * @return string
+	 */
+	function getEncoding() {
+		return $this->mail->getEncoding();
+	}
 }

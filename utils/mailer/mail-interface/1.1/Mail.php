@@ -63,8 +63,9 @@ class Mail implements MailInterface {
 	public function getBodyHtml() {
 		if ($this->css) {
 			// For testing purpose
-			file_put_contents("/tmp/aaa.txt", $this->getBodyHtmlBeforeEmogrify());
+			//file_put_contents("/tmp/aaa.txt", $this->getBodyHtmlBeforeEmogrify());
 			$emogrifier = new Emogrifier($this->getBodyHtmlBeforeEmogrify(), $this->css);
+			//echo($this->getBodyHtmlBeforeEmogrify());
 			$finalHtml = $emogrifier->emogrify();
 		} else {
 			$finalHtml = $this->getBodyHtmlBeforeEmogrify();

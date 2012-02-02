@@ -31,7 +31,7 @@ if (!$this->awaitingTasks) {
 				<td><?php echo plainstring_to_htmloutput(date("Y-m-d H:i:s", $task['lastTryDate'])) ?></td>
 				<td><?php echo plainstring_to_htmloutput(date("Y-m-d H:i:s", $task['nextTryDate'])) ?></td>
 				<td><?php echo plainstring_to_htmloutput($task['nbTries']) ?></td>
-				<td><?php echo plainstring_to_htmloutput($task['lastOutput']) ?></td>
+				<td class="white-space: pre-wrap"><?php echo plainstring_to_htmloutput($task['lastOutput']) ?></td>
 				<td><a href="deleteTask?id=<?php echo plainstring_to_htmloutput($task['id']) ?>&taskmanager=<?php echo urlencode($taskManagerName) ?>&selfedit=<?php echo $this->selfedit ?>" onclick="return confirm('Are you sure you want to delete this task?')"><img src="<?php echo ROOT_URL ?>plugins/utils/tasks/taskmanager/1.0/views/images/cross.png" alt="Delete" /></a></td>
 			</tr>
 <?php 		

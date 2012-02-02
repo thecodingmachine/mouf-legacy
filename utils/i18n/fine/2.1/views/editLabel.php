@@ -51,8 +51,8 @@ if($saved) {
 		<?php foreach ($messagesArray as $language=>$value) { ?>
 		<tr>
 			<td><?php echo plainstring_to_htmlprotected($language) ?></td>
-			<td><?php echo plainstring_to_htmlprotected($value) ?></td>
-			<td><a href="editLabel?key=<?php echo plainstring_to_htmlprotected($key) ?>&amp;language=<?php echo plainstring_to_htmlprotected($language) ?>&amp;backto=<?php echo plainstring_to_htmlprotected($backto) ?>&amp;msginstancename=<?php echo plainstring_to_htmlprotected($msgInstanceName) ?>&amp;selfedit=<?php echo plainstring_to_htmlprotected($selfedit) ?>">Edit</a></td>
+			<td style="white-space: pre-wrap"><?php echo plainstring_to_htmlprotected($value) ?></td>
+			<td><a href="editLabel?key=<?php echo plainstring_to_htmlprotected($key) ?>&amp;language=<?php echo plainstring_to_htmlprotected($language) ?>&amp;backto=<?php echo plainstring_to_htmlprotected($backto) ?>&amp;msginstancename=<?php echo plainstring_to_htmlprotected($msgInstanceName); ?>&amp;selfedit=<?php echo plainstring_to_htmlprotected($selfedit) ?>">Edit</a></td>
 		</tr>
 		<?php } ?>
 	</table>

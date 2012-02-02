@@ -143,7 +143,7 @@ class BlackListMailService implements MailServiceInterface {
 		if (count($toRecipients) != 1) {
 			// If there is more than 1 recipient, let's just ignore the BlackListMailService
 			// It can only be applied when a mail has 1 and only 1 recipient.
-			$this->forwardTo->send($blackListMail);
+			$this->forwardTo->send($mail);
 			return true;
 		}
 		/* @var $toRecipient MailAddressInterface */

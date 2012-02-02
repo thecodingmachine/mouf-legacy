@@ -62,6 +62,12 @@ interface MailInterface {
 	 */
 	function getAttachements();
 	
+	/**
+	 * Returns the encoding of the mail.
+	 *
+	 * @return string
+	 */
+	function getEncoding();
 	// TODO
 	// TODO
 	// TODO
