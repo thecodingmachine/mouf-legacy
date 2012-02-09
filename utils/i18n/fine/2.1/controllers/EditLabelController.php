@@ -98,13 +98,12 @@ class EditLabelController extends Controller implements MoufSearchable {
 	 */
 	public function saveLabel($key, $label, $language = null, $delete = null, $save = null, $back = null, $backto = null, $msginstancename="translationService" ,$selfedit = "false") {
 		$this->msgInstanceName = $msginstancename;
-		if ($save) {
+		if ($back) {
+			header("Location: ".$backto);	
+		} else {
 			$this->setTranslationForMessageFromService(($selfedit == "true"), $msginstancename, $key, $label, $language, $delete);
 
 			$this->editLabel($key, $backto, $language, $msginstancename, $selfedit, true);
-			
-		} else {
-			header("Location: ".$backto);
 		}
 	}
 

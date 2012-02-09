@@ -1,7 +1,16 @@
 <?php
 function editLabel($key, $label, $language, $messagesArray, $is_success, $backto, $msgInstanceName, $selfedit, $saved) {
 ?>
-<h1>Label edition screen</h1>
+<script type="text/javascript">
+jQuery(document).keydown(function (e) {
+	if(e.ctrlKey == true & e.keyCode == 83){
+		e.preventDefault();
+		jQuery(document.activeElement).parents("form").submit();
+	} 
+	return false;
+});
+</script>
+<h1>Edit your label</h1>
 
 <?php 
 if($saved) {
