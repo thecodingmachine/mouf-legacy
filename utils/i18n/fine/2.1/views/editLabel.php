@@ -3,11 +3,10 @@ function editLabel($key, $label, $language, $messagesArray, $is_success, $backto
 ?>
 <script type="text/javascript">
 jQuery(document).keydown(function (e) {
-	if(e.ctrlKey == true & e.keyCode == 83){
+	if(e.ctrlKey == true && e.keyCode == 83){
 		e.preventDefault();
 		jQuery(document.activeElement).parents("form").submit();
 	} 
-	return false;
 });
 </script>
 <h1>Edit your label</h1>
