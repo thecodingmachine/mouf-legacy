@@ -65,12 +65,13 @@ class DBMailService implements MailServiceInterface {
 				$type = null;
 			}
 			
-			$sql = "INSERT INTO `outgoing_mails` (category, mail_type, title, text_body, html_body) VALUES (";
+			$sql = "INSERT INTO `outgoing_mails` (category, mail_type, title, text_body, html_body, unique_key) VALUES (";
 			$sql .= $this->datasource->quoteSmart($category).", ";
 			$sql .= $this->datasource->quoteSmart($type).", ";
 			$sql .= $this->datasource->quoteSmart($mail->getTitle()).", ";
 			$sql .= $this->datasource->quoteSmart($mail->getBodyText()).", ";
-			$sql .= $this->datasource->quoteSmart($mail->getBodyHtml());
+			$sql .= $this->datasource->quoteSmart($mail->getBodyHtml()).", ";
+			$sql .= $this->datasource->quoteSmart($mail->getHashKey());
 			$sql .= ")";
 			$this->datasource->exec($sql);
 			

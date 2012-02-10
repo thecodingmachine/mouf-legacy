@@ -8,7 +8,7 @@
 	will be rejected.</shortDescription>
 	<docUrl></docUrl>
 	<doc>
-		<page title="Storing sent mails using the DB Mail Service" url="dbmailservice.html" />
+		<page title="Manage mailing list unsubscribe using the BlackList Mail Service" url="blacklistmailservice.html" />
 	</doc>	
 	<logo>logo.png</logo>
 	

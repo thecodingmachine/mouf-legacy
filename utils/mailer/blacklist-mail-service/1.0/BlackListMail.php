@@ -137,7 +137,14 @@ class BlackListMail implements DBMailInterface {
 		}
 		// If no needle, let's add the link at the end of the mail.
 		if (!$replaced) {
-			$html .= "\n".$this->htmlUnsubscribeLink;
+			$endBodyPos = strpos($html, "</body");
+			if ($endBodyPos !== false) {
+				// Let's add the unsubscribe link just before the closing body tag
+				$html = substr($html, 0, $endBodyPos)."\n".$this->htmlUnsubscribeLink.substr($html, $endBodyPos);
+			} else {
+				// No body tag, let's simply add the HMTL at the end of the mail
+				$html .= "\n".$this->htmlUnsubscribeLink;
+			}
 		}
 		return $html;
 	}

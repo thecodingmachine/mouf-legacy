@@ -38,7 +38,6 @@ table.mails tr:first-child {
 
 table.mails tr:hover {
 	background-color: #cccccc;
-	cursor: pointer;
 }
 
 table.mails tr td {

@@ -1,12 +1,12 @@
 <?php
 
 /**
- * This class does not send mails; Instead, it modifies	your mail to add a "unsubscribe this mailing list" link at the end of your mail,
+ * This class does not send mails; Instead, it modifies	your mail to add a <strong>"unsubscribe this mailing list"</strong> link at the end of your mail,
  * then forwards your mail to a "real" mail service that will indeed send the mail. 
  * This will allow your users to unsubscribe from the mailing list. Any attempt to send a mail to this user later
  * will be rejected.<br/>
  * <br/>
- * <p>The blacklisted mails are stored in the 'outgoing_mail_blacklist' table. If you pass an instance of DBMailInterface 
+ * <p>The blacklisted mails are stored in the <strong>'outgoing_mail_blacklist'</strong> table. If you pass an instance of DBMailInterface 
  * (instead of simply a MailInterface), you can add a category and a type to your mail.When a mail is blacklisted, it can be blacklisted
  * for the whole application, or only for a category or type of mails.</p>
  * 

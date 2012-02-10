@@ -1,0 +1,77 @@
+<h1>Mouf's BlackListMailService</h1>
+
+<h2>Authorizing users to unsubscribe from a mailing-list</h2>
+
+<p>In Mouf, <em>emails</em> are sent using <em>MailServices</em>.<br/>
+This package contains a mailer that does not send any mail! Instead, it modifies a mail to add an "unsubscribe" link
+at the bottom of the mail. Then, it forwards the mail to a DBMailService, that will store the mail in database.
+Finally, the mail will be forwarded to a "real" mail service that will really send the mail.
+</p>
+
+<p>If a user asked to be unsubscribed from a mailing list, any attempt to send a mail later will be refused by the BlackListMailService.</p>
+<p>The list of mails that are black-listed is stored in the <strong>outgoing_mail_blacklist</strong> table.</p>
+
+<p>If you pass an instance of <strong>DBMailInterface</strong> (instead of simply a MailInterface) to the <strong>sendMail</strong> method, 
+you can add a category and a type to your mail. A category/type couple will be considered to be a "mailing list" and if the user
+wants to unsubscribe, we will have the ability to unsubscribe from this mailing list, or from any mailing lists you might subscribe him to.</p>
+
+<div class="warning">In order to add an "unsubscribe" link at the end of the mail, your mail must have only one "To:" recipient. If you 
+have more than one recipient, the BlackListMailService will simply forward the mail without adding the unsubscribe link.</div>
+
+<h2>Installing BlackListMailService</h2>
+
+<p>There is an install process for this package. It will require to provide a valid <strong>DB_MySqlConnection</strong>. The install
+process will create the <strong>outgoing_mail_blacklist</strong> table.</p>
+
+<p>The install process will create a BlackListMailService instance in Mouf and will automatically bind that instance to the dbMailService instance.</p>
+<p>By default, the unsubscribe link text is defined in the package, but you can overwrite the text by configuring the BlackListMailService instance.</p>
+
+<h2>Usage sample</h2>
+
+<p>You use this service as you would use any MailService.</p>
+
+<p>
+For instance, to send a mail, you just need to write:
+</p>
+<pre class="brush:php">
+$mailService = Mouf::getBlackListMailService();
+
+$mail = new DBMail();
+$mail-&gt;setBodyText("This is my mail!");
+$mail-&gt;setBodyHtml("This is my &lt;b&gt;mail&lt;/b&gt;!");
+$mail-&gt;setFrom(new MailAddress("my@server.com", "Server"));
+$mail-&gt;addToRecipient(new MailAddress("david@email.com", "David"));
+$mail-&gt;setTitle("My mail");
+$mail-&gt;setCategory("My category");
+$mail-&gt;setType("My type");
+
+$mailService-&gt;send($mail);
+</pre>
+<p>The code above assumes that you configured an instance in Mouf called "blackListMailService".</p>
+
+<h2>Manually adding/removing unsubscribed users</h2>
+
+<p>The BlackListMailService offers a number of methods you can use to add or remove mail addresses from the black list.</p>
+<ul>
+<li>Use the <strong>unsubscribe</strong> method to add a mail address to the black list.</li>
+<li>Use the <strong>isBlackListed</strong> method to know if a mail address is black-listed.</li>
+<li>Use the <strong>cancelUnsubscribe</strong> method to remove a mail address to the black list.</li>
+</ul>
+
+<h2>Accessing the unsubscribed database</h2>
+
+<p>You can access the blacklisted mails table directly from the Mouf administration interface.
+You just need to click on the <b>Utils</b> menu and click the <b>View blacklisted mails</b> submenu.</p>
+
+<h2>Configuring the BlackListMailService</h2>
+
+<p>The BlackListMailService instance in Mouf allows many configuration. Using the instance you can:</p>
+<ul>
+<li>Change the text of the unsubscribe link, or change any translation is you are running in an i18n environment</li>
+<li>Change the link of the unsubscribe link. If you change the link, you will be responsible for providing a web page that will
+allow the user to unsubscribe</li>
+<li>Define a "needle". This is a text that will be replaced by the unsubscribe link. This way, the unsubscribe link does not
+have to be stored at the bottom of the mail. You can put it where you want in your mail.</li>
+<li>Define a "serverName". You must do this if your mail is sent from the PHP CLI, as your script will have no way to know
+the fully qualified domain name of your web server (for the unsubscribe link).</li>
+</ul>
