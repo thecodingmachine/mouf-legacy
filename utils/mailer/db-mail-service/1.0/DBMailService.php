@@ -60,9 +60,11 @@ class DBMailService implements MailServiceInterface {
 			if ($mail instanceof DBMailInterface) {
 				$category = $mail->getCategory();
 				$type = $mail->getType();
+				$hashKey = $mail->getHashKey();
 			} else {
 				$category = null;
 				$type = null;
+				$hashKey = null;
 			}
 			
 			$sql = "INSERT INTO `outgoing_mails` (category, mail_type, title, text_body, html_body, unique_key) VALUES (";
@@ -71,7 +73,7 @@ class DBMailService implements MailServiceInterface {
 			$sql .= $this->datasource->quoteSmart($mail->getTitle()).", ";
 			$sql .= $this->datasource->quoteSmart($mail->getBodyText()).", ";
 			$sql .= $this->datasource->quoteSmart($mail->getBodyHtml()).", ";
-			$sql .= $this->datasource->quoteSmart($mail->getHashKey());
+			$sql .= $this->datasource->quoteSmart($hashKey);
 			$sql .= ")";
 			$this->datasource->exec($sql);
 			
