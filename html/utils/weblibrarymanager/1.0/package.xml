@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Javascript/CSS library manager</displayName>
+	<shortDescription>The Javascript/CSS library manager is a PHP class in charge of keeping track of the JS and CSS files that
+	have been included so far in a web page. Basically, you tell the Javascript/CSS library manager to import a JS/CSS file and
+	it will make sure it is included, only once, and that all dependencies are included as well.</shortDescription>
+	<logo>logo.png</logo>
+	<requires>
+		<require>WebLibraryManager.php</require>
+	</requires>
+</package>
