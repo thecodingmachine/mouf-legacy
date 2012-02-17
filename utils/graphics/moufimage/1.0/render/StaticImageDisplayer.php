@@ -142,6 +142,6 @@ class StaticImageDisplayer{
 	}
 	
 	public function toHTML($path){
-		echo "<img src='" .ROOT_URL. $this->savePath . "/" . $path . "'/>";
+		echo "<img src='" . $this->getURL($path) . "'/>";
 	}
 }
