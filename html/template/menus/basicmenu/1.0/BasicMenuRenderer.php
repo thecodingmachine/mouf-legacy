@@ -2,7 +2,7 @@
 
 /**
  * This class is in charge of rendering a menu. It contains a menu and can transform it in HTML using the toHtml() method.
- * The rendering is performed using &lt;ul&gt; and &lt;li&gt; tags.
+ * <p>The rendering is performed using &lt;ul&gt; and &lt;li&gt; tags.</p>
  * 
  * @Component
  */

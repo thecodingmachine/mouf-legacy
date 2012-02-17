@@ -3,7 +3,7 @@
 <p>You probably noticed in the tutorial that any outputed text in your controller is directly embeded into the Drupal's theme.
 Let's see an example:</p>
 
-<pre>
+<pre class="brush: php">
 /**
  * @Component
  */
@@ -33,7 +33,7 @@ where we would like to get rid of the theme and just output directly in the HTTP
 
 <p>For all those situations, Druplash provides a special tag: @DrupalAjax. Here is an example:</p>
 
-<pre>
+<pre class="brush: php">
 /**
  * @Component
  */
@@ -56,7 +56,7 @@ the Drupal's template.</p>
 <p>In the rare case where you might not know before calling the action whether the answer will be embeded in the template or not,
 Druplash provides you a handy method: <em>setAjaxStatus</em>. Here is an exemple:</p>
 
-<pre>
+<pre class="brush: php">
 /**
  * @Component
  */

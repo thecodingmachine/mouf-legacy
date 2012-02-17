@@ -305,24 +305,24 @@ search for stats regarding patients created in 2009, we can search for stats reg
 
 <p>The first step is to get a connection to the database. This is done via the <code>DB_Connection object</code>:</p>
 
-<pre>
+<pre class="brush:php">
 $conn = new DB_MySqlConnection();
-$conn->setHost("localhost");
-$conn->setDbName("myDb");
-$conn->setUser("root");
-$conn->connect();
+$conn-&gt;setHost("localhost");
+$conn-&gt;setDbName("myDb");
+$conn-&gt;setUser("root");
+$conn-&gt;connect();
 
 $dbStats = new DB_Stats();
-$dbStats->setDbConnection($conn);
-$dbStats->setSourceTable("patients");
-$dbStats->setStatsTable("patientsrollup");
+$dbStats-&gt;setDbConnection($conn);
+$dbStats-&gt;setSourceTable("patients");
+$dbStats-&gt;setStatsTable("patientsrollup");
 </pre>
 
 <p>With this piece of code, we create a connection to MySql, we create a Db_Stats object and we connect it to the connection.</p>
 <p>Then, we set the source table and the rollup table.</p>
 
 <h3>Creating the dimensions</h3>
-<p>Now, we need to set the dimensions. For this, we will use the <code>DB_Stats->addDimension</code> method. This method takes a DB_Dimension object in argument.</p>
+<p>Now, we need to set the dimensions. For this, we will use the <code>DB_Stats-&gt;addDimension</code> method. This method takes a DB_Dimension object in argument.</p>
 
 <pre>
 +--------------------------------------------------------+
@@ -347,20 +347,20 @@ $dbStats->setStatsTable("patientsrollup");
 
 Here is a sample of declaration for the "Job" dimension:
 
-<pre>
+<pre class="brush:php">
 $jobColumn = new DB_StatColumn();
-$jobColumn->setColumnName("job");
-$jobColumn->setDataOrigin("[statcol].job");
-$jobColumn->setType("VARCHAR(255)");
+$jobColumn-&gt;setColumnName("job");
+$jobColumn-&gt;setDataOrigin("[statcol].job");
+$jobColumn-&gt;setType("VARCHAR(255)");
 
 $jobDimension = new DB_Dimension();
-$jobDimension->addColumn($jobColumn);
+$jobDimension-&gt;addColumn($jobColumn);
 
-$dbStats->addDimension($jobDimension);
+$dbStats-&gt;addDimension($jobDimension);
 </pre>
 
 <p>It is important to understand that each "column" declared in a dimension will result in a column created in the rollup table.
-The type of the column is set using the <code>DB_StatColumn->setType</code> method.</p>
+The type of the column is set using the <code>DB_StatColumn-&gt;setType</code> method.</p>
 <p>So by creating the "job" dimension, we add the "job" column to the rollup table. The <em>dataOrigin</em> refers to the 
 place the data comes from. It will come from the "job" column of the source table. We refer to this column as "[statcol].job".</p>
 
@@ -372,29 +372,29 @@ When refering to a column from the source table, ALWAYS prefix the name of the c
 <p>We created a easy dimension, with only one column, but many dimensions are not that easy. Let's focus on the date dimension.</p>
 <p>In the "date" dimension, a single field in the source table provides data for many columns. Here is the dimension:</p>
 
-<pre>
+<pre class="brush:php">
 $year = new DB_StatColumn();
-$year->setColumnName("year");
-$year->setDataOrigin("YEAR([statcol].CreationDate)");
-$year->setType("INT");
+$year-&gt;setColumnName("year");
+$year-&gt;setDataOrigin("YEAR([statcol].CreationDate)");
+$year-&gt;setType("INT");
 
 $month = new DB_StatColumn();
-$month->setColumnName("month");
-$month->setDataOrigin("MONTH([statcol].CreationDate)");
-$month->setType("INT");
+$month-&gt;setColumnName("month");
+$month-&gt;setDataOrigin("MONTH([statcol].CreationDate)");
+$month-&gt;setType("INT");
 
 $day = new DB_StatColumn();
-$day->setColumnName("day");
-$day->setDataOrigin("DAY([statcol].CreationDate)");
-$day->setType("INT");
+$day-&gt;setColumnName("day");
+$day-&gt;setDataOrigin("DAY([statcol].CreationDate)");
+$day-&gt;setType("INT");
 
 $dateDimension = new DB_Dimension();
 // Remember the order is important. We add the year first, then the month and finally the day
-$dateDimension->addColumn($year);
-$dateDimension->addColumn($month);
-$dateDimension->addColumn($day);
+$dateDimension-&gt;addColumn($year);
+$dateDimension-&gt;addColumn($month);
+$dateDimension-&gt;addColumn($day);
 
-$dbStats->addDimension($dateDimension);
+$dbStats-&gt;addDimension($dateDimension);
 </pre>
 
 <p>In this sample, have a look at the dataOrigin. It is dynamically computed using MySql functions. For instance, <code>YEAR([statcol].CreationDate)</code> will
@@ -406,13 +406,13 @@ return the year that is stored in the <code>CreationDate</code> column.</p>
 <p>The values are simply a set of <code>DB_StatColumn</code> objects bound to the DB_Stats object.</p>
 
 <p>Here is an example:</p>
-<pre>
+<pre class="brush:php">
 $totalAge = new DB_StatColumn();
-$totalAge->setColumnName("sumage");
-$totalAge->setDataOrigin("[statcol].age");
-$totalAge->setType("BIGINT");
+$totalAge-&gt;setColumnName("sumage");
+$totalAge-&gt;setDataOrigin("[statcol].age");
+$totalAge-&gt;setType("BIGINT");
 
-$dbStats->addValue($totalAge);
+$dbStats-&gt;addValue($totalAge);
 </pre>
 
 <p>This will create a "sumage" column in the stats table that will contain the sum of the ages of the patients. The dataOrigin is similar to the one we saw with the dimensions.
@@ -421,41 +421,41 @@ You MUST prefix any column from the source table with "[statcol].".</p>
 <p>You can use any MySql function in the dataOrigin field to perform transformations. You can also use
 serveral columns from the source table, etc...
 For instance, we could compute the sum of the body mass indexes, using a dataOrigin computed this way:</p>
-<pre>
-$bodyMassIndex->setDataOrigin("[statcol].weight/([statcol].height*[statcol].height)");
+<pre class="brush:php">
+$bodyMassIndex-&gt;setDataOrigin("[statcol].weight/([statcol].height*[statcol].height)");
 </pre>
 
 <p>Special case:<p>
 <p>The "cnt" column is a special case. Indeed, the column does not refer to any field, it is just incremented by one when a new row is added. In this case, you can just provide
 "1" as a value for dataOrigin. Therefore, 1 will be added to the "cnt" column each time a new row matches the stats.</p>
 
-<pre>
+<pre class="brush:php">
 $cnt = new DB_StatColumn();
-$cnt->setColumnName("cnt");
-$cnt->setDataOrigin("1");
-$cnt->setType("BIGINT");
+$cnt-&gt;setColumnName("cnt");
+$cnt-&gt;setDataOrigin("1");
+$cnt-&gt;setType("BIGINT");
 
-$dbStats->addValue($cnt);
+$dbStats-&gt;addValue($cnt);
 </pre>
 
 <h2>Creating the tables and triggers</h2>
 
 <p>Our <code>DB_Stats</code> object is now fully configured. We just have to execute a few methods to set the system up.</p>
 
-<pre>
+<pre class="brush:php">
 // Creates the stats table
-$dbStats->createStatsTable();
+$dbStats-&gt;createStatsTable();
 
 // Fills the table with stats
-$dbStats->fillTable();
+$dbStats-&gt;fillTable();
 
 // Creates the triggers
-$dbStats->createTrigger();
+$dbStats-&gt;createTrigger();
 </pre>
 
-<p>The <code>DB_Stats->createStatsTable</code> will create the table in the database.</p>
-<p>The <code>DB_Stats->fillTable</code> will purge the stats table and fill it with freshly computed stats from the source table. Beware, if the source table is big, this operation might take some time!</p>
-<p>The <code>DB_Stats->createTrigger</code> will create the triggers on the source table that will automatically update the stats table.</p>
+<p>The <code>DB_Stats-&gt;createStatsTable</code> will create the table in the database.</p>
+<p>The <code>DB_Stats-&gt;fillTable</code> will purge the stats table and fill it with freshly computed stats from the source table. Beware, if the source table is big, this operation might take some time!</p>
+<p>The <code>DB_Stats-&gt;createTrigger</code> will create the triggers on the source table that will automatically update the stats table.</p>
 
 <p>That's it! Now, we have a perfectly functional rollup table that we can query to retrieve stats from the source table.
 The rollup table is already indexed and will deliver results at the speed of light!</p>
