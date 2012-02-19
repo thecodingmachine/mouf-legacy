@@ -36,7 +36,14 @@ class BCEForm{
 		
 		//Load bean values into related field Descriptors
 		foreach ($this->fieldDescriptors as $descriptor) {
+			/* @var $descriptor FieldDescriptorInterface */
 			$descriptor->load($this->baseBean);
+			
+			$fieldName = $descriptor->getFieldName();
+			$validator = $descriptor->getValidator();
+			foreach ($validator->getJsRules as $key => $rule) {
+				$ruleObj->$key = $rule;
+			}
 		}
 		
 		//Render the form

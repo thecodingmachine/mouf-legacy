@@ -40,6 +40,12 @@ interface FieldDescriptorInterface{
 	* @param mixed $mainBean
 	*/
 	public function load($mainBean);
+
+	/**
+	 * Gets the Label of the field as displayed in the form
+	 * @return string
+	 */
+	public function getFieldLabel();
 	
 	
 }

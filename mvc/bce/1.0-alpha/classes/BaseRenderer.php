@@ -43,27 +43,21 @@ class BaseRenderer implements BCERenderer{
 	public $id = "default_id";
 	
 	
-	public function init($fieldDescriptors){
+	public function render($fieldDescriptors){
+?>
+	<form action="<?php echo $this->action; ?>" method="<?php echo $this->method?>" name="<?php echo $this->name;?>" id="<?php echo $this->id ?>">
+		<?php
 		foreach ($fieldDescriptors as $descriptor) {
 			/* @var $descriptor FieldDescriptorInterface */
 			$renderer = $descriptor->getRenderer();
-			$html = $renderer->render($descriptor);
-			$formHtml .= "
-				<div>
-					<label>$descriptor->label</label>
-					$html
-				</div>
-			";
-			$fieldName = $descriptor->getFieldName();
-			$validator = $descriptor->getValidator();
-			$ruleObj = new stdClass();
-			foreach ($validator->getJsRules as $key => $rule) {
-				$ruleObj->$key = $rule;
-			}
+			?>	
+			<div>
+				<label><?php echo $descriptor->getFieldLabel() ?></label>
+				<?php echo $renderer->render($descriptor); ?>
+			</div>
+			<?php
 		}
-?>
-	<form action="<?php echo $this->action; ?>" method="<?php echo $this->method?>" name="<?php echo $this->name;?>" id="<?php echo $this->id ?>">
-		<?php echo $formHtml ?>
+		?>
 	<button type="submit">Submit</button>
 	</form>
 <?php
