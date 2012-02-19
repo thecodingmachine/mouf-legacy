@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>BCE</displayName>
+	<shortDescription>The best CRUD ever!</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
+	<doc>
+		<page title="Introduction to Splash" url="index.html" />
+	</doc>
+	<logo>icons/logo.png</logo>
+	<requires>
+		<require>BCEForm.php</require>
+		<require>classes/userDAO.php</require>
+		<require>classes/BaseRenderer.php</require>
+		<require>classes/FieldDescriptorInterface.php</require>
+		<require>classes/BaseFieldDescriptor.php</require>
+		<require>classes/ForeignKeyFieldDescriptor.php</require>
+		<require>classes/BCERenderer.php</require>
+		<require>classes/DAOInterface.php</require>
+		<require>classes/FieldRendererInterface.php</require>
+		<require>classes/HiddenRenderer.php</require>
+		<require>classes/Role.php</require>
+		<require>classes/RoleDAO.php</require>
+		<require>classes/SelectFieldRenderer.php</require>
+		<require>classes/TextFieldRenderer.php</require>
+		<require>classes/user.php</require>
+		<require>classes/validators/ValidatorInterface.php</require>
+		<require>classes/validators/BaseValidator.php</require>
+		<require>classes/validators/NumericValidator.php</require>
+	</requires>
+</package>
