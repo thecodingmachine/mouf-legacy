@@ -40,6 +40,13 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	public $value;
 	
 	/**
+	 * The label of the field as displayed in the form
+	 * @Property
+	 * @var string
+	 */
+	public $label;
+	
+	/**
 	 * The renderer that will be responsible for delivering the HTML for that field
 	 * @Property
 	 * @var FieldRendererInterface 
@@ -102,6 +109,14 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	 */
 	public function getFieldValue(){
 		return $this->value;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldDescriptorInterface::getFieldLabel()
+	 */
+	public function getFieldLabel(){
+		return $this->label;
 	}
 	
 }

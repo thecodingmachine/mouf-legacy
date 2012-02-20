@@ -14,29 +14,15 @@ abstract class BaseValidator implements ValidatorInterface{
 	public $required;
 
 	/**
-	* @Property
-	* @var string $options
-	*/
-	public $options;
-	
-	/**
 	 * @Property 
-	 * @var array<string>
+	 * @var array<string, string>
 	 */
 	public $jsRules;
 	
-// 	abstract public function validate($value);
-	
-	public function getHtmlAttribute(){
-		if ($this->required) $this->jsRules["required"]="true";
+	public function loadRules(){
+		if ($this->required) $this->jsRules["required"]=true;
 	}
 	
-	/**
-	 * @param array<string, string> $options
-	 */
-	public function setJsRules($options){
-		$this->options = $options;
-	}
 	
 	/**
 	 * Returns the JS validation rules
@@ -45,13 +31,5 @@ abstract class BaseValidator implements ValidatorInterface{
 	public function getJsRules(){
 		return $this->jsRules;
 	}
-	
-// 	/**
-// 	* @Property
-// 	* @param bool $required
-// 	*/
-// 	public setRequired($required){
-// 		$this->required = $required;
-// 	}
 	
 }

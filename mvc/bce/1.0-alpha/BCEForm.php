@@ -41,12 +41,18 @@ class BCEForm{
 			
 			$fieldName = $descriptor->getFieldName();
 			$validator = $descriptor->getValidator();
-			foreach ($validator->getJsRules as $key => $rule) {
-				$ruleObj->$key = $rule;
+			if ($validator){
+				$validator->loadRules();
+				var_dump($validator);
+				echo "<br/>-----------------<br/>$fieldName</br>";
+				foreach ($validator->getJsRules() as $key => $rule) {
+					$ruleObj->$fieldName->$key = $rule;
+				}
 			}
 		}
 		
 		//Render the form
+		echo json_encode($ruleObj);
 		$this->renderer->render($this->fieldDescriptors);
 	}
 	

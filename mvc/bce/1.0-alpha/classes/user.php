@@ -8,6 +8,7 @@
 	public $id;
 	public $name;
 	public $email;
+	public $age;
 	public $roleId;
 	
 	
@@ -41,6 +42,14 @@
 	
 	public function setRoleId($roleId){
 		$this->roleId = $roleId;
+	}
+	
+	public function getAge(){
+		return $this->age;
+	}
+	
+	public function setAge($age){
+		$this->age = $age;
 	}
 	
 	

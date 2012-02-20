@@ -18,6 +18,8 @@ interface FieldDescriptorInterface{
 	
 	/**
 	 * The field descriptor may have a validator 
+	 * @Property
+	 * @return ValidatorInterface
 	 */
 	public function getValidator();
 	

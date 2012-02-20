@@ -19,6 +19,7 @@ require_once 'User.php';
 		$user->setName('user Name');
 		$user->setEmail('user@test.com');
 		$user->setRoleId(3);
+		$user->setAge(20);
 		
 		return $user;
 	}
@@ -32,6 +33,8 @@ require_once 'User.php';
 		$user->setId(null);
 		$user->setName('user Name');
 		$user->setEmail('user@test.com');
+		$user->setRoleId(3);
+		$user->setAge(21);
 		
 		return $user;
 	}

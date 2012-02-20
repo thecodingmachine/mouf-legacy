@@ -4,7 +4,7 @@ interface ValidatorInterface{
 	
 	public function validate($value);
 	
-	public function getHtmlAttribute();
+	public function loadRules();
 	
 	public function getJsRules();
 	

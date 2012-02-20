@@ -9,18 +9,21 @@ class NumericValidator extends BaseValidator implements ValidatorInterface{
 	
 	/**
 	 * If the value may be a decimal 
+	 * @Property
 	 * @var bool
 	 */
-	public $decimal;
+	public $allowDecimal = true;
 	
 	/**
 	 * The min value accepted
+	 * @Property
 	 * @var float
 	 */
 	public $minVal;
 
 	/**
 	 * The max value accepted
+	 * @Property
 	 * @var float
 	 */
 	public $maxVal;
@@ -32,20 +35,28 @@ class NumericValidator extends BaseValidator implements ValidatorInterface{
 		}else if (!$this->decimal && !is_int($value)){
 			$ret = false;
 			$message = "Decimal values not acceped";
-		}else if ($this->min && $this->min > $value){
+		}else if ($this->minVal && $this->minVal > $value){
 			$ret = false;
-			$message = "Value must be over $this->min";
-		}else if ($this->max && $this->max < $value){
+			$message = "Value must be over $this->minVal";
+		}else if ($this->maxVal && $this->maxVal < $value){
 			$ret = false;
-			$message = "Value must be less than $this->max";
+			$message = "Value must be less than $this->maxVal";
 		}
 		else{
 			return true;
 		}
 	}
 	
-	public function getHtmlAttribute(){
+	public function loadRules(){
+		parent::loadRules();
 		$this->jsRules["number"] = true;
+		
+		if ($this->minVal){
+			$this->jsRules["min"] = $this->minVal;
+		}
+		if ($this->maxVal){
+			$this->jsRules["max"] = $this->maxVal;
+		}
 	}
 	
 }
