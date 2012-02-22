@@ -122,13 +122,15 @@
 					// Display 24 hours for each day
 					startDate = new Date(2011, 9, 24, 0, 0, 0, 0).getTime()/1000;
 					for (i = 0; i <= 23; i ++) {
+						if (i<=7) hide = ' style=\'display: none\'}';
+						else hide = '';
 						// 0 is 0 minute and 1 is 30 minutes
 						for(j = 0; j <= 1; j ++) {
 							table.append(tr);
 							if(j == 0)
-								tr = $('<tr class="hour">');
+								tr = $('<tr class="hour"'+hide+'>');
 							else
-								tr = $('<tr class="hour_half">');
+								tr = $('<tr class="hour_half"'+hide+'>');
 							$('<td style="width: 45px; height: 20px">')
 								.text(i+'h'+(j*30))
 								.appendTo(tr);
@@ -498,9 +500,12 @@
 					}
 					else {
 						var event = new Event();
-						if(options.title)
+						if(options.title){
 							event.title = options.title;
+						}
 						
+						options.start = options.start-8*3600;
+						options.end = options.end-8*3600;
 						var startTimestamp = new Date(options.start * 1000);
 						var endTimestamp = new Date(options.end * 1000);
 	
@@ -516,7 +521,7 @@
 					}
 					
 					// Check if start is in the display date of calendar
-					if((startTimestamp.getTime() / 1000) > endDate)
+					if((startTimestamp.getTime() / 1000) > endDate || (endTimestamp.getTime() / 1000) < startDate)
 						return null;
 					else {
 						var id = startTimestamp.getTime()+''+(endTimestamp.getTime())+Math.round(Math.random() * 100000);
@@ -771,14 +776,7 @@
 				//$('#test').calendar('addEvent', {start: 1319520600, end: 1319605200});
 				//$('#test').calendar('addEvent', {start: 1319402200, end: 1320015600});
 				
-				$('#test').calendar('addEvent', {start: 1319504400, end: 1319511599, title: 'test ie 2h', color: '#CCFF99', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319493600, end: 1319500799, title: 'test ie 2h', color: '#99FF99', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319589002, end: 1319619599, title: 'test', color: '#FF9999', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319751000, end: 1319752799, title: 'test', color: '#FFCC99', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319425200, end: 1319434199, title: 'test1', color: '#FF3399', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319515200, end: 1319522399, title: 'test3', color: '#FF3333', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319946800, end: 1319956199, title: 'test2', color: '#FFCCCC', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319797800, end: 1319801399, title: 'test2', color: '#FFCCCC', colorTitle: 'red'});
+				$('#test').calendar('addEvent', {start: 1319526000, end: 1319529600, title: 'test ie 2h', color: '#CCFF99', colorTitle: 'red'});
 			});
 			
 			function addEventClick1() {

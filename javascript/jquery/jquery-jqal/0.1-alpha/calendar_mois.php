@@ -32,34 +32,29 @@
 			.over {
 				background-color: #99BBFF;
 			}
-			.over_start, .event_start {
-				border-top-left-radius: 10px;
-				border-top-right-radius: 10px;
-			}
-			.over_end, .event_end{
-				border-bottom-left-radius: 10px;
-				border-bottom-right-radius: 10px;
-			}
 			.drag_bottom {
 				height: 10px;
 				width: 100%;
-				background-color: red;
 				position: absolute;
 				bottom: 0px;
 				left: 0;
 			}
 			.drag_top {
-				height: 10px;
+				height: 15px;
 				width: 100%;
-				background-color: red;
 				position: absolute;
 				top: 0px;
 				left: 0;
 				z-index: -1;
 			}
-			
+			.drag{
+				border: 1px dashed gray;
+			}
 			.display_none {
 				display: none
+			}
+			.event_start.drag.event_end.main{
+				overflow: hidden;
 			}
 		</style>
 		<script src="<?php echo SITE_URL ?>util/jquery/jquery/1.6/jquery-1.6.min.js"></script>
@@ -112,27 +107,30 @@
 					$("<td>")
 						.appendTo(tr);
 					// Add all day title
+					startDate = new Date(<?php echo date('Y', $dateFrom); ?>, <?php echo date('n', $dateFrom) -1 ; ?>, <?php echo date('j', $dateFrom); ?>, 0, 0, 0, 0).getTime()/1000;
 					for (i = 0; i <= 6; i ++) {
+						startDateH = new Date(<?php echo date('Y', $dateFrom); ?>, <?php echo date('n', $dateFrom) -1 ; ?>, <?php echo date('j', $dateFrom); ?> + i, 0, 0, 0, 0);
 						$('<td class="days_name">')
-							.text(dateLanguage['fr'].day[i])
+							.text(dateLanguage['fr'].day[i] + " " + startDateH.getDate() + "/" + (startDateH.getMonth()+1))
 							.appendTo(tr);
 					}
 					// Display 24 hours for each day
-					startDate = new Date(<?php echo date('Y', $dateFrom); ?>, <?php echo date('m', $dateFrom); ?>, <?php echo date('d', $dateFrom); ?>, 0, 0, 0, 0).getTime()/1000;
 					for (i = 0; i <= 23; i ++) {
+						if (i<=7) hide = ' style=\'display: none\'}';
+						else hide = '';
 						// 0 is 0 minute and 1 is 30 minutes
 						for(j = 0; j <= 1; j ++) {
 							table.append(tr);
 							if(j == 0)
-								tr = $('<tr class="hour">');
+								tr = $('<tr class="hour"'+hide+'>');
 							else
-								tr = $('<tr class="hour_half">');
+								tr = $('<tr class="hour_half"'+hide+'>');
 							$('<td style="width: 45px; height: 20px">')
 								.text(i+'h'+(j*30))
 								.appendTo(tr);
 							// 7 days of week
 							for (d = 0; d <= 6; d ++) {
-								var timestamp = new Date(<?php echo date('Y', $dateTo); ?>, <?php echo date('m', $dateTo); ?>, <?php echo date('d', $dateTo); ?>, i, j*30, 0, 0).getTime()/1000;
+								var timestamp = new Date(<?php echo date('Y', $dateFrom); ?>, <?php echo date('n', $dateFrom) - 1; ?>, <?php echo date('j', $dateFrom); ?> + d, i, j*30, 0, 0).getTime()/1000;
 								listdays.push(timestamp);
 								$('<td id="'+timestamp+'" onselectstart="return false">')
 									.addClass('day_element')
@@ -145,242 +143,11 @@
 					endDate = timestamp;
 					listdays.sort();
 					element.html(table);
-					selectEvent();
 					if ('undefined' !== typeof $('.calendar').onselectstart) {
 						alert('oui');
 						$('.calendar').onselectstart = function () { return false; };
 					} 
 					//TODO Recuperer la largeur et la hauteur de la premiere colonne et de la premiere ligne.
-				}
-
-				/**
-				 * Add mouse event to the day display. This is to add or move event
-				 */
-				selectEvent = function() {
-					/**
-					 * When the user press his mouse to create new event
-					 */
-					$('.day_element').mousedown(function() {
-						// Remove all class
-						$('.day_element').removeClass('over');
-						// Add class to display the day selected
-						$(this).addClass('over');
-						$(this).addClass('over_start');
-						$(this).addClass('over_end');
-						// Initialize the position
-						startSelect = parseInt(this.id);
-						endSelect = null;
-						typeSelect = 'create';
-						//TODO Bind mouseover !!!!!!!
-						return false;
-					});
-					
-					/**
-					 * When the user release the click. end of event
-					 */
-					$('.day_element').mouseup(function() {
-						// If the user has press the mouse to create event
-						if(typeSelect == 'create') {
-							$('.day_element').removeClass('over_start');
-							$('.day_element').removeClass('over_end');
-							$('.day_element').removeClass('over');
-							// End date
-							endSelect = parseInt(this.id);
-							var date = new Date();
-							date.setTime(endSelect*1000);
-							//TODO fire event
-							alert(startSelect+' - '+(date.addMinutes(30).getTime()/1000 - 1));
-							startSelect = null;
-							typeSelect = null;
-						}
-						// If the user has press the mouse to resize event
-						if(typeSelect == 'sizedown') {
-							typeSelect = null;
-							resizeEvent = null;
-							endSelectedEvent = parseInt(this.id);
-							// Remove all class display to help the user
-							$('.day_element').removeClass('over_start');
-							$('.day_element').removeClass('over_end');
-							$('.day_element').removeClass('over');
-							$('.day_element').attr('style', '');
-							// Remove the block display to help the user
-							$('.temp_drag_start').remove();
-							// Display the old event
-							$('.'+event_select_drag).css('display', 'block');
-							// If the user select a date before the event start
-							if(startSelectEventLimit > endSelectedEvent) {
-								startSelect = null;
-								endSelectedEvent = null;
-								return null;
-							}
-							
-							//TODO fire event
-							var date = new Date();
-							date.setTime(endSelectedEvent*1000);
-							alert(startSelectEvent_real+' - '+(date.addMinutes(30).getTime()/1000 - 1));
-							startSelect = null;
-							endSelectedEvent = null;
-						}
-						// If the user has press the mouse to resize event
-						if(typeSelect == 'sizeup') {
-							typeSelect = null;
-							resizeEvent = null;
-							startSelectedEvent = parseInt(this.id);
-							// Remove all class display to help the user
-							$('.day_element').removeClass('over_start');
-							$('.day_element').removeClass('over_end');
-							$('.day_element').removeClass('over');
-							$('.day_element').attr('style', '');
-							// Remove the block display to help the user
-							$('.temp_drag_end').remove();
-							// Display the old event
-							$('.'+event_select_drag).css('display', 'block');
-							// If the user select a date before the event start
-							if(startSelectedEvent > endSelectEventLimit) {
-								endSelect = null;
-								startSelectedEvent = null;
-								return null;
-							}
-							
-							//TODO fire event
-							var date = new Date();
-							date.setTime(startSelectedEvent*1000);
-							endSelect = null;
-							startSelectedEvent = null;
-							alert((date.addMinutes(30).getTime()/1000 - 1)+' -- '+endSelectEvent_real);
-							$(this).trigger("dateMove", {start: (date.addMinutes(30).getTime()/1000 - 1), end: endSelectEvent_real});
-						}
-					});
-
-					/**
-					 * When the user over a cell
-					 */
-					$('.day_element').mouseover(function() {
-						// Retrieve the position of mouse
-						var temp = parseInt(this.id);
-						// If the user has already initialize the movement to create event
-						if(typeSelect == 'create' && temp != endSelect) {
-							
-							// Remove all class to add after
-							$('.day_element').removeClass('over');
-							$('.day_element').removeClass('over_start');
-							$('.day_element').removeClass('over_end');
-							endSelect = temp;
-							// If the start is to smaller than end
-							if(startSelect < endSelect) {
-								// Search index of element in the table day list
-								start_index = jQuery.inArray(startSelect, listdays);
-								end_value = endSelect;
-								start_value = startSelect;
-							}
-							// Revert start and end
-							else {
-								jQuery.inArray(endSelect, listdays);
-								end_value = startSelect;
-								start_value = endSelect;
-							}
-							// Start selection
-							var current = start_index;
-							// Check all day has selected
-							while(listdays[current] <= end_value) {
-								var valueCurrent = listdays[current];
-								// If the first element, add class: over_start
-								if(valueCurrent == start_value)
-									$('#'+start_value).addClass('over_start');
-								// If the last element, add class: over_end
-								if(valueCurrent == end_value)
-									$('#'+end_value).addClass('over_end');
-								// Add over class
-								if(valueCurrent >= start_value) {
-									$('#'+listdays[current]).addClass('over');
-								}
-								current ++;
-							}
-						}
-						// If the user has already initialize the movement to resize event 
-						if(typeSelect == 'sizedown' && temp != endSelectedEvent) {
-							
-							// Remove all class to add after
-							$('.day_element').removeClass('over');
-							$('.day_element').removeClass('over_start');
-							$('.day_element').removeClass('over_end');
-							// Remove temporary block
-							$('.temp_drag_start').removeClass('event_end');
-							$('.temp_drag_start').removeClass('display_none');
-							// Remove all style of day cell
-							$('.day_element').attr('style', '');
-							// Recover the event color
-							backgroundColor = $('.'+event_select_drag)[0].style.backgroundColor;
-							endSelectedEvent = parseInt(this.id);
-							// If the start is to smaller than end
-							if(startSelectEventLimit <= endSelectedEvent) {
-								start_index = jQuery.inArray(startSelect, listdays);
-								end_value = endSelectedEvent;
-								start_value = startSelect;
-							}
-							// Else don't display this element
-							else {
-								$('.temp_drag_start').addClass('display_none');
-								return null;
-							}
-							// If the user select only one cell, display start and end in the same block
-							if(startSelectEventLimit == endSelectedEvent)
-								$('.temp_drag_start').addClass('event_end');
-							// Check all day has selected
-							var current = start_index;
-							while(listdays[current] <= end_value) {
-								var valueCurrent = listdays[current];
-								if(valueCurrent == end_value)
-									$('#'+end_value).addClass('over_end');
-								if(valueCurrent >= start_value) {
-									$('#'+listdays[current]).addClass('over');
-								}
-								$('#'+listdays[current])[0].style.backgroundColor = backgroundColor;
-								current ++;
-							}
-						}
-						// If the user has already initialize the movement to resize event 
-						if(typeSelect == 'sizeup' && temp != startSelectedEvent) {
-							// Remove all class to add after
-							$('.day_element').removeClass('over');
-							$('.day_element').removeClass('over_start');
-							$('.day_element').removeClass('over_end');
-							// Remove temporary block
-							$('.temp_drag_end').removeClass('event_start');
-							$('.temp_drag_end').removeClass('display_none');
-							// Remove all style of day cell
-							$('.day_element').attr('style', '');
-							// Recover the event color
-							backgroundColor = $('.'+event_select_drag)[0].style.backgroundColor;
-							startSelectedEvent = parseInt(this.id);
-							// If the start is to smaller than end
-							if(startSelectedEvent <= endSelectEventLimit) {
-								start_index = jQuery.inArray(startSelectedEvent, listdays);
-								end_value = endSelectEventLimit;
-								start_value = startSelectedEvent;
-							}
-							// Else don't display this element
-							else {
-								$('.temp_drag_end').addClass('display_none');
-								return null;
-							}
-							// If the user select only one cell, display start and end in the same block
-							if(endSelectEventLimit == startSelectedEvent)
-								$('.temp_drag_end').addClass('event_start');
-							// Check all day has selected
-							var current = start_index;
-							while(listdays[current] <= end_value) {
-								var valueCurrent = listdays[current];
-								if(valueCurrent == start_value)
-									$('#'+start_value).addClass('over_start');
-								if(valueCurrent >= start_value) {
-									$('#'+listdays[current]).addClass('over');
-								}
-								$('#'+listdays[current])[0].style.backgroundColor = backgroundColor;
-								current ++;
-							}
-						}
-					});
 				}
 
 				/**
@@ -468,7 +235,7 @@
 				}
 				
 				function moveEventPosition(event, on) {
-					width = columnWidth *0.85 * 2 / (on + 1);
+					width = columnWidth *0.85 * 2 / (on + 1) - 10;
 					left = (((event.week.display.position)/(on + 1)) - ((event.week.display.position)/(event.week.display.on + 1))) * (columnWidth * 0.85);
 					
 					$('.'+event.id).each(function(index) {
@@ -499,9 +266,12 @@
 						if(options.title)
 							event.title = options.title;
 						
+						options.start = options.start-8*3600;
+						options.end = options.end-8*3600;
+
 						var startTimestamp = new Date(options.start * 1000);
 						var endTimestamp = new Date(options.end * 1000);
-	
+						
 						event.start = startTimestamp;
 						event.end = endTimestamp;
 					}
@@ -542,7 +312,7 @@
 						
 						// Initialize the position of the event start
 						var startPosition = new Object();
-						startPosition.left = startWeekDay * columnWidth + (columnWidthFirst) + ((position.position)/(position.on + 1)) * (columnWidth * 0.8);
+						startPosition.left = startWeekDay * columnWidth + (columnWidthFirst) + ((position.position)/(position.on + 1)) * (columnWidth * 0.8) + 2;
 						startPosition.top = (startTimestamp.getHours() * 60 + startTimestamp.getMinutes()) * oneMinute + 24;
 						
 						// Check if the start and end are in the different week. If yes, the end is out of calendar
@@ -558,16 +328,23 @@
 						// Display the event
 						var endPosition = new Object();
 						
-						endPosition.left = columnWidth *0.8 * 2 / (position.on + 1);
+						endPosition.left = columnWidth *0.95 * 2 / (position.on + 1);
 						// If the start and end are in the same day
 						
 						if(startWeekDay == endWeekDay && !differentWeek) {
 							endPosition.top = ((endTimestamp.getHours() * 60 + endTimestamp.getMinutes()) * oneMinute + 24) - startPosition.top;
-							this.append('<div class="'+id+' '+classes+' drag event_end" style="position: absolute; top: '+startPosition.top+'px; left: '+startPosition.left+'px; width: '+endPosition.left+'; height: '+endPosition.top+'; background-color: '+options.color+'; z-index: '+(position.position +10)+'">'
-											+'<div id="drag_top_'+id+'" class="drag_top event_start" style="cursor: n-resize"></div>'				
+							this.append('<div class="main '+id+' '+classes+' drag event_end" style="position: absolute; top: '+startPosition.top+'px; left: '+startPosition.left+'px; width: '+endPosition.left+'; height: '+endPosition.top+'; background-color: '+options.color+'; z-index: '+(position.position +10)+'">'
+											+'<div id="drag_top_'+id+'" class="drag_top event_start"></div>'			
 											+event.title
-											+'<div id="drag_bottom_'+id+'" class="drag_bottom event_end" style="cursor: n-resize;"></div>'
+											+'<div id="drag_bottom_'+id+'" class="drag_bottom event_end"></div>'
 											+'</div>');
+							this.append('<div class="hidden '+id+' '+classes+' drag event_end" style="position: absolute; top: '+startPosition.top+'px; left: '+startPosition.left+'px; width: '+endPosition.left+'; height: auto; background-color: white; z-index: '+(position.position +100)+'; display: none">'
+									+'<div id="hidden_drag_top_'+id+'" class="drag_top event_start"></div><b>'			
+									+(startTimestamp.getHours()+8)+'h'+(startTimestamp.getMinutes() < 10 ? '0' : '')+startTimestamp.getMinutes()+' - '
+									+(endTimestamp.getHours()+8)+'h'+(endTimestamp.getMinutes() < 10 ? '0' : '')+endTimestamp.getMinutes()+'</b><br/>'
+									+event.title
+									+'<div id="hidden_drag_bottom_'+id+'" class="drag_bottom event_end"></div>'
+									+'</div>');
 							
 						}
 						else {
@@ -575,7 +352,7 @@
 							
 							// Make the first element
 							this.append('<div class="'+id+' '+classes+'" style="position: absolute; top: '+startPosition.top+'px; left: '+startPosition.left+'px; width: '+endPosition.left+'; height: '+endPosition.top+'; background-color: '+options.color+'; z-index: '+(position.position +10)+'">'
-											+'<div id="drag_top_'+id+'" class="drag_top event_start" style="cursor: n-resize"></div>'
+											+'<div id="drag_top_'+id+'" class="drag_top event_start"></div>'
 											+event.title
 										+'</div>');
 
@@ -593,7 +370,7 @@
 								if(currentWeekDay == endWeekDay) {
 									endPosition.top = ((endTimestamp.getHours() * 60 + endTimestamp.getMinutes()) * oneMinute + 24) - tempPosition.top;
 									classes = 'event_end';
-									dragBottom = '<div id="drag_bottom_'+id+'" class="drag_bottom event_end" style="cursor: n-resize"></div>';
+									dragBottom = '<div id="drag_bottom_'+id+'" class="drag_bottom event_end"></div>';
 								}
 								this.append('<div class="'+id+' '+classes+'" style="position: absolute; top: '+tempPosition.top+'px; left: '+tempPosition.left+'px; width: '+endPosition.left+'; height: '+endPosition.top+'; background-color: '+options.color+'; z-index: '+(position.position +10)+'">'
 												+event.title
@@ -604,79 +381,6 @@
 							}
 						}
 						var divTest = this;
-
-						$('#drag_top_'+id).mousedown(function() {
-							typeSelect = 'sizeup';
-							var end_temp = endTimestamp.getTime() / 1000;
-							var current = 0;
-							while(listdays[current] <= end_temp) {
-								current ++;
-							}
-							current--;
-							// Event limit, use to mouse up
-							endSelect = listdays[current];
-							endSelectEventLimit = listdays[current - 1];
-							endSelectEvent_real = end_temp;
-							event_select_drag = id;
-							var lastHeight = listdays[current - 1];
-							current ++;//= current + 2;
-							var heightTimestamp = new Date(lastHeight * 1000);
-							if(heightTimestamp.getDay() != startTimestamp.getDay())
-								var heightPosition = ((heightTimestamp.getHours()+24) * 60 + heightTimestamp.getMinutes()) * oneMinute + 24;
-							else
-								var heightPosition = (heightTimestamp.getHours() * 60 + heightTimestamp.getMinutes()) * oneMinute + 24;
-							var height = (startPosition.top + endPosition.top) - heightPosition;
-								$('#test2').html(heightPosition+' + '+(startPosition.top + endPosition.top)
-												+'<br />resultat: '+height
-												+'<br /> start pos limit'+endSelectEventLimit
-												+'<br /> start pos'+endSelect
-												+'<br /> start pos real'+endSelectEvent_real);
-							$('.'+event_select_drag).css('display', 'none');
-							divTest.append('<div class="temp_drag_end event_end" style="position: absolute; z-index: 1; top: '+(heightPosition)+'px; left: '+(startWeekDay * columnWidth + (columnWidthFirst))+'px; width: '+columnWidth+'px; height: '+height+'; background-color: '+options.color+';"></div>');
-							$('.temp_drag_end').mouseup(function () {
-								$('#'+endSelectEventLimit).mouseup();
-							})
-							$('.temp_drag_end').mouseover(function () {
-								$('#'+endSelectEventLimit).mouseover();
-								$(this).addClass('event_end');
-							})
-							return false;
-						});
-						$('#drag_bottom_'+id).mousedown(function() {
-							typeSelect = 'sizedown';
-							var start_temp = startTimestamp.getTime() / 1000;
-							var current = 0;
-							while(listdays[current] <= start_temp) {
-								current ++;
-							}
-							startSelectEventLimit = listdays[current - 1];
-							startSelect = listdays[current];
-							startSelectEvent_real = start_temp;
-							event_select_drag = id;
-							var lastHeight = listdays[current];
-							current ++;
-							var heightTimestamp = new Date(lastHeight * 1000);
-							if(heightTimestamp.getDay() != startTimestamp.getDay())
-								var heightPosition = ((heightTimestamp.getHours()+24) * 60 + heightTimestamp.getMinutes()) * oneMinute + 24;
-							else
-								var heightPosition = (heightTimestamp.getHours() * 60 + heightTimestamp.getMinutes()) * oneMinute + 24;
-							var height = heightPosition - startPosition.top;
-								$('#test2').html(heightPosition+' + '+startPosition.top
-												+'<br />resultat: '+height
-												+'<br /> start pos limit'+startSelectEventLimit
-												+'<br /> start pos'+startSelect
-												+'<br /> start pos real'+startSelectEvent_real);
-							$('.'+event_select_drag).css('display', 'none');
-							divTest.append('<div class="temp_drag_start event_start" style="position: absolute; z-index: 1; top: '+startPosition.top+'px; left: '+(startWeekDay * columnWidth + (columnWidthFirst))+'px; width: '+columnWidth+'px; height: '+height+'; background-color: '+options.color+';"></div>');
-							$('.temp_drag_start').mouseup(function () {
-								$('#'+startSelectEventLimit).mouseup();
-							})
-							$('.temp_drag_start').mouseover(function () {
-								$('#'+startSelectEventLimit).mouseover();
-								$(this).addClass('event_end');
-							})
-							return false;
-						});
 					}
 					event.week.display.position = position.position;
 					event.week.display.on = position.on;
@@ -742,7 +446,6 @@
 				
 				var methods = {
 				    draw : draw,
-				    selectEvent : selectEvent,
 				    hide : function( ) {  },
 				    addEvent : addEvent,
 				    removeEvent : removeEvent,
@@ -766,18 +469,42 @@
 			
 			$(document).ready(function () {
 				$('#test').calendar();
+				<?php 
+				$i = 0;
+				foreach ($calendar as $calendarDate) {
+					/* @var $calendarDate SF_Calendar */
+				?>
+					$('#test').calendar('addEvent', {start: <?php echo $calendarDate->beginDate ?>, end: <?php echo $calendarDate->endDate ?>, title: '<?php echo addslashes( str_replace(array("\r\n", "\r", "\n"), ' ', utf8_decode($calendarDate->summary)) . "<br/>" . utf8_decode($calendarDate->room->adr2) .  "<br/><b>" . implode(", ", $calendarDate->clientNames)."</b>"); ?>', color: '<?php echo $calendarDate->room->color; ?>', colorTitle: '#CCFF99'});
+				<?php
+					$i ++;
+				}
+				foreach ($constraints as $constraintDate) {
+					/* @var $calendarDate SF_Constraint */
+					?>
+					$('#test').calendar('addEvent', {start: <?php echo $constraintDate->beginDate ?>, end: <?php echo $constraintDate->endDate ?>, title: '<?php echo addslashes( str_replace(array("\r\n", "\r", "\n"), ' ', utf8_decode($constraintDate->comment))); ?>', color: '<?php echo $constraintDate->color; ?>', colorTitle: '#CCFF99'});
+				<?php
+					$i ++;
+				}
+				?>
+
+				var lastElement = null;
 				
-				$('#test').calendar('addEvent', {start: 1319504400, end: 1319511599, title: 'test ie 2h', color: '#CCFF99', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319493600, end: 1319500799, title: 'test ie 2h', color: '#99FF99', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319589002, end: 1319619599, title: 'test', color: '#FF9999', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319751000, end: 1319752799, title: 'test', color: '#FFCC99', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319425200, end: 1319434199, title: 'test1', color: '#FF3399', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319515200, end: 1319522399, title: 'test3', color: '#FF3333', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319946800, end: 1319956199, title: 'test2', color: '#FFCCCC', colorTitle: 'red'});
-				$('#test').calendar('addEvent', {start: 1319797800, end: 1319801399, title: 'test2', color: '#FFCCCC', colorTitle: 'red'});
+				$('.event_start.drag.event_end.main').mouseenter(
+					 function () {
+						if (lastElement != null) lastElement.hide();
+					    lastElement = $(this).next('.hidden')
+					    lastElement.show();
+					 }
+				);
+
+				$('.event_start.drag.event_end.hidden').mouseleave(
+						 function () {
+						    $(this).hide();
+						  }
+				);
 			});
 			
 			
 		</script>
 	
-	<div id="test" style="float: left; position: relative;"></div>
+	<div id="test" style="float: left; position: relative; width: 1104px;"></div>
