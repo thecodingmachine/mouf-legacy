@@ -13,6 +13,11 @@
 			<name>validators</name>
 			<version>>=2.0</version>
 		</dependency>
+		<dependency>
+			<group>database/datasource</group>
+			<name>formatters</name>
+			<version>>=2.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>BCEForm.php</require>

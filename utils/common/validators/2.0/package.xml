@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Validators</displayName>
+	<shortDescription>This package contains typical validators to be used in your application. A validator is a class that decides whether a string si valid
+	or not. For instance, you could use an EmailValidator to validate that a string is a mail, etc...</shortDescription>
+	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=2.1</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>ValidatorInterface.php</require>
+		<require>ValidatorException.php</require>
+		<require>AbstractValidator.php</require>
+		<require>EmailValidator.php</require>
+		<require>JsValidatorInterface.php</require>
+		<require>RequiredValidator.php</require>
+		<require>NumericValidator.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>ValidatorsExternalComponents.php</require>
+	</externalComponentRequires>	
+</package>
