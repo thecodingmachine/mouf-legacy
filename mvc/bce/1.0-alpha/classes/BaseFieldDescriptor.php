@@ -85,7 +85,6 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	 * @see FieldDescriptorInterface::saveValue()
 	 */
 	public function saveValue($mainBean, $value){
-		echo "<h1>$this->setter</h1>";
 		call_user_func(array($mainBean, $this->setter), $value);
 	}
 

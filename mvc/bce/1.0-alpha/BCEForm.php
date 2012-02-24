@@ -142,11 +142,9 @@ class BCEForm{
 		
 		foreach ($this->fieldDescriptors as $descriptor) {
 			$value = $postValues[$descriptor->getFieldName()];
-			echo "value : $value ->";
 			//unformat values
 			$formatter = $descriptor->getFormatter();
 			if ($formatter) $value = $formatter->unformat($value);
-			var_dump($value);echo"<br/>";
 			
 			//validate fields
 			$validators = $descriptor->getValidators();
