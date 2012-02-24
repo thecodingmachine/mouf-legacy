@@ -20,6 +20,7 @@ require_once 'User.php';
 		$user->setEmail('user@test.com');
 		$user->setRoleId(3);
 		$user->setAge(20);
+		$user->setBirthDate("1982-05-22 04:30:22");
 		
 		return $user;
 	}
@@ -35,6 +36,7 @@ require_once 'User.php';
 		$user->setEmail('user@test.com');
 		$user->setRoleId(3);
 		$user->setAge(21);
+		$user->setBirthDate("1982-05-22 04:30:22");
 		
 		return $user;
 	}
@@ -45,7 +47,7 @@ require_once 'User.php';
 	 */
 	public function save($user){
 		echo $user->getId() ? "UPDATE" : "CREATE";
-		echo " user : ".var_export($user, true);
+		echo " user : ";var_dump($user);
 	}
 	
 	/**

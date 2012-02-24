@@ -5,48 +5,22 @@ require_once 'BCERenderer.php';
  * This is a simple form rendering class, using a simple field layout :
  * 	<div>
  * 		<label></label>
- * 		[field HTML]
+ * 		<input .../>
  *	</div>
- * Enter description here ...
+ *
  * @Component
- * @author Kevin
  *
  */
 class BaseRenderer implements BCERenderer{
 	
-	/**
-	 * Enter description here ...
-	 * @Property
-	 * @var string 
-	 */
-	public $action = "save";
-	
-	/**
-	 * Enter description here ...
-	 * @Property
-	 * @var string 
-	 */
-	public $method = "POST";
-	
-	/**
-	* Enter description here ...
-	* @Property
-	* @var string
-	*/
-	public $name = "default_form";
-	
-	/**
-	* Enter description here ...
-	* @Property
-	* @var string
-	*/
-	public $id = "default_id";
-	
-	
-	public function render($fieldDescriptors){
+	public function render(BCEForm $form){
+		$fieldDescriptors = $form->fieldDescriptors;
 ?>
-	<form action="<?php echo $this->action; ?>" method="<?php echo $this->method?>" name="<?php echo $this->name;?>" id="<?php echo $this->id ?>">
+	<form action="<?php echo $form->action; ?>" method="<?php echo $form->method?>" name="<?php echo $form->name;?>" id="<?php echo $form->id ?>">
 		<?php
+		$idDescriptor = $form->idFieldValidator;
+		$idRenderer = $idDescriptor->getRenderer();
+		echo $idRenderer->render($idDescriptor);
 		foreach ($fieldDescriptors as $descriptor) {
 			/* @var $descriptor FieldDescriptorInterface */
 			$renderer = $descriptor->getRenderer();
@@ -58,7 +32,7 @@ class BaseRenderer implements BCERenderer{
 			<?php
 		}
 		?>
-	<button type="submit">Submit</button>
+	<input type="submit" value="Submit" class="submit">
 	</form>
 <?php
 	}

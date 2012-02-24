@@ -7,6 +7,13 @@
 		<page title="Introduction to Splash" url="index.html" />
 	</doc>
 	<logo>icons/logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/common</group>
+			<name>validators</name>
+			<version>>=2.0</version>
+		</dependency>
+	</dependencies>
 	<requires>
 		<require>BCEForm.php</require>
 		<require>classes/userDAO.php</require>
@@ -23,8 +30,7 @@
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
 		<require>classes/user.php</require>
-		<require>classes/validators/ValidatorInterface.php</require>
-		<require>classes/validators/BaseValidator.php</require>
-		<require>classes/validators/NumericValidator.php</require>
+		<require>classes/validators/JsValidationHandlerInterface.php</require>
+		<require>classes/validators/JQueryValidateHandler.php</require>
 	</requires>
 </package>

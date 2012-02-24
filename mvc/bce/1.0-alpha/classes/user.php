@@ -8,6 +8,7 @@
 	public $id;
 	public $name;
 	public $email;
+	public $brithDate;
 	public $age;
 	public $roleId;
 	
@@ -50,6 +51,14 @@
 	
 	public function setAge($age){
 		$this->age = $age;
+	}
+	
+	public function getBirthDate(){
+		return $this->brithDate;
+	}
+	
+	public function setBirthDate($date){
+		$this->brithDate = $date;
 	}
 	
 	

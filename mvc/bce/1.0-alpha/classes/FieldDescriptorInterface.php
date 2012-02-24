@@ -5,7 +5,6 @@ interface FieldDescriptorInterface{
 	 * Returns the name of the field.
 	 * This name is unique for the whole form,
 	 * and is used by default for the name and id attributes.
-	 * Enter description here ...
 	 */
 	public function getFieldName();
 	
@@ -19,9 +18,9 @@ interface FieldDescriptorInterface{
 	/**
 	 * The field descriptor may have a validator 
 	 * @Property
-	 * @return ValidatorInterface
+	 * @return array<PhpValidatorInterface>
 	 */
-	public function getValidator();
+	public function getValidators();
 	
 	/**
 	 * The value of the field is set into the descriptor when form is loaded
@@ -42,12 +41,26 @@ interface FieldDescriptorInterface{
 	* @param mixed $mainBean
 	*/
 	public function load($mainBean);
+	
+	/**
+	* This function is called when the Form's bean is being saved to set beans property 
+	*
+	* @param mixed $mainBean
+	* @param mixed $value
+	*/
+	public function saveValue($mainBean, $value);
 
 	/**
 	 * Gets the Label of the field as displayed in the form
 	 * @return string
 	 */
 	public function getFieldLabel();
+	
+	/**
+	 * Gets the formatter instance of the descriptor
+	 * @return BijectiveFormatterInterface
+	 */
+	public function getFormatter();
 	
 	
 }
