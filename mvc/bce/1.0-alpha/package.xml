@@ -21,7 +21,7 @@
 	</dependencies>
 	<requires>
 		<require>BCEForm.php</require>
-		<require>classes/userDAO.php</require>
+		<require>classes/UserDAO.php</require>
 		<require>classes/BaseRenderer.php</require>
 		<require>classes/FieldDescriptorInterface.php</require>
 		<require>classes/BaseFieldDescriptor.php</require>
@@ -34,7 +34,7 @@
 		<require>classes/RoleDAO.php</require>
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
-		<require>classes/user.php</require>
+		<require>classes/User.php</require>
 		<require>classes/validators/JsValidationHandlerInterface.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
 	</requires>
