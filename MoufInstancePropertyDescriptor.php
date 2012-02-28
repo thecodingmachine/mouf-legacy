@@ -174,15 +174,60 @@ class MoufInstancePropertyDescriptor {
 		} else {
 			// This is an array of objects
 			if ($this->propertyDescriptor->isPublicFieldProperty()) {
-				$instanceName = $this->moufManager->getBoundComponentOnProperty($this->instanceDescriptor->getName(), $this->name);
+				$instanceName = $this->moufManager->getBoundComponentsOnProperty($this->instanceDescriptor->getName(), $this->name);
 			} elseif ($this->propertyDescriptor->isSetterProperty()) {
-				$instanceName = $this->moufManager->getBoundComponentOnSetter($this->instanceDescriptor->getName(), $this->name);
+				$instanceName = $this->moufManager->getBoundComponentsOnSetter($this->instanceDescriptor->getName(), $this->name);
 			} else {
 				throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 			}
 			
-			return $this->moufManager->getInstanceDescriptor($instanceName);		
+			if ($instanceName != null) {
+				return $this->moufManager->getInstanceDescriptor($instanceName);
+			} else {
+				return null;
+			}
 		}
 	
+	}
+	
+	/**
+	 * Returns metadata for this property
+	 * 
+	 * @param array $array
+	 * @throws MoufException
+	 */
+	public function setMetaData($array) {
+		// TODO!
+	}
+	
+	/**
+	 * Returns metadata for this property
+	 * 
+	 * @return string
+	 */
+	public function getMetaData() {
+		if ($this->propertyDescriptor->isPublicFieldProperty()) {
+			return $this->moufManager->getParameterMetadata($this->instanceDescriptor->getName(), $this->name);
+		} elseif ($this->propertyDescriptor->isSetterProperty()) {
+			return $this->moufManager->getParameterMetadataForSetter($this->instanceDescriptor->getName(), $this->name);
+		} else {
+			throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
+		}
+	}
+	
+	/**
+	 * Returns the parameter "origin" (where the value that feeds the parameter comes from).
+	 * Can be one of "string|config|request|session"
+	 * 
+	 * @return string
+	 */
+	public function getOrigin() {
+		if ($this->propertyDescriptor->isPublicFieldProperty()) {
+			return $this->moufManager->getParameterType($this->instanceDescriptor->getName(), $this->name);
+		} elseif ($this->propertyDescriptor->isSetterProperty()) {
+			return $this->moufManager->getParameterTypeForSetter($this->instanceDescriptor->getName(), $this->name);
+		} else {
+			throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
+		}
 	}
 }
