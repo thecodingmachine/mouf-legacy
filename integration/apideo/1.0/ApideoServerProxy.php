@@ -145,7 +145,7 @@ class ApideoServerProxy {
 			$fields_string  .= 'param[]='.urlencode($value).'&';
 		}
 		
-		rtrim($fields_string,'&');
+		$fields_string = rtrim($fields_string,'&');
 		
 		// preparation de l'envoi
 		$ch = curl_init();
