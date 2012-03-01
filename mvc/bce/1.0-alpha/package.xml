@@ -38,4 +38,9 @@
 		<require>classes/validators/JsValidationHandlerInterface.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
 	</requires>
+	<adminRequires>
+		<require>admin/BCEAdminClasses.php</require>
+		<require>controllers/BceConfigController.php</require>
+		<require>BCEAdmin.php</require>
+	</adminRequires>
 </package>

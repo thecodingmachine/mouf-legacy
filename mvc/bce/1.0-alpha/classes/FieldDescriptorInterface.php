@@ -58,7 +58,7 @@ interface FieldDescriptorInterface{
 	
 	/**
 	 * Gets the formatter instance of the descriptor
-	 * @return BijectiveFormatterInterface
+	 * @return FormatterInterface
 	 */
 	public function getFormatter();
 	

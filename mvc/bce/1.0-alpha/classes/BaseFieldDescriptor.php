@@ -21,7 +21,7 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	 * Optional formatter that will display a formatted value (example 2012-01-30 --> 01/30/2012).
 	 * The formatter is also responsible for the reverse operation (01/30/2012 --> 2012-01-30).
 	 * @Property
-	 * @var BijectiveFormatterInterface
+	 * @var FormatterInterface
 	 */
 	public $formatter;
 
@@ -136,6 +136,10 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 		return $this->label;
 	}
 
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldDescriptorInterface::getFormatter()
+	 */
 	function getFormatter(){
 		return $this->formatter;
 	}

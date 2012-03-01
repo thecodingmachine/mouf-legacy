@@ -9,7 +9,6 @@
 		<require>MoufImageResource.php</require>
 		<require>filters/MoufImageFromFile.php</require>
 		<require>filters/MoufImageResize.php</require>
-		<require>render/StaticImageDisplayer.php</require>
 	</requires>
 	<dependencies>
 	</dependencies>

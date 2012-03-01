@@ -11,6 +11,7 @@
  *   <li>a javascript validation handler that will generate the client side validation script</li>
  * </ul>
  * @Component
+ * @ExtendedAction {"name":"Configure Form", "url":"mouf/bceadmin/", "default":false}
  * @author Kevin
  *
  */
@@ -32,7 +33,7 @@ class BCEForm{
 	 * @Property 
 	 * @var FieldDescriptorInterface
 	 */
-	public $idFieldValidator;
+	public $idFieldDescriptor;
 	
 	/**
 	 * The DAO reponsible of retrieving bean data and persist them
@@ -144,7 +145,9 @@ class BCEForm{
 			$value = $postValues[$descriptor->getFieldName()];
 			//unformat values
 			$formatter = $descriptor->getFormatter();
-			if ($formatter) $value = $formatter->unformat($value);
+			if ($formatter && $formatter instanceof BijectiveFormatterInterface) {
+				$value = $formatter->unformat($value);
+			}
 			
 			//validate fields
 			$validators = $descriptor->getValidators();

@@ -12,6 +12,7 @@ require_once 'User.php';
 	/**
 	 * (non-PHPdoc)
 	 * @see DAOInterface::getById()
+	 * @return User
 	 */
 	public function getById($id){
 		$user = new user();
@@ -28,6 +29,7 @@ require_once 'User.php';
 	/**
 	 * (non-PHPdoc)
 	 * @see DAOInterface::getNew()
+	 * @return User
 	 */
 	public function getNew(){
 		$user = new user();
