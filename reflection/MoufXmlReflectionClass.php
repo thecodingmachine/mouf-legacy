@@ -160,6 +160,24 @@ class MoufXmlReflectionClass {
     	}
     	return null;
     }
+    
+	/**
+     * returns methods mathcing the given pattern
+     *
+     * @param   string $regex the regular expression to match (without trailing slashes)
+     * @return  array<MoufXmlReflectionMethod>
+     */
+    public function getMethodsByPattern($regex)
+    {
+    	$methods = array();
+        foreach ($this->xmlRoot->method as $method) {
+    		if (preg_match("/$regex/", $method['name'])) {
+		        $moufRefMethod = new MoufXmlReflectionMethod($this, $method);
+		        $methods[] = $moufRefMethod;
+    		}
+    	}
+    	return $methods;
+    }
 
     /**
      * returns a list of all methods
