@@ -173,6 +173,10 @@ class ApideoServerProxy {
 			throw new ApideoServerProxyException("An error occured while executing remote function '".$functionName."' for Apideo key: ".$apideoKey.", room '".$roomName."'. Response: ".$response);
 		} 
 		
+		if (isset($jsonObj->error) && $jsonObj->error) {
+			throw new ApideoServerProxyException("An error occured while executing remote function '".$functionName."' for Apideo key: ".$apideoKey.", room '".$roomName."'. Error message: ".$jsonObj->error->message);
+		}
+		
 		return $jsonObj;
 	}
 }
