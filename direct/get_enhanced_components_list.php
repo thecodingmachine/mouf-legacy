@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the Mouf core package.
+ *
+ * (c) 2012 David Negrier <david@mouf-php.com>
+ *
+ * For the full copyright and license information, please view the LICENSE.txt
+ * file that was distributed with this source code.
+ */
+ 
 /**
  * Returns a serialized string representing the array for all components declarations (classes with the @Component annotation),
  * along additional interesting infos (subclasses, name of the declaration file, etc...)

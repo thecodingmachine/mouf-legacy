@@ -1,4 +1,13 @@
 <?php
+/*
+ * This file is part of the Mouf core package.
+ *
+ * (c) 2012 David Negrier <david@mouf-php.com>
+ *
+ * For the full copyright and license information, please view the LICENSE.txt
+ * file that was distributed with this source code.
+ */
+ 
 /**
  * An interface implemented by controllers that can display a package list (using the displayGroup function).
  */

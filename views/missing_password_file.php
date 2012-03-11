@@ -1,3 +1,14 @@
+<?php
+/*
+ * This file is part of the Mouf core package.
+ *
+ * (c) 2012 David Negrier <david@mouf-php.com>
+ *
+ * For the full copyright and license information, please view the LICENSE.txt
+ * file that was distributed with this source code.
+ */
+ 
+?>
 <h1>Login</h1>
 <p>In order to log into Mouf, you need to have an account.</p>
 <p>Accounts (login and credentials) are stored in the "MoufUsers.php" file, in the root directory of your web application.
