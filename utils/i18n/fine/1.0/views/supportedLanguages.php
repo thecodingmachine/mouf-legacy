@@ -1,3 +1,11 @@
+<?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
+?>
 <h1>Supported languages</h1>
 
 <p>You application supports these languages: <?php 

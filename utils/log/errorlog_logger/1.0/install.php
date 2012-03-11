@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 // First, let's request the install utilities
 require_once '../../../../../mouf/actions/InstallUtils.php';
 

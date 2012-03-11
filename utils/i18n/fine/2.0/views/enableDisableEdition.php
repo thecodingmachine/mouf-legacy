@@ -1,3 +1,11 @@
+<?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
+?>
 <h1>Message edition</h1>
 <p>When navigating in your application, you can have links automatically added by Fine to edit your messages. By enabling 
 the message edition feature, you will be able to edit messages directly into you web application.</p>

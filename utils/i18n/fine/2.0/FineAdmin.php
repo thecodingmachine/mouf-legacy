@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 MoufUtils::registerMainMenu('htmlMainMenu', 'HTML', null, 'mainMenu', 40);
 MoufUtils::registerMenuItem('htmlFineMainMenu', 'Fine', null, 'htmlMainMenu', 10);
 MoufUtils::registerMenuItem('htmlFineSupportedLanguagesMenuItem', 'Supported languages', 'javascript:chooseInstancePopup("FinePHPArrayTranslationService", "'.ROOT_URL.'mouf/editLabels/supportedLanguages?name=", "'.ROOT_URL.'", "'.ROOT_URL.'")', 'htmlFineMainMenu', 40);

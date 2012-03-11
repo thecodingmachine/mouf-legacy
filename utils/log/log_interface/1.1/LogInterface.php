@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 
 /**
  * This is the base interface any logger should inherit.

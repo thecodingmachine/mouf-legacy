@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 
 /**
  * Every object extending this interface can be rendered in an HTML page, using the toHtml function.

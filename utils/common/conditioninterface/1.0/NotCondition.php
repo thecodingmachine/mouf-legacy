@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 
 /**
  * A NotCondition is a condition that is matched if the condition it contains is NOT matched.

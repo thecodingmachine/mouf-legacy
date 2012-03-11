@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 header('Content-Type: application/vnd.ms-excel');
 header('Content-Disposition: attachment;filename="export_fine_'.date("Y-m-d").'.xls"');
 header('Cache-Control: max-age=0');

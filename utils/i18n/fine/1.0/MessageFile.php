@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 /**
  * The MessageFile class represents a PHP resource file that can be loaded / saved / modified.
  */

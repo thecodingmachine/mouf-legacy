@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 // This file validates that there are no missing labels in the default labels.
 // If not, an alert is raised.
 

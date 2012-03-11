@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 /**
  * The FineMessageLanguage class represents a PHP resource file that can be loaded / saved / modified.
  * There are many files for on language. Files are write with the start information of the key. Function used the separator ., - or _. 

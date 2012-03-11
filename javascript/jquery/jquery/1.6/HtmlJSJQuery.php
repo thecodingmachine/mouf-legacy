@@ -17,6 +17,11 @@ class HtmlJSJQuery implements HtmlElementInterface {
 	 */
 	public $noConflictMode;
 	
+	/**
+	 * Renders the object in HTML.
+	 * The Html is echoed directly into the output.
+	 *
+	 */
 	public function toHtml() {
 		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/jquery/jquery/1.6/jquery-1.6.min.js"></script>';
 		if ($this->noConflictMode) {

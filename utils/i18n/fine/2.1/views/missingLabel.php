@@ -1,3 +1,11 @@
+<?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
+?>
 <script type="text/javascript">
 jQuery(document).ready(function() {
 	jQuery('#fine_missingLabel').fixedtableheader();

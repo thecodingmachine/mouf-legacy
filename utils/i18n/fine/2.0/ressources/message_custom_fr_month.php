@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 $msg['month.1']="janvier";
 $msg['month.10']="octobre";
 $msg['month.11']="novembre";

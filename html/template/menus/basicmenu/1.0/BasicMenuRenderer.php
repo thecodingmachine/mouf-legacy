@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 
 /**
  * This class is in charge of rendering a menu. It contains a menu and can transform it in HTML using the toHtml() method.

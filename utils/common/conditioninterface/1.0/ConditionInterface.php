@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 /**
  * A condition is a class that possesses an "isOk" method. The condition returns true if the condition is met,
  * and false otherwise.

@@ -1,3 +1,11 @@
+<?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
+?>
 <style type="text/css">
 	table#fin_searchlabel th {
 		background-color: #CCCCCC;

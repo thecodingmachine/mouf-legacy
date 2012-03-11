@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 //require_once dirname(__FILE__).'/../FineMessageLanguage.php';
 require_once dirname(__FILE__).'/../views/editLabel.php';
 

@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 // This file validates that a "splash" instance exists.
 // If not, an alert is raised.
 if (!isset($_REQUEST["selfedit"]) || $_REQUEST["selfedit"]!="true") {

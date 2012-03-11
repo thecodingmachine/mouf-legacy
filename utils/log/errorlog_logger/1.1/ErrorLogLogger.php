@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 //require_once(dirname(__FILE__)."/../../log_interface/1.0/LogInterface.php");
 
 /**

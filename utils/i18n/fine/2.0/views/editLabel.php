@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 function editLabel($key, $label, $language, $messagesArray, $is_success, $backto, $msgInstanceName, $selfedit, $saved) {
 ?>
 <h1>Label edition screen</h1>

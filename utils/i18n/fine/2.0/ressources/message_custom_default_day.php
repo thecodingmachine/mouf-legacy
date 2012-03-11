@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 $msg['day.0']="sundy";
 $msg['day.1']="monday";
 $msg['day.2']="tuesday";

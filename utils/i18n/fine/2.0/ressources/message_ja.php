@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) 2012 David Negrier
+ * 
+ * See the file LICENSE.txt for copying permission.
+ */
+
 $msg['date.format.php.short']="yy/mm/dd";
 $msg['month.1']="1月";
 $msg['month.2']="2月";
