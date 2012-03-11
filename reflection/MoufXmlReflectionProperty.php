@@ -1,4 +1,6 @@
 <?php
+require_once 'MoufReflectionPropertyInterface.php';
+
 /**
  * This class behaves like MoufReflectionProperty, except it is completely based on a Xml message.
  * It does not try to access the real class.
@@ -6,7 +8,7 @@
  * be useful.
  *  
  */
-class MoufXmlReflectionProperty
+class MoufXmlReflectionProperty implements MoufReflectionPropertyInterface
 {
 	/**
 	 * The XML message we will analyse
@@ -89,6 +91,18 @@ class MoufXmlReflectionProperty
 	public function getDocComment() {
 		return (string)($this->xmlElem->comment);
 	}
+	
+	/**
+	 * Returns the MoufPhpDocComment instance
+	 *
+	 * @return MoufPhpDocComment
+	 */
+	public function getMoufPhpDocComment() {
+		$this->analyzeComment();
+		return $this->docComment;
+	}
+	
+	
     
 	/**
 	 * Analyzes and parses the comment (if it was not previously done).

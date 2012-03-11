@@ -60,8 +60,8 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'XajaAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/filters/XajaAnnotation.php',
   'ApplicationException' => 'mouf/../plugins/mvc/splash-common/3.2/utils/ApplicationException.php',
   'AnnotationException' => 'mouf/../plugins/mvc/splash-common/3.2/utils/annotations/AnnotationException.php',
-  'varAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/utils/annotations/paramAnnotation.php',
-  'paramAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/utils/annotations/paramAnnotation.php',
+  'varAnnotation' => 'mouf/annotations/varAnnotation.php',
+  'paramAnnotation' => 'mouf/annotations/paramAnnotation.php',
   'URLAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/utils/annotations/URLAnnotation.php',
   'TitleAnnotation' => 'mouf/../plugins/mvc/splash-common/3.2/utils/annotations/TitleAnnotation.php',
   'ParamAnnotationAnalyzer' => 'mouf/../plugins/mvc/splash-common/3.2/utils/ParamAnnotationAnalyzer.php',
@@ -109,7 +109,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'MoufActionRedirectResult' => 'mouf/actions/MoufActionRedirectResult.php',
   'MoufActionDoneResult' => 'mouf/actions/MoufActionDoneResult.php',
   'Moufspector' => 'mouf/controllers/MoufController.php',
-  'MoufPropertyDescriptor' => 'mouf/controllers/MoufController.php',
+  'MoufPropertyDescriptor' => 'mouf/MoufPropertyDescriptor.php',
   'OneOfAnnotation' => 'mouf/controllers/MoufController.php',
   'MoufAnnotationHelper' => 'mouf/controllers/MoufController.php',
   'OneOfTextAnnotation' => 'mouf/controllers/MoufController.php',
@@ -121,6 +121,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'PackageController' => 'mouf/controllers/PackageController.php',
   'AbstractMoufInstanceController' => 'mouf/controllers/MoufInstanceController.php',
   'MoufInstanceController' => 'mouf/controllers/MoufInstanceController.php',
+  'MoufAjaxInstanceController' => 'mouf/controllers/MoufAjaxInstanceController.php',
   'MoufDisplayGraphController' => 'mouf/controllers/MoufDisplayGraphController.php',
   'ConfigController' => 'mouf/controllers/ConfigController.php',
   'MoufValidatorController' => 'mouf/controllers/MoufValidatorController.php',
@@ -143,9 +144,6 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'MoufActionResultInteface' => 'mouf/actions/MoufActionResultInterface.php',
   'MoufInstanceDescriptor' => 'mouf/MoufInstanceDescriptor.php',
   'MoufInstancePropertyDescriptor' => 'mouf/MoufInstancePropertyDescriptor.php',
-  'MoufPropertyDescriptor' => 'mouf/MoufPropertyDescriptor.php',
-  'varAnnotation' => 'mouf/annotations/varAnnotation.php',
-  'paramAnnotation' => 'mouf/annotations/paramAnnotation.php',
 ));
 spl_autoload_register(array(MoufManager::getMoufManager(), "autoload"));
 // Packages dependencies
@@ -261,6 +259,7 @@ require_once $localFilePath.'/controllers/MoufRootController.php';
 require_once $localFilePath.'/controllers/ComponentsController.php';
 require_once $localFilePath.'/controllers/PackageController.php';
 require_once $localFilePath.'/controllers/MoufInstanceController.php';
+require_once $localFilePath.'/controllers/MoufAjaxInstanceController.php';
 require_once $localFilePath.'/controllers/MoufDisplayGraphController.php';
 require_once $localFilePath.'/controllers/ConfigController.php';
 require_once $localFilePath.'/controllers/MoufValidatorController.php';

@@ -1,4 +1,5 @@
 <?php
+require_once 'MoufReflectionClassInterface.php';
 require_once 'MoufPhpDocComment.php';
 require_once 'MoufReflectionMethod.php';
 require_once 'MoufReflectionProperty.php';
@@ -7,7 +8,7 @@ require_once 'MoufReflectionProperty.php';
  * Reflection class extending ReflectionClass in order to access annotations.
  * 
  */
-class MoufReflectionClass extends ReflectionClass {
+class MoufReflectionClass extends ReflectionClass implements MoufReflectionClassInterface {
 	
 	/**
 	 * The phpDocComment we will use to access annotations.
@@ -240,6 +241,55 @@ class MoufReflectionClass extends ReflectionClass {
         return $moufRefExtension;
     }
     
+    /**
+    * The list of Mouf properties this class contains.
+    * This is initialized by a call to getMoufProperties()
+    *
+    * @var array<MoufPropertyDescriptor> An array containing MoufXmlReflectionProperty objects.
+    */
+    private $moufProperties = null;
+    
+    /**
+     * Returns a list of properties that have the @Property annotation (and a list of setter that have the @Property annotation)
+     *
+     * @return array<string, MoufPropertyDescriptor> An array containing MoufXmlReflectionProperty objects.
+     */
+    public function getMoufProperties() {
+    	require_once 'MoufReflectionHelper.php';
+    	if ($this->moufProperties === null) {
+    		$this->moufProperties = MoufReflectionHelper::getMoufProperties($this);
+    	}
+    	 
+    	return $this->moufProperties;
+    }
+    
+    /**
+     * Returns the Mouf property whose name is $name
+     * The property name is the "name" of the public property, or the "setter function name" of the setter-based property.
+     *
+     * @param string $name
+     * @return MoufPropertyDescriptor
+     */
+    public function getMoufProperty($name) {
+    	$moufProperties = $this->getMoufProperties();
+    	if (isset($moufProperties[$name])) {
+    		return $moufProperties[$name];
+    	} else {
+    		return null;
+    	}
+    	 
+    }
+    
+    /**
+     * Returns the full MoufPhpDocComment
+     * 
+     * @return MoufPhpDocComment
+     */
+    public function getMoufDocComment() {
+    	$this->analyzeComment();
+    	return $this->docComment;
+    }
+    
     public function toXml() {
     	$root = simplexml_load_string("<class name=\"".$this->getName()."\"></class>");
     	$comment = $root->addChild("comment", $this->getDocComment());
@@ -254,6 +304,17 @@ class MoufReflectionClass extends ReflectionClass {
     	
     	$xml = $root->asXml();
     	return $xml;
+    }
+    
+    /**
+     * Returns a PHP array representing the class.
+     * 
+     * @return array
+     */
+    public function toJson() {
+    	require_once __DIR__."/MoufReflectionHelper.php";
+    	
+    	return MoufReflectionHelper::classToJson($this);
     }
 
 }

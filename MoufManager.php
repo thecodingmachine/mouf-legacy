@@ -600,7 +600,11 @@ class MoufManager {
 	 */
 	public function getParameter($instanceName, $paramName) {
 		// todo: improve this
-		return $this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['value'];
+		if (isset($this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['value'])) {
+			return $this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['value'];
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -612,7 +616,11 @@ class MoufManager {
 	 */
 	public function getParameterForSetter($instanceName, $setterName) {
 		// todo: improve this
-		return $this->declaredInstances[$instanceName]['setterProperties'][$setterName]['value'];
+		if (isset($this->declaredInstances[$instanceName]['setterProperties'][$setterName]['value'])) {
+			return $this->declaredInstances[$instanceName]['setterProperties'][$setterName]['value'];
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -623,7 +631,11 @@ class MoufManager {
 	 * @return string
 	 */
 	public function getParameterType($instanceName, $paramName) {
-		return $this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['type'];
+		if (isset($this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['type'])) {
+			return $this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['type'];
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -634,8 +646,13 @@ class MoufManager {
 	 * @return string
 	 */
 	public function getParameterTypeForSetter($instanceName, $setterName) {
-		return $this->declaredInstances[$instanceName]['setterProperties'][$setterName]['type'];
+		if (isset($this->declaredInstances[$instanceName]['setterProperties'][$setterName]['type'])) {
+			return $this->declaredInstances[$instanceName]['setterProperties'][$setterName]['type'];
+		} else {
+			return null;
+		}
 	}
+	
 
 	/**
 	 * Returns the metadata for the given parameter.
@@ -1966,7 +1983,31 @@ class ".$this->mainClassName." {
 	 */
 	public function getClassDescriptor($className) {
 		if (!isset($this->classDescriptors[$className])) {
-			$this->classDescriptors[$className] = MoufReflectionProxy::getClass($className, $this->getScope() == self::SCOPE_ADMIN);
+			// FIXME: il faudrait optimiser pour faire en sorte qu'on puisse appeler cette métode même hors du contexte de Mouf administration UI.
+			// Pour cela, il faudrait savoir si quel class-loader est actif!!!!
+			if (MoufManager::getMoufManager()->getScope() == self::SCOPE_APP && $this->getScope() == self::SCOPE_APP) {
+				// We are fully in the scope of the application:
+				
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
+				$this->classDescriptors[$className] = new MoufReflectionClass($className);
+			} else {
+				$this->classDescriptors[$className] = MoufReflectionProxy::getClass($className, $this->getScope() == self::SCOPE_ADMIN);
+			}
 		}
 		return $this->classDescriptors[$className];
 	}

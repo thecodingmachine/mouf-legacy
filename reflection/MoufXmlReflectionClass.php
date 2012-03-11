@@ -1,4 +1,5 @@
 <?php
+require_once 'MoufReflectionClassInterface.php';
 require_once 'MoufPhpDocComment.php';
 require_once 'MoufXmlReflectionMethod.php';
 require_once 'MoufXmlReflectionProperty.php';
@@ -10,7 +11,7 @@ require_once 'MoufXmlReflectionProperty.php';
  * be useful.
  * 
  */
-class MoufXmlReflectionClass {
+class MoufXmlReflectionClass implements MoufReflectionClassInterface {
 	
 	/**
 	 * The XML message we will analyse
@@ -57,7 +58,7 @@ class MoufXmlReflectionClass {
 		return (string)($this->xmlRoot->comment);
 	}
 	
-	public function isPublic() {
+	/*public function isPublic() {
 		return $this->xmlRoot['modifier']=="public";
 	}
 
@@ -83,7 +84,7 @@ class MoufXmlReflectionClass {
 	
 	public function isConstructor() {
 		return $this->xmlRoot['constructor']=="true";
-	}
+	}*/
 	
 	/**
 	 * Analyzes and parses the comment (if it was not previously done).
@@ -105,6 +106,17 @@ class MoufXmlReflectionClass {
 		
 		return $this->docComment->getComment();
 	}
+
+	/**
+	 * Returns the full MoufPhpDocComment
+	 *
+	 * @return MoufPhpDocComment
+	 */
+	public function getMoufDocComment() {
+		$this->analyzeComment();
+		return $this->docComment;
+	}
+	
 	
 	/**
 	 * Returns the number of declared annotations of type $annotationName in the class comment.
@@ -248,26 +260,10 @@ class MoufXmlReflectionClass {
      * @return array<string, MoufPropertyDescriptor> An array containing MoufXmlReflectionProperty objects.
      */
     public function getMoufProperties() {
+    	require_once __DIR__."/MoufReflectionHelper.php";
+    	 
     	if ($this->moufProperties === null) {
-    		$this->moufProperties = array();
-    		 
-    		foreach($this->getProperties() as $attribute) {
-    			/* @var $attribute MoufXmlReflectionProperty */
-    			if ($attribute->hasAnnotation("Property")) {
-    				$propertyDescriptor = new MoufPropertyDescriptor($attribute);
-    				//$this->moufProperties[] = $attribute;
-    				$this->moufProperties[$attribute->getName()] = $propertyDescriptor;
-    			}
-    		}
-    		 
-    		foreach($this->getMethods() as $method) {
-    			/* @var $attribute MoufXmlReflectionProperty */
-    			if ($method->hasAnnotation("Property")) {
-    				$propertyDescriptor = new MoufPropertyDescriptor($method);
-    				//$this->moufProperties[] = $attribute;
-    				$this->moufProperties[$method->getName()] = $propertyDescriptor;
-    			}
-    		}
+    		$this->moufProperties = MoufReflectionHelper::getMoufProperties($this);
     	}
     	
     	return $this->moufProperties;

@@ -1,11 +1,12 @@
 <?php
 require_once 'MoufReflectionParameter.php';
+require_once 'MoufReflectionMethodInterface.php';
 
 /**
  * Extended Reflection class for class methods that allows usage of annotations.
  * 
  */
-class MoufReflectionMethod extends ReflectionMethod
+class MoufReflectionMethod extends ReflectionMethod implements MoufReflectionMethodInterface
 {
     /**
      * name of the reflected class
@@ -162,6 +163,16 @@ class MoufReflectionMethod extends ReflectionMethod
         }
         
         return $moufParameters;
+    }
+    
+    /**
+     * Returns the MoufPhpDocComment instance
+     *
+     * @return MoufPhpDocComment
+     */
+    public function getMoufPhpDocComment() {
+    	$this->analyzeComment();
+    	return $this->docComment;
     }
 
    	/**

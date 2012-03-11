@@ -14,7 +14,7 @@ class MoufPropertyDescriptor {
 	private $methodName;
 	
 	/**
-	 * A MoufXmlReflectionProperty or a MoufXmlReflectionMethod (depending on the kind of property: field or setter)
+	 * A MoufReflectionPropertyInterface or a MoufReflectionMethodInterface (depending on the kind of property: field or setter)
 	 *
 	 * @var mixed
 	 */
@@ -25,18 +25,18 @@ class MoufPropertyDescriptor {
 	private $subType;
 	
 	/**
-	 * Constructs the MoufPropertyDescriptor from a MoufXmlReflectionProperty or a MoufXmlReflectionMethod (depending on the object passed in parameter)
+	 * Constructs the MoufPropertyDescriptor from a MoufReflectionPropertyInterface or a MoufReflectionMethodInterface (depending on the object passed in parameter)
 	 *
 	 * @param mixed $object a MoufXmlReflectionProperty or a MoufXmlReflectionMethod
 	 */
 	public function __construct($object) {
 		$this->object = $object;
 		
-		if (!$object instanceof MoufXmlReflectionProperty && !$object instanceof MoufXmlReflectionMethod) {
+		if (!$object instanceof MoufReflectionPropertyInterface && !$object instanceof MoufReflectionMethodInterface) {
 			throw new MoufException("Error while creating MoufPropertyDescriptor. Invalid object passed in parameter.");
 		}
 		
-		if ($object instanceof MoufXmlReflectionMethod) {
+		if ($object instanceof MoufReflectionMethodInterface) {
 			// Let's perform basic checks to see if this can be a real getter.
 			// First, does it start with "set"?
 			$methodName = $object->getName();
@@ -64,7 +64,7 @@ class MoufPropertyDescriptor {
 	}
 	
 	private function analyzeType() {
-		if ($this->object instanceof MoufXmlReflectionProperty) {
+		if ($this->object instanceof MoufReflectionPropertyInterface) {
 			$property = $this->object;
 			if ($property->hasAnnotation("var")) {
 				$varTypes = $property->getAnnotations("var");
@@ -233,7 +233,7 @@ class MoufPropertyDescriptor {
 	 * @return bool
 	 */
 	public function isPublicFieldProperty() {
-		return $this->object instanceof MoufXmlReflectionProperty;
+		return $this->object instanceof MoufReflectionPropertyInterface;
 	}
 
 	/**
@@ -242,7 +242,7 @@ class MoufPropertyDescriptor {
 	 * @return bool
 	 */
 	public function isSetterProperty() {
-		return $this->object instanceof MoufXmlReflectionMethod;
+		return $this->object instanceof MoufReflectionMethodInterface;
 	}
 	
 	/**
@@ -252,6 +252,15 @@ class MoufPropertyDescriptor {
 	 */
 	public function getMethodName() {
 		return $this->methodName;
+	}
+	
+	/**
+	 * Returns true if the type of this property is an array.
+	 * 
+	 * @return string
+	 */
+	public function isArray() {
+ 		return !empty($this->subType);
 	}
 	
 	/**

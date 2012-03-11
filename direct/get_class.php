@@ -22,6 +22,19 @@ require_once 'utils/check_rights.php';
 
 //$res = MoufManager::getMoufManager()->findInstances($_REQUEST["class"]);
 $class = new MoufReflectionClass($_REQUEST["class"]);
-echo $class->toXml();
+
+if (isset($_REQUEST["encode"]) && $_REQUEST["encode"]=="json") {
+	$classArray = array();
+	$classArray[$_REQUEST["class"]] = $class->toJson();
+	while ($class->getParentClass() != null) {
+		$class = $class->getParentClass();
+		$classArray[$class->getName()] = $class->toJson();
+	}
+	 
+	$response = array("classes" => $classArray);
+	echo json_encode($response);
+} else {
+	echo $class->toXml();
+}
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+require_once 'MoufReflectionMethodInterface.php';
 require_once 'MoufXmlReflectionParameter.php';
 
 /**
@@ -8,7 +9,7 @@ require_once 'MoufXmlReflectionParameter.php';
  * be useful.
  *  
  */
-class MoufXmlReflectionMethod
+class MoufXmlReflectionMethod implements MoufReflectionMethodInterface
 {
 	/**
 	 * The XML message we will analyse

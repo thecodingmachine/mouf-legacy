@@ -21,6 +21,14 @@ class MoufInstanceDescriptor {
 	private $name;
 	
 	/**
+	 * A list of properties (not the list of all properties).
+	 * Used for caching.
+	 * 
+	 * @var array<MoufInstancePropertyDescriptor>
+	 */
+	private $properties = array();
+	
+	/**
 	 * The constructor should exclusively be used by MoufManager.
 	 * Use MoufManager::getInstanceDescriptor and MoufManager::createInstance to get instances of this class.
 	 * 
@@ -95,7 +103,10 @@ class MoufInstanceDescriptor {
 	 * @return MoufInstancePropertyDescriptor
 	 */
 	public function getProperty($name) {
-		return new MoufInstancePropertyDescriptor($this->moufManager, $this, $name);
+		if (!isset($this->properties[$name])) {
+			$this->properties[$name] = new MoufInstancePropertyDescriptor($this->moufManager, $this, $name);
+		}
+		return $this->properties[$name]; 
 	}
 	
 }

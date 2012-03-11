@@ -215,5 +215,22 @@ class MoufPhpDocComment {
 		}
 		return $retArray;
 	}
+	
+	/**
+	 * Returns an array representing the PhpDocComment:
+	 * {
+	 * 	comment: comment,
+	 *  annotations: {
+	 *  	name: [param1, param2, param3],
+	 *  	name2: [param]
+	 *  }
+	 * }
+	 * 
+	 * @return array
+	 */
+	public function getJsonArray() {
+		return array("comment"=>$this->comment,
+					 "annotations"=>$this->annotationsArrayAsString);
+	}
 }
 ?>

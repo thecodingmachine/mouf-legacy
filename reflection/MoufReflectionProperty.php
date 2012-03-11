@@ -1,9 +1,11 @@
 <?php
+require_once 'MoufReflectionPropertyInterface.php';
+
 /**
  * Extended Reflection class for class properties that allows usage of annotations.
  * 
  */
-class MoufReflectionProperty extends ReflectionProperty
+class MoufReflectionProperty extends ReflectionProperty implements MoufReflectionPropertyInterface
 {
     /**
      * Name of the class
@@ -48,7 +50,7 @@ class MoufReflectionProperty extends ReflectionProperty
         parent::__construct($this->className, $propertyName);
     }
     
-/**
+	/**
 	 * Analyzes and parses the comment (if it was not previously done).
 	 *
 	 */
@@ -66,6 +68,16 @@ class MoufReflectionProperty extends ReflectionProperty
 	public function getDocCommentWithoutAnnotations() {
 		$this->analyzeComment();
 		return $this->docComment->getComment();
+	}
+	
+	/**
+	 * Returns the MoufPhpDocComment instance
+	 *
+	 * @return MoufPhpDocComment
+	 */
+	public function getMoufPhpDocComment() {
+		$this->analyzeComment();
+		return $this->docComment;
 	}
 	
 	/**
@@ -140,6 +152,23 @@ class MoufReflectionProperty extends ReflectionProperty
         $moufRefClass = new MoufReflectionClass($refClass->getName());
         return $moufRefClass;
     }
+    
+    /**
+     * Returns the default value
+     *
+     * @return mixed
+     */
+    public function getDefault() {
+    	if ($this->isPublic() && !$this->isStatic()) {	    		 
+	  		$className = $this->refClass->getName();
+			$instance = new $className();
+			$property = $this->getName();
+	    	return $instance->$property;
+    	} else {
+    		return null;
+    	}
+    }
+    
     
    	/**
    	 * Appends this property to the XML node passed in parameter.
