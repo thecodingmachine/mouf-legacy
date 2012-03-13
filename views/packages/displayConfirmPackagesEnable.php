@@ -1,4 +1,4 @@
-<?php /* @var $this PackageController */ ?>
+<?php /* @var $this PackageController */
 /*
  * This file is part of the Mouf core package.
  *
@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE.txt
  * file that was distributed with this source code.
  */
- 
+  ?>
 <h1>Packages List</h1>
 <h2>You selected this package:</h2>
 

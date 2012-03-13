@@ -321,7 +321,7 @@ class MoufReflectionClass extends ReflectionClass implements MoufReflectionClass
      * @return array
      */
     public function toJson() {
-    	require_once __DIR__."/MoufReflectionHelper.php";
+    	require_once dirname(__FILE__)."/MoufReflectionHelper.php";
     	
     	return MoufReflectionHelper::classToJson($this);
     }

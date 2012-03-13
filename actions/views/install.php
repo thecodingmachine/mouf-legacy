@@ -1,4 +1,4 @@
-<?php /* @var $this InstallController */ ?>
+<?php /* @var $this InstallController */
 /*
  * This file is part of the Mouf core package.
  *
@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE.txt
  * file that was distributed with this source code.
  */
- 
+  ?>
 <h1>Installation in progress, please wait...</h1>
 
 <div id="errorZone">

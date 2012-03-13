@@ -1,4 +1,4 @@
-<?php /* @var $this DocumentationController */ ?>
+<?php /* @var $this DocumentationController */
 /*
  * This file is part of the Mouf core package.
  *
@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE.txt
  * file that was distributed with this source code.
  */
- 
+  ?>
 <h1>Documentation for installed packages</h1>
 
 <?php 

@@ -1,4 +1,4 @@
-<?php /* @var $this RepositorySourceController */ ?>
+<?php /* @var $this RepositorySourceController */
 /*
  * This file is part of the Mouf core package.
  *
@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE.txt
  * file that was distributed with this source code.
  */
- 
+  ?>
 <h1>Add/edit repository</h1>
 
 <form action="save">

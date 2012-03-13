@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
  
-require_once __DIR__."/../annotations/varAnnotation.php";
+require_once dirname(__FILE__)."/../annotations/varAnnotation.php";
 
 /**
  * This class contains shared code between MoufXmlReflectionClass and MoufReflectionClass.
