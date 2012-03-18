@@ -8,6 +8,23 @@ var MoufInstanceManager = (function () {
 	var _jsrenderers = {};
 	// List of CSS files containing renderers that have been loaded so far
 	var _cssrenderers = {};
+	// The number of files waiting to be loaded
+	var _nbFilesToLoad = 0;
+	// The list of callbacks to be called when all the files will be loaded
+	// Note: some callback might wait longer that they need, this is slightly suboptimal to wait for all the files to be loaded.
+	var _callbackWhenFilesLoaded = []
+	
+
+	var triggerAllCallbacksWhenFilesLoaded = function() {
+		// La condition semble changer la valeur de la variable,c 'est complétement nimp!!!!
+		if (_nbFilesToLoad == 0) {
+			for (var i=0; i<_callbackWhenFilesLoaded.length; i++) {
+				var mycallback = _callbackWhenFilesLoaded[i];
+				mycallback();
+			}
+			_callbackWhenFilesLoaded = [];
+		}
+	}
 	
 	/**
 	 * All Ajax calls return the same response (an array containing classes and instances descriptions).
@@ -15,7 +32,7 @@ var MoufInstanceManager = (function () {
 	 */
 	var handleUniversalResponse = function(json, callback) {
 		
-		var nbFilesToLoad = 0;
+		var returnedInstances = {};
 		
 		if (json.classes) {
 			for (var className in json.classes) {
@@ -52,18 +69,58 @@ var MoufInstanceManager = (function () {
 							if (_jsrenderers[jsFile]) {
 								continue;
 							}
-					        var scriptElem = document.createElement('script');
-					        scriptElem.type = 'text/javascript';
-					        scriptElem.async = true;
-					        var fileUrl;
+							
+							
+							var fileUrl;
 					        if (jsFile.indexOf("http://") == 0 || jsFile.indexOf("https://") == 0) {
 					        	fileUrl = jsFile;
 					        } else {
 					        	fileUrl = MoufInstanceManager.rootUrl+'../'+jsFile;
 					        }
+					        
+					        _nbFilesToLoad++;
+					        
+					        var thisClass = myClass;
+					        var thisClassName = myClass.getName();
+					        var thisRendererName = jsonRenderer['object'];
+				        	
+					        jQuery.getScript(fileUrl).done(function() {
+					        	// Note: if wa don't put the content of the callback in a setTimeout, there is this completely wierd
+					        	// behaviour of Firefox that will stop the current Javascript function executed to execute the script loaded,
+					        	// and then start over. Very disturbing. It's a bit like a multithreaded behaviour that would not be
+					        	// wanted.
+					        	setTimeout(function() {
+					        		_nbFilesToLoad--;
+				                	
+				                	// Let's add the renderer to the possible renderer of this class.
+					        		MoufInstanceManager.getLocalClass(thisClassName).renderers.push(window[thisRendererName]);
+					        		//thisClass.renderers.push(window[thisRendererName]);
+
+					        		// Let's trigger the callbacks if all files are loaded.
+				            		triggerAllCallbacksWhenFilesLoaded();
+					        	}, 0)
+					        	
+					        }).fail(function(jqxhr, settings, exception) {
+					        	alert("Error while loading script: "+exception);
+					        });
+							
+					        /*var scriptElem = document.createElement('script');
+					        scriptElem.type = 'text/javascript';
+					        scriptElem.async = true;
 					        scriptElem.src = fileUrl;
 			
-					        nbFilesToLoad++;
+					        _nbFilesToLoad++;
+					        
+					        var onScriptLoaded = function() {
+					        	_nbFilesToLoad--;
+			                	
+			                	// Let's add the renderer to the possible renderer of this class.
+				        		thisClass.renderers.push(window[thisRendererName]);
+
+				        		// Let's trigger the callbacks if all files are loaded.
+			            		triggerAllCallbacksWhenFilesLoaded();
+			            	}
+					        
 					        // Now, let's make sure we call the callback when everything is loaded.
 					        if (scriptElem.readyState){  //IE
 					        	var thisClass = myClass;
@@ -72,33 +129,20 @@ var MoufInstanceManager = (function () {
 					                if (scriptElem.readyState == "loaded" ||
 					                		scriptElem.readyState == "complete"){
 					                	scriptElem.onreadystatechange = null;
-					                	nbFilesToLoad--;
 					                	
-					                	// Let's add the renderer to the possible renderer of this class.
-						        		thisClass.renderers.push(window[thisRendererName]);
-
-					                	if (nbFilesToLoad == 0) {
-					                		callback();
-					                	}
+					                	onScriptLoaded();
 					                }
 					            };
 					        } else {  //Others
 					        	var thisClass = myClass;
 					        	var thisRendererName = jsonRenderer['object'];
 					        	scriptElem.onload = function(){
-					        		nbFilesToLoad--;
-
-					        		// Let's add the renderer to the possible renderer of this class.
-					        		thisClass.renderers.push(window[thisRendererName]);
-
-				                	if (nbFilesToLoad == 0) {
-				                		callback();
-				                	}
+					        		onScriptLoaded();
 					            };
 					        }
 					        
 					        //var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(scriptElem, s);
-					        document.getElementsByTagName("head")[0].appendChild(scriptElem);
+					        document.getElementsByTagName("head")[0].appendChild(scriptElem);*/
 							_jsrenderers[jsFile] = true;
 						}
 						
@@ -139,12 +183,23 @@ var MoufInstanceManager = (function () {
 			for (var instanceName in json.instances) {
 				var instance = new MoufInstance(json.instances[instanceName]);
 				_instances[instanceName] = instance;
+				returnedInstances[instanceName] = instance;
 			}
 		}
-		if (nbFilesToLoad == 0) {
-			callback();
-		}
+		
+		/*if (_nbFilesToLoad == 0) {
+			callback(returnedInstances);
+		}*/
+		
+		var mycallback = callback;
+		// Let's add the callback to the list of stuff to do when all files are loaded.
+		_callbackWhenFilesLoaded.push(function() {
+			mycallback(returnedInstances);
+		})
+		// Let's trigger the callbacks if all files are loaded.
+		triggerAllCallbacksWhenFilesLoaded();
 	}
+	
 	
 	// Let's return the public object
 	return {
@@ -175,6 +230,10 @@ var MoufInstanceManager = (function () {
 			}
 		},
 		
+		/**
+		 * Returns the details of an instance, asynchronously using a promise.
+		 * @return Mouf.Promise
+		 */
 		getInstance : function(instanceName) {
 			var promise = new Mouf.Promise();
 			
@@ -245,6 +304,54 @@ var MoufInstanceManager = (function () {
 			}
 			return promise;
 		},
+		
+		/**
+		 * Returns the details of all instances implementing the type passed in parameter (it can be a class name
+		 * or an interface name), asynchronously using a promise.
+		 * It will also return the list of all classes that are subclass of the type passed in parameter.
+		 * The promise can be implented this way:
+		 * 
+		 * MoufInstanceManager.getInstanceListByType("MyInterface").then(function(arrayofMoufInstances, arrayofMoufClasses) {
+		 * 
+		 * });
+		 * 
+		 * @return Mouf.Promise
+		 */
+		getInstanceListByType : function(type) {
+			var promise = new Mouf.Promise();
+			
+			// TODO: add support for selfedit! (or "whatevermoufmanagername").
+			jQuery.ajax(this.rootUrl+"direct/get_instances_with_details.php", {
+				data: {
+					class: type,
+					encode: "json"
+				}
+			}).fail(function(e) {
+				promise.triggerError(window, e);
+			}).done(function(result) {
+				if (typeof(result) == "string") {
+					promise.triggerError(window, result);
+					return;
+				}
+				try {
+					handleUniversalResponse(result, function(instancesList) {
+						// Let's have a look at the children classes list returned.
+						// This is too specific to be managed by handleUniversalResponse
+						var childrenClasses = {};
+						for (var i=0; i<result.childrenClasses.length; i++) {
+							var childClassName = result.childrenClasses[i];
+							childrenClasses[childClassName] = _classes[childClassName];
+						}
+						promise.triggerSuccess(window, instancesList, childrenClasses);
+					});
+				} catch (e) {
+					promise.triggerError(window, e);
+					throw e;
+				}
+				});
+			return promise;
+		},
+
 		
 		/**
 		 * Returns the class passed in parameter. This class must have previously been loaded (through getClass or getInstance), otherwise,
@@ -393,6 +500,8 @@ var MoufClass = function(json) {
 		this.methodsByName[moufMethod.getName()] = moufMethod;
 	}
 	
+	this.subclassOf = null;
+	
 	this.renderers = [];
 }
 
@@ -492,6 +601,28 @@ MoufClass.prototype.getMoufProperties = function() {
 		}
 	}
 	return moufProperties;
+}
+
+/**
+ * Returns true if "className" is a parent class or interface implement by this class.
+ */
+MoufClass.prototype.isSubclassOf = function(className) {
+	// Let's initiate the array containing all classes and all interfaces extended/implemented by this class.
+	if (this.subclassOf == null) {
+		this.subclassOf = this.json["implements"];
+		var parent = this;
+		do {
+			this.subclassOf.push(parent.getName());
+			parent = this.getParentClass();
+		} while (parent);
+	}
+	// Now let's see if there is the className we are looking for in the list.
+	for (var i=0; i<this.subclassOf; i++) {
+		if (this.subclassOf[i] == className) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**

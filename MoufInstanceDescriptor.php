@@ -118,4 +118,40 @@ class MoufInstanceDescriptor {
 		return $this->properties[$name]; 
 	}
 	
+	/**
+	 * Serializes the instance into a PHP array that can be easily transformed into JSON.
+	 * @return array
+	 */
+	public function toJson() {
+		$classDescriptor = $this->getClassDescriptor();
+		$instanceArray['name'] = $this->getName();
+		$instanceArray['class'] = $this->getClassName();
+		$instanceArray['properties'] = array();
+		$moufProperties = $classDescriptor->getMoufProperties();
+		foreach ($moufProperties as $propertyName=>$moufProperty) {
+			/* @var $moufProperty MoufPropertyDescriptor */
+			$instanceArray['properties'][$propertyName] = array();
+			//$instanceArray['properties'][$propertyName]['source'] = $moufProperty->getSource();
+			$property = $this->getProperty($propertyName);
+			$value = $property->getValue();
+			if ($value instanceof MoufInstanceDescriptor) {
+				$serializableValue = $value->getName();
+			} elseif (is_array($value)) {
+				$serializableValue = array_map(function($singleValue) {
+					if ($singleValue instanceof MoufInstanceDescriptor) {
+						return $singleValue->getName();
+					} else {
+						return $singleValue;
+					}
+				}, $value);
+			} else {
+				$serializableValue = $value;
+			}
+			$instanceArray['properties'][$propertyName]['value'] = $serializableValue;
+			$instanceArray['properties'][$propertyName]['origin'] = $property->getOrigin();
+			$instanceArray['properties'][$propertyName]['metadata'] = $property->getMetaData();
+			
+		}
+		return $instanceArray;
+	}
 }

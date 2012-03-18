@@ -42,41 +42,13 @@ $moufManager = MoufManager::getMoufManager();
 // In this case, the CURL call is not needed since the getInstanceDescriptor and the getClassDescriptor are
 // in the same scope.
 $instanceDescriptor = $moufManager->getInstanceDescriptor($_REQUEST["name"]);
+$classDescriptor = $instanceDescriptor->getClassDescriptor();
 
 $response = array();
-$instanceArray = array();
-// Note: we might send back class data with instance data... this would save one request.
-$instanceArray['name'] = $instanceDescriptor->getName();
-$instanceArray['class'] = $instanceDescriptor->getClassName();
-$instanceArray['properties'] = array();
-$classDescriptor = $instanceDescriptor->getClassDescriptor();
-$moufProperties = $classDescriptor->getMoufProperties();
-foreach ($moufProperties as $propertyName=>$moufProperty) {
-	/* @var $moufProperty MoufPropertyDescriptor */
-	$instanceArray['properties'][$propertyName] = array();
-	//$instanceArray['properties'][$propertyName]['source'] = $moufProperty->getSource();
-	$property = $instanceDescriptor->getProperty($propertyName);
-	$value = $property->getValue();
-	if ($value instanceof MoufInstanceDescriptor) {
-		$serializableValue = $value->getName();
-	} elseif (is_array($value)) {
-		$serializableValue = array_map(function($singleValue) {
-			if ($singleValue instanceof MoufInstanceDescriptor) {
-				return $singleValue->getName();
-			} else {
-				return $singleValue;
-			}
-		}, $value);
-	} else {
-		$serializableValue = $value;
-	}
-	$instanceArray['properties'][$propertyName]['value'] = $serializableValue;
-	$instanceArray['properties'][$propertyName]['origin'] = $property->getOrigin();
-	$instanceArray['properties'][$propertyName]['metadata'] = $property->getMetaData();
-}
 
-$response["instances"][$instanceDescriptor->getName()] = $instanceArray;
+$response["instances"][$instanceDescriptor->getName()] = $instanceDescriptor->toJson();
 
+// We send back class data with instance data... this saves one request.
 // Now, let's embed the class and all the parents with this instance.
 $classArray = array();
 do {
