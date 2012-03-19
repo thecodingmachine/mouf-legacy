@@ -115,7 +115,7 @@ class MoufReflectionClass extends ReflectionClass implements MoufReflectionClass
      *
      * @return  array<MoufReflectionMethod>
      */
-    public function getMethods()
+    public function getMethods($filter = null)
     {
         $methods    = parent::getMethods();
         $moufMethods = array();
@@ -169,7 +169,7 @@ class MoufReflectionClass extends ReflectionClass implements MoufReflectionClass
      *
      * @return  array<MoufReflectionProperty>
      */
-    public function getProperties()
+    public function getProperties($filter = null)
     {
         $properties     = parent::getProperties();
         $moufProperties = array();
