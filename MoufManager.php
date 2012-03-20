@@ -1115,7 +1115,8 @@ class ".$this->mainClassName." {
 		foreach ($this->declaredInstances as $instanceName=>$classDesc) {
 			$className = $classDesc['class'];
 			$obj = new $className();
-			if (is_a($obj, $instanceType)) {
+			//if (is_a($obj, $instanceType)) {
+			if ($obj instanceof $instanceType) {
 				$instancesArray[] = $instanceName;
 			}
 		}
