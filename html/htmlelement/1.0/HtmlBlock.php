@@ -94,8 +94,7 @@ class HtmlBlock implements HtmlElementInterface {
 	public function getHtml() {
 		ob_start();
 		$this->toHtml();
-		$content = ob_get_contents();
-		ob_end_clean();
+		$content = ob_get_clean();
 		return $content;
 	}
 }

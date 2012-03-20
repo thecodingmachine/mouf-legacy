@@ -31,8 +31,7 @@ class TDBM_AmbiguityException extends TDBM_Exception {
 
 			ob_start();
 			var_export($paths);
-			$var = ob_get_contents();
-			ob_end_clean();
+			$var = ob_get_clean();
 
 			echo '$hint = '.$var.';';
 			echo "</code><br/><br/>";
