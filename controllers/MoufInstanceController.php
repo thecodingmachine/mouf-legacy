@@ -154,7 +154,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 							
 							$values = array();
 							if (is_array($tmpValues)) {
-								for ($i=0; $i<count($tmpValues); $i++) {
+								for ($i=0,$count=count($tmpValues); $i<$count; $i++) {
 									$values[$keys[$i]] = $tmpValues[$i];
 								}
 							}
@@ -173,7 +173,7 @@ class MoufInstanceController extends AbstractMoufInstanceController {
 							
 							$values = array();
 							if (is_array($tmpValues)) {
-								for ($i=0; $i<count($tmpValues); $i++) {
+								for ($i=0, $count=count($tmpValues); $i<$count; $i++) {
 									$values[$keys[$i]] = $tmpValues[$i];
 								}
 							}

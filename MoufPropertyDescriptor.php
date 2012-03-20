@@ -59,7 +59,7 @@ class MoufPropertyDescriptor {
 				throw new MoufException("Error while creating MoufPropertyDescriptor. The setter '".$this->methodName."' does not accept any parameters.");
 			}
 			if (count($parameters)>1) {
-				for ($i=1; $i<count($parameters); $i++) {
+				for ($i=1, $count=count($parameters); $i<$count; $i++) {
 					$param = $parameters[$i]; 
 					if (!$param->isDefaultValueAvailable()) {
 						throw new MoufException("Error while creating MoufPropertyDescriptor. The setter '".$this->methodName."' accepts more than one parameter. A setter should have only one parameter, or the parameters after the first one should have default values.");

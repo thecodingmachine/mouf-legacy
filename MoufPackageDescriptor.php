@@ -139,7 +139,7 @@ class MoufPackageDescriptor {
 		}
 		
 		// Now, let's compare v1parts and v2parts
-		for ($i=0; $i<max(count($v1parts), count($v2parts)); $i++) {
+		for ($i=0, $count=max(count($v1parts), count($v2parts)); $i<$count; $i++) {
 			if (isset($v1parts[$i])) {
 				$part1 = $v1parts[$i];
 			} else {

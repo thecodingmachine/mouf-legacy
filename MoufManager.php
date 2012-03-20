@@ -1326,15 +1326,6 @@ class ".$this->mainClassName." {
 			array_shift($realPathToFileArray);
 		}
 		
-		
-		/*
-		
-		for ($i=0; $i<count($realPathFromDirArray); $i++) {
-			// Let's stop when there is nothing in common anymore.
-			if ($realPathFromDirArray[$i] != $realPathToFileArray[$i]) {
-				break; 
-			}
-		}*/
 		$nbDirsRemaining = count($realPathFromDirArray);
 		
 		
