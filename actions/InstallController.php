@@ -103,8 +103,7 @@ class InstallController extends Controller {
 			ob_start();
 			$this->actionsList = $this->multiStepActionService->getActionsList();
 			include dirname(__FILE__)."/views/displaySteps.php";
-			$html = ob_get_contents();
-			ob_end_clean();	
+			$html = ob_get_clean();
 		}
 		
 		if ($this->exception) {	
