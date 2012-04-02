@@ -65,7 +65,7 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	/**
 	 * The validator of the field. Returns true/(false+errorString)
 	 * @Property
-	 * @var array<PhpValidatorInterface>
+	 * @var array<ValidatorInterface>
 	 */
 	public $validators;
 
@@ -84,7 +84,7 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	 * (non-PHPdoc)
 	 * @see FieldDescriptorInterface::saveValue()
 	 */
-	public function saveValue($mainBean, $value){
+	public function setValue($mainBean, $value){
 		call_user_func(array($mainBean, $this->setter), $value);
 	}
 

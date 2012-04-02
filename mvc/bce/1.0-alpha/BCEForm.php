@@ -97,6 +97,12 @@ class BCEForm{
 	public $id = "default_id";
 	
 	/**
+	 * The errors returned by the fields' validators
+	 * @var array<string>
+	 */
+	public $errorMessages;
+	
+	/**
 	 * Load the main bean of the Form, and then the linked descriptors to display bean values
 	 * @param mid $id: The id of the bean (may be null for new objects)
 	 */
@@ -111,7 +117,7 @@ class BCEForm{
 			/* @var $descriptor FieldDescriptorInterface */
 			$descriptor->load($this->baseBean);
 			if ($this->validationHandler && count($descriptor->getValidators())){
-				$this->validationJS = $this->validationHandler->buildValidationScript($descriptor, $this->id);
+				$this->validationHandler->buildValidationScript($descriptor, $this->id);
 			}
 		}
 	}
@@ -121,11 +127,7 @@ class BCEForm{
 	 * @return string
 	 */
 	public function getValidationJS(){
-		foreach ($this->validationJS as $script){
-			echo "
-				$script
-			";
-		}
+		return $this->validationHandler->getValidationJs($this->id);
 	}
 	
 	/**
@@ -154,17 +156,22 @@ class BCEForm{
 			if (count($validators)){
 				foreach ($validators as $validator) {
 					/* @var $validator ValidatorInterface */
-					if (!$validator->validate($value)){
-						$errors[$descriptor->getFieldName()] = $validator->getErrorMessage();
+					if (is_array($validator->validate($value))){
+						$this->errorMessages[$descriptor->getFieldName()][] = $validator->getErrorMessage();
 					}
 				}
 			}
-			
+			$descriptor->setValue($bean, $value);
+		}
+		if (!count($this->errorMessages)){
 			//save
-			$descriptor->saveValue($bean, $value);
+			echo "<h1>Save!!</h1>";
+			$this->mainDAO->save($bean);
+		}else{
+			echo "<h1>Php Errors!!</h1>";
+			var_dump($this->errorMessages);
 		}
 		
-		$this->mainDAO->save($bean);
 	}
 	
 }

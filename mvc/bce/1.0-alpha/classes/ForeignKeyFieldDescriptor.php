@@ -20,27 +20,20 @@ class ForeignKeyFieldDescriptor extends BaseFieldDescriptor implements FieldDesc
 	 * @Property
 	 * @var DAOInterface
 	 */
-	public $dao;
+	public $dao;	
 	
 	/**
-	 * The name of the getter function of the linked bean's id
+	 * Name of the method that returns the associative array of values
 	 * @Property
 	 * @var string
 	 */
-	public $linkedFieldGetter;
-	
-	/**
-	* The name of the getter function of the linked bean's label
-	* @Property
-	* @var string
-	*/
-	public $linkedValueGetter;
+	public $dataMethod;
 	
 	/**
 	 * Associative array if ids and values
 	 * @var array
 	 */
-	public $data;
+	private $data;
 	
 	/**
 	 * (non-PHPdoc)
@@ -48,23 +41,14 @@ class ForeignKeyFieldDescriptor extends BaseFieldDescriptor implements FieldDesc
 	 */
 	public function load($mainBean){
 		parent::load($mainBean);
-		
-		$beanList = $this->dao->getList();
-		foreach ($beanList as $bean) {
-			$id = call_user_func(array($bean, $this->linkedFieldGetter));
-			$value = call_user_func(array($bean, $this->linkedValueGetter));
-			$data[$id] = $value;
-		}
-		$this->setData($data);
+		$this->data = call_user_func(array($this->dao, $this->dataMethod));
 	}
 	
 	/**
 	 * 
-	 * Enter description here ...
-	 * @param unknown_type $data
 	 */
-	public function setData($data){
-		$this->data = $data;
+	public function getData(){
+		return $this->data;
 	}
 	
 }

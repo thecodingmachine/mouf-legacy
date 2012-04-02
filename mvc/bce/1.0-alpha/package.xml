@@ -25,6 +25,7 @@
 		<require>classes/BaseRenderer.php</require>
 		<require>classes/FieldDescriptorInterface.php</require>
 		<require>classes/BaseFieldDescriptor.php</require>
+		<require>classes/Many2ManyFieldDescriptor.php</require>
 		<require>classes/ForeignKeyFieldDescriptor.php</require>
 		<require>classes/BCERenderer.php</require>
 		<require>classes/DAOInterface.php</require>
@@ -32,6 +33,9 @@
 		<require>classes/HiddenRenderer.php</require>
 		<require>classes/Role.php</require>
 		<require>classes/RoleDAO.php</require>
+		<require>classes/UserHobby.php</require>
+		<require>classes/UserHobbyDAO.php</require>
+		<require>classes/MultipleSelectFieldRenderer.php</require>
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
 		<require>classes/User.php</require>

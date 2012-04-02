@@ -8,19 +8,30 @@ require_once 'FieldRendererInterface.php';
  */
 class SelectFieldRenderer implements FieldRendererInterface{
 	
-	public function render(FieldDescriptorInterface $descriptor){
+	/**
+	 * Tells if the field should display a select box or a radio button group
+	 * @Property
+	 * @var bool
+	 */
+	public $radioMode = false;
+	
+	public function render(FieldDescriptorInterface $descriptor){//TODO must be of type ForeignKeyFieldDescriptor
 		/* @var $descriptor ForeignKeyFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
 		$value = $descriptor->getFieldValue();
-		
-		$html = "<select name='$fieldName' id='$fieldName'>";
-		foreach ($descriptor->data as $id => $label) {
-			if ($id == $value) $selectStr = "selected = 'selected'";
-			else $selectStr = "";
-			$html .= "<option value='$id' $selectStr>$label</option>";
+		if (!$this->radioMode){
+			$html = "<select name='$fieldName' id='$fieldName'>";
+			foreach ($descriptor->data as $id => $label) {
+				if ($id == $value) $selectStr = "selected = 'selected'";
+				else $selectStr = "";
+				$html .= "<option value='$id' $selectStr>$label</option>";
+			}
+			$html .= "</select>";
+		}else{
+			foreach ($descriptor->getData() as $id => $label) {
+				$html .= "<label for='$fieldName"."-"."$id'>$label</label><input type='radio' name='$fieldName' id='$fieldName"."-"."$id' value='$id'/>";
+			}
 		}
-		$html .= "</select>";
-		
 		return $html;
 	}
 	

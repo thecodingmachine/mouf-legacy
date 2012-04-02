@@ -22,6 +22,7 @@ require_once 'User.php';
 		$user->setRoleId(3);
 		$user->setAge(20);
 		$user->setBirthDate("1982-05-22 04:30:22");
+		$user->setWebSite("http://mouf-php.com");
 		
 		return $user;
 	}
@@ -39,6 +40,7 @@ require_once 'User.php';
 		$user->setRoleId(3);
 		$user->setAge(21);
 		$user->setBirthDate("1982-05-22 04:30:22");
+		$user->setWebSite("http://mouf.com");
 		
 		return $user;
 	}

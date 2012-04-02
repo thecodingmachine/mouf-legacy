@@ -12,7 +12,7 @@ interface ValidatorInterface {
 	 * @param string $value the value to validate
 	 * @return true if the value validates, false if it doesn't.
 	 */
-	public function validate($value);
+	public function doValidate($value);
 	
 	/**
 	 * Returns the error message (using fine).

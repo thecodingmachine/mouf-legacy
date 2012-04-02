@@ -11,6 +11,11 @@ interface JsValidationHandlerInterface{
 	 * @param FieldDescriptorInterface $fieldDescriptor
 	 * @param string $formId
 	 */
-	public function buildValidationScript(FieldDescriptorInterface $descriptor, $formId); 
-	
+	public function buildValidationScript(FieldDescriptorInterface $descriptor, $formId);
+
+	/**
+	 * Returns the Javascript Code that will handle from's validation: methods and rules
+	 * @param $formId the html 'id' attribute of the form
+	 */
+	public function getValidationJs($formId);	
 }

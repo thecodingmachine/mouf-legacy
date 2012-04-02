@@ -5,7 +5,7 @@
  * 
  * @Component
  */
-class NumericValidator implements ValidatorInterface, JsValidatorInterface{
+class NumericValidator extends AbstractValidator implements JsValidatorInterface{
 	
 	/**
 	 * Whether or not decimal values are accepted
@@ -16,16 +16,10 @@ class NumericValidator implements ValidatorInterface, JsValidatorInterface{
 	
 	/**
 	 * (non-PHPdoc)
-	 * @see PhpValidatorInterface::validate()
+	 * @see ValidatorInterface::validate()
 	 */
-	function validate($value){
-		$test = $this->allowDecimals ? is_numeric($value) : is_int($value);
-		if ($test){
-			return true;
-		}
-		else{
-			return array(false, $this->getErrorMessage());
-		}
+	function doValidate($value){
+		return $this->allowDecimals ? preg_match("/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/", $value) : preg_match("/^\d+$/", $value);
 	}
 
 	/**
@@ -33,13 +27,9 @@ class NumericValidator implements ValidatorInterface, JsValidatorInterface{
 	 * @see JsValidatorInterface::getScript()
 	 */
 	function getScript(){
-		$numericFunction = $this->allowDecimals ? "parseFloat(value)" : "(parseFloat(value) == parseInt(value))";
+		$regex = $this->allowDecimals ? "/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/" : "/^\d+$/";
 		return "function(value, element){
-			if($numericFunction && !isNaN(value)){
-				return true;
-			} else {
-				return false;
-			} 
+			return $regex.test(value);
 		}";
 	}
 	

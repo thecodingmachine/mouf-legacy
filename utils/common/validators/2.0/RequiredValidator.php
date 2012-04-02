@@ -3,18 +3,14 @@
  * Basic validator that defines a value as required
  * @Component
  */
-class RequiredValidator implements ValidatorInterface, JsValidatorInterface{
+class RequiredValidator extends AbstractValidator implements JsValidatorInterface{
 	
 	/**
 	 * (non-PHPdoc)
 	 * @see PhpValidatorInterface::validate()
 	 */
-	function validate($value){
-		if ($value !==0 && !empty($value)){
-			return true;
-		}else{
-			return array(false, $this->getErrorMessage());
-		}
+	function doValidate($value){
+		return $value !==0 && !empty($value);
 	}
 
 	/**
@@ -24,8 +20,17 @@ class RequiredValidator implements ValidatorInterface, JsValidatorInterface{
 	function getScript(){
 		return "
 			function (value, element){
-				if (value) return true;
-				else return false;
+				switch( element.nodeName.toLowerCase() ) {
+				case 'select':
+					// could be an array for select-multiple or a string, both are fine this way
+					var val = $(element).val();
+					return val && val.length > 0;
+				case 'input':
+					if ( _checkable(element) )
+						return _getLength(value, element) > 0;
+				default:
+					return $.trim(value).length > 0;
+				}
 			}
 		";
 	}

@@ -13,13 +13,16 @@
 		</dependency>
 	</dependencies>
 	<requires>
+		<require>JsValidatorInterface.php</require>
 		<require>ValidatorInterface.php</require>
 		<require>ValidatorException.php</require>
 		<require>AbstractValidator.php</require>
 		<require>EmailValidator.php</require>
-		<require>JsValidatorInterface.php</require>
 		<require>RequiredValidator.php</require>
 		<require>NumericValidator.php</require>
+		<require>MaxMinRangeLengthValidator.php</require>
+		<require>MaxMinRangeValidator.php</require>
+		<require>URLValidator.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>ValidatorsExternalComponents.php</require>

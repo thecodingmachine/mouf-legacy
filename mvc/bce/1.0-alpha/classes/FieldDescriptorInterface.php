@@ -48,7 +48,7 @@ interface FieldDescriptorInterface{
 	* @param mixed $mainBean
 	* @param mixed $value
 	*/
-	public function saveValue($mainBean, $value);
+	public function setValue($mainBean, $value);
 
 	/**
 	 * Gets the Label of the field as displayed in the form

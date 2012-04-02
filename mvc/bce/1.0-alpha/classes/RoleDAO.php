@@ -31,7 +31,7 @@ class RoleDAO implements DAOInterface{
 	
 	public function getList(){
 		for ($i = 0; $i < 5; $i++) {
-			$roles[] = $this->getById($i);
+			$roles[$i] = "role $i";
 		}
 		
 		return $roles;

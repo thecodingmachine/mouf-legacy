@@ -11,6 +11,8 @@
 	public $brithDate;
 	public $age;
 	public $roleId;
+	public $webSite;
+	public $hobbies;
 	
 	
 	public function getId(){
@@ -61,5 +63,19 @@
 		$this->brithDate = $date;
 	}
 	
+	public function getWebSite(){
+		return $this->webSite;
+	}
 	
+	public function setWebSite($webSite){
+		$this->webSite = $webSite;
+	}
+	
+	public function getHobbies(){
+		return $this->hobbies;
+	}
+	
+	public function setHobbies($hobbies){
+		$this->hobbies = $hobbies;
+	}
 }

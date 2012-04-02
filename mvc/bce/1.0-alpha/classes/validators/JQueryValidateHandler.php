@@ -8,6 +8,16 @@
  */
 class JQueryValidateHandler implements JsValidationHandlerInterface{
 	
+	/**
+	 * Contains all the validation functions
+	 */
+	private $validationMethods;
+	
+	/**
+	 * Contains all the rule to be applied, field by field
+	 */
+	private $validationRules;
+	
 	private function wrapRule(FieldDescriptorInterface $fieldDescriptor, JsValidatorInterface $validator, $ruleIndex){
 		return "
 			$.validator.addMethod(
@@ -32,19 +42,72 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 		
 		foreach ($validators as $validator) {
 			if ($validator instanceof JsValidatorInterface) {
-				$validationJS[] = $this->wrapRule($descriptor, $validator, $i);
+				$this->validationMethods[] = $this->wrapRule($descriptor, $validator, $i);
 				$methodName = $fieldName."_".$i;
-				$jsvalidationRules->rules->$fieldName->$methodName = $validator->getJsArguments();
+				$this->validationRules->rules->$fieldName->$methodName = $validator->getJsArguments();
 				$i++;
 			}
 		}
-		$rulesJson = json_encode($jsvalidationRules);
-		$validationJS[] = "
+	}
+	
+	public function getValidationJs($formId){
+		$rulesJson = json_encode($this->validationRules);
+		
+		$js = '
+		_currentForm = $("#'.$formId.'");
+		
+		_checkable =  function( element ) {
+			return /radio|checkbox/i.test(element.type);
+		};
+		
+		_findByName = function( name ) {
+			// select by name and filter by form for performance over form.find("[name=...]")
+			var form = _currentForm;
+			return $(document.getElementsByName(name)).map(function(index, element) {
+				return element.form == form && element.name == name && element  || null;
+			});
+		};
+		
+		_getLength = function(value, element) {
+			switch( element.nodeName.toLowerCase() ) {
+			case "select":
+				return $("option:selected", element).length;
+			case "input":
+				if( _checkable( element) )
+					return _findByName(element.name).filter(":checked").length;
+			}
+			return value.length;
+		};
+	
+		_depend = function(param, element) {
+			return _dependTypes[typeof param]
+				? _dependTypes[typeof param](param, element)
+				: true;
+		};
+	
+		_dependTypes = {
+			"boolean": function(param, element) {
+				return param;
+			},
+			"string": function(param, element) {
+				return !!$(param, element.form).length;
+			},
+			"function": function(param, element) {
+				return param(element);
+			}
+		},
+		';
+		
+		foreach ($this->validationMethods as $method) {
+			$js.="
+				$method			
+			";
+		}
+		$js.= "
 		$(document).ready(function(){
 			$('#$formId').validate($rulesJson);
 		});";
-		
-		return $validationJS;
+		return $js;
 	}
 	
 }
