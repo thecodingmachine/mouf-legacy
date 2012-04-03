@@ -1,0 +1,27 @@
+div.smallinstance, div.smallclass {
+	width: 200px;
+	min-height: 16px;
+	border: solid 1px black;
+	background-color: #eee7e7;
+	padding: 5px 5px 5px 26px;
+	margin-bottom: 2px;
+	border-radius: 5px;
+	background-image: url(images/class.png);
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	
+	word-wrap: break-word;
+	cursor: move;
+	font-family: monospace;
+	
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;	
+	user-select: none;
+}
+
+div.smallinstance:hover, div.smallclass:hover {
+	background-color: #d7d0d0;
+}

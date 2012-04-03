@@ -26,6 +26,8 @@ div.classComment {
 
 <div id="instance" class="instance"></div>
 
+<div id="instance2" class="instance"></div>
+
 <div id="renderedInstance"></div>
 
 <script type="text/javascript">
@@ -87,7 +89,7 @@ MoufInstanceManager.getInstance(<?php echo json_encode($this->instanceName) ?>).
 	
 	jQuery("#instance").append(html);
 
-	instance.render(jQuery("#renderedInstance"));
+	instance.render(jQuery("#renderedInstance"), 'big');
 	
 }).onError(function(e) {
 	addMessage("<pre>"+e+"</pre>", "error");
@@ -106,5 +108,17 @@ MoufInstanceManager.getInstanceListByType("A").then(function(instances, classes)
 	
 }).onError(function(e) {
 	addMessage("<pre>"+e+"</pre>", "error");
+});
+
+MoufUI.displayInstanceOfType("#instance2", "NoRenderer", true, true);
+
+
+//let the gallery items be draggable
+jQuery( "#instance2 > div" ).liveDraggable({
+	//cancel: "a.ui-icon", // clicking an icon won't initiate dragging
+	revert: "invalid", // when not dropped, the item will revert back to its initial position
+	//containment: $( "#demo-frame" ).length ? "#demo-frame" : "document", // stick to demo-frame if present
+	helper: "clone",
+	cursor: "move"
 });
 </script>

@@ -50,9 +50,20 @@ class MoufReflectionHelper {
 	 *
 	 * @return array
 	 */
-	public function classToJson($refClass) {
+	public static function classToJson($refClass) {
 		$result = array();
 		$result['name'] = $refClass->getName();
+		
+		// The filename is relative to the ROOT_PATH.
+		// It is "null" if the class is not part of the ROOT_PATH.
+		$fileName = $refClass->getFileName();
+		if (strpos($fileName, ROOT_PATH) === 0) {
+			$result['filename'] = substr($fileName, strlen(ROOT_PATH));
+		} else {
+			$result['filename'] = null;
+		}
+		$result['startline'] = $refClass->getStartLine();
+		
 		$result['comment'] = $refClass->getMoufDocComment()->getJsonArray();
 		$result['implements'] = array();
 		/* @var $refClass MoufReflectionClass */
@@ -91,7 +102,7 @@ class MoufReflectionHelper {
 	 *
 	 * @return array
 	 */
-	public function propertyToJson(MoufReflectionPropertyInterface $refProperty) {
+	public static function propertyToJson(MoufReflectionPropertyInterface $refProperty) {
 		$result = array();
 		$result['name'] = $refProperty->getName();
 		$result['comment'] = $refProperty->getMoufPhpDocComment()->getJsonArray();
@@ -118,7 +129,7 @@ class MoufReflectionHelper {
 	 *
 	 * @return array
 	 */
-	public function methodToJson($refMethod) {
+	public static function methodToJson($refMethod) {
 		$result = array();
 		$result['name'] = $refMethod->getName();
 		
@@ -165,7 +176,7 @@ class MoufReflectionHelper {
 	 *
 	 * @return array
 	 */
-	public function parameterToJson($refParameter) {
+	public static function parameterToJson($refParameter) {
 		$result = array();
 		$result['name'] = $refParameter->getName();
 		$result['hasDefault'] = $refParameter->isDefaultValueAvailable();

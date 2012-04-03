@@ -246,7 +246,11 @@ var MoufInstanceManager = (function () {
 						encode: "json"
 					}
 				}).fail(function(e) {
-					promise.triggerError(window, e);
+					var msg = e;
+					if (e.responseText) {
+						msg = "Status code: "+e.status+" - "+e.statusText+"\n"+e.responseText;
+					}
+					promise.triggerError(window, msg);
 				}).done(function(result) {
 					/*try {
 						var json = jQuery.parseJSON(result);
@@ -283,7 +287,11 @@ var MoufInstanceManager = (function () {
 						encode: "json"
 					}
 				}).fail(function(e) {
-					promise.triggerError(window, e);
+					var msg = e;
+					if (e.responseText) {
+						msg = "Status code: "+e.status+" - "+e.statusText+"\n"+e.responseText;
+					}
+					promise.triggerError(window, msg);
 				}).done(function(result) {
 					try {
 						var json = jQuery.parseJSON(result);
@@ -327,7 +335,11 @@ var MoufInstanceManager = (function () {
 					encode: "json"
 				}
 			}).fail(function(e) {
-				promise.triggerError(window, e);
+				var msg = e;
+				if (e.responseText) {
+					msg = "Status code: "+e.status+" - "+e.statusText+"\n"+e.responseText;
+				}
+				promise.triggerError(window, msg);
 			}).done(function(result) {
 				if (typeof(result) == "string") {
 					promise.triggerError(window, result);
@@ -416,12 +428,18 @@ MoufInstance.prototype.getProperty = function(propertyName) {
 /**
  * Renders the instance to the display, inside the target element.
  */
-MoufInstance.prototype.render = function(target) {
-	// TODO: improve this to take into account all renderers, ...
+MoufInstance.prototype.render = function(target, rendererName) {
+	if (!rendererName) {
+		rendererName = 'small';
+	}
+	
 	var classDescriptor = MoufInstanceManager.getLocalClass(this.getClassName());
 	var renderers = classDescriptor.getRenderers();
 	var renderer = renderers[0];
-	var callback = renderer.getRenderers()["small"].renderer;
+	if (renderer == null) {
+		renderer = MoufDefaultRenderer;
+	}
+	var callback = renderer.getRenderers()[rendererName].renderer;
 	callback(this, target);
 } 
 
@@ -613,7 +631,7 @@ MoufClass.prototype.isSubclassOf = function(className) {
 		var parent = this;
 		do {
 			this.subclassOf.push(parent.getName());
-			parent = this.getParentClass();
+			parent = parent.getParentClass();
 		} while (parent);
 	}
 	// Now let's see if there is the className we are looking for in the list.
@@ -626,11 +644,25 @@ MoufClass.prototype.isSubclassOf = function(className) {
 }
 
 /**
- * Returns a list of renderer objects.
+ * Returns a list of renderer objects for the instances (warning, these are renderer OBJECTS, not renderer annotations).
  */
 MoufClass.prototype.getRenderers = function() {
 	return this.renderers;
 }
+
+/**
+ * Renders the class to the display, inside the target element.
+ */
+MoufClass.prototype.render = function(target) {
+	var renderers = this.getRenderers();
+	var renderer = renderers[0];
+	if (renderer == null) {
+		renderer = MoufDefaultRenderer;
+	}
+	renderer.renderClass(this, target);
+} 
+
+
 
 /**
  * Returns an array of objects of type MoufProperty that represents the property of this class.
@@ -658,6 +690,13 @@ MoufClass.prototype.getMethods = function() {
  */
 MoufClass.prototype.getMethod = function(methodName) {
 	return this.methodsByName[methodName];
+}
+
+/**
+ * Returns the list of interfaces implemented by this class (and its parent classes).
+ */
+MoufClass.prototype.getImplementedInterfaces = function() {
+	return this.json["implements"];
 }
 
 /**
@@ -753,6 +792,14 @@ MoufProperty.prototype.isArray = function() {
  */
 MoufProperty.prototype.isAssociativeArray = function() {
 	return (this.json['type'] == 'array' && this.json['keytype']);
+}
+
+
+/**
+ * Returns the MoufInstanceProperty of a property for the instance passed in parameter (available if this property has a @Property annotation)
+ */
+MoufProperty.prototype.getMoufInstanceProperty = function(instance) {
+	return instance.getProperty(this.json['name']);
 }
 
 /**
@@ -893,6 +940,14 @@ MoufMethod.prototype.getPropertyName = function() {
 	}
 	propName2 = propName1.substr(0,1).toLowerCase()+propName1.substr(1);
 	return propName2;
+}
+
+
+/**
+ * Returns the MoufInstanceProperty of a property for the instance passed in parameter (available if this property has a @Property annotation)
+ */
+MoufMethod.prototype.getMoufInstanceProperty = function(instance) {
+	return instance.getProperty(this.json['name']);
 }
 
 /**

@@ -34,10 +34,14 @@ class MoufAjaxInstanceController extends AbstractMoufInstanceController {
 	 */
 	public function defaultAction($name, $selfedit = false) {
 		$this->initController($name, $selfedit);
+
+		$this->template->addCssFile("mouf/views/instances/defaultRenderer.css");
 		
 		$this->template->addJsFile(ROOT_URL."mouf/views/instances/messages.js");
 		$this->template->addJsFile(ROOT_URL."mouf/views/instances/utils.js");
 		$this->template->addJsFile(ROOT_URL."mouf/views/instances/instances.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/defaultRenderer.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/moufui.js");
 		
 		//$this->template->addContentFunction(array($this, "displayComponentView"));
 		$this->template->addContentFile(dirname(__FILE__)."/../../mouf/views/instances/viewInstance.php", $this);
