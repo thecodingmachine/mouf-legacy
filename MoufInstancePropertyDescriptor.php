@@ -72,7 +72,7 @@ class MoufInstancePropertyDescriptor {
 	
 	/**
 	 * Sets the value for this property.
-	 * The value can be a primitive type, an array of primitive types, a MoufInstanceDescriptor or an array of MoufInstanceDescriptors, depending on the type of the parameter. 
+	 * The value can be a primitive type, an array of primitive types, a MoufInstanceDescriptor or an array of MoufInstanceDescriptors, depending on the type of the parameter.
 	 * 
 	 * Pass MoufInstanceDescriptors as $value to bind this instance to other instances.
 	 * 
@@ -207,6 +207,7 @@ class MoufInstancePropertyDescriptor {
 	 */
 	public function setMetaData($array) {
 		// TODO!
+		throw new Exception("Not implemented yet");
 	}
 	
 	/**
@@ -238,5 +239,14 @@ class MoufInstancePropertyDescriptor {
 		} else {
 			throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 		}
+	}
+	
+	/**
+	 * Returns the property descriptor associated to this MoufInstanceProperty
+	 * 
+	 * @return MoufPropertyDescriptor
+	 */
+	public function getPropertyDescriptor() {
+		return $this->propertyDescriptor;
 	}
 }

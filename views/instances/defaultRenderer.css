@@ -25,3 +25,33 @@ div.smallinstance, div.smallclass {
 div.smallinstance:hover, div.smallclass:hover {
 	background-color: #d7d0d0;
 }
+
+/*** Save icon ***/
+
+div.saveIcon {
+    height: 22px;
+    right: 3px;
+    min-width: 80px;
+    overflow: hidden;
+    position: fixed;
+    top: 3px;
+    z-index: 99999;
+}
+
+div.saveIcon.saving {
+	background-image: url(images/disk.png);
+	background-repeat: no-repeat;
+	background-position: 3px center;
+    background-color: #AAAAAA;
+    border: solid 1px #777777;
+    padding: 5px 0px 0px 22px;
+}
+
+div.saveIcon.saveDone {
+	background-image: url(images/tick.png);
+	background-repeat: no-repeat;
+	background-position: 3px center;
+	background-color: #AAFFAA;
+    border: solid 1px #77AA77;
+    padding: 5px 0px 0px 22px;
+}

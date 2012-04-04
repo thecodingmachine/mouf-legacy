@@ -14,6 +14,7 @@ var MoufInstanceManager = (function () {
 	// Note: some callback might wait longer that they need, this is slightly suboptimal to wait for all the files to be loaded.
 	var _callbackWhenFilesLoaded = []
 	
+	var _propertyChangedEventHandler = new Mouf.Observer();
 
 	var triggerAllCallbacksWhenFilesLoaded = function() {
 		// La condition semble changer la valeur de la variable,c 'est complétement nimp!!!!
@@ -375,6 +376,19 @@ var MoufInstanceManager = (function () {
 			} else {
 				throw "Unable to find class '"+className+"' locally. It should have been loaded first (through getClass or getInstance)";
 			}
+		},
+		
+		/**
+		 * Registers a callback called when the MoufInstanceProperty::setValue method is called.
+		 * If scope is not passed, the default scope (this) is the moufInstanceProperty object.
+		 * The fiest argument of the callback is also the moufInstanceProperty object.
+		 */
+		onPropertyChange : function(callback, scope) {
+			_propertyChangedEventHandler.subscribe(callback, scope);
+		},
+		
+		firePropertyChange : function(moufInstanceProperty) {
+			_propertyChangedEventHandler.fire(moufInstanceProperty, moufInstanceProperty);
 		}
 
 	};
@@ -426,9 +440,9 @@ MoufInstance.prototype.getProperty = function(propertyName) {
 }
 
 /**
- * Renders the instance to the display, inside the target element.
+ * Renders the instance to the display, and returns that object as an in-memory jQuery object.
  */
-MoufInstance.prototype.render = function(target, rendererName) {
+MoufInstance.prototype.render = function(/*target,*/ rendererName) {
 	if (!rendererName) {
 		rendererName = 'small';
 	}
@@ -440,7 +454,7 @@ MoufInstance.prototype.render = function(target, rendererName) {
 		renderer = MoufDefaultRenderer;
 	}
 	var callback = renderer.getRenderers()[rendererName].renderer;
-	callback(this, target);
+	return callback(this);
 } 
 
 /**
@@ -464,6 +478,15 @@ MoufInstanceProperty.prototype.getName = function() {
  */
 MoufInstanceProperty.prototype.getValue = function() {
 	return this.json['value'];
+}
+
+/**
+ * Returns the value for this property.
+ */
+MoufInstanceProperty.prototype.setValue = function(value) {
+	this.json['value'] = value;
+	// Let's trigger listeners
+	MoufInstanceManager.firePropertyChange(this);
 }
 
 /**
@@ -493,6 +516,14 @@ MoufInstanceProperty.prototype.getMoufProperty = function() {
 		throw "Error, unknown mouf property "+this.name;
 	}
 }
+
+/**
+ * Returns the instance this property is part of.
+ */
+MoufInstanceProperty.prototype.getInstance = function() {
+	return this.parent;
+}
+
 
 /**
  * Let's define the MoufClass class, that defines a PHP class.
@@ -653,13 +684,13 @@ MoufClass.prototype.getRenderers = function() {
 /**
  * Renders the class to the display, inside the target element.
  */
-MoufClass.prototype.render = function(target) {
+MoufClass.prototype.render = function() {
 	var renderers = this.getRenderers();
 	var renderer = renderers[0];
 	if (renderer == null) {
 		renderer = MoufDefaultRenderer;
 	}
-	renderer.renderClass(this, target);
+	return renderer.renderClass(this);
 } 
 
 

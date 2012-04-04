@@ -1,4 +1,61 @@
 /**
+ * The MoufInstanceSubProperty is an object designed to allow easy usage of field renderers in an array.
+ * An array has its own field renderer. The array field renderer itself calls field renderers for
+ * each value to renderer, passing the MoufInstanceSubProperty object (instead of the MoufInstanceProperty object)
+ */
+var MoufInstanceSubProperty = function(moufInstanceProperty, key) {
+	this.subProperty = true;
+	this.parentMoufInstanceProperty = moufInstanceProperty;
+	this.key = key;
+	this.moufSubProperty = new MoufSubProperty(this.parentMoufInstanceProperty.getMoufProperty(), this.key, this);
+}
+
+/**
+ * Returns the value for this property.
+ */
+MoufInstanceSubProperty.prototype.getName = function() {
+	return this.parentMoufInstanceProperty.getName();;
+}
+
+/**
+ * Returns the value for this property.
+ */
+MoufInstanceSubProperty.prototype.getValue = function() {
+	return this.parentMoufInstanceProperty.getValue()[this.key];
+}
+
+/**
+ * Returns the origin for this property.
+ */
+MoufInstanceSubProperty.prototype.getOrigin = function() {
+	return this.parentMoufInstanceProperty.getOrigin();
+}
+
+/**
+ * Returns the metadata for this property.
+ */
+MoufInstanceSubProperty.prototype.getMetaData = function() {
+	return this.parentMoufInstanceProperty.getMetaData();
+}
+
+/**
+ * Returns a MoufProperty or a MoufMethod object representing the class property/method that holds the @Property annotation.
+ */
+MoufInstanceSubProperty.prototype.getMoufProperty = function() {
+	return this.moufSubProperty;
+}
+
+/**
+ * Returns the instance this property is part of.
+ */
+MoufInstanceSubProperty.prototype.getInstance = function() {
+	return this.parentMoufInstanceProperty.getInstance();
+}
+
+
+
+
+/**
  * The MoufSubProperty is an object designed to allow easy usage of field renderers in an array.
  * An array has its own field renderer. The array field renderer itself calls field renderers for
  * each value to renderer, passing the MoufSubProperty object (instead of the MoufProperty object)
@@ -7,10 +64,11 @@
  * @param key
  * @returns
  */
-var MoufSubProperty = function(moufProperty, key) {
+var MoufSubProperty = function(moufProperty, key, moufInstanceSubProperty) {
 	this.subProperty = true;
 	this.parentMoufProperty = moufProperty;
 	this.key = key;
+	this.moufInstanceSubProperty = moufInstanceSubProperty;
 }
 
 /**
@@ -103,11 +161,10 @@ MoufSubProperty.prototype.isAssociativeArray = function() {
 
 
 /**
- * Returns the MoufInstanceProperty of a property for the instance passed in parameter (available if this property has a @Property annotation)
+ * Returns the MoufInstanceSubProperty of a property for the instance passed in parameter (available if this property has a @Property annotation)
  */
 MoufSubProperty.prototype.getMoufInstanceProperty = function(instance) {
-	// FIXME: we should also have a MoufInstanceSubProperty object!!!
-	return this.parentMoufProperty.getMoufInstanceProperty(instance);
+	return this.moufInstanceSubProperty;
 }
 
 /**
@@ -117,6 +174,9 @@ MoufSubProperty.prototype.getValueForInstance = function(instance) {
 	var values =  this.parentMoufProperty.getValueForInstance(instance);
 	return values[this.key];
 }
+
+
+
 
 
 /**
@@ -175,18 +235,20 @@ var MoufDefaultRenderer = (function () {
 	 * Renders a text input, for the instance "instance", and the property moufProperty.
 	 * The "in-memory" jQuery object for the field is returned.
 	 */
-	var renderStringField = function(instance, moufProperty) {
+	var renderStringField = function(moufInstanceProperty) {
 		// FIXME: les renderers devraient prendre en paramètre des moufInstanceProperty
 		// On devra donc implémenter un moufInstanceSubProperty pour les représentations des valeurs d'une array d'une instance.
 		// Puis implémenter un moufInstanceProperty->setValue
-		var name = moufProperty.getPropertyName();
-		var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);
-		var value = moufProperty.getValueForInstance(instance);
+		var name = moufInstanceProperty.getName();
+		var value = moufInstanceProperty.getValue();
+		//var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);
+		//var value = moufProperty.getValueForInstance(instance);
 		
 		var elem = jQuery("<input/>").attr('name', name)
 			.attr("value", value)
 			.change(function() {
-				alert("value changed in "+findInstance(jQuery(this)).getName() + " for property "+name);
+				moufInstanceProperty.setValue(jQuery(this).val());
+				//alert("value changed in "+findInstance(jQuery(this)).getName() + " for property "+name);
 			});
 		
 		return elem;
@@ -200,25 +262,26 @@ var MoufDefaultRenderer = (function () {
 	 * Renders an array of fields, for the instance "instance", and the property moufProperty.
 	 * The "in-memory" jQuery object for the field is returned.
 	 */
-	var renderArrayField = function(instance, moufProperty) {
-		var name = moufProperty.getPropertyName();
-		var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);
-		var values = moufProperty.getValueForInstance(instance);
-		
+	var renderArrayField = function(moufInstanceProperty) {
+		var name = moufInstanceProperty.getName();
+		var values = moufInstanceProperty.getValue();
+		var moufProperty = moufInstanceProperty.getMoufProperty();
 		var elem = jQuery("<div/>").addClass('array');
 
 		if (!moufProperty.isAssociativeArray())  {
-			for (var i=0; i<values.length; i++) {
-				var fieldElem = jQuery("<div/>").addClass('fieldContainer')
-					.data("key", i)
-					.appendTo(elem);
-					
-				var sortableElem = jQuery("<div/>").addClass('sortable');
-				jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
-				var subProperty = new MoufSubProperty(moufProperty, i);
-				fieldRenderer = getFieldRenderer(subProperty.getType(), subProperty.getKeyType(), subProperty.getSubType());
-				var rowElem = fieldRenderer(instance, subProperty);
-				rowElem.appendTo(fieldElem);
+			if (values instanceof Array) {
+				for (var i=0; i<values.length; i++) {
+					var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+						.data("key", i)
+						.appendTo(elem);
+						
+					var sortableElem = jQuery("<div/>").addClass('sortable');
+					jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
+					var subInstanceProperty = new MoufInstanceSubProperty(moufInstanceProperty, i);
+					fieldRenderer = getFieldRenderer(subInstanceProperty.getMoufProperty().getType(), subInstanceProperty.getMoufProperty().getKeyType(), subInstanceProperty.getMoufProperty().getSubType());
+					var rowElem = fieldRenderer(subInstanceProperty);
+					rowElem.appendTo(fieldElem);
+				}
 			}
 		} else {
 			// TODO
@@ -302,9 +365,9 @@ var MoufDefaultRenderer = (function () {
 					title: "Small",
 					/**
 					 * Renders the instance in "small" version.
-					 * 
+					 * Result is returned as a jQuery in-memory DOM object
 					 */
-					renderer: function(instance, parent) {
+					renderer: function(instance) {
 						var classDescriptor = MoufInstanceManager.getLocalClass(instance.getClassName());
 						
 						var wrapper = getInstanceWrapper(instance).addClass("smallinstance")
@@ -319,7 +382,8 @@ var MoufDefaultRenderer = (function () {
 							}
 						}
 						
-						wrapper.appendTo(parent);
+						//wrapper.appendTo(parent);
+						return wrapper;
 					}
 				},
 				"medium" : {
@@ -330,7 +394,7 @@ var MoufDefaultRenderer = (function () {
 				},
 				"big" : {
 					title: "Big",
-					renderer: function(instance, parent) {
+					renderer: function(instance) {
 						var classDescriptor = MoufInstanceManager.getLocalClass(instance.getClassName());
 						
 						var wrapper = getInstanceWrapper(instance).addClass("biginstance");
@@ -353,14 +417,16 @@ var MoufDefaultRenderer = (function () {
 								.appendTo(fieldGlobalElem);
 
 							var fieldRenderer = getFieldRenderer(moufProperty.getType(), moufProperty.getSubType(), moufProperty.getKeyType());
-							
-							fieldRenderer(instance, moufProperty).appendTo(fieldElem);
+
+							var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);
+							fieldRenderer(moufInstanceProperty).appendTo(fieldElem);
 							
 							fieldGlobalElem.appendTo(propertiesList);
 						}
 						propertiesList.appendTo(wrapper);
 						
-						wrapper.appendTo(parent);						
+						//wrapper.appendTo(parent);
+						return wrapper;
 					}
 				}
 			}
@@ -368,7 +434,7 @@ var MoufDefaultRenderer = (function () {
 		/**
 		 * Renders the class described be "classDescriptor" in the "parent" css selector.
 		 */
-		renderClass : function(classDescriptor, parent) {
+		renderClass : function(classDescriptor) {
 			var wrapper = getClassWrapper(classDescriptor).addClass("class smallclass")
 			   										 .html("new <b>"+classDescriptor.getName()+"</b>()");
 			
@@ -379,7 +445,8 @@ var MoufDefaultRenderer = (function () {
 				}
 			}
 
-			wrapper.appendTo(parent);
+			//wrapper.appendTo(parent);
+			return wrapper;
 		}
 	}
 })();

@@ -20,6 +20,7 @@ div.editInstance {
 div.classComment {
 	word-wrap: pre;
 }
+
 </style>
 
 <div id="messages"></div>
@@ -30,7 +31,24 @@ div.classComment {
 
 <div id="renderedInstance"></div>
 
+Dropzone:
+<div class="droppable ui-widget-header"><p>Drop here a BInterface</p></div>
+
 <script type="text/javascript">
+jQuery(function() {
+	jQuery( ".droppable" ).droppable({
+		accept: ".mouftype_BInterface",
+		activeClass: "ui-state-hover",
+		hoverClass: "ui-state-active",
+		drop: function( event, ui ) {
+			jQuery( this )
+				.addClass( "ui-state-highlight" )
+				.find( "p" )
+					.html( "Dropped!" );
+		}
+	});
+});
+
 
 MoufInstanceManager.getInstance(<?php echo json_encode($this->instanceName) ?>).then(function(instance) {
 	var myClass = MoufInstanceManager.getLocalClass(instance.getClassName());
@@ -89,7 +107,7 @@ MoufInstanceManager.getInstance(<?php echo json_encode($this->instanceName) ?>).
 	
 	jQuery("#instance").append(html);
 
-	instance.render(jQuery("#renderedInstance"), 'big');
+	instance.render('big').appendTo(jQuery("#renderedInstance"));
 	
 }).onError(function(e) {
 	addMessage("<pre>"+e+"</pre>", "error");
@@ -114,11 +132,12 @@ MoufUI.displayInstanceOfType("#instance2", "NoRenderer", true, true);
 
 
 //let the gallery items be draggable
-jQuery( "#instance2 > div" ).liveDraggable({
+jQuery( "#instance2 div.instance" ).liveDraggable({
 	//cancel: "a.ui-icon", // clicking an icon won't initiate dragging
 	revert: "invalid", // when not dropped, the item will revert back to its initial position
 	//containment: $( "#demo-frame" ).length ? "#demo-frame" : "document", // stick to demo-frame if present
 	helper: "clone",
-	cursor: "move"
+	cursor: "move",
+	connectToSortable: ".todo"
 });
 </script>

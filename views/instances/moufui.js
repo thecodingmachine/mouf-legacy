@@ -22,51 +22,19 @@ var MoufUI = (function () {
 		 */
 		displayInstanceOfType : function(targetSelector, type, displayInstances, displayClasses) {
 			MoufInstanceManager.getInstanceListByType(type).then(function(instances, classes) {
-				html = "<h1>Type "+type+"</h1>";
-				if (displayInstances !== null) {
-					html += "<h2>Instances</h2>";
-					html += "<div class='instanceList'>";
-					
-					i=0;
-					for (var key in instances) {
-						html += "<div class='instance_"+i+"'></div>";
-						i++;
-						html += "</div>";
-					}
-					html += "</div>";
+				jQuery("<h1/>").text("Type "+type).appendTo(targetSelector);
+				jQuery("<h2/>").text("Instances").appendTo(targetSelector);
+				var instanceListDiv = jQuery("<div/>").addClass("instanceList").appendTo(targetSelector);
+				for (var key in instances) {
+					var instance = instances[key];
+					instance.render().appendTo(instanceListDiv);
 				}
-				if (displayClasses !== null) {
-					html += "<h2>Classes</h2>";
-					html += "<div class='classList'>";
-					i=0;
-					for (var key in classes) {
-						html += "<div class='class_"+i+"'></div>";
-						i++;
-						html += "</div>";
-					}
-					html += "</div>";
+				jQuery("<h2/>").text("Classes").appendTo(targetSelector);
+				var classListDiv = jQuery("<div/>").addClass("classList").appendTo(targetSelector);
+				for (var key in classes) {
+					var classDescriptor = classes[key];
+					classDescriptor.render().appendTo(classListDiv);
 				}
-				jQuery(targetSelector).append(html);
-				
-				// Now, let's render the elements in the instance.
-				if (displayInstances !== null) {
-					i=0;
-					for (var key in instances) {
-						var instance = instances[key];
-						instance.render(jQuery(targetSelector).find(".instance_"+i));
-						i++;
-					}
-				}
-				if (displayClasses !== null) {
-					i=0;
-					for (var key in classes) {
-						var classDescriptor = classes[key];
-						classDescriptor.render(jQuery(targetSelector).find(".class_"+i));
-						//instance.render(jQuery(targetSelector).find(".instance_"+i));
-						i++;
-					}
-				}
-
 			}).onError(function(e) {
 				addMessage("<pre>"+e+"</pre>", "error");
 			});

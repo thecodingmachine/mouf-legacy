@@ -795,10 +795,12 @@ class MoufManager {
 	}
 	
 	/**
-	 * This function will rewrite the Mouf.php file according to parameters stored in the MoufManager
-	 * TODO: protect special characters!!!!
+	 * This function will rewrite the MoufComponents.php file and the MoufRequire.php file (or their "admin" counterpart)
+	 * according to parameters stored in the MoufManager
 	 */
 	public function rewriteMouf() {
+		require_once('MoufPackageManager.php');
+		
 		if (!is_writable(dirname(dirname(__FILE__)."/".$this->componentsFileName)) || (file_exists(dirname(__FILE__)."/".$this->componentsFileName) && !is_writable(dirname(__FILE__)."/".$this->componentsFileName))) {
 			$dirname = realpath(dirname(dirname(__FILE__)."/".$this->componentsFileName));
 			$filename = basename(dirname(__FILE__)."/".$this->componentsFileName);
