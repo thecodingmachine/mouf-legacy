@@ -18,20 +18,35 @@
 class BCEForm{
 	
 	/**
+	 * The main bean of the form, i.e. the object that define the edited data in the form
+	 * @var mixed $baseBean
+	 */
+	public $baseBean;
+	
+	/**
 	 * Field Decriptors define which fields avaiable through the main DAO should be involved in the form.<br/>
 	 * They define a lot of data<br/>
 	 * 
 	 * @Property 
-	 * @var array<FieldDescriptorInterface>
+	 * @var array<BaseFieldDescriptor>
 	 */
 	public $fieldDescriptors;
+	
+	
+	/**
+	 * Field Decriptors that are not directly related to the bean, but through an associative table (many to many relation ships)
+	 * 
+	 * @Property 
+	 * @var array<Many2ManyFieldDescriptor>
+	 */
+	public $many2ManyFieldDescriptors;
 	
 	/**
 	 * Field Decriptors of the bean's identifier.
 	 * This is a special field because the id will help to retrive bean before saving it.
 	 * 
 	 * @Property 
-	 * @var FieldDescriptorInterface
+	 * @var BaseFieldDescriptor
 	 */
 	public $idFieldDescriptor;
 	
@@ -114,8 +129,16 @@ class BCEForm{
 		//Load bean values into related field Descriptors
 		$this->idFieldValidator->load($this->baseBean);
 		foreach ($this->fieldDescriptors as $descriptor) {
-			/* @var $descriptor FieldDescriptorInterface */
+			/* @var $descriptor FieldDescriptor */
 			$descriptor->load($this->baseBean);
+			if ($this->validationHandler && count($descriptor->getValidators())){
+				$this->validationHandler->buildValidationScript($descriptor, $this->id);
+			}
+		}
+		
+		foreach ($this->many2ManyFieldDescriptors as $descriptor) {
+			/* @var $descriptor Many2ManyFieldDescriptor */
+			$descriptor->load($id);
 			if ($this->validationHandler && count($descriptor->getValidators())){
 				$this->validationHandler->buildValidationScript($descriptor, $this->id);
 			}
@@ -141,10 +164,17 @@ class BCEForm{
 	public function save($postValues){
 		//getBean
 		$id = $postValues[$this->idFieldValidator->getFieldName()];
-		$bean = empty($id) ? $this->mainDAO->getNew() : $this->mainDAO->getById($id);
+		$this->baseBean = empty($id) ? $this->mainDAO->getNew() : $this->mainDAO->getById($id);
 		
-		foreach ($this->fieldDescriptors as $descriptor) {
-			$value = $postValues[$descriptor->getFieldName()];
+		$descriptors = array_merge($this->fieldDescriptors, $this->many2ManyFieldDescriptors);
+		foreach ($descriptors as $descriptor) {
+			if (!isset($postValues[$descriptor->getFieldName()])){
+				$value = null;
+			}else{
+				$value = $postValues[$descriptor->getFieldName()];
+			}
+			$values[$descriptor->getFieldName()] = $value;
+			
 			//unformat values
 			$formatter = $descriptor->getFormatter();
 			if ($formatter && $formatter instanceof BijectiveFormatterInterface) {
@@ -161,17 +191,57 @@ class BCEForm{
 					}
 				}
 			}
-			$descriptor->setValue($bean, $value);
+			if ($descriptor instanceof BaseFieldDescriptor) {
+				$descriptor->setValue($this->baseBean, $value);
+			}else if ($descriptor instanceof Many2ManyFieldDescriptor) {
+				$descriptor->setSaveValues($value);
+			}
 		}
 		if (!count($this->errorMessages)){
 			//save
 			echo "<h1>Save!!</h1>";
-			$this->mainDAO->save($bean);
+			$this->mainDAO->save($this->baseBean);
+			
+			echo "<h2>M2M</h2>";
+			$id = $this->getMainBeanId();
+			foreach ($this->many2ManyFieldDescriptors as $descriptor){
+				echo "<h3>".$descriptor->getFieldName()."</h3>";
+				$this->m2mSave($id, $descriptor);		
+			}
 		}else{
 			echo "<h1>Php Errors!!</h1>";
 			var_dump($this->errorMessages);
 		}
 		
+	}
+	
+	private function getMainBeanId(){
+		$this->idFieldDescriptor->load($this->baseBean);
+		return $this->idFieldDescriptor->getFieldValue();
+	}
+	
+	/**
+	 * Handle saving data for Many 2 Many relationships
+	 * @param mixed $mainBeanId : the Id of the current table
+	 * @param Many2ManyFieldDescriptor $descriptor
+	 */
+	private function m2mSave($mainBeanId, Many2ManyFieldDescriptor $m2mdescriptor){
+		$m2mdescriptor->loadValues($mainBeanId);
+		$beforeValues = $m2mdescriptor->getBeanValues();
+		$finalValues = $m2mdescriptor->getSaveValues();
+		
+		$toDelete = array_diff($beforeValues, $finalValues);
+		$toSave = array_diff($finalValues, $beforeValues);
+
+		foreach ($toDelete as $linkedBeanId) {
+			$m2mdescriptor->dao->deleteByForeignKeys($mainBeanId, $linkedBeanId);
+		}
+		foreach ($toSave as $linkedBeanId) {
+			$bean = $m2mdescriptor->dao->getNew();
+			$m2mdescriptor->setMainId($mainBeanId, $bean);
+			$m2mdescriptor->setLinkedId($linkedBeanId, $bean);
+			$m2mdescriptor->dao->save($bean);
+		}
 	}
 	
 }

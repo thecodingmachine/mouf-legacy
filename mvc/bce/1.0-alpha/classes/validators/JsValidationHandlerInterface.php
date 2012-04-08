@@ -8,10 +8,10 @@ interface JsValidationHandlerInterface{
 	 *   or
 	 *   - if the related PhpValidator (Server Side) has "PHP Fall Back" property activated
 	 *   
-	 * @param FieldDescriptorInterface $fieldDescriptor
+	 * @param FieldDescriptor $fieldDescriptor
 	 * @param string $formId
 	 */
-	public function buildValidationScript(FieldDescriptorInterface $descriptor, $formId);
+	public function buildValidationScript(FieldDescriptor $descriptor, $formId);
 
 	/**
 	 * Returns the Javascript Code that will handle from's validation: methods and rules

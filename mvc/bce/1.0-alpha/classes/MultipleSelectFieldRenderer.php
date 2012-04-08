@@ -1,6 +1,4 @@
 <?php
-require_once 'FieldRendererInterface.php';
-
 /**
  * A renderer class that ouputs multiple values field like checkboxes , multiselect list, ... fits for many to many relations  
  * @Component
@@ -15,22 +13,24 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 	 *  <li>a multiselect widjet (TODO),</li>
 	 *  <li>maybe a sortable dnd list (TODO)</li>
 	 *  </ul>
-	 * @OneOf("chbx", "multilist")
+	 * @OneOf("chbx", "multiselect")
 	 * @OneOfText("Checkboxes", "Multiselect List")
 	 * @Property
 	 * @var string
 	 */
 	public $mode = 'checkbox';
 	
-	public function render(FieldDescriptorInterface $descriptor){//TODO must be of type ForeignKeyFieldDescriptor
-		/* @var $descriptor ForeignKeyFieldDescriptor */
+	public function render($descriptor){
+		/* @var $descriptor Many2ManyFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
-		$value = $descriptor->getFieldValue();
+		$values = $descriptor->getBeanValues();
+		$html = "";
 		switch ($this->mode) {
 			case 'multiselect':
 				$html = "<select name='$fieldName' id='$fieldName' multiple='multiple'>";
-				foreach ($descriptor->data as $id => $label) {
-					if ($id == $value) $selectStr = "selected = 'selected'";
+				foreach ($descriptor->getData() as $id => $label) {
+					//TODO here :: change to check array search and select subset
+					if (array_search($id, $values)!==false) $selectStr = "selected = 'selected'";
 					else $selectStr = "";
 					$html .= "<option value='$id' $selectStr>$label</option>";
 				}
@@ -39,7 +39,8 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 			
 			case 'chbx':
 				foreach ($descriptor->getData() as $id => $label) {
-					$html .= "<label for='$fieldName"."-"."$id'>$label</label><input type='checkbox' name='".$fieldName."[]' id='$fieldName"."-"."$id' value='$id'/>";
+					$checked = (array_search($id, $values)!==false) ? "checked='checked'" : "";
+					$html .= "<label for='$fieldName"."-"."$id'>$label</label><input type='checkbox' $checked name='".$fieldName."[]' id='$fieldName"."-"."$id' value='$id'/>";
 				}	
 			break;
 		}

@@ -18,10 +18,10 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 	 */
 	private $validationRules;
 	
-	private function wrapRule(FieldDescriptorInterface $fieldDescriptor, JsValidatorInterface $validator, $ruleIndex){
+	private function wrapRule(FieldDescriptor $fieldDescriptor, JsValidatorInterface $validator, $ruleIndex){
 		return "
 			$.validator.addMethod(
-				'".$fieldDescriptor->getFieldName()."_$ruleIndex',
+				'".$fieldDescriptor->getFieldName()."_rule_$ruleIndex',
 				function(value, element) { 
 					var functionCall = ".$validator->getScript()."
 					return functionCall(value, element);
@@ -35,7 +35,7 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 	 * (non-PHPdoc)
 	 * @see JsValidationHandlerInterface::buildValidationScript()
 	 */
-	public function buildValidationScript(FieldDescriptorInterface $descriptor, $formId){
+	public function buildValidationScript(FieldDescriptor $descriptor, $formId){
 		$i = 0;
 		$fieldName = $descriptor->getFieldName();
 		$validators = $descriptor->getValidators();
@@ -43,7 +43,7 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 		foreach ($validators as $validator) {
 			if ($validator instanceof JsValidatorInterface) {
 				$this->validationMethods[] = $this->wrapRule($descriptor, $validator, $i);
-				$methodName = $fieldName."_".$i;
+				$methodName = $fieldName."_rule_".$i;
 				$this->validationRules->rules->$fieldName->$methodName = $validator->getJsArguments();
 				$i++;
 			}
@@ -54,48 +54,49 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 		$rulesJson = json_encode($this->validationRules);
 		
 		$js = '
-		_currentForm = $("#'.$formId.'");
+		$(document).ready(function(){
+			_currentForm =document.getElementById("'.$formId.'");
+			
+			_checkable =  function( element ) {
+				return /radio|checkbox/i.test(element.type);
+			};
+			
+			_findByName = function( name ) {
+				// select by name and filter by form for performance over form.find("[name=...]")
+				var form = _currentForm;
+				return $(document.getElementsByName(name)).map(function(index, element) {
+					return element.form == form && element.name == name && element  || null;
+				});
+			};
+			
+			_getLength = function(value, element) {
+				switch( element.nodeName.toLowerCase() ) {
+				case "select":
+					return $("option:selected", element).length;
+				case "input":
+					if( _checkable( element) )
+						return _findByName(element.name).filter(":checked").length;
+				}
+				return value.length;
+			};
 		
-		_checkable =  function( element ) {
-			return /radio|checkbox/i.test(element.type);
-		};
+			_depend = function(param, element) {
+				return _dependTypes[typeof param]
+					? _dependTypes[typeof param](param, element)
+					: true;
+			};
 		
-		_findByName = function( name ) {
-			// select by name and filter by form for performance over form.find("[name=...]")
-			var form = _currentForm;
-			return $(document.getElementsByName(name)).map(function(index, element) {
-				return element.form == form && element.name == name && element  || null;
-			});
-		};
-		
-		_getLength = function(value, element) {
-			switch( element.nodeName.toLowerCase() ) {
-			case "select":
-				return $("option:selected", element).length;
-			case "input":
-				if( _checkable( element) )
-					return _findByName(element.name).filter(":checked").length;
-			}
-			return value.length;
-		};
-	
-		_depend = function(param, element) {
-			return _dependTypes[typeof param]
-				? _dependTypes[typeof param](param, element)
-				: true;
-		};
-	
-		_dependTypes = {
-			"boolean": function(param, element) {
-				return param;
+			_dependTypes = {
+				"boolean": function(param, element) {
+					return param;
+				},
+				"string": function(param, element) {
+					return !!$(param, element.form).length;
+				},
+				"function": function(param, element) {
+					return param(element);
+				}
 			},
-			"string": function(param, element) {
-				return !!$(param, element.form).length;
-			},
-			"function": function(param, element) {
-				return param(element);
-			}
-		},
 		';
 		
 		foreach ($this->validationMethods as $method) {
@@ -104,9 +105,11 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 			";
 		}
 		$js.= "
-		$(document).ready(function(){
+		
 			$('#$formId').validate($rulesJson);
 		});";
+		
+		
 		return $js;
 	}
 	

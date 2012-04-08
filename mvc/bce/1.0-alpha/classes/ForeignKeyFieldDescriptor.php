@@ -12,7 +12,7 @@ require_once 'BaseFieldDescriptor.php';
  * 		  In our example, this would be the role labels the user might be affected
  * @Component
  */
-class ForeignKeyFieldDescriptor extends BaseFieldDescriptor implements FieldDescriptorInterface{
+class ForeignKeyFieldDescriptor extends BaseFieldDescriptor{
 	
 	/**
 	 * 

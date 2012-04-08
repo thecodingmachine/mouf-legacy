@@ -8,7 +8,7 @@ interface BCERenderer{
 	
 	/**
 	 * Main function of the Renderer: output the form's HTML
-	 * @param array<FieldDescriptorInterface> $fieldDescriptors
+	 * @param array<FieldDescriptor> $fieldDescriptors
 	 */
 	public function render(BCEForm $fieldDescriptors);
 	

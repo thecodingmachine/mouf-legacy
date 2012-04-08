@@ -7,7 +7,8 @@ require_once 'FieldRendererInterface.php';
  */
 class TextFieldRenderer implements FieldRendererInterface{
 	
-	public function render(FieldDescriptorInterface $descriptor){
+	public function render($descriptor){
+		/* @var $descriptor FieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
 		$value = $descriptor->getFieldValue();
 		return "<input type='text' value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";

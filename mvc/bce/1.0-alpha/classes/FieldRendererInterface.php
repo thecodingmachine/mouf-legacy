@@ -7,9 +7,9 @@ interface FieldRendererInterface{
 	
 	/**
 	 * Main function of the FieldRenderer : return field's HTML code
-	 * @param FieldDescriptorInterface $descriptor
+	 * @param FieldDescriptor $descriptor
 	 * @return string
 	 */
-	public function render(FieldDescriptorInterface $descriptor);
+	public function render($descriptor);
 	
 }

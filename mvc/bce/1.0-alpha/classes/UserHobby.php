@@ -6,7 +6,8 @@
 class UserHobby{
 	
 	public $id;
-	public $label;
+	public $userId;
+	public $hobbyId;
 	
 	public function getId(){
 		return $this->id;
@@ -16,12 +17,21 @@ class UserHobby{
 		$this->id = $id;
 	}
 	
-	public function getLabel(){
-		return $this->label;
+	public function getUserId(){
+		return $this->userId;
 	}
 	
-	public function setLabel($label){
-		$this->label = $label;
+	public function setUserId($userId){
+		$this->userId = $userId;
 	}
+	
+	public function getHobbyId(){
+		return $this->hobbyId;
+	}
+	
+	public function setHobbyId($hobbyId){
+		$this->hobbyId = $hobbyId;
+	}
+	
 	
 }

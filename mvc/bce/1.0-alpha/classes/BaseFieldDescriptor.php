@@ -1,29 +1,11 @@
 <?php
-require_once 'FieldDescriptorInterface.php';
-
 /**
  * This class is the simpliest FieldDescriptor:
  * it handles a field that has no "connections" to other objects (
  * as user name or login for example)
  * @Component
  */
-class BaseFieldDescriptor implements FieldDescriptorInterface{
-
-	/**
-	 * Name of the field. This value must remain unique inside a form,
-	 * it will be used for name and id attributes.
-	 * @Property
-	 * @var string
-	 */
-	public $fieldName;
-
-	/**
-	 * Optional formatter that will display a formatted value (example 2012-01-30 --> 01/30/2012).
-	 * The formatter is also responsible for the reverse operation (01/30/2012 --> 2012-01-30).
-	 * @Property
-	 * @var FormatterInterface
-	 */
-	public $formatter;
+class BaseFieldDescriptor extends FieldDescriptor{
 
 	/**
 	 * The name of the function that retruns the value of the field from the bean.
@@ -49,13 +31,6 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	public $value;
 
 	/**
-	 * The label of the field as displayed in the form
-	 * @Property
-	 * @var string
-	 */
-	public $label;
-
-	/**
 	 * The renderer that will be responsible for delivering the HTML for that field
 	 * @Property
 	 * @var FieldRendererInterface
@@ -71,8 +46,9 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::load()
+	 * Loads the values of the bean into the descriptors, calling main bean's getter
+	 * Eventually formats the value before displaying it 	
+	 * @param mixed $mainBean
 	 */
 	public function load($mainBean){
 		$fieldValue = call_user_func(array($mainBean, $this->getter));
@@ -81,66 +57,26 @@ class BaseFieldDescriptor implements FieldDescriptorInterface{
 	}
 	
 	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::saveValue()
+	 * Simply calls the setter of the descriptor's related field into the bean
+	 * @param mixed $mainBean
+	 * @param mixed $value
 	 */
 	public function setValue($mainBean, $value){
 		call_user_func(array($mainBean, $this->setter), $value);
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::getFieldName()
-	 */
-	public function getFieldName(){
-		return $this->fieldName;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::getRenderer()
-	 */
-	public function getRenderer(){
-		return $this->renderer;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::getValidators()
-	 */
-	public function getValidators(){
-		return $this->validators;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::setFieldValue()
-	 */
-	public function setFieldValue($value){
-		$this->value = $value;
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::getFieldValue()
+	 * Returns the bean's value after loading the descriptor
 	 */
 	public function getFieldValue(){
 		return $this->value;
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::getFieldLabel()
+	 * Returns the label of the field
 	 */
 	public function getFieldLabel(){
 		return $this->label;
 	}
 
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldDescriptorInterface::getFormatter()
-	 */
-	function getFormatter(){
-		return $this->formatter;
-	}
 }

@@ -14,7 +14,7 @@ require_once 'BCERenderer.php';
 class BaseRenderer implements BCERenderer{
 	
 	public function render(BCEForm $form){
-		$fieldDescriptors = $form->fieldDescriptors;
+		$fieldDescriptors = array_merge($form->fieldDescriptors, $form->many2ManyFieldDescriptors);
 ?>
 	<form action="<?php echo $form->action; ?>" method="<?php echo $form->method?>" name="<?php echo $form->name;?>" id="<?php echo $form->id ?>">
 		<?php
@@ -22,7 +22,7 @@ class BaseRenderer implements BCERenderer{
 		$idRenderer = $idDescriptor->getRenderer();
 		echo $idRenderer->render($idDescriptor);
 		foreach ($fieldDescriptors as $descriptor) {
-			/* @var $descriptor FieldDescriptorInterface */
+			/* @var $descriptor FieldDescriptor */
 			$renderer = $descriptor->getRenderer();
 			?>	
 			<div>
