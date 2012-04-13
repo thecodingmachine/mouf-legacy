@@ -7,7 +7,9 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 
 // Let's create the instance
 $moufManager = MoufManager::getMoufManager();
-$moufManager->declareComponent("sessionManager", "DrupalSessionManager");
+if (!$moufManager->instanceExists("sessionManager")){
+	$moufManager->declareComponent("sessionManager", "DrupalSessionManager");
+}
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();
