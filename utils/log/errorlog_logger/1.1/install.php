@@ -19,7 +19,6 @@ if (!$moufManager->instanceExists("errorLogLogger")) {
 	// Let's set a name for this instance (otherwise, it would be anonymous)
 	$errorLogLogger->setName("errorLogLogger");
 	$errorLogLogger->getProperty("level")->setValue(4);
-	
 	/*$moufManager->declareComponent("errorLogLogger", "ErrorLogLogger");
 	$moufManager->setParameter("errorLogLogger", "level", 4);*/
 }
