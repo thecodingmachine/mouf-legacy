@@ -15,6 +15,9 @@
 	public $hobbies;
 	
 	
+	/**
+	 * @return int the messaged 
+	 */
 	public function getId(){
 		return $this->id;
 	}
@@ -23,6 +26,9 @@
 		$this->id = $id;
 	}
 	
+	/**
+	 * @return string
+	 */
 	public function getName(){
 		return $this->name;
 	}
@@ -30,7 +36,10 @@
 	public function setName($name){
 		$this->name = $name;
 	}
-	
+
+	/**
+	* @return string
+	*/
 	public function getEmail(){
 		return $this->email;
 	}
@@ -39,6 +48,9 @@
 		$this->email = $email;
 	}
 	
+	/**
+	* @return int
+	*/
 	public function getRoleId(){
 		return $this->roleId;
 	}
@@ -47,6 +59,9 @@
 		$this->roleId = $roleId;
 	}
 	
+	/**
+	* @return float
+	*/
 	public function getAge(){
 		return $this->age;
 	}
@@ -55,6 +70,9 @@
 		$this->age = $age;
 	}
 	
+	/**
+	* @return timestamp
+	*/
 	public function getBirthDate(){
 		return $this->brithDate;
 	}
@@ -63,6 +81,9 @@
 		$this->brithDate = $date;
 	}
 	
+	/**
+	* @return string
+	*/
 	public function getWebSite(){
 		return $this->webSite;
 	}
@@ -71,11 +92,4 @@
 		$this->webSite = $webSite;
 	}
 	
-	public function getHobbies(){
-		return $this->hobbies;
-	}
-	
-	public function setHobbies($hobbies){
-		$this->hobbies = $hobbies;
-	}
 }
