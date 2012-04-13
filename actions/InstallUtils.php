@@ -21,6 +21,7 @@ class InstallUtils {
 		
 	public static function init($initMode) {
 		require_once dirname(__FILE__).'/../direct/utils/check_rights.php';
+		require_once dirname(__FILE__).'/../reflexion/MoufReflectionClass.php';
 		
 		if ($initMode == self::$INIT_APP) {
 			require_once dirname(__FILE__).'/../../Mouf.php';
