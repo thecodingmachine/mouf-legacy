@@ -887,17 +887,24 @@ class MoufManager {
  */
 class ".$this->mainClassName." {
 ");
-		
+		$getters = array();
 		foreach ($this->declaredInstances as $name=>$classDesc) {
 			$className = $classDesc['class'];
-			//if (!isset($this->externalComponents[$name]) || $this->externalComponents[$name] != true) {
-				fwrite($fp, "	/**\n");
-				fwrite($fp, "	 * @return $className\n");
-				fwrite($fp, "	 */\n");
-				fwrite($fp, "	 public static function ".self::generateGetterString($name)."() {\n");
-				fwrite($fp, "	 	return MoufManager::getMoufManager()->getInstance(".var_export($name,true).");\n");
-				fwrite($fp, "	 }\n\n");
-			//}
+			$getter = self::generateGetterString($name);
+			if (isset($getters[strtolower($getter)])){
+				$i = 0;
+				while (isset($getters[strtolower($getter."_$i")])) {
+					$i++;
+				}
+				$getter = $getter."_$i";
+			}
+			$getters[strtolower($getter)] = true;
+			fwrite($fp, "	/**\n");
+			fwrite($fp, "	 * @return $className\n");
+			fwrite($fp, "	 */\n");
+			fwrite($fp, "	 public static function ".$getter."() {\n");
+			fwrite($fp, "	 	return MoufManager::getMoufManager()->getInstance(".var_export($name,true).");\n");
+			fwrite($fp, "	 }\n\n");
 		}
 		fwrite($fp, "}\n");
 		
@@ -1990,23 +1997,6 @@ class ".$this->mainClassName." {
 			// Pour cela, il faudrait savoir si quel class-loader est actif!!!!
 			if (MoufManager::getMoufManager()->getScope() == self::SCOPE_APP && $this->getScope() == self::SCOPE_APP) {
 				// We are fully in the scope of the application:
-				
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
-				// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOO: J'AI CASSE UN TRUC ICI!!!!!
 				$this->classDescriptors[$className] = new MoufReflectionClass($className);
 			} else {
 				$this->classDescriptors[$className] = MoufReflectionProxy::getClass($className, $this->getScope() == self::SCOPE_ADMIN);
