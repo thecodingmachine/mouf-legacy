@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Druplash - Drupal MVC framework based on Splash MVC</displayName>
+	<shortDescription>This module is in charge of integrating Drupal and the Splash MVC framework.</shortDescription>
+	<docUrl></docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>mvc</group>
+			<name>splash-common</name>
+			<version>&gt;=3.2</version>
+		</dependency>
+		<dependency>
+			<group>utils/session</group>
+			<name>sessionmanager</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>Druplash.php</require>
+		<require>DrupalController.php</require>
+		<require>DrupalDynamicBlockInterface.php</require>
+		<require>DrupalDynamicBlock.php</require>
+		<require>DrupalSessionManager.php</require>
+	</requires>
+	<install>
+		<file>install.php</file>
+	</install>
+	<!--<adminRequires>
+		<require>drupalBootstrap.php</require>
+	</adminRequires>-->
+</package>
