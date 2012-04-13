@@ -107,7 +107,7 @@ class TDBMDaoGenerator {
 	 * @param $tableName
 	 * @return string
 	 */
-	public function getBeanNameFromTableName($tableName) {
+	public static function getBeanNameFromTableName($tableName) {
 		return TDBMDaoGenerator::toSingular(TDBMDaoGenerator::toCamelCase($tableName))."Bean";
 	}
 	
@@ -117,7 +117,7 @@ class TDBMDaoGenerator {
 	 * @param $tableName
 	 * @return string
 	 */
-	public function getDaoNameFromTableName($tableName) {
+	public static function getDaoNameFromTableName($tableName) {
 		return TDBMDaoGenerator::toSingular(TDBMDaoGenerator::toCamelCase($tableName))."Dao";
 	}
 	
@@ -127,7 +127,7 @@ class TDBMDaoGenerator {
 	 * @param $tableName
 	 * @return string
 	 */
-	public function getBaseBeanNameFromTableName($tableName) {
+	public static function getBaseBeanNameFromTableName($tableName) {
 		return TDBMDaoGenerator::toSingular(TDBMDaoGenerator::toCamelCase($tableName))."BaseBean";
 	}
 	
@@ -675,7 +675,7 @@ class $this->daoFactoryClassName
 	 * @param $str string
 	 * @return string
 	 */
-	public function toVariableName($str) {
+	public static function toVariableName($str) {
 		return strtolower(substr($str, 0, 1)).substr($str, 1);
 	}
 }
