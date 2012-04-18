@@ -10,15 +10,29 @@
 class HtmlJSSyntaxHighlighter implements HtmlElementInterface {
 	
     /**
-     * List of brushes.
+     * List of brushes loaded dynamically.
+     * A brush = a supported language.
+     *
+     * See <a href="http://alexgorbatchev.com/SyntaxHighlighter/manual/installation.html">http://alexgorbatchev.com/SyntaxHighlighter/manual/installation.html</a> for more information.
+     *
+     * Brushes in this list will be loaded dynamically if a matching class is found on page load. 
+     *
+     * @Property
+     * @var array<string, string> The key is the name of the language, the value the file of the brush.
+     */
+    public $brushes;
+    
+    /**
+     * List of brushes loaded statically (each time the page is loaded).
      * A brush = a supported language.
      *
      * See <a href="http://alexgorbatchev.com/SyntaxHighlighter/manual/installation.html">http://alexgorbatchev.com/SyntaxHighlighter/manual/installation.html</a> for more information.
      *
      * @Property
-     * @var array<string, string>
+     * @var array<string>
      */
-    public $brushes;
+    public $staticBrushes = array();
+    
     
     /**
      * Theme file.
@@ -73,6 +87,10 @@ class HtmlJSSyntaxHighlighter implements HtmlElementInterface {
 		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shAutoloader.js"></script>';
 		//echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/syntaxhighlighter/3.0.83/scripts/shCore.js"></script>';
 		//echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/syntaxhighlighter/3.0.83/src/shAutoloader.js"></script>';
+		foreach ($this->staticBrushes as $brush) {
+			echo '<script type="text/javascript" src="'.ROOT_URL.$brush.'"></script>';
+		}
+		
 		echo '<script type="text/javascript">';
 		echo "jQuery(document).ready(function() {\n";
 		$jsStringArray = array();
