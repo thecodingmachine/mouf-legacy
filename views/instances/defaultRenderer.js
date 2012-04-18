@@ -1,179 +1,3 @@
-/**
- * The MoufInstanceSubProperty is an object designed to allow easy usage of field renderers in an array.
- * An array has its own field renderer. The array field renderer itself calls field renderers for
- * each value to renderer, passing the MoufInstanceSubProperty object (instead of the MoufInstanceProperty object)
- */
-var MoufInstanceSubProperty = function(moufInstanceProperty, key) {
-	this.subProperty = true;
-	this.parentMoufInstanceProperty = moufInstanceProperty;
-	this.key = key;
-	this.moufSubProperty = new MoufSubProperty(this.parentMoufInstanceProperty.getMoufProperty(), this.key, this);
-}
-
-/**
- * Returns the value for this property.
- */
-MoufInstanceSubProperty.prototype.getName = function() {
-	return this.parentMoufInstanceProperty.getName();;
-}
-
-/**
- * Returns the value for this property.
- */
-MoufInstanceSubProperty.prototype.getValue = function() {
-	return this.parentMoufInstanceProperty.getValue()[this.key];
-}
-
-/**
- * Returns the origin for this property.
- */
-MoufInstanceSubProperty.prototype.getOrigin = function() {
-	return this.parentMoufInstanceProperty.getOrigin();
-}
-
-/**
- * Returns the metadata for this property.
- */
-MoufInstanceSubProperty.prototype.getMetaData = function() {
-	return this.parentMoufInstanceProperty.getMetaData();
-}
-
-/**
- * Returns a MoufProperty or a MoufMethod object representing the class property/method that holds the @Property annotation.
- */
-MoufInstanceSubProperty.prototype.getMoufProperty = function() {
-	return this.moufSubProperty;
-}
-
-/**
- * Returns the instance this property is part of.
- */
-MoufInstanceSubProperty.prototype.getInstance = function() {
-	return this.parentMoufInstanceProperty.getInstance();
-}
-
-
-
-
-/**
- * The MoufSubProperty is an object designed to allow easy usage of field renderers in an array.
- * An array has its own field renderer. The array field renderer itself calls field renderers for
- * each value to renderer, passing the MoufSubProperty object (instead of the MoufProperty object)
- * 
- * @param moufProperty
- * @param key
- * @returns
- */
-var MoufSubProperty = function(moufProperty, key, moufInstanceSubProperty) {
-	this.subProperty = true;
-	this.parentMoufProperty = moufProperty;
-	this.key = key;
-	this.moufInstanceSubProperty = moufInstanceSubProperty;
-}
-
-/**
- * Returns the name of the property.
- */
-MoufSubProperty.prototype.getName = function() {
-	return this.parentMoufProperty.getName();
-}
-
-/**
- * Returns the comment of the property.
- */
-MoufSubProperty.prototype.getComment = function() {
-	return this.parentMoufProperty.getComment();
-}
-
-/**
- * Retrieves the annotations of the property, as a JSON object:
- * {
- * 	"annotationName", [param1, param2....]
- * }
- * There are as many params as there are annotations
- */
-MoufSubProperty.prototype.getAnnotations = function() {
-	return this.parentMoufProperty.getAnnotations();
-}
-
-/**
- * Returns true if the property has a default value.
- */
-MoufSubProperty.prototype.hasDefault = function() {
-	return this.parentMoufProperty.hasDefault();
-}
-
-/**
- * Returns the default value of the property.
- */
-MoufSubProperty.prototype.getDefault = function() {
-	return this.parentMoufProperty.getDefault();
-}
-
-/**
- * Returns true if this property has the @Property annotation.
- */
-MoufSubProperty.prototype.hasPropertyAnnotation = function() {
-	return this.parentMoufProperty.hasPropertyAnnotation();
-}
-
-/**
- * Returns the name of the property (if this method has a @Property annotation).
- */
-MoufSubProperty.prototype.getPropertyName = function() {
-	return this.parentMoufProperty.getPropertyName();
-}
-
-/**
- * Returns the type of the property (as defined in the @var annotation).
- */
-MoufSubProperty.prototype.getType = function() {
-	return this.parentMoufProperty.getSubType();
-}
-
-/**
- * Returns the type of the array's value if the type of the annotation is an array (as defined in the @var annotation).
- */
-MoufSubProperty.prototype.getSubType = function() {
-	return null;
-}
-
-/**
- * Returns the type of the array's key if the type of the annotation is an associative array (as defined in the @var annotation).
- */
-MoufSubProperty.prototype.getKeyType = function() {
-	return null;
-}
-
-/**
- * Returns true if the type of the property is an array.
- */
-MoufSubProperty.prototype.isArray = function() {
-	return this.getType() == 'array';
-}
-
-/**
- * Returns true if the type of the property is an associative array.
- */
-MoufSubProperty.prototype.isAssociativeArray = function() {
-	return false;
-}
-
-
-/**
- * Returns the MoufInstanceSubProperty of a property for the instance passed in parameter (available if this property has a @Property annotation)
- */
-MoufSubProperty.prototype.getMoufInstanceProperty = function(instance) {
-	return this.moufInstanceSubProperty;
-}
-
-/**
- * Returns the value of a property for the instance passed in parameter (available if this property has a @Property annotation)
- */
-MoufSubProperty.prototype.getValueForInstance = function(instance) {
-	var values =  this.parentMoufProperty.getValueForInstance(instance);
-	return values[this.key];
-}
 
 
 
@@ -261,37 +85,139 @@ var MoufDefaultRenderer = (function () {
 	/**
 	 * Renders an array of fields, for the instance "instance", and the property moufProperty.
 	 * The "in-memory" jQuery object for the field is returned.
+	 * 
 	 */
 	var renderArrayField = function(moufInstanceProperty) {
 		var name = moufInstanceProperty.getName();
 		var values = moufInstanceProperty.getValue();
 		var moufProperty = moufInstanceProperty.getMoufProperty();
-		var elem = jQuery("<div/>").addClass('array');
+		var elem = jQuery("<div/>");
+		var sortable = jQuery("<div/>").addClass('array');
+		sortable.appendTo(elem);
 
 		if (!moufProperty.isAssociativeArray())  {
 			if (values instanceof Array) {
-				for (var i=0; i<values.length; i++) {
+				moufInstanceProperty.forEachArrayElement(function(instanceSubProperty) {
 					var fieldElem = jQuery("<div/>").addClass('fieldContainer')
-						.data("key", i)
-						.appendTo(elem);
+						.data("key", instanceSubProperty.getKey())
+						.appendTo(sortable);
 						
 					var sortableElem = jQuery("<div/>").addClass('sortable');
 					jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
-					var subInstanceProperty = new MoufInstanceSubProperty(moufInstanceProperty, i);
-					fieldRenderer = getFieldRenderer(subInstanceProperty.getMoufProperty().getType(), subInstanceProperty.getMoufProperty().getKeyType(), subInstanceProperty.getMoufProperty().getSubType());
-					var rowElem = fieldRenderer(subInstanceProperty);
+					fieldRenderer = getFieldRenderer(instanceSubProperty.getMoufProperty().getType(), instanceSubProperty.getMoufProperty().getKeyType(), instanceSubProperty.getMoufProperty().getSubType());
+					var rowElem = fieldRenderer(instanceSubProperty);
 					rowElem.appendTo(fieldElem);
-				}
+				});
+			}
+			var subtype = moufProperty.getSubType();
+			// If this is a known primitive type, let's display a "add a value" button
+			if (fieldsRenderer[subtype]) {
+				jQuery("<div/>").addClass('addavalue')
+					.text("Add a value")
+					.appendTo(elem)
+					.click(function() {
+						var renderer = getFieldRenderer(subtype, null, null);
+						// key=null (since we are not an associative array), and we init the value to null too.
+						var moufNewSubInstanceProperty = moufInstanceProperty.addArrayElement(null, null);
+						
+						var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+							.data("key", moufNewSubInstanceProperty.getKey())
+							.appendTo(sortable);
+						
+						var sortableElem = jQuery("<div/>").addClass('sortable');
+						jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
+						
+						var rowElem = fieldRenderer(moufNewSubInstanceProperty);
+						rowElem.appendTo(fieldElem);
+					});
 			}
 		} else {
-			// TODO
+			// If this is an associative array
+			// Check that value is not null
+			if (values instanceof Array) {
+				moufInstanceProperty.forEachArrayElement(function(instanceSubProperty) {
+					var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+						.data("key", instanceSubProperty.getKey())
+						.appendTo(sortable);
+						
+					var sortableElem = jQuery("<div/>").addClass('sortable');
+					jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
+					fieldRenderer = getFieldRenderer(instanceSubProperty.getMoufProperty().getType(), instanceSubProperty.getMoufProperty().getKeyType(), instanceSubProperty.getMoufProperty().getSubType());
+					var rowElem = fieldRenderer(instanceSubProperty);
+					
+					jQuery("<input/>")
+						.addClass("key")
+						.val(instanceSubProperty.getKey())
+						.appendTo(fieldElem)
+						.change(function() {
+							// Set's the key if changed
+							instanceSubProperty.setKey(jQuery(this).val());							
+						});
+					jQuery("<span>=&gt;</span>").appendTo(fieldElem);
+					
+					rowElem.appendTo(fieldElem);
+				});
+			}
+			var subtype = moufProperty.getSubType();
+			// If this is a known primitive type, let's display a "add a value" button
+			if (fieldsRenderer[subtype]) {
+				jQuery("<div/>").addClass('addavalue')
+					.text("Add a value")
+					.appendTo(elem)
+					.click(function() {
+						var renderer = getFieldRenderer(subtype, null, null);
+						// key="" (since we are an associative array), and we init the value to null too.
+						var moufNewSubInstanceProperty = moufInstanceProperty.addArrayElement("", null);
+						
+						var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+							.data("key", moufNewSubInstanceProperty.getKey())
+							.appendTo(sortable);
+						
+						var sortableElem = jQuery("<div/>").addClass('sortable');
+						jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
+						
+						jQuery("<input/>").addClass("key").appendTo(fieldElem).change(function() {
+							// Set's the key if changed
+							moufNewSubInstanceProperty.setKey(jQuery(this).val());							
+						});
+;
+						jQuery("<span>=&gt;</span>").appendTo(fieldElem);
+
+						var rowElem = fieldRenderer(moufNewSubInstanceProperty);
+						rowElem.appendTo(fieldElem);
+					});
+			}
 		}
-		elem.sortable();
+		var _startPosition = null;
+		sortable.sortable({
+			start: function(event, ui) {
+				_startPosition = jQuery(ui.item).index();
+				MoufUI.showBin();
+			},
+			stop: function(event, ui) {
+				MoufUI.hideBin();
+			},
+			update: function(event, ui) {
+				// When moving an element graphically, let's apply the change in the instances list.
+				var newPosition = jQuery(ui.item).index();
+				moufInstanceProperty.reorderArrayElement(_startPosition, newPosition);
+				// This is because the "remove" trigger might be called after the "update" trigger. In that case, _startPosition must point to the new position.
+				_startPosition = newPosition;
+			},
+			remove: function(event, ui) {
+				// When an element graphically is dropped in the bin, let's apply the change in the instances list.
+				moufInstanceProperty.removeArrayElement(_startPosition);
+			},
+			// Elements of this sortable can be dropped in the bin.
+			connectWith: "div.bin"
+		});
 		
-		// TODO
 		return elem;
 	}
 	
+	/**
+	 * A list of primitive type fields that can be renderered.
+	 */
 	var fieldsRenderer = {
 		"string" : renderStringField,
 		"array" : renderArrayField
@@ -343,16 +269,19 @@ var MoufDefaultRenderer = (function () {
 	 * Returns the renderer annotation.
 	 */
 	var getRendererAnnotation = function(classDescriptor) {
-		var renderer = classDescriptor.getAnnotations()['Renderer'][0];
-		if (renderer != null) {
-			try {
-				var jsonRenderer = jQuery.parseJSON(renderer);
-			} catch (e) {
-				throw "Invalid @Renderer annotation sent. The @Renderer must have a JSON object attached.\nAnnotation found: @Renderer "+renderer+"\nError detected:"+e;
+		var renderers = classDescriptor.getAnnotations()['Renderer'];
+		if (renderers) {
+			var renderer = renderers[0];
+			if (renderer != null) {
+				try {
+					var jsonRenderer = jQuery.parseJSON(renderer);
+				} catch (e) {
+					throw "Invalid @Renderer annotation sent. The @Renderer must have a JSON object attached.\nAnnotation found: @Renderer "+renderer+"\nError detected:"+e;
+				}
+				return jsonRenderer;
 			}
-			return jsonRenderer;
+			return null;
 		}
-		return null;
 	}
 	
 	return {

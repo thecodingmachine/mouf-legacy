@@ -36,22 +36,58 @@ require_once 'utils/check_rights.php';
 
 if (get_magic_quotes_gpc()==1)
 {
-	$changesList = stripslashes($_REQUEST["changesList"]);
+	// FIXME: add suppport for arrays (see "get")
+	$changesList = $_REQUEST["changesList"];
+	//$changesList = stripslashes($_REQUEST["changesList"]);
 } else {
 	$changesList = $_REQUEST["changesList"];
 }
 
 $moufManager = MoufManager::getMoufManager();
 
+function mouf_convert_json_ordered_array_to_php(array $jsonArr, $associativeArray) {
+	$phpArr = array();
+	if ($associativeArray) {
+		foreach ($jsonArr as $key=>$value) {
+			// TODO: add support for recursive arrays.
+			if (isset($value['isNull'])) {
+				$phpArr[$value['key']] = null;
+			} else {
+				$phpArr[$value['key']] = $value['value'];
+			}
+		}
+	} else {
+		foreach ($jsonArr as $key=>$value) {
+			if (isset($value['isNull'])) {
+				$phpArr[] = null;
+			} else {
+				$phpArr[] = $value['value'];
+			}
+		}
+	}
+	return $phpArr;
+}
+
 foreach ($changesList as $command) {
 	switch($command['command']) {
 		case "setProperty":
 			$instanceName = $command['instance'];
 			$propertyName = $command['property'];
-			$value = $command['value'];
 			$instanceDescriptor = $moufManager->getInstanceDescriptor($instanceName);
 			$property = $instanceDescriptor->getProperty($propertyName);
 			$propertyDescriptor = $property->getPropertyDescriptor();
+			
+			
+			$value = $command['value'];
+			if ($propertyDescriptor->isArray()) {
+				if (!$propertyDescriptor->isAssociativeArray()) {
+					$value = mouf_convert_json_ordered_array_to_php($value, false);
+				} else {
+					$value = mouf_convert_json_ordered_array_to_php($value, true);
+				}
+			}
+			
+			
 			/*if ($propertyDescriptor->is)
 			$property->setValue($value)*/
 			if ($propertyDescriptor->isPublicFieldProperty()) {

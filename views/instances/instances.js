@@ -464,10 +464,24 @@ var MoufInstanceProperty = function(propertyName, json, parent) {
 	this.name = propertyName;
 	this.json = json;
 	this.parent = parent;
+	
+	var moufProperty = this.getMoufProperty();
+	if (moufProperty.isArray()) {
+		// In case of arrays, let's completely drop the value and replace it with an array of MoufInstanceSubProperties 
+		this.moufInstanceSubProperties = [];
+		var values = this.getValue();
+		// Arrays (even associative PHP arrays) are stored as list of {key:"", value:""} objects in order
+		// to preserve the PHP order of keys (that is not guaranteed to be preserved in JS)
+		if (values != null) {
+			for (var i=0; i<values.length; i++) {
+				this.moufInstanceSubProperties.push(new MoufInstanceSubProperty(this, values[i].key, values[i].value));
+			}
+		}
+	}
 }
 
 /**
- * Returns the value for this property.
+ * Returns the name for this property.
  */
 MoufInstanceProperty.prototype.getName = function() {
 	return this.name;
@@ -475,13 +489,19 @@ MoufInstanceProperty.prototype.getName = function() {
 
 /**
  * Returns the value for this property.
+ * If the value is a primitive type, the value of the primitive type is returned.
+ * If the value is a pointer to an instance, the MoufInstance object is returned.
+ * If the value is an array, DO NOT USE getValue. Instead, use "forEachElementArray" function to go through the elements.
  */
 MoufInstanceProperty.prototype.getValue = function() {
+	
+	// FIXME: add a manage system for primitive types.
+	// Maybe using: "registerPrimitiveType" function?
 	return this.json['value'];
 }
 
 /**
- * Returns the value for this property.
+ * Sets the value for this property.
  */
 MoufInstanceProperty.prototype.setValue = function(value) {
 	this.json['value'] = value;
@@ -505,6 +525,8 @@ MoufInstanceProperty.prototype.getMetaData = function() {
 
 /**
  * Returns a MoufProperty or a MoufMethod object representing the class property/method that holds the @Property annotation.
+ * 
+ * @returns MoufProperty
  */
 MoufInstanceProperty.prototype.getMoufProperty = function() {
 	var classDescriptor = MoufInstanceManager.getLocalClass(this.parent.getClassName());
@@ -522,6 +544,122 @@ MoufInstanceProperty.prototype.getMoufProperty = function() {
  */
 MoufInstanceProperty.prototype.getInstance = function() {
 	return this.parent;
+}
+
+/**
+ * Add a new subInstanceProperty to this instanceProperty.
+ * SubInstanceProperties are used when the property represents a class.
+ * In this case, the added subInstanceProperty represents a new key/value pair for the array.
+ * @return MoufInstanceSubProperty
+ */
+MoufInstanceProperty.prototype.addArrayElement = function(key, value) {
+	var moufProperty = this.getMoufProperty();
+	if (moufProperty.isAssociativeArray()) {
+		var instanceSubProperty = new MoufInstanceSubProperty(this, key, value);
+		this.moufInstanceSubProperties.push(instanceSubProperty);
+		
+		// Let's trigger listeners
+		MoufInstanceManager.firePropertyChange(this);
+		
+		return instanceSubProperty;
+	} else if (moufProperty.isArray()) {
+		var instanceSubProperty = new MoufInstanceSubProperty(this, null, value);
+		this.moufInstanceSubProperties.push(instanceSubProperty);
+		
+		// Let's trigger listeners
+		MoufInstanceManager.firePropertyChange(this);
+		
+		return instanceSubProperty;
+	} else {
+		// TODO
+	}  
+}
+
+/**
+ * This will loop through each element in the array (respecting the PHP key order)
+ * and will call the "callback" function, passing in parameter a MoufInstanceSubProperty object
+ * that represent the key/value pair.
+ */
+MoufInstanceProperty.prototype.forEachArrayElement = function(callback) {
+	var moufProperty = this.getMoufProperty();
+	if (!moufProperty.isArray()) {
+		throw "Error, the '"+moufProperty.getName()+"' property is not an array.";
+	}
+	
+	for (var i=0; i<this.moufInstanceSubProperties.length; i++) {
+		callback(this.moufInstanceSubProperties[i]);
+	}
+}
+
+/**
+ * If the property is an array, this will put the element in position i at the position j.
+ * This will trigger a remote save on the server.
+ */
+MoufInstanceProperty.prototype.reorderArrayElement = function(i, j) {
+	var moufProperty = this.getMoufProperty();
+	if (!moufProperty.isArray()) {
+		throw "Error, the '"+moufProperty.getName()+"' property is not an array.";
+	}
+
+	var values = this.getValue();
+	
+	var elemToMove = values[i];
+	var instanceSubPropertyToMove = this.moufInstanceSubProperties[i];
+	
+	var newValues = [];
+	var newMoufInstanceProperties = [];
+	
+	var m=0;
+	for (var k=0; k<values.length; k++) {
+		if (m==j) {
+			newValues[m] = elemToMove;
+			newMoufInstanceProperties[m] = instanceSubPropertyToMove;
+			m++;
+		}
+		
+		if (i != k) {
+			newValues[m] = values[k];
+			newMoufInstanceProperties[m] = this.moufInstanceSubProperties[k];
+			m++;
+		}
+	}
+	if (values.length != newValues.length) {
+		newValues[m] = elemToMove;
+		newMoufInstanceProperties[m] = instanceSubPropertyToMove;
+	}
+	
+	this.moufInstanceSubProperties = newMoufInstanceProperties;
+	this.setValue(newValues);
+}
+
+/**
+ * If the property is an array, this will remove the element in position i.
+ * This will trigger a remote save on the server.
+ */
+MoufInstanceProperty.prototype.removeArrayElement = function(i) {
+	var moufProperty = this.getMoufProperty();
+	if (!moufProperty.isArray()) {
+		throw "Error, the '"+moufProperty.getName()+"' property is not an array.";
+	}
+
+	var values = this.getValue();
+	
+	var newValues = [];
+	var newMoufInstanceProperties = [];
+	
+	var m=0;
+	for (var k=0; k<values.length; k++) {
+		if (k==i) {
+			continue;
+		}
+		
+		newValues[m] = values[k];
+		newMoufInstanceProperties[m] = this.moufInstanceSubProperties[k];
+		m++;
+	}
+	
+	this.moufInstanceSubProperties = newMoufInstanceProperties;
+	this.setValue(newValues);
 }
 
 
@@ -1043,4 +1181,221 @@ MoufParameter.prototype.isArray = function() {
  */
 MoufParameter.prototype.getClassName = function() {
 	return this.json['class'];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * The MoufInstanceSubProperty is an object designed to allow easy usage of field renderers in an array.
+ * An array has its own field renderer. The array field renderer itself calls field renderers for
+ * each value to renderer, passing the MoufInstanceSubProperty object (instead of the MoufInstanceProperty object)
+ */
+var MoufInstanceSubProperty = function(moufInstanceProperty, key, value) {
+	this.subProperty = true;
+	this.parentMoufInstanceProperty = moufInstanceProperty;
+	this.key = key;
+	this.value = value;
+	this.moufSubProperty = new MoufSubProperty(this.parentMoufInstanceProperty.getMoufProperty(), this.key, this);
+}
+
+/**
+ * Returns the key for this sub property.
+ */
+MoufInstanceSubProperty.prototype.getKey = function() {
+	return this.key;
+}
+
+/**
+ * Sets the key for this sub property, and triggers a save.
+ */
+MoufInstanceSubProperty.prototype.setKey = function(key) {
+	this.key = key;
+	// Let's trigger listeners
+	MoufInstanceManager.firePropertyChange(this.getInstance().getProperty(this.getName()));	
+}
+
+/**
+ * Returns the name for this property.
+ */
+MoufInstanceSubProperty.prototype.getName = function() {
+	return this.parentMoufInstanceProperty.getName();
+}
+
+/**
+ * Returns the value for this property.
+ */
+MoufInstanceSubProperty.prototype.getValue = function() {
+	return this.value;
+}
+
+/**
+ * Returns the origin for this property.
+ */
+MoufInstanceSubProperty.prototype.getOrigin = function() {
+	return this.parentMoufInstanceProperty.getOrigin();
+}
+
+/**
+ * Returns the metadata for this property.
+ */
+MoufInstanceSubProperty.prototype.getMetaData = function() {
+	return this.parentMoufInstanceProperty.getMetaData();
+}
+
+/**
+ * Returns a MoufProperty or a MoufMethod object representing the class property/method that holds the @Property annotation.
+ */
+MoufInstanceSubProperty.prototype.getMoufProperty = function() {
+	return this.moufSubProperty;
+}
+
+/**
+ * Returns the instance this property is part of.
+ */
+MoufInstanceSubProperty.prototype.getInstance = function() {
+	return this.parentMoufInstanceProperty.getInstance();
+}
+
+/**
+ * Saves the value for this sub property, and triggers a change
+ */
+MoufInstanceSubProperty.prototype.setValue = function(value) {
+	this.value = value;
+	// Let's trigger listeners
+	MoufInstanceManager.firePropertyChange(this.getInstance().getProperty(this.getName()));	
+}
+
+// TODO: add methods to manage sub-arrays!
+
+
+
+
+/**
+ * The MoufSubProperty is an object designed to allow easy usage of field renderers in an array.
+ * An array has its own field renderer. The array field renderer itself calls field renderers for
+ * each value to renderer, passing the MoufSubProperty object (instead of the MoufProperty object)
+ * 
+ * @param moufProperty
+ * @param key
+ * @returns
+ */
+var MoufSubProperty = function(moufProperty, key, moufInstanceSubProperty) {
+	this.subProperty = true;
+	this.parentMoufProperty = moufProperty;
+	this.key = key;
+	this.moufInstanceSubProperty = moufInstanceSubProperty;
+}
+
+/**
+ * Returns the name of the property.
+ */
+MoufSubProperty.prototype.getName = function() {
+	return this.parentMoufProperty.getName();
+}
+
+/**
+ * Returns the comment of the property.
+ */
+MoufSubProperty.prototype.getComment = function() {
+	return this.parentMoufProperty.getComment();
+}
+
+/**
+ * Retrieves the annotations of the property, as a JSON object:
+ * {
+ * 	"annotationName", [param1, param2....]
+ * }
+ * There are as many params as there are annotations
+ */
+MoufSubProperty.prototype.getAnnotations = function() {
+	return this.parentMoufProperty.getAnnotations();
+}
+
+/**
+ * Returns true if the property has a default value.
+ */
+MoufSubProperty.prototype.hasDefault = function() {
+	return this.parentMoufProperty.hasDefault();
+}
+
+/**
+ * Returns the default value of the property.
+ */
+MoufSubProperty.prototype.getDefault = function() {
+	return this.parentMoufProperty.getDefault();
+}
+
+/**
+ * Returns true if this property has the @Property annotation.
+ */
+MoufSubProperty.prototype.hasPropertyAnnotation = function() {
+	return this.parentMoufProperty.hasPropertyAnnotation();
+}
+
+/**
+ * Returns the name of the property (if this method has a @Property annotation).
+ */
+MoufSubProperty.prototype.getPropertyName = function() {
+	return this.parentMoufProperty.getPropertyName();
+}
+
+/**
+ * Returns the type of the property (as defined in the @var annotation).
+ */
+MoufSubProperty.prototype.getType = function() {
+	return this.parentMoufProperty.getSubType();
+}
+
+/**
+ * Returns the type of the array's value if the type of the annotation is an array (as defined in the @var annotation).
+ */
+MoufSubProperty.prototype.getSubType = function() {
+	return null;
+}
+
+/**
+ * Returns the type of the array's key if the type of the annotation is an associative array (as defined in the @var annotation).
+ */
+MoufSubProperty.prototype.getKeyType = function() {
+	return null;
+}
+
+/**
+ * Returns true if the type of the property is an array.
+ */
+MoufSubProperty.prototype.isArray = function() {
+	return this.getType() == 'array';
+}
+
+/**
+ * Returns true if the type of the property is an associative array.
+ */
+MoufSubProperty.prototype.isAssociativeArray = function() {
+	return false;
+}
+
+
+/**
+ * Returns the MoufInstanceSubProperty of a property for the instance passed in parameter (available if this property has a @Property annotation)
+ */
+MoufSubProperty.prototype.getMoufInstanceProperty = function(instance) {
+	return this.moufInstanceSubProperty;
+}
+
+/**
+ * Returns the value of a property for the instance passed in parameter (available if this property has a @Property annotation)
+ */
+MoufSubProperty.prototype.getValueForInstance = function(instance) {
+	// FIXME: does not work anymore!
+	var values =  this.parentMoufProperty.getValueForInstance(instance);
+	return values[this.key];
 }

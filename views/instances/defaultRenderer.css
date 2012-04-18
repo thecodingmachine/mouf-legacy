@@ -25,6 +25,22 @@ div.smallinstance, div.smallclass {
 div.smallinstance:hover, div.smallclass:hover {
 	background-color: #d7d0d0;
 }
+/*** Add a value/component ****/
+
+div.addavalue {
+	background-image: url(images/add.png);
+	background-repeat: no-repeat;
+	background-position: 3px center;
+	background-color:#CBEFCB;
+	color:#002200;	
+    border: solid 1px #77AA77;
+    padding: 5px 0px 5px 22px;
+	cursor: pointer;
+}
+
+div.addavalue:hover {
+	background-color:#DBFFDB;
+}
 
 /*** Save icon ***/
 
@@ -54,4 +70,43 @@ div.saveIcon.saveDone {
 	background-color: #AAFFAA;
     border: solid 1px #77AA77;
     padding: 5px 0px 0px 22px;
+}
+
+/**** Array elemnts ****/
+input.key {
+	width: 100px;
+}
+
+/**** Bin ****/
+
+body > div.bin {
+	width: 100%;
+	background-color: #cccccc;
+	height: 64px;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	z-index: 99999;
+	opacity: 0.9;
+}
+
+body > div.bin:hover {
+	background-color: #eeeeee;
+}
+	
+body > div.bin > div.binText {
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 16px;
+	width: 300px;
+	height: 48px;
+	font-size: 24px;
+	padding-left: 54px;
+	background-image: url(images/trashcan_empty.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+body > div.bin:hover > div.binText {
+	background-image: url(images/trashcan_full.png);
 }

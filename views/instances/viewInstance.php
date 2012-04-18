@@ -34,6 +34,10 @@ div.classComment {
 Dropzone:
 <div class="droppable ui-widget-header"><p>Drop here a BInterface</p></div>
 
+<div>
+<button onclick="MoufUI.showSourceFile('testClasses.php',6);return false;">Show PHP file</button>
+</div>
+
 <script type="text/javascript">
 jQuery(function() {
 	jQuery( ".droppable" ).droppable({

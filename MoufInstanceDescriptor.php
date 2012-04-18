@@ -137,13 +137,18 @@ class MoufInstanceDescriptor {
 			if ($value instanceof MoufInstanceDescriptor) {
 				$serializableValue = $value->getName();
 			} elseif (is_array($value)) {
-				$serializableValue = array_map(function($singleValue) {
-					if ($singleValue instanceof MoufInstanceDescriptor) {
-						return $singleValue->getName();
-					} else {
-						return $singleValue;
-					}
-				}, $value);
+				// We cannot match a PHP array to a JSON array!
+				// The keys in a PHP array are ordered. The key in a JSON array are not ordered!
+				// Therefore, we will be sending the arrays as JSON arrays of key/values to preserve order.
+				$serializableValue = self::arrayToJson($value);
+				
+// 				$serializableValue = array_map(function($singleValue) {
+// 					if ($singleValue instanceof MoufInstanceDescriptor) {
+// 						return $singleValue->getName();
+// 					} else {
+// 						return $singleValue;
+// 					}
+// 				}, $value);
 			} else {
 				$serializableValue = $value;
 			}
@@ -153,5 +158,31 @@ class MoufInstanceDescriptor {
 			
 		}
 		return $instanceArray;
+	}
+	
+	/**
+	 * We cannot match a PHP array to a JSON array!
+	 * The keys in a PHP array are ordered. The key in a JSON array are not ordered!
+	 * Therefore, we will be sending the arrays as JSON arrays of key/values to preserve order.
+	 * 
+	 * @param array $phpArray
+	 */
+	private static function arrayToJson(array $phpArray) {
+		$serializableValue = array();
+		foreach ($phpArray as $key=>$val) {
+			if ($val instanceof MoufInstanceDescriptor) {
+				$value = $val->getName();
+			} else if (is_array($val)) {
+				$value = self::arrayToJson($val);
+			} else {
+				$value = $val;
+			}
+			
+			$serializableValue[] = array(
+				"key" => $key,
+				"value" => $value
+			);
+		}
+		return $serializableValue;
 	}
 }

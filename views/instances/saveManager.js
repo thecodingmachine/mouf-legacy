@@ -35,20 +35,54 @@ var MoufSaveManager = (function () {
 	 */
 	var _changesList = [];
 	
+	var _serializeSubProperties = function(moufInstanceProperty) {
+		
+		var serializedArray = [];
+		moufInstanceProperty.forEachArrayElement(function(moufInstanceSubProperty) {
+			var key = moufInstanceSubProperty.getKey();
+			var value = moufInstanceSubProperty.getValue();
+			var finalValue = null;
+			var obj = {
+				key: key
+			}
+			if (value instanceof Array) {
+				obj.value = _serializeSubProperties(moufInstanceSubProperty);
+			} else if (value === null) {
+				obj.value = "";
+				obj.isNull = true;
+			} else {
+				obj.value = value;
+			}
+			serializedArray.push(obj);
+		})
+		return serializedArray;
+	}
+	
 	/**
 	 * Callback called when a property instance is changed
 	 */
 	var _onPropertyChange = function(moufInstanceProperty) {
+		
+		var value = moufInstanceProperty.getValue();
+		
+		var finalValue = null;
+		if (moufInstanceProperty.getMoufProperty().isArray()) {
+			finalValue = _serializeSubProperties(moufInstanceProperty);
+		} else {
+			finalValue = value;
+		}
+		
+		// TODO: implement support of array server-side
 		var command = {
 			"command": "setProperty",
 			"instance": moufInstanceProperty.getInstance().getName(),
 			"property": moufInstanceProperty.getMoufProperty().getName(),
-			"value": moufInstanceProperty.getValue()
+			"value": finalValue
 		};
 		
-		if (moufInstanceProperty instanceof MoufInstanceSubProperty) {
+		/*if (moufInstanceProperty instanceof MoufInstanceSubProperty) {
 			command.key = moufInstanceProperty.key;
-		}
+		}*/
 		
 		_changesList.push(command);
 		_save();

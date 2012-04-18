@@ -10,10 +10,25 @@
    };
 }(jQuery));
 
+
 /**
  * The MoufUI object is used to display recurrent parts of the Mouf interface
  */
 var MoufUI = (function () {
+	
+	var _bin = jQuery("<div/>")
+				.addClass("bin")
+				.hide();
+	jQuery(function() {
+		_bin.appendTo(jQuery("body"));
+		
+	});
+	jQuery("<div/>").text("Drop here to delete")
+		.addClass("binText")
+		.appendTo(_bin);
+	_bin.sortable({
+		
+	});
 	
 	return {
 		/**
@@ -38,6 +53,40 @@ var MoufUI = (function () {
 			}).onError(function(e) {
 				addMessage("<pre>"+e+"</pre>", "error");
 			});
-		} 
+		},
+		showBin: function() {
+			_bin.slideDown();
+		},
+		hideBin: function() {
+			_bin.slideUp();
+		},
+		showSourceFile: function(fileName, line) {
+			var container = jQuery("<div/>").attr('title', fileName);
+			jQuery.ajax({
+				url: MoufInstanceManager.rootUrl+"direct/get_source_file.php",
+				data: {
+					file: fileName
+				}
+			}).fail(function(e) {
+				var msg = e;
+				if (e.responseText) {
+					msg = "Status code: "+e.status+" - "+e.statusText+"\n"+e.responseText;
+				}
+				addMessage("<pre>"+msg+"</pre>", "error");
+			}).done(function(result) {
+				var pre = jQuery("<pre/>").text(result).addClass("brush:php").appendTo(container);
+				container.appendTo(jQuery("body"));
+				$( container ).dialog({
+					height: jQuery(window).height()*0.9,
+					width: jQuery(window).width()*0.9,
+					zIndex: 20000,
+					modal: true,
+					close: function() {
+						container.remove();
+					}
+				});
+				SyntaxHighlighter.highlight();
+			});
+		}
 	}
 })();
