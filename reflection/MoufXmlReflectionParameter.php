@@ -7,7 +7,9 @@
  * For the full copyright and license information, please view the LICENSE.txt
  * file that was distributed with this source code.
  */
- 
+
+require_once 'MoufReflectionParameterInterface.php';
+
 /**
  * This class behaves like MoufReflectionParameter, except it is completely based on a Xml message.
  * It does not try to access the real class.
@@ -15,7 +17,7 @@
  * be useful.
  * 
  */
-class MoufXmlReflectionParameter extends ReflectionParameter
+class MoufXmlReflectionParameter extends ReflectionParameter implements MoufReflectionParameterInterface
 {
 	/**
 	 * The XML message we will analyse
@@ -168,6 +170,11 @@ class MoufXmlReflectionParameter extends ReflectionParameter
     	return (string)($this->xmlElem['isArray']) == "true";
     }
     
+    /**
+     * Returns the class of the parameter (if any)
+     * 
+     * @return string
+     */
 	public function getType() {
     	return (string)$this->xmlElem['class'];
     }

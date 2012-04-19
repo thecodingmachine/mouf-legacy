@@ -78,6 +78,9 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'TopRibbonMenuRenderer' => 'mouf/../plugins/html/template/menus/topribbonmenu/1.0/TopRibbonMenuRenderer.php',
   'HtmlMenuTopRibbonHead' => 'mouf/../plugins/html/template/menus/topribbonmenu/1.0/HtmlMenuTopRibbonHead.php',
   'HtmlJSSyntaxHighlighter' => 'mouf/../plugins/javascript/syntaxhighlighter/3.0.83/HtmlJSSyntaxHighlighter.php',
+  'WebLibrary' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibrary.php',
+  'WebLibraryManager' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryManager.php',
+  'DefaultWebLibraryRenderer' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/DefaultWebLibraryRenderer.php',
   'LogInterface' => 'mouf/../plugins/utils/log/log_interface/1.1/LogInterface.php',
   'ConditionInterface' => 'mouf/../plugins/utils/common/conditioninterface/1.0/ConditionInterface.php',
   'Scopable' => 'mouf/../plugins/html/htmlelement/1.0/Scopable.php',
@@ -97,6 +100,8 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'ValidatorInterface' => 'mouf/../plugins/utils/common/validators/1.0/ValidatorInterface.php',
   'UrlProviderInterface' => 'mouf/../plugins/mvc/splash-common/3.2/services/UrlProviderInterface.php',
   'WebServiceInterface' => 'mouf/../plugins/mvc/splash/3.2/models/Splash.php',
+  'WebLibraryInterface' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryInterface.php',
+  'WebLibraryRendererInterface' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryRendererInterface.php',
   'MoufValidatorService' => 'mouf/validator/MoufValidatorService.php',
   'MoufBasicValidationProvider' => 'mouf/validator/MoufBasicValidationProvider.php',
   'MoufSearchService' => 'mouf/MoufSearchService.php',
@@ -236,6 +241,11 @@ require_once $localFilePath.'/../plugins/html/template/MoufTemplate/1.0/MoufMenu
 require_once $localFilePath.'/../plugins/html/template/menus/topribbonmenu/1.0/TopRibbonMenuRenderer.php';
 require_once $localFilePath.'/../plugins/html/template/menus/topribbonmenu/1.0/HtmlMenuTopRibbonHead.php';
 require_once $localFilePath.'/../plugins/javascript/syntaxhighlighter/3.0.83/HtmlJSSyntaxHighlighter.php';
+require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryInterface.php';
+require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryRendererInterface.php';
+require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibrary.php';
+require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryManager.php';
+require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/DefaultWebLibraryRenderer.php';
 
 // User dependencies
 require_once $localFilePath.'/validator/MoufValidatorService.php';

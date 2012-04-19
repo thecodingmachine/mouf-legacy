@@ -25,6 +25,15 @@ div.classComment {
 
 <div id="messages"></div>
 
+<div class="inlinemenuicon">
+	<ul>
+		<li>Title</li>
+		<li><a href="#">Trop bien</a></li>
+		<li><a href="#">Super</a></li>
+		<li><a href="#">Yop</a></li>
+	</ul>
+</div>
+
 <div id="instance" class="instance"></div>
 
 <div id="instance2" class="instance"></div>
@@ -37,6 +46,8 @@ Dropzone:
 <div>
 <button onclick="MoufUI.showSourceFile('testClasses.php',6);return false;">Show PHP file</button>
 </div>
+
+
 
 <script type="text/javascript">
 jQuery(function() {

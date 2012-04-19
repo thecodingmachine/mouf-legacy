@@ -55,6 +55,8 @@ $moufManager->setPackagesByXmlFile(array (
   29 => 'html/template/MoufTemplate/1.0/package.xml',
   30 => 'html/template/menus/topribbonmenu/1.0/package.xml',
   31 => 'javascript/syntaxhighlighter/3.0.83/package.xml',
+  32 => 'html/utils/weblibrarymanager/1.0/package.xml',
+  33 => 'javascript/underscore/1.3.3/package.xml',
 ));
 
 $moufManager->setPackagesByXmlFileInAdminScope(array (
@@ -335,6 +337,24 @@ $moufManager->addComponentInstances(array (
         ),
       ),
     ),
+  ),
+  'defaultWebLibraryManager' => 
+  array (
+    'class' => 'WebLibraryManager',
+    'external' => false,
+    'weak' => false,
+    'setterBinds' => 
+    array (
+      'setWebLibraries' => 
+      array (
+        0 => 'javascript.underscore',
+      ),
+    ),
+  ),
+  'defaultWebLibraryRenderer' => 
+  array (
+    'class' => 'DefaultWebLibraryRenderer',
+    'external' => false,
   ),
   'displayGraph' => 
   array (
@@ -1005,6 +1025,62 @@ $moufManager->addComponentInstances(array (
       'noConflictMode' => 
       array (
         'value' => true,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'javascript.underscore' => 
+  array (
+    'class' => 'WebLibrary',
+    'external' => false,
+    'weak' => false,
+    'setterProperties' => 
+    array (
+      'setJsFiles' => 
+      array (
+        'value' => 
+        array (
+          0 => 'plugins/javascript/underscore/1.3.3/lib/underscore-min.js',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'setCssFiles' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
+  ),
+  'javascript.underscore.debug' => 
+  array (
+    'class' => 'WebLibrary',
+    'external' => false,
+    'weak' => false,
+    'setterProperties' => 
+    array (
+      'setJsFiles' => 
+      array (
+        'value' => 
+        array (
+          0 => 'plugins/javascript/underscore/1.3.3/lib/underscore.js',
+        ),
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'setCssFiles' => 
+      array (
+        'value' => false,
         'type' => 'string',
         'metadata' => 
         array (
@@ -1851,6 +1927,7 @@ $moufManager->addComponentInstances(array (
         5 => 'chooseInstancePopupJs',
         6 => 'htmlMenuTopRibbonHead',
         7 => 'syntaxHighlighter',
+        8 => 'defaultWebLibraryManager',
       ),
       'left' => 
       array (
@@ -1864,6 +1941,7 @@ $moufManager->addComponentInstances(array (
         0 => 'topRibbonMenuRenderer',
       ),
     ),
+    'weak' => false,
     'fieldProperties' => 
     array (
       'favIconUrl' => 
@@ -2917,6 +2995,20 @@ class MoufAdmin {
 	 }
 
 	/**
+	 * @return WebLibraryManager
+	 */
+	 public static function getDefaultWebLibraryManager() {
+	 	return MoufManager::getMoufManager()->getInstance('defaultWebLibraryManager');
+	 }
+
+	/**
+	 * @return DefaultWebLibraryRenderer
+	 */
+	 public static function getDefaultWebLibraryRenderer() {
+	 	return MoufManager::getMoufManager()->getInstance('defaultWebLibraryRenderer');
+	 }
+
+	/**
 	 * @return MoufDisplayGraphController
 	 */
 	 public static function getDisplayGraph() {
@@ -3082,6 +3174,20 @@ class MoufAdmin {
 	 */
 	 public static function getJQuery() {
 	 	return MoufManager::getMoufManager()->getInstance('jQuery');
+	 }
+
+	/**
+	 * @return WebLibrary
+	 */
+	 public static function getJavascript_underscore() {
+	 	return MoufManager::getMoufManager()->getInstance('javascript.underscore');
+	 }
+
+	/**
+	 * @return WebLibrary
+	 */
+	 public static function getJavascript_underscore_debug() {
+	 	return MoufManager::getMoufManager()->getInstance('javascript.underscore.debug');
 	 }
 
 	/**

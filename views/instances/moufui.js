@@ -60,6 +60,9 @@ var MoufUI = (function () {
 		hideBin: function() {
 			_bin.slideUp();
 		},
+		/**
+		 * Displays the PHP class file in a popup.
+		 */
 		showSourceFile: function(fileName, line) {
 			var container = jQuery("<div/>").attr('title', fileName);
 			jQuery.ajax({
@@ -87,6 +90,33 @@ var MoufUI = (function () {
 				});
 				SyntaxHighlighter.highlight();
 			});
+		},
+		/**
+		 * Creates and returns a jQuery element representing an inline menu.
+		 * You have to hover over the small button to see the full menu.
+		 * 
+		 * You pass to this function an array of items to be displayed.
+		 * For instance:
+		 * 
+		 *  MoufUI.createMenuIcon([
+		 *  	{
+		 *  		label: "item1"
+		 *  	},
+		 *  	{
+		 *  		label: "item2",
+		 *  		click: function() {
+		 *  
+		 *  		}
+		 *  	}
+		 *  ]);
+		 */
+		createMenuIcon: function(items) {
+			var div = jQuery("<div/>").addClass("inlinemenuicon");
+			var ul = jQuery("<ul/>").appendTo(div);
+			for (var i=0; i<items.length; i++) {
+				
+			}
+			
 		}
 	}
 })();

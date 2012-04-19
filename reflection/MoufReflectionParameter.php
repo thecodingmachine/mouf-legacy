@@ -8,11 +8,13 @@
  * file that was distributed with this source code.
  */
  
+require_once 'MoufReflectionParameterInterface.php';
+
 /**
  * Extended Reflection class for parameters.
  * 
  */
-class MoufReflectionParameter extends ReflectionParameter
+class MoufReflectionParameter extends ReflectionParameter implements MoufReflectionParameterInterface
 {
     /**
      * name of reflected routine
@@ -129,6 +131,19 @@ class MoufReflectionParameter extends ReflectionParameter
         
         $moufRefClass = new MoufReflectionClass($refClass->getName());
         return $moufRefClass;
+    }
+    
+    /**
+    * Returns the class of the parameter (if any)
+    *
+    * @return string
+    */
+    public function getType() {
+    	if ($this->getClass() != null) {
+    		return $this->getClass()->getName();
+    	} else {
+    		return null;
+    	}
     }
     
    	/**
