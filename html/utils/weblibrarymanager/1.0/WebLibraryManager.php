@@ -1,7 +1,7 @@
 <?php 
 /**
  * This class is in charge of including and keeping track of Javascript and CSS libraries into an HTML page.
- * <p>JS and CSS files are grouped into <b>WebLibraries</p>. If you want to add a new library, just create an instance
+ * <p>JS and CSS files are grouped into <b>WebLibraries</b>. If you want to add a new library, just create an instance
  * of the <b>WebLibrary</b> class, and add it to the <b>WebLibraryManager</b>.</p>
  * <p>You can use the <b>WebLibraryManager</b> class to add JS/CSS libraries. It will keep track of dependencies and ensure each file is included
  * only once.</p>
@@ -38,7 +38,7 @@ class WebLibraryManager implements HtmlElementInterface {
 		if ($this->rendered) {
 			throw new WebLibraryException("The libraries have already been rendered. This call to addLibrary should be performed BEFORE the toHtml method of WebLibraryManager is called.");
 		}
-		if (!array_search($library, $this->webLibraries) === false) {
+		if (array_search($library, $this->webLibraries) === false) {
 			// Let's start by adding dependencies.
 			$dependencies = $library->getDependencies();
 			if ($dependencies) {

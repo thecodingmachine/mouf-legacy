@@ -74,7 +74,7 @@ class WebLibrary implements WebLibraryInterface {
 	 * <div class="info">It is a good practice to make sure the file does not start with /, http:// or https:// (unless you are using a CDN).</div>
 	 *
 	 * @Property
-	 * @param array<string> $jsFiles
+	 * @param array<string> $cssFiles
 	 */
 	public function setCssFiles($cssFiles) {
 		$this->cssFiles = $cssFiles;
@@ -85,7 +85,9 @@ class WebLibrary implements WebLibraryInterface {
 	 *
 	 * @return array<WebLibraryInterface>
 	 */
-	public function getDependencies();
+	public function getDependencies() {
+		return $this->dependencies;
+	}
 	
 	/**
 	 * Returns a list of features provided by this library.
@@ -95,7 +97,9 @@ class WebLibrary implements WebLibraryInterface {
 	 *
 	 * @return array<string>
 	 */
-	public function getFeatures();
+	public function getFeatures() {
+		throw new Exception("Not implemented yet!");
+	}
 	
 	/**
 	 * Returns the renderer class in charge of outputing the HTML that will load CSS ans JS files.

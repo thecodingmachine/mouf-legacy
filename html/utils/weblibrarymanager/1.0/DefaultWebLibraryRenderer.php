@@ -15,6 +15,7 @@
  * This is why this class has a toCssHtml and toJsHtml method instead of only one toHtml method.</p>
  * 
  * @author David Négrier
+ * @Component
  */
 class DefaultWebLibraryRenderer implements WebLibraryRendererInterface {
 	
@@ -25,13 +26,15 @@ class DefaultWebLibraryRenderer implements WebLibraryRendererInterface {
 	 */
 	public function toCssHtml(WebLibrary $webLibrary) {
 		$files = $webLibrary->getCssFiles();
-		foreach ($files as $file) {	
-			if(strpos($file, 'http://') === false && strpos($file, 'https://') === false && strpos($file, '/') !== 0) { 
-				$url = ROOT_URL.$value;
-			} else {
-				$url = $value;
-			}	
-			echo "<link href='$url' rel='stylesheet' type='text/css' />\n";
+		if ($files) {
+			foreach ($files as $file) {	
+				if(strpos($file, 'http://') === false && strpos($file, 'https://') === false && strpos($file, '/') !== 0) { 
+					$url = ROOT_URL.$file;
+				} else {
+					$url = $file;
+				}	
+				echo "<link href='$url' rel='stylesheet' type='text/css' />\n";
+			}
 		}
 	}
 	
@@ -42,13 +45,15 @@ class DefaultWebLibraryRenderer implements WebLibraryRendererInterface {
 	 */
 	public function toJsHtml(WebLibrary $webLibrary) {
 		$files = $webLibrary->getJsFiles();
-		foreach ($files as $file) {
-			if(strpos($file, 'http://') === false && strpos($file, 'https://') === false && strpos($file, '/') !== 0) { 
-				$url = ROOT_URL.$value;
-			} else {
-				$url = $value;
-			}	
-			echo '<script type="text/javascript" src="'.$url.'"></script>'."\n";
+		if ($files) {
+			foreach ($files as $file) {
+				if(strpos($file, 'http://') === false && strpos($file, 'https://') === false && strpos($file, '/') !== 0) { 
+					$url = ROOT_URL.$file;
+				} else {
+					$url = $file;
+				}	
+				echo '<script type="text/javascript" src="'.$url.'"></script>'."\n";
+			}
 		}
 		
 	}

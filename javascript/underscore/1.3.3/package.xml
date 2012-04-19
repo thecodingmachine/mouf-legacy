@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Underscore Javascript library</displayName>
+	<shortDescription>Underscore is a utility-belt library for JavaScript that provides a lot of the functional programming support that you would expect in Javascript, but without extending any of the built-in JavaScript objects. It's the tie to go along with jQuery's tux.</shortDescription>
+	<docUrl>http://documentcloud.github.com/underscore/</docUrl>
+	<doc root="lib/docs">
+		<page url="undescore.html" title="Underscore documentation"></page>
+	</doc>
+	<logo>underscore.png</logo>
+	
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
