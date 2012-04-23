@@ -18,12 +18,12 @@
  */
 
 /**
- * The TDBM_OrderByColumnFilter class translates an ORDER BY [table_name].[column_name] [ASC|DESC] SQL statement.
+ * The TDBM_OrderByColumn class translates an ORDER BY [table_name].[column_name] [ASC|DESC] SQL statement.
  * 
  * @Component
  * @author David Négrier
  */
-class TDBM_OrderByColumnFilter implements TDBM_OrderByInterface {
+class TDBM_OrderByColumn implements TDBM_OrderByInterface {
 	private $tableName;
 	private $columnName;
 	private $order;
@@ -82,7 +82,7 @@ class TDBM_OrderByColumnFilter implements TDBM_OrderByInterface {
 	 * @param string $columnName
 	 * @param string $value
 	 */
-	public function TDBM_OrderByColumnFilter($tableName=null, $columnName=null, $order=null) {
+	public function __construct($tableName=null, $columnName=null, $order=null) {
 		$this->tableName = $tableName;
 		$this->columnName = $columnName;
 		$this->order = $order;

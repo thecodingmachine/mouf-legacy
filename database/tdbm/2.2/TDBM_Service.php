@@ -1501,7 +1501,7 @@ class TDBM_Service {
 		foreach ($orderby_bag as $thing) {
 			if (is_a($thing,'TDBM_OrderBySQLString')) {
 				$orderby_bag2[] = $thing;
-			} elseif (is_a($thing,'TDBM_OrderByColumnFilter')) {
+			} elseif (is_a($thing,'TDBM_OrderByColumn')) {
 				$orderby_bag2[] = $thing;
 			} elseif (is_string($thing)) {
 				$orderby_bag2[] = new TDBM_OrderBySQLString($thing);
