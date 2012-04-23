@@ -71,8 +71,10 @@ class TDBM_OrderBySQLString implements TDBM_OrderByInterface {
 			return array();
 		}
 		
+		
+		
 		// First, let's implode the SQL string from the commas
-		$comma_array = explode(',', $this->sql_string);
+		$comma_array = explode(',', $this->sqlString);
 
 		$comma_array_2 = array();
 
@@ -109,6 +111,7 @@ class TDBM_OrderBySQLString implements TDBM_OrderByInterface {
 
 		}
 
+		
 		return $comma_array_2;
 	}
 
@@ -126,7 +129,7 @@ class TDBM_OrderBySQLString implements TDBM_OrderByInterface {
 		// First, let's remove all the stuff in quotes:
 
 		// Let's remove all the \' found
-		$work_str = str_replace("\\'",'',$this->sql_string);
+		$work_str = str_replace("\\'",'',$this->sqlString);
 		// Now, let's split the string using '
 		$work_table = explode("'", $work_str);
 
