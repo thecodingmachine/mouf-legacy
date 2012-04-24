@@ -100,9 +100,9 @@ class TDBM_DifferentFilter implements TDBM_FilterInterface {
 		
 
 		if ($this->value === null) {
-			$str_value = ' IS NULL';
+			$str_value = ' IS NOT NULL';
 		} else {
-			$str_value = "=".$dbConnection->quoteSmart($this->value);
+			$str_value = "<>".$dbConnection->quoteSmart($this->value);
 		}
 
 		return $this->tableName.'.'.$this->columnName.$str_value;

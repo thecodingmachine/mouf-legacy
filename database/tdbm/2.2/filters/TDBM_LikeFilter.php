@@ -18,7 +18,7 @@
  */
 
 /**
- * The TDBM_LikeFilter class translates into an "=" SQL statement (or a "IS NULL" statement if the value to compare is null).
+ * The TDBM_LikeFilter class translates into an "LIKE" SQL statement.
  * 
  * @Component
  * @author David Négrier
