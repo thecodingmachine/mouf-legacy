@@ -1,0 +1,40 @@
+<?php
+namespace database\querywriter;
+
+/**
+ * Represents a SQL table in a SELECT query.
+ * 
+ * @author David Negrier
+ * @Component
+ */
+class TableReference implements TableReferenceInterface {
+	
+	/**
+	 * The table name.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $tableName;
+	
+	/**
+	 * The alias.
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $alias;
+	
+	/**
+	 * Renders the object as a SQL string
+	 * @return string
+	 */
+	public function toSql(DB_ConnectionInterface $dbConnection) {
+		$sql = $dbConnection->escapeDBItem($this->tableName);
+		if ($alias) {
+			$sql .= " AS ".$dbConnection->escapeDBItem($this->alias);
+		}
+		return $sql;
+	}
+}
