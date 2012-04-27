@@ -34,7 +34,7 @@ class TDBM_AndFilter implements TDBM_FilterInterface {
 	 * @param array<TDBM_FilterInterface> $filter
 	 */
 	public function setFilters($filters) {
-		$this->filter = $filter;
+		$this->filters = $filters;
 	}
 	
 	/**
