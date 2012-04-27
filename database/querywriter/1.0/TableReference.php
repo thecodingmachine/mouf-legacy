@@ -30,9 +30,9 @@ class TableReference implements TableReferenceInterface {
 	 * Renders the object as a SQL string
 	 * @return string
 	 */
-	public function toSql(DB_ConnectionInterface $dbConnection) {
+	public function toSql(\DB_ConnectionInterface $dbConnection) {
 		$sql = $dbConnection->escapeDBItem($this->tableName);
-		if ($alias) {
+		if ($this->alias) {
 			$sql .= " AS ".$dbConnection->escapeDBItem($this->alias);
 		}
 		return $sql;

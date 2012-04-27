@@ -7,7 +7,7 @@ namespace database\querywriter;
  * @author David Negrier
  * @Component
  */
-class Join extends AbstractJoin {
+class Join implements TableReferenceInterface {
 	/**
 	 * The left table in the join
 	 * 
@@ -31,7 +31,7 @@ class Join extends AbstractJoin {
 	 * 
 	 * @Property
 	 * @Compulsory
-	 * @var SelectExpressionInterface
+	 * @var filters\FilterInterface
 	 */
 	public $on;
 	
@@ -49,7 +49,7 @@ class Join extends AbstractJoin {
 	 * (non-PHPdoc)
 	 * @see database\querywriter.SqlRenderInterface::toSql()
 	 */
-	public function toSql(DB_ConnectionInterface $dbConnection) {
+	public function toSql(\DB_ConnectionInterface $dbConnection) {
 		$sql = "(".$this->left->toSql($dbConnection);
 		$sql .= " ".$this->joinType." ";
 		$sql .= $this->right->toSql($dbConnection);

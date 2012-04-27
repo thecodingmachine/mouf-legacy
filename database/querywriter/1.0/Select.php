@@ -12,7 +12,9 @@ class Select {
 	/**
 	 * The connection to the database.
 	 * 
-	 * @var DB_ConnectionInterface
+	 * @Property
+	 * @Compulsory
+	 * @var \DB_ConnectionInterface
 	 */
 	public $connection;
 	
@@ -47,7 +49,7 @@ class Select {
 	 * The where condition.
 	 * 
 	 * @Property
-	 * @var WhereConditionInterface
+	 * @var filters\FilterInterface
 	 */
 	public $where;
 	
@@ -63,7 +65,7 @@ class Select {
 	 * The having condition.
 	 * 
 	 * @Property
-	 * @var WhereConditionInterface
+	 * @var filters\FilterInterface
 	 */
 	public $having;
 	
@@ -100,6 +102,21 @@ class Select {
 		$sql = "SELECT ";
 		if ($this->distinct) {
 			$sql .= "DISTINCT ";
+		}
+		// Apply the toSql function on the columns 
+		$connection = $this->connection;
+				
+		$columnsSql = array_map(function(SelectExpressionInterface $elem) use ($connection)  {
+			return $elem->toSql($connection);
+		}, $this->columns);
+		$sql .= implode(", ", $columnsSql);
+		
+		$sql .= " FROM ";
+		
+		$sql .= $this->from->toSql($connection);
+		
+		if ($this->where) {
+			$sql .= " WHERE ".$this->where->toSql($connection);
 		}
 		
 		return $sql;

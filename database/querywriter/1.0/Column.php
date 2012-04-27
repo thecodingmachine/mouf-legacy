@@ -52,13 +52,13 @@ class Column implements SelectExpressionInterface {
 	 * (non-PHPdoc)
 	 * @see database\querywriter.SqlRenderInterface::toSql()
 	 */
-	public function toSql(DB_ConnectionInterface $dbConnection) {
+	public function toSql(\DB_ConnectionInterface $dbConnection) {
 		$sql = "";
 		if ($this->tableName) {
 			$sql .= $dbConnection->escapeDBItem($this->tableName).".";
 		}
 		if ($this->columnName != "*") {
-			$sql .= $dbConnection->escapeDBItem($this->columnName).".";
+			$sql .= $dbConnection->escapeDBItem($this->columnName);
 		} else {
 			$sql .= "*";
 		}

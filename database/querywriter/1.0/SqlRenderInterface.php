@@ -11,8 +11,8 @@ interface SqlRenderInterface {
 	/**
 	 * Renders the object as a SQL string
 	 * 
-	 * @param DB_ConnectionInterface $dbConnection
+	 * @param \DB_ConnectionInterface $dbConnection
 	 * @return string
 	 */
-	public function toSql(DB_ConnectionInterface $dbConnection);
+	public function toSql(\DB_ConnectionInterface $dbConnection);
 }

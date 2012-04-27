@@ -12,6 +12,11 @@
 			<name>dbconnection</name>
 			<version>&gt;=1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>conditioninterface</name>
+			<version>&gt;=1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>SqlRenderInterface.php</require>
@@ -20,6 +25,23 @@
 		<require>Column.php</require>
 		<require>Join.php</require>
 		<require>TableReference.php</require>
+		<require>filters/FilterInterface.php</require>
+		<require>filters/AndFilter.php</require>	
+		<require>filters/BetweenFilter.php</require>	
+		<require>filters/DifferentFilter.php</require>	
+		<require>filters/EqualFilter.php</require>	
+		<require>filters/GreaterFilter.php</require>	
+		<require>filters/GreaterOrEqualFilter.php</require>	
+		<require>filters/InFilter.php</require>
+		<require>filters/LessFilter.php</require>	
+		<require>filters/LessOrEqualFilter.php</require>
+		<require>filters/LikeFilter.php</require>
+		<require>filters/NotFilter.php</require>
+		<require>filters/OrFilter.php</require>
+		<require>filters/SqlStringFilter.php</require>
+		<require>filters/OrderByInterface.php</require>	
+		<require>filters/OrderByColumn.php</require>
+		<require>filters/OrderBySQLString.php</require>
 		<require>Select.php</require>
 	</requires>
 	<adminRequires>
