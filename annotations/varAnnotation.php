@@ -21,7 +21,7 @@ class varAnnotation
 	private $type;
 	private $subtype;
 	private $keytype;
-
+	
     public function __construct($value)
     {
     	$this->analyzeType($value);

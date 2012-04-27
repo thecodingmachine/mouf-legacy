@@ -189,22 +189,12 @@ class MoufXmlReflectionProperty implements MoufReflectionPropertyInterface
     /**
      * Returns the class that declares this parameter
      *
-     * @return  MoufReflectionClass
+     * @return MoufReflectionClassInterface
      */
-    /*public function getDeclaringClass()
+    public function getDeclaringClass()
     {
-        $refClass = parent::getDeclaringClass();
-        if ($refClass->getName() === $this->className) {
-            if (null === $this->refClass) {
-                $this->refClass = new MoufReflectionClass($this->className);
-            }
-            
-            return $this->refClass;
-        }
-        
-        $moufRefClass = new MoufReflectionClass($refClass->getName());
-        return $moufRefClass;
-    }*/
+        return $this->refClass;
+    }
     
 }
 ?>

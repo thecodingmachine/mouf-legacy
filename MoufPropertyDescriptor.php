@@ -81,6 +81,7 @@ class MoufPropertyDescriptor {
 					throw new MoufException("Error for property ".$property->getName().". More than one @var annotation was found.");
 				}
 				$varTypeAnnot = $varTypes[0];
+				/* @var $varTypeAnnot varAnnotation */
 				$this->type = $varTypeAnnot->getType();
 				$this->subType = $varTypeAnnot->getSubType();
 				$this->keyType = $varTypeAnnot->getKeyType();
@@ -129,6 +130,8 @@ class MoufPropertyDescriptor {
 				}
 			}
 		}
+		// Apply a namespace to type and subtype if necessary
+		$this->applyNamespace();
 	}
 	
 	/**
@@ -304,6 +307,40 @@ class MoufPropertyDescriptor {
 	 */
 	public function isArrayOfPrimitiveTypes() {
 		return self::isPrimitiveTypeStatic($this->getSubType());
+	}
+	
+	/**
+	 * Checks if the parent class has a namespace.
+	 * If so, we apply the namespace to the type and subtypes
+	 * 
+	 */
+	private function applyNamespace() {
+		if (!$this->isPrimitiveType()) {
+			// Let's append the namespace if any and if the type is a class.
+			$classObj = $this->object->getDeclaringClass();
+			$className = (string)$classObj->getName();
+			
+			$pos = strrpos($className, "\\");
+			
+			// There is no namespace, let's do nothing!
+			if ($pos === false) {
+				return;
+			}
+				
+			// The namespace without the final \
+			$namespace = substr($className, 0, $pos);
+			
+			if (!$this->isArray()) {
+				if (strpos($this->type, "\\") !== 0) {
+					$this->type = $namespace."\\".$this->type;
+				}
+			}
+	
+			if ($this->isArray() && ! $this->isArrayOfPrimitiveTypes()) {
+				$this->subType = $namespace."\\".$this->subType;
+			}
+		}
+		
 	}
 }
 ?>

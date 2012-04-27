@@ -7,6 +7,7 @@ function propertySelectChange(dropdown, propertyName, type) {
 }
 
 function displayCreateInstanceDialog(dropdown, propertyName, type) {
+    jQuery("#noMatchingComponent").hide();
 	jQuery.getJSON("../direct/get_components_list.php",{type: type, encode:"json", selfedit:jQuery('#selfedit').val(), ajax: 'true'}, function(j){
 		
 	      var options = '';

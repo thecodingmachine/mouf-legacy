@@ -63,4 +63,11 @@ interface MoufReflectionMethodInterface {
 	 * @var array("annotationClass"=>array($annotationObjects))
 	 */
 	public function getAllAnnotations();
+	
+	/**
+	 * returns the class that declares this method
+	 *
+	 * @return  MoufReflectionClass
+	 */
+	public function getDeclaringClass();
 }

@@ -16,6 +16,26 @@ lastPropDisplayed = "";
 dropDownCnt = 0;
 
 
+2
+3
+4
+56
+7
+8
+9
+1011
+12
+13
+14
+1516
+17
+
+	
+// Escapes single quote, double quotes and backslash characters in a string with backslashes  
+function addslashes (str) {
+	return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
 /*
  * Adds a new drowdown list dynamically inside element "element".
  * name is the name of the select box.
@@ -47,7 +67,7 @@ function addNewDropDown(element, name, defaultValue, hasKey, defaultKey, type, i
 	if (isInArray) {
 		arraySuffix="[]";
 	}
-	str += "<select id='"+name+"_mouf_dropdown_select_"+dropDownCnt+"' name='"+name+arraySuffix+"'  onchange='propertySelectChange(this, \""+name+"\", \""+type+"\")'>";
+	str += "<select id='"+name+"_mouf_dropdown_select_"+dropDownCnt+"' name='"+name+arraySuffix+"'  onchange='propertySelectChange(this, \""+addslashes(name)+"\", \""+addslashes(type)+"\")'>";
 	/*if (!isInArray) {
 		str += "<option value=''></option>";
 	}
@@ -368,9 +388,9 @@ jQuery(document).ready (function() {
 							if (is_array($defaultValues)) {
 								foreach ($defaultValues as $defaultKey=>$defaultValue) {
 									if ($isAssociative) {
-										echo "addNewDropDown($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", true, \"".addslashes($defaultKey)."\", \"".addslashes($property->getSubType())."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
+										echo "addNewDropDown($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", true, \"".addslashes($defaultKey)."\", \"".addslashes($property->getSubType())."\", true, \"".addslashes(plainstring_to_htmlprotected($recursiveType))."\");\n";
 									} else {
-										echo "addNewDropDown($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", false, \"\", \"".addslashes($property->getSubType())."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");\n";
+										echo "addNewDropDown($(\"".addslashes($property->getName())."_mouf_array\"), \"".addslashes($property->getName())."\", \"".addslashes($defaultValue)."\", false, \"\", \"".addslashes($property->getSubType())."\", true, \"".addslashes(plainstring_to_htmlprotected($recursiveType))."\");\n";
 									}
 								}
 							}
@@ -384,7 +404,7 @@ jQuery(document).ready (function() {
 							
 							//$jsonArray = addslashes($jsonArray);
 							//[{id:0, text:\"toto\"}, {id:1, text:\"tata\"}]
-							echo "<a onclick='addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"\", ".(($isAssociative)?"true":"false").", \"\", \"".$property->getSubType()."\", true, \"".plainstring_to_htmlprotected($recursiveType)."\");'>Add a component</a>";
+							echo "<a onclick='addNewDropDown($(\"".$property->getName()."_mouf_array\"), \"".$property->getName()."\", \"\", ".(($isAssociative)?"true":"false").", \"\", \"".addslashes($property->getSubType())."\", true, \"".addslashes(plainstring_to_htmlprotected($recursiveType))."\");'>Add a component</a>";
 							
 							echo "</div>";
 							echo "<div style='clear:both'></div>";
@@ -437,7 +457,7 @@ jQuery(document).ready (function() {
 						
 						echo "<script>\n";
 						echo "jQuery(document).ready(function() {\n";
-						echo "addNewDropDown($(\"".$property->getName()."_mouf\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".$property->getType()."\", false, \"".plainstring_to_htmlprotected($varType)."\");\n";
+						echo "addNewDropDown($(\"".$property->getName()."_mouf\"), \"".$property->getName()."\", \"$defaultValue\", false, \"\", \"".addslashes($property->getType())."\", false, \"".addslashes(plainstring_to_htmlprotected($varType))."\");\n";
 						
 						echo "\n});\n";
 						echo "</script>\n";

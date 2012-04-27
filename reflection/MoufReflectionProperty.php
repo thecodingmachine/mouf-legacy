@@ -198,5 +198,6 @@ class MoufReflectionProperty extends ReflectionProperty implements MoufReflectio
 			$propertyNode->addChild("default", serialize($instance->$property)); 
     	}    	
     }
+    
 }
 ?>
