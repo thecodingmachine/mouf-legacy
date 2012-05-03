@@ -3,9 +3,11 @@
 	<displayName>TDBM</displayName>
 	<shortDescription>The Database Machine is a PHP ORM that requires no configuration. The object model is deduced at runtime from the 
 	database model.</shortDescription>
-	<docUrl>http://www.thecodingmachine.com/ext/tdbm/doc/manual.html</docUrl>
 	<doc>
-		<page title="Generating DAOs" url="generating_daos.html" />
+		<page title="About" url="about.html" />
+		<page title="Getting started" url="quickstart.html" />
+		<page title="About DAOs" url="generating_daos.html" />
+		<page title="Advanced filtering" url="advanced.html" />
 	</doc>
 	<logo>icon.png</logo>
 	<!-- The list of dependencies -->
