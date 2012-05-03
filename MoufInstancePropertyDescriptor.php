@@ -173,9 +173,14 @@ class MoufInstancePropertyDescriptor {
 					throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 				}
 				
-				$arrayOfDescriptors = array();
-				foreach ($arrayOfString as $key=>$instanceName) {
-					$arrayOfDescriptors[$key] = $this->moufManager->getInstanceDescriptor($instanceName);
+				
+				if ($arrayOfString !== null){//KEVIN : getBoundComponentsOn[Property | Setter] may return null, avoid PHP WARNING by testing
+					$arrayOfDescriptors = array(); 
+					foreach ($arrayOfString as $key=>$instanceName) {
+						$arrayOfDescriptors[$key] = $this->moufManager->getInstanceDescriptor($instanceName);
+					}
+				}else{
+					$arrayOfDescriptors = null;
 				}
 				return $arrayOfDescriptors;
 			}

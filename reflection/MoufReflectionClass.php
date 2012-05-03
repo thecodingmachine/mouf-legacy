@@ -125,6 +125,24 @@ class MoufReflectionClass extends ReflectionClass implements MoufReflectionClass
         
         return $moufMethods;
     }
+    
+    /**
+    * returns a list of all methods matching a given regex
+    * @param string $regex the regex to macth
+    * @return  array<MoufReflectionMethod>
+    */
+    public function getMethodsByPattern($regex)
+    {
+    	$methods    = parent::getMethods();
+    	$moufMethods = array();
+    	foreach ($methods as $method) {
+    		if (preg_match("/$regex/", $method->getName())) {
+    			$moufMethods[$method->getName()] = new MoufReflectionMethod($this, $method->getName());
+    		}
+    	}
+    
+    	return $moufMethods;
+    }
 
     /**
      * returns a list of all methods which satify the given matcher
