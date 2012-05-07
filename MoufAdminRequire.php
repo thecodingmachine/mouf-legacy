@@ -34,7 +34,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'SplashTemplate' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php',
   'SplashMenuRenderer' => 'mouf/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php',
   'HtmlJSJQueryAutoGrow' => 'mouf/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php',
-  'HtmlJSJQueryUI' => 'mouf/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php',
+  'HtmlJSJQueryUI' => 'mouf/../plugins/javascript/jquery/jquery-ui/1.8.9/HtmlJSJQueryUI.php',
   'HtmlJSJQueryFileTree' => 'mouf/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php',
   'HtmlJSJit' => 'mouf/../plugins/javascript/jit/1.1.2/HtmlJSJit.php',
   'HtmlJSPrototype' => 'mouf/../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php',
@@ -190,7 +190,7 @@ require_once $localFilePath.'/../plugins/html/widgets/menu/1.0/MenuItemStyleIcon
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashTemplate.php';
 require_once $localFilePath.'/../plugins/html/template/SplashTemplate/2.0/SplashMenuRenderer.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/HtmlJSJQueryAutoGrow.php';
-require_once $localFilePath.'/../plugins/javascript/jquery/jquery-ui/1.7.2/HtmlJSJQueryUI.php';
+require_once $localFilePath.'/../plugins/javascript/jquery/jquery-ui/1.8.9/HtmlJSJQueryUI.php';
 require_once $localFilePath.'/../plugins/javascript/jquery/jqueryFileTree/1.01/HtmlJSJQueryFileTree.php';
 require_once $localFilePath.'/../plugins/javascript/jit/1.1.2/HtmlJSJit.php';
 require_once $localFilePath.'/../plugins/javascript/prototype/1.6.0.1/HtmlJSPrototype.php';

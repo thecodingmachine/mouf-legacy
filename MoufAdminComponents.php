@@ -36,7 +36,7 @@ $moufManager->setPackagesByXmlFile(array (
   10 => 'html/widgets/menu/1.0/package.xml',
   11 => 'html/template/SplashTemplate/2.0/package.xml',
   12 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
-  13 => 'javascript/jquery/jquery-ui/1.7.2/package.xml',
+  13 => 'javascript/jquery/jquery-ui/1.8.9/package.xml',
   14 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
   15 => 'javascript/jit/1.1.2/package.xml',
   16 => 'javascript/prototype/1.6.0.1/package.xml',
@@ -67,7 +67,7 @@ require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.6/JQueryExtern
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/JQueryFixedHeaderTableExternalComponent.php';
 require dirname(__FILE__).'/../plugins/utils/i18n/fine/2.1/FineExternalComponents.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/JQueryAutoGrowExternalComponent.php';
-require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.7.2/JQueryUIExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.8.9/JQueryUIExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
 require dirname(__FILE__).'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderExternalComponent.php';
 require dirname(__FILE__).'/../plugins/utils/common/validators/1.0/ValidatorsExternalComponents.php';
@@ -1097,6 +1097,18 @@ $moufManager->addComponentInstances(array (
   array (
     'class' => 'HtmlJSJQueryUI',
     'external' => false,
+    'weak' => false,
+    'fieldProperties' => 
+    array (
+      'includeDefaultCss' => 
+      array (
+        'value' => 'ui-lightness',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+    ),
   ),
   'login' => 
   array (
@@ -1694,13 +1706,22 @@ $moufManager->addComponentInstances(array (
       array (
         0 => 'prototype',
         1 => 'jQuery',
-        2 => 'jquery-ui-1.7.2',
+        2 => 'jqueryui',
         3 => 'jqueryFileTree',
         4 => 'jquery-autogrow-1.2.2',
       ),
     ),
+    'weak' => false,
     'fieldProperties' => 
     array (
+      'favIconUrl' => 
+      array (
+        'value' => 'plugins/html/template/MoufTemplate/1.0/images/favicon.png',
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
       'logoImg' => 
       array (
         'value' => 'mouf/views/images/MoufLogo.png',
@@ -2899,8 +2920,8 @@ class MoufAdmin {
 	/**
 	 * @return HtmlJSJQueryUI
 	 */
-	 public static function getJqueryui1_7_2() {
-	 	return MoufManager::getMoufManager()->getInstance('jquery-ui-1.7.2');
+	 public static function getJqueryui1_8_9() {
+	 	return MoufManager::getMoufManager()->getInstance('jquery-ui-1.8.9');
 	 }
 
 	/**
