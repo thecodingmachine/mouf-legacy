@@ -14,7 +14,15 @@ var MoufInstanceManager = (function () {
 	// Note: some callback might wait longer that they need, this is slightly suboptimal to wait for all the files to be loaded.
 	var _callbackWhenFilesLoaded = []
 	
+	/**
+	 * Event handler triggered each time a property of an instance is changed
+	 */
 	var _propertyChangedEventHandler = new Mouf.Observer();
+	
+	/**
+	 * Event handler triggered each time a new instance is created
+	 */
+	var _newInstanceEventHandler = new Mouf.Observer();
 
 	var triggerAllCallbacksWhenFilesLoaded = function() {
 		// La condition semble changer la valeur de la variable,c 'est complétement nimp!!!!
@@ -379,9 +387,66 @@ var MoufInstanceManager = (function () {
 		},
 		
 		/**
+		 * Creates a new instance of class className whose name is instanceName.
+		 * You can set if the instance is anonymous or not using the isAnonymous parameter.
+		 * 
+		 * Note: if the instance is declared anonymous, it must IMMEDIATELY be bound to another instance.
+		 * Otherwise, the garbage collector for "weak instances" will delete the instance immediately.
+		 * 
+		 * @return MoufInstance
+		 */
+		newInstance : function(classDescriptor, instanceName, isAnonymous) {
+			
+			var properties = {};
+			_.each(classDescriptor.getMoufProperties(), function(property) {
+				if (property instanceof MoufProperty) {
+					if (property.hasDefault()) {
+						properties[property.getName()] = {
+								value: property.getDefault(),
+								origin: "string",
+								metadata: []
+						};
+					}
+				} else if (property instanceof MoufMethod) {
+					var parameters = property.getParameters();
+					if (parameters.length > 0) {
+						var parameter = parameters[0];
+						if (parameter.hasDefault()) {
+							properties[property.getName()] = {
+									value: parameter.getDefault(),
+									origin: "string",
+									metadata: []
+							};
+						}
+					}
+				}
+			});
+			
+			var instance = new MoufInstance({
+				"name": instanceName,
+				"class": classDescriptor.getName(),
+				"anonymous": isAnonymous,
+				"properties": properties
+			});
+			_instances[instanceName] = instance;
+			
+			_newInstanceEventHandler.fire(instance, instance);
+			return instance;
+		},
+		
+		/**
+		 * Registers a callback called when the the newInstance method is called.
+		 * If scope is not passed, the default scope (this) is the new instance object.
+		 * The first argument of the callback is also the new instance object.
+		 */
+		onNewInstance : function(callback, scope) {
+			_newInstanceEventHandler.subscribe(callback, scope);
+		},
+		
+		/**
 		 * Registers a callback called when the MoufInstanceProperty::setValue method is called.
 		 * If scope is not passed, the default scope (this) is the moufInstanceProperty object.
-		 * The fiest argument of the callback is also the moufInstanceProperty object.
+		 * The first argument of the callback is also the moufInstanceProperty object.
 		 */
 		onPropertyChange : function(callback, scope) {
 			_propertyChangedEventHandler.subscribe(callback, scope);
@@ -423,6 +488,13 @@ MoufInstance.prototype.getClass = function() {
 
 MoufInstance.prototype.getName = function() {
 	return this.json["name"];
+}
+
+/**
+ * Returns true if the instance is anonymous. False otherwise.
+ */
+MoufInstance.prototype.isAnonymous = function() {
+	return this.json["anonymous"];
 }
 
 /**

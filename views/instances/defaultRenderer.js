@@ -15,7 +15,8 @@ var MoufDefaultRenderer = (function () {
 	 * The wrapper is returned as an "in-memory" jQuery element.
 	 */
 	var getClassWrapper = function(classDescriptor) {
-		var subclassOf = classDescriptor.json["implements"];
+		// Note: slice is performing a clone of the array
+		var subclassOf = classDescriptor.json["implements"].slice(0);
 		var parentClass = classDescriptor;
 		do {
 			subclassOf.push(parentClass.getName());
@@ -25,7 +26,7 @@ var MoufDefaultRenderer = (function () {
 		for (var i = 0; i<subclassOf.length; i++) {
 			cssClass += "mouftype_"+subclassOf[i] + " ";
 		}
-		return jQuery("<div/>").addClass(cssClass);
+		return jQuery("<div/>").addClass(cssClass).data("class", classDescriptor);
 	}
 	
 	/**
@@ -60,13 +61,10 @@ var MoufDefaultRenderer = (function () {
 	 * The "in-memory" jQuery object for the field is returned.
 	 */
 	var renderStringField = function(moufInstanceProperty) {
-		// FIXME: les renderers devraient prendre en paramètre des moufInstanceProperty
-		// On devra donc implémenter un moufInstanceSubProperty pour les représentations des valeurs d'une array d'une instance.
-		// Puis implémenter un moufInstanceProperty->setValue
 		var name = moufInstanceProperty.getName();
 		var value = moufInstanceProperty.getValue();
-		//var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);
-		//var value = moufProperty.getValueForInstance(instance);
+		
+		var parentElem = jQuery('<div/>').addClass("stringRenderer");
 		
 		var elem = jQuery("<input/>").attr('name', name)
 			.attr("value", value)
@@ -75,11 +73,33 @@ var MoufDefaultRenderer = (function () {
 				//alert("value changed in "+findInstance(jQuery(this)).getName() + " for property "+name);
 			});
 		
-		return elem;
-		// TODO: how to manage this in an array????
-		// gestion des array<array>?
-		// name=myarr[0][4]?
-		// On pourrait empiler les modifs et les soumettre au bout de quelques secondes....
+		if (value === null) {
+			elem.addClass("null");
+			elem.val("null");
+		}
+		
+		elem.focus(function() {
+			if (elem.hasClass("null")) {
+				elem.val("");
+				elem.removeClass("null");
+			}
+		})
+		
+		var menu = MoufUI.createMenuIcon([
+			{
+				label: "Set to <em>null</em>",
+				click: function() {
+					elem.addClass("null");
+					elem.val("null");
+					moufInstanceProperty.setValue(null);
+				}
+			}
+		]);
+		
+		elem.appendTo(parentElem);
+		menu.appendTo(parentElem);
+		
+		return parentElem;
 	}
 	
 	/**
@@ -127,7 +147,7 @@ var MoufDefaultRenderer = (function () {
 						var sortableElem = jQuery("<div/>").addClass('sortable');
 						jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
 						
-						var rowElem = fieldRenderer(moufNewSubInstanceProperty);
+						var rowElem = renderer(moufNewSubInstanceProperty);
 						rowElem.appendTo(fieldElem);
 					});
 			}
@@ -183,7 +203,7 @@ var MoufDefaultRenderer = (function () {
 ;
 						jQuery("<span>=&gt;</span>").appendTo(fieldElem);
 
-						var rowElem = fieldRenderer(moufNewSubInstanceProperty);
+						var rowElem = renderer(moufNewSubInstanceProperty);
 						rowElem.appendTo(fieldElem);
 					});
 			}
@@ -216,11 +236,91 @@ var MoufDefaultRenderer = (function () {
 	}
 	
 	/**
+	 * Renders a field representing a link to an instance.
+	 * The "in-memory" jQuery object for the field is returned.
+	 */
+	var renderInstanceField = function(moufInstanceProperty) {
+		var name = moufInstanceProperty.getName();
+		var value = moufInstanceProperty.getValue();
+		var type = moufInstanceProperty.getMoufProperty().getType();
+	
+		var parentElem = jQuery('<div/>').addClass("fieldInstanceRenderer");
+		
+		var elem = jQuery("<div/>").addClass('instanceReceiver');
+	
+		// An element containing the text to display when the value is null
+		var nullElem = jQuery("<div/>");
+		nullElem.addClass("null");
+		jQuery("<a href='#'>Drop here a <em>"+type+"</em> instance</a>").click(function() {
+			
+			MoufUI.displayInstanceOfType("#instanceList", type, true, true);
+			jQuery("#instanceList").scrollintoview({duration: "slow", direction: "y"});
+			
+			return false;
+		}).appendTo(nullElem);
+		
+		if (value === null) {
+			nullElem.appendTo(elem);
+		} else {
+			MoufInstanceManager.getInstance(value).then(function(instance) {
+				instance.render('small').appendTo(elem);
+			})
+		}
+		
+		var menu = MoufUI.createMenuIcon([
+  			{
+  				label: "Set to <em>null</em>",
+  				click: function() {
+  					elem.find("*").remove();
+  					nullElem.appendTo(elem);
+  					moufInstanceProperty.setValue(null);
+  				}
+  			}
+  		]);
+		
+		elem.droppable({
+			accept: ".mouftype_"+type,
+			activeClass: "stateActive",
+			hoverClass: "stateHover",
+			drop: function( event, ui ) {
+				var droppedInstance = jQuery( ui.draggable ).data("instance");
+				
+				
+				if (droppedInstance) {
+					// If an instance was dropped
+					moufInstanceProperty.setValue(droppedInstance.getName());
+					elem.html("");
+					droppedInstance.render('small').appendTo(elem);
+				} else {
+					// If not, it's a class that has been dropped
+					var droppedClass = jQuery( ui.draggable ).data("class");
+					
+					//moufInstanceProperty.setValue(droppedInstance.getName());
+					elem.html("");
+					// TODO: create a new anonymous instance!
+					var timestamp = new Date();
+					var newInstance = MoufInstanceManager.newInstance(droppedClass, "__anonymous_"+timestamp.getTime(), true);
+					moufInstanceProperty.setValue(newInstance.getName());
+					
+					newInstance.render('small').appendTo(elem);
+				}
+			}
+		});
+		
+  		
+  		elem.appendTo(parentElem);
+  		menu.appendTo(parentElem);
+  		
+  		return parentElem;
+	}
+	
+	/**
 	 * A list of primitive type fields that can be renderered.
 	 */
 	var fieldsRenderer = {
 		"string" : renderStringField,
-		"array" : renderArrayField
+		"int"    : renderStringField,
+		"array"  : renderArrayField
 		// TODO: continue here
 	}
 	
@@ -233,7 +333,7 @@ var MoufDefaultRenderer = (function () {
 		} else {
 			// TODO: manage subtype and keytype
 			// TODO: default should be to display the corresponding renderer.
-			return fieldsRenderer["string"];
+			return renderInstanceField;
 		}
 	}
 	
@@ -299,9 +399,15 @@ var MoufDefaultRenderer = (function () {
 					renderer: function(instance) {
 						var classDescriptor = MoufInstanceManager.getLocalClass(instance.getClassName());
 						
-						var wrapper = getInstanceWrapper(instance).addClass("smallinstance")
-												   .text(instance.getName());
 						
+						var wrapper = getInstanceWrapper(instance).addClass("smallinstance");
+						
+						if (instance.isAnonymous()) {
+							wrapper.html("<em>"+classDescriptor.getName()+"</em>").attr("title", "Anonymous instance of type '"+classDescriptor.getName()+"'");
+						} else {
+							wrapper.text(instance.getName()).attr('title', "Instance of type '"+classDescriptor.getName()+"'");
+						}
+												
 						// Let's add the small logo image (if any).
 						// Is there a logo to display? Let's see in the smallLogo property of the renderer annotation, if any.
 						var renderer = getRendererAnnotation(classDescriptor);

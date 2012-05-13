@@ -116,12 +116,11 @@ body > div.bin:hover > div.binText {
 div.inlinemenuicon {
 	width: 16px;
 	height: 16px;
+	margin: 4px;
 	background-image: url(images/inlinemenusprite.png);
 }
 
 div.inlinemenuicon:hover {
-	width: 16px;
-	height: 16px;
 	background-image: url(images/inlinemenusprite.png);
 	background-position: 0px -16px;
 }
@@ -159,4 +158,68 @@ div.inlinemenuicon > ul > li a {
 	display: block;
 	width: 100%;
 	height: 100%;
+}
+
+div.fieldContainer {
+	overflow: hidden;
+}
+
+div.fieldContainer div.moveable {
+	margin-top: 4px;
+}
+
+div.fieldContainer > div {
+	float: left;
+}
+
+div.fieldContainer > span {
+	float: left;
+	margin-top: 5px;
+}
+
+div.fieldContainer > input {
+	float: left;
+}
+
+
+div.stringRenderer > input {
+	float: left;
+}
+
+div.stringRenderer > div.inlinemenuicon {
+	float: left;
+}
+
+div.stringRenderer {
+	overflow: hidden;
+}
+
+div.stringRenderer > input.null {
+	font-style: italic;
+	color: #777;
+}
+
+div.fieldInstanceRenderer > div.instanceReceiver {
+	float: left;
+	min-width: 232px;
+	/*height: 28px;*/
+	background-color: #eeeeaa;
+	border: dashed 1px #773333;
+	padding: 3px;
+}
+
+div.fieldInstanceRenderer > div.instanceReceiver > div.null {
+	text-align: center;
+}
+
+div.fieldInstanceRenderer > div.instanceReceiver.stateActive {
+	background-color: #ffffcc;
+}
+
+div.fieldInstanceRenderer > div.instanceReceiver.stateHover {
+	background-color: #dddd99;
+}
+
+div.fieldInstanceRenderer > div.inlinemenuicon {
+	float: left;
 }

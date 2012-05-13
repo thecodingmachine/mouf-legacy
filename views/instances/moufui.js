@@ -25,9 +25,16 @@ var MoufUI = (function () {
 	});
 	jQuery("<div/>").text("Drop here to delete")
 		.addClass("binText")
+		.css("position", "absolute")
 		.appendTo(_bin);
+	// TODO: jQuery seems lost when we move scrollable containers after scrolling has started.
+	// We should move the bin in a fixed position.
+	// See: http://www.serkey.com/jquery-when-moving-a-droppable-after-draggable-has-started-drop-spots-don-t-come-with-it-bbst33.html
+	// TODO: try upgrade to jQuery 1.8.20 (who knows...)
 	_bin.sortable({
-		
+		receive: function(event, ui) {
+			jQuery(ui.item).remove();
+		}
 	});
 	
 	return {
@@ -38,18 +45,55 @@ var MoufUI = (function () {
 		displayInstanceOfType : function(targetSelector, type, displayInstances, displayClasses) {
 			MoufInstanceManager.getInstanceListByType(type).then(function(instances, classes) {
 				jQuery("<h1/>").text("Type "+type).appendTo(targetSelector);
+				var divFilter = jQuery("<div>Filter: </div>").appendTo(targetSelector);
+				var inputFilter = jQuery("<input/>").addClass("instanceFilter").appendTo(divFilter);
 				jQuery("<h2/>").text("Instances").appendTo(targetSelector);
 				var instanceListDiv = jQuery("<div/>").addClass("instanceList").appendTo(targetSelector);
 				for (var key in instances) {
 					var instance = instances[key];
-					instance.render().appendTo(instanceListDiv);
+					instance.render().draggable({
+						revert: "invalid", // when not dropped, the item will revert back to its initial position
+						//containment: $( "#demo-frame" ).length ? "#demo-frame" : "document", // stick to demo-frame if present
+						helper: "clone",
+						cursor: "move" /*,
+						connectToSortable: ".todo"*/
+					}).appendTo(instanceListDiv);
 				}
 				jQuery("<h2/>").text("Classes").appendTo(targetSelector);
 				var classListDiv = jQuery("<div/>").addClass("classList").appendTo(targetSelector);
 				for (var key in classes) {
 					var classDescriptor = classes[key];
-					classDescriptor.render().appendTo(classListDiv);
+					classDescriptor.render().draggable({
+						revert: "invalid", // when not dropped, the item will revert back to its initial position
+						//containment: $( "#demo-frame" ).length ? "#demo-frame" : "document", // stick to demo-frame if present
+						helper: "clone",
+						cursor: "move" /*,
+						connectToSortable: ".todo"*/
+					}).appendTo(classListDiv);
 				}
+				
+				inputFilter.keyup(function(event) {
+					var filterText = inputFilter.val().toLowerCase();
+					instanceListDiv.children().each(function(cnt, child) {
+						var instance = jQuery(child).data('instance');
+						var instanceName = instance.getName().toLowerCase();
+						if (instanceName.indexOf(filterText) != -1) {
+							jQuery(child).show();
+						} else {
+							jQuery(child).hide();
+						}
+					})
+					classListDiv.children().each(function(cnt, child) {
+						var classDescriptor = jQuery(child).data('class');
+						var className = classDescriptor.getName().toLowerCase();
+						if (className.indexOf(filterText) != -1) {
+							jQuery(child).show();
+						} else {
+							jQuery(child).hide();
+						}
+					})
+				})
+				
 			}).onError(function(e) {
 				addMessage("<pre>"+e+"</pre>", "error");
 			});
@@ -113,10 +157,21 @@ var MoufUI = (function () {
 		createMenuIcon: function(items) {
 			var div = jQuery("<div/>").addClass("inlinemenuicon");
 			var ul = jQuery("<ul/>").appendTo(div);
-			for (var i=0; i<items.length; i++) {
-				
-			}
-			
+			_.each(items, function(item) {
+				var li = jQuery("<li/>")
+				if (!item.click) {
+					li.html(item.label);
+				} else {
+					var a = jQuery("<a href='#'/>").html(item.label);
+					a.appendTo(li);
+					a.click(function() {
+						item.click(item);
+						return false;
+					});
+				}
+				li.appendTo(ul);
+			});
+			return div;
 		}
 	}
 })();

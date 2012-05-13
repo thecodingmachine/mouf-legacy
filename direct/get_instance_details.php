@@ -46,7 +46,7 @@ $classDescriptor = $instanceDescriptor->getClassDescriptor();
 
 $response = array();
 
-$response["instances"][$instanceDescriptor->getName()] = $instanceDescriptor->toJson();
+$response["instances"][$instanceDescriptor->getIdentifierName()] = $instanceDescriptor->toJson();
 
 // We send back class data with instance data... this saves one request.
 // Now, let's embed the class and all the parents with this instance.

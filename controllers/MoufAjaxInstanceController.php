@@ -43,9 +43,11 @@ class MoufAjaxInstanceController extends AbstractMoufInstanceController {
 		$this->template->addJsFile(ROOT_URL."mouf/views/instances/defaultRenderer.js");
 		$this->template->addJsFile(ROOT_URL."mouf/views/instances/moufui.js");
 		$this->template->addJsFile(ROOT_URL."mouf/views/instances/saveManager.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/jquery.scrollintoview.js");
 		
 		//$this->template->addContentFunction(array($this, "displayComponentView"));
 		$this->template->addContentFile(dirname(__FILE__)."/../../mouf/views/instances/viewInstance.php", $this);
+		$this->template->addRightText("<div id='instanceList'></div>");
 		$this->template->draw();	
 	}
 	

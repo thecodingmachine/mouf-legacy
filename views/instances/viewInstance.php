@@ -34,6 +34,23 @@ div.classComment {
 	</ul>
 </div>
 
+<div id="myGeneratedMenu"></div>
+<script type="text/javascript">
+jQuery(function() {
+	MoufUI.createMenuIcon([
+           	{
+          		label: "item1"
+          	},
+           	{
+           		label: "item2",
+           		click: function() {
+           			//alert("coucou");
+           		}
+           	}
+           ]).appendTo(jQuery("#myGeneratedMenu"));
+});
+</script>
+
 <div id="instance" class="instance"></div>
 
 <div id="instance2" class="instance"></div>
@@ -145,7 +162,7 @@ MoufInstanceManager.getInstanceListByType("A").then(function(instances, classes)
 
 MoufUI.displayInstanceOfType("#instance2", "NoRenderer", true, true);
 
-
+/*
 //let the gallery items be draggable
 jQuery( "#instance2 div.instance" ).liveDraggable({
 	//cancel: "a.ui-icon", // clicking an icon won't initiate dragging
@@ -154,5 +171,5 @@ jQuery( "#instance2 div.instance" ).liveDraggable({
 	helper: "clone",
 	cursor: "move",
 	connectToSortable: ".todo"
-});
+});*/
 </script>

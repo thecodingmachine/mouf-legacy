@@ -77,12 +77,30 @@ var MoufSaveManager = (function () {
 			"command": "setProperty",
 			"instance": moufInstanceProperty.getInstance().getName(),
 			"property": moufInstanceProperty.getMoufProperty().getName(),
-			"value": finalValue
+			"value": finalValue,
+			"isNull": (finalValue === null)
 		};
 		
 		/*if (moufInstanceProperty instanceof MoufInstanceSubProperty) {
 			command.key = moufInstanceProperty.key;
 		}*/
+		
+		_changesList.push(command);
+		_save();
+	}
+	
+	/**
+	 * Callback called when a new instance is created
+	 */
+	var _onNewInstance = function(instance) {
+		
+		var command = {
+			"command": "newInstance",
+			"name": instance.getName(),
+			"class": instance.getClassName(),
+			"isAnonymous": instance.isAnonymous()
+			// Note: we don't need to pass the default values, they will be applied automatically.
+		};
 		
 		_changesList.push(command);
 		_save();
@@ -125,7 +143,12 @@ var MoufSaveManager = (function () {
 			addMessage("<pre>"+msg+"</pre>", "error");
 		}).done(function(result) {
 			_saveInProgress = false;
-			// TODO: the save _saveStatusChangedEventHandler does not seem to get fired!!!
+			
+			if (typeof(result) == "string") {
+				addMessage("<pre>"+result+"</pre>", "error");
+				return;
+			}
+			
 			// If more changes have piled up, let's save again. 
 			if (_changesList.length != 0) {
 				_save();
@@ -141,6 +164,8 @@ var MoufSaveManager = (function () {
 		init: function() {
 			// Let's bind the _onPropertyChange to the propertyChange event.
 			MoufInstanceManager.onPropertyChange(_onPropertyChange);
+			// Let's bind the _onNewInstance to the newInstance event.
+			MoufInstanceManager.onNewInstance(_onNewInstance);
 		},
 		onSaveStatusChange: function(callback, scope) {
 			_saveStatusChangedEventHandler.subscribe(callback, scope);

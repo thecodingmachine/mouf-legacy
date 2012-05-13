@@ -36,7 +36,7 @@ $moufManager->setPackagesByXmlFile(array (
   10 => 'html/widgets/menu/1.0/package.xml',
   11 => 'html/template/SplashTemplate/2.0/package.xml',
   12 => 'javascript/jquery/jquery-autogrow/1.2.2/package.xml',
-  13 => 'javascript/jquery/jquery-ui/1.8.9/package.xml',
+  13 => 'javascript/jquery/jquery-ui/1.8.20/package.xml',
   14 => 'javascript/jquery/jqueryFileTree/1.01/package.xml',
   15 => 'javascript/jit/1.1.2/package.xml',
   16 => 'javascript/prototype/1.6.0.1/package.xml',
@@ -67,7 +67,7 @@ require dirname(__FILE__).'/../plugins/javascript/jquery/jquery/1.6/JQueryExtern
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-fixedheadertable/1.3/JQueryFixedHeaderTableExternalComponent.php';
 require dirname(__FILE__).'/../plugins/utils/i18n/fine/2.1/FineExternalComponents.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-autogrow/1.2.2/JQueryAutoGrowExternalComponent.php';
-require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.8.9/JQueryUIExternalComponent.php';
+require dirname(__FILE__).'/../plugins/javascript/jquery/jquery-ui/1.8.20/JQueryUIExternalComponent.php';
 require dirname(__FILE__).'/../plugins/javascript/jquery/jqueryFileTree/1.01/JQueryFileTreeExternalComponent.php';
 require dirname(__FILE__).'/../plugins/html/template/menus/topslidermenu/1.0/TopSliderExternalComponent.php';
 require dirname(__FILE__).'/../plugins/utils/common/validators/1.0/ValidatorsExternalComponents.php';
@@ -2920,8 +2920,8 @@ class MoufAdmin {
 	/**
 	 * @return HtmlJSJQueryUI
 	 */
-	 public static function getJqueryui1_8_9() {
-	 	return MoufManager::getMoufManager()->getInstance('jquery-ui-1.8.9');
+	 public static function getJqueryui() {
+	 	return MoufManager::getMoufManager()->getInstance('jquery-ui');
 	 }
 
 	/**
@@ -3221,7 +3221,7 @@ class MoufAdmin {
 	/**
 	 * @return HtmlJSJQueryUI
 	 */
-	 public static function getJqueryui() {
+	 public static function getJqueryui_0() {
 	 	return MoufManager::getMoufManager()->getInstance('jqueryui');
 	 }
 

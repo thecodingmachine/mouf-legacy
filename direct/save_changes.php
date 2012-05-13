@@ -78,23 +78,43 @@ foreach ($changesList as $command) {
 			$propertyDescriptor = $property->getPropertyDescriptor();
 			
 			
-			$value = $command['value'];
-			if ($propertyDescriptor->isArray()) {
-				if (!$propertyDescriptor->isAssociativeArray()) {
-					$value = mouf_convert_json_ordered_array_to_php($value, false);
-				} else {
-					$value = mouf_convert_json_ordered_array_to_php($value, true);
+			if ($command['isNull'] == "true") {
+				$value = null;
+			} else {
+				$value = isset($command['value'])?$command['value']:null;
+				if ($propertyDescriptor->isArray()) {
+					if ($value === null) {
+						$value = array();
+					}
+					if (!$propertyDescriptor->isAssociativeArray()) {
+						$value = mouf_convert_json_ordered_array_to_php($value, false);
+					} else {
+						$value = mouf_convert_json_ordered_array_to_php($value, true);
+					}
 				}
 			}
 			
 			
 			/*if ($propertyDescriptor->is)
 			$property->setValue($value)*/
-			if ($propertyDescriptor->isPublicFieldProperty()) {
-				$moufManager->setParameter($instanceName, $propertyName, $value);
+			if ($propertyDescriptor->isPrimitiveType() || $propertyDescriptor->isArrayOfPrimitiveTypes()) {
+				if ($propertyDescriptor->isPublicFieldProperty()) {
+					$moufManager->setParameter($instanceName, $propertyName, $value);
+				} else {
+					$moufManager->setParameterViaSetter($instanceName, $propertyDescriptor->getMethodName(), $value);
+				}
 			} else {
-				$moufManager->setParameterViaSetter($instanceName, $propertyDescriptor->getMethodName(), $value);
-			}			
+				if ($propertyDescriptor->isPublicFieldProperty()) {
+					$moufManager->bindComponent($instanceName, $propertyName, $value);
+				} else {
+					$moufManager->bindComponentsViaSetter($instanceName, $propertyDescriptor->getMethodName(), $value);
+				}
+			}
+			break;
+		case "newInstance":
+			$instanceDescriptor = $moufManager->createInstance($command['class']);
+			$instanceDescriptor->setName($command['name']);
+			$instanceDescriptor->setInstanceAnonymousness($command['isAnonymous'] == "true");
 			break;
 		default:
 			throw new Exception("Unknown command");

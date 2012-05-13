@@ -90,11 +90,37 @@ class MoufInstanceDescriptor {
 	}
 	
 	/**
+	 * Returns the name of the instance, or its internal name if this is an anonymous instance.
+	 * 
+	 * @return string
+	 */
+	public function getIdentifierName() {
+		return $this->name;
+	}
+	
+	/**
 	 * Returns the classname of the instance.
 	 * @return string
 	 */
 	public function getClassName() {
 		return $this->moufManager->getInstanceType($this->name);
+	}
+	
+	/**
+	 * Returns true if the class is anonymous
+	 * @return bool
+	 */
+	public function isAnonymous() {
+		return $this->moufManager->isInstanceAnonymous($this->name);
+	}
+	
+	/**
+	 * Sets whether the instance should be anonymous or not.
+	 * 
+	 * @param bool $anonymous
+	 */
+	public function setInstanceAnonymousness($anonymous) {
+		$this->moufManager->setInstanceAnonymousness($this->name, $anonymous);
 	}
 	
 	/**
@@ -124,8 +150,9 @@ class MoufInstanceDescriptor {
 	 */
 	public function toJson() {
 		$classDescriptor = $this->getClassDescriptor();
-		$instanceArray['name'] = $this->getName();
+		$instanceArray['name'] = $this->name;
 		$instanceArray['class'] = $this->getClassName();
+		$instanceArray['anonymous'] = $this->isAnonymous();
 		$instanceArray['properties'] = array();
 		$moufProperties = $classDescriptor->getMoufProperties();
 		foreach ($moufProperties as $propertyName=>$moufProperty) {
@@ -135,7 +162,7 @@ class MoufInstanceDescriptor {
 			$property = $this->getProperty($propertyName);
 			$value = $property->getValue();
 			if ($value instanceof MoufInstanceDescriptor) {
-				$serializableValue = $value->getName();
+				$serializableValue = $value->getIdentifierName();
 			} elseif (is_array($value)) {
 				// We cannot match a PHP array to a JSON array!
 				// The keys in a PHP array are ordered. The key in a JSON array are not ordered!
