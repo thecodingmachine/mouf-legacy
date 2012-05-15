@@ -148,11 +148,21 @@ class MoufUserService implements UserServiceInterface {
 	/**
 	 * Logs a user using a token. The token should be discarded as soon as it
 	 * was used.
+	 * 
+	 * Returns false if the token is not valid, else true.
+	 * 
 	 *
 	 * @param string $token
+	 * @return UserInterface
 	 */
 	public function loginViaToken($token) {
-		// TODO
+		$user = $this->userDao->getUserByToken($token);
+		if ($user){
+			$this->loginWithoutPassword($user->getLogin());
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	/**
