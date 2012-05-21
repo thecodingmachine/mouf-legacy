@@ -114,9 +114,9 @@ class MoufInstancePropertyDescriptor {
 					$names[] = $item->getName();
 				}
 				if ($this->propertyDescriptor->isPublicFieldProperty()) {
-					$this->moufManager->bindComponents($this->instanceDescriptor->getName(), $this->name, $value);
+					$this->moufManager->bindComponents($this->instanceDescriptor->getName(), $this->name, $names);
 				} elseif ($this->propertyDescriptor->isSetterProperty()) {
-					$this->moufManager->bindComponentsViaSetter($this->instanceDescriptor->getName(), $this->name, $value);
+					$this->moufManager->bindComponentsViaSetter($this->instanceDescriptor->getName(), $this->name, $names);
 				} else {
 					throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 				}
