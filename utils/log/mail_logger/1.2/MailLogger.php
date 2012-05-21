@@ -144,11 +144,11 @@ class MailLogger implements LogInterface {
 			if ($e == null) {
 				if (!$string instanceof Exception) {
 					$trace = debug_backtrace();
-					$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
-					$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
+					$msg = $level.': '.$string;
+					$msgHtml = $level.': '.$string;
 				} else {
-					$msg = $level.': '.self::getTextForException($string);
-					$msgHtml = $level.': '.self::getHtmlForException($string);
+					$msg = self::getTextForException($string);
+					$msgHtml = self::getHtmlForException($string);
 				}
 			} else {
 				$trace = debug_backtrace();
