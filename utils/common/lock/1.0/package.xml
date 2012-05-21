@@ -10,7 +10,7 @@
 	<doc>
 		<page title="Introduction to the Lock Manager" url="index.html" />	
 	</doc>
-	<logo>logo.png</logo>
+	<logo>lock.png</logo>
 	<dependencies>
 	</dependencies>
 	<requires>

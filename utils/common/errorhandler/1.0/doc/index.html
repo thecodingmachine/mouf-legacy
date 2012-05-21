@@ -1,0 +1,66 @@
+<p>The error handler package is a package whose goal is to make it easier to handle
+PHP errors and exceptions.</p>
+
+<p>You might be aware that by default, PHP comes with a <code>set_error_handler</code> and a 
+<code>set_exception_handler</code> functions that allow you to catch any non fatal error or
+any uncatched exception, and act accordingly. The point is you can only have one function
+registered to handle errors and one for exceptions.</p>
+
+<p>The <b>Error Handler</b> package allows you to add many functions to handle errors, and
+furthermore, it provides meaningful defaults.</p>
+
+<h2>Error Handler default behaviour</h2>
+
+<p>By default, Error Handler will improve on the way errors are managed by PHP. All PHP notices/warnings/errors
+will be displayed in a nice HTML table, with a complete stacktrace. By clicking on a function of the
+stacktrace, you will be able to see the parameters passed to the function, which can be incredibly helpful
+to solve your problem. Exceptions handling will also benefit from the same HTML rendering. Furthermore,
+the PHP error log will also be filled with a complete stacktrace so you can easily understand what is going on.</p>
+
+<p>To get this behaviour, all you have to do is simply to enable the package, but wait, there is more....</p>
+
+<h2>Configuring the way errors  are handled</h2>
+
+<p>After installing the package, have a look at the instances it created. One of the instances is
+called "defaultGlobalErrorHandler". This instance will receive all the errors and all the uncaught exceptions
+from your application. It will forward those errors to all the registered error handlers.</p>
+
+<img src="globalinstancescreenshot.png" alt="defaultGlobalErrorHandler screenshot" />
+
+<p>Error handlers are classes implementing the "ErrorHandlerInterface". It is fairly easy to implement
+so you can add your own.</p>
+
+<h2>Error handlers provided with this package</h2>
+
+<p>By default, there are 3 errors handlers provided in this package:</p>
+
+<ul>
+	<li><b>ToOutputErrorHandler:</b> this error handler renders the errors in HTML, directly in the
+	output (so in the browser for most applications). It is enabled by default when you install the package.</li>
+	<li><b>ToPhpErrorLogErrorHandler:</b> this error handler logs errors in the PHP error log.
+	It is enabled by default when you install the package.</li>
+	<li><b>ToLogErrorHandler:</b> this error handler is very powerful. It acts as a connector between
+	the error handler and the Mouf log system. So basically, it can redirect any error or exception to
+	any log in Mouf. The point is Mouf has a lot of loggers. Some can write in database, some can send
+	mails, some can even apply advanced statistics on the number of log messages received. So basically,
+	by forwarding your errors to the log system, you can send your error about anywhere, without coding
+	a single line of code, just by wiring the instances together using Mouf. And that's cool!</li>
+</ul>
+
+<p>And as usual, you can add more error handlers if you like.</p>
+
+<h2>If you are planning to write your own error handlers...</h2>
+
+<p>If you plan to write your own error handlers, you will probably need at some point to render
+the PHP error, or the PHP exception into HTML, or text, so the developer can read it.
+In the errorhandler package, the task of rendering an error or an exception is done by objects
+implementing the ErrorRendererInterface (for rendering errors) and the ExceptionRendererInterface (for
+rendering exceptions). By default, the errorhandler package comes with 2 renderers:</p>
+<ul>
+	<li><b>errorHtmlRenderer</b> that can render both errors and exceptions in HTML</li>
+	<li><b>errorTextRenderer</b> that can render both errors and exceptions in full text</li>
+</ul>
+
+<p>Do not hesitate to use those instances if you want. Alternatively, you can add your own
+renderer class and keep using the provided error handlers, since those handlers are relying on
+the renderers to transform errors and exceptions into HTML or text.</p>

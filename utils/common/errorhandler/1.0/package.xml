@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Error Handler</displayName>
+	<shortDescription>This package contains a generic PHP error handler that can be used
+	to trigger specific actions when an error occurs in your code. It also features great
+	defaults, so upon installation, any error in your code will get a nice HTML rendering
+	with complete stack-trace so you can solve it quickly.</shortDescription>
+	<docUrl></docUrl>
+	<doc>
+		<page url="index.html" title="Introduction to the Error Handler"></page>
+	</doc>
+	<logo>important.png</logo>
+	<dependencies>
+		<dependency>
+			<group>utils/log</group>
+			<name>log_interface</name>
+			<version>&gt;=1.1</version>
+		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>krumo</name>
+			<version>&gt;=0.2.1a</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>PhpError.php</require>
+		<require>ErrorHandlerInterface.php</require>
+		<require>ErrorRendererInterface.php</require>
+		<require>ExceptionRendererInterface.php</require>
+		<require>ErrorHtmlRenderer.php</require>
+		<require>ErrorTextRenderer.php</require>
+		<require>ToOutputErrorHandler.php</require>
+		<require>ToPhpErrorLogErrorHandler.php</require>
+		<require>ToLogErrorHandler.php</require>
+		<require autoload="always">GlobalErrorHandler.php</require>
+		<require autoload="always">initGlobalHandler.php</require>
+	</requires>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>

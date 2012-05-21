@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>Krumo - Version 2.0 of print_r(); and var_dump()</displayName>
+	<shortDescription>Krumo is a simple function that can be used instead of print_r
+	or var_dump to display content of variables, in a web browser.
+	Note: the krumo library has been slightly modified to use Mouf global variables</shortDescription>
+	<docUrl></docUrl>
+	<logo></logo>
+	<requires>
+		<require>class.krumo.php</require>
+	</requires>
+</package>
