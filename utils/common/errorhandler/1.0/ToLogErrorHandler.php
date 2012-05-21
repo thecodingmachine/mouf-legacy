@@ -36,15 +36,13 @@ class ToLogErrorHandler implements ErrorHandlerInterface {
 	public $exceptionRenderer;
 	
 	/**
-	 * By default, this package will log errors to the PHP error log only if the "log_errors" parameter
-	 * is set to "on".
-	 * Set this parameter to "true" to completely bypass the "log_errors" parameter.
+	 * An optional condition. If this is set, the condition must be fulfilled
+	 * for the error handler to be used.
 	 *
 	 * @Property
-	 * @Compulsory
-	 * @var boolean
+	 * @var ConditionInterface
 	 */
-	public $alwaysLogErrors = false;
+	public $condition;
 	
 	/**
 	 * This function is called each time on error is triggered by PHP.
@@ -52,7 +50,7 @@ class ToLogErrorHandler implements ErrorHandlerInterface {
 	 * @param PhpError $error
 	 */
 	public function handleError(PhpError $error) {
-		if (ini_get("log_errors") || $this->alwaysLogErrors) {		
+		if ($this->condition == null || $this->condition->isOk()) {
 			if (error_reporting() & $error->getLevel()) {
 				$errorMsg = $this->errorRenderer->renderError($error);
 				
@@ -101,7 +99,7 @@ class ToLogErrorHandler implements ErrorHandlerInterface {
 	 * @param Exception $e
 	 */
 	public function handleException(Exception $e) {
-		if (ini_get("log_errors") || $this->alwaysLogErrors) {
+		if ($this->condition == null || $this->condition->isOk()) {
 			//$errorMsg = $this->exceptionRenderer->renderException($e);
 			$this->logger->error($e);
 		}

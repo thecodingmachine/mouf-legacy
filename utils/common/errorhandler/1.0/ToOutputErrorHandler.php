@@ -37,15 +37,27 @@ class ToOutputErrorHandler implements ErrorHandlerInterface {
 	 */
 	public $alwaysDisplayErrors = false;
 	
+	
+	/**
+	 * An optional condition. If this is set, the condition must be fulfilled
+	 * for the error handler to be used.
+	 *
+	 * @Property
+	 * @var ConditionInterface
+	 */
+	public $condition;
+	
 	/**
 	 * This function is called each time on error is triggered by PHP.
 	 *
 	 * @param PhpError $error
 	 */
 	public function handleError(PhpError $error) {
-		if (ini_get("display_errors") || $this->alwaysDisplayErrors) {
-			if (error_reporting() & $error->getLevel()) {
-				echo $this->errorRenderer->renderError($error);
+		if ($this->condition == null || $this->condition->isOk()) {
+			if (ini_get("display_errors") || $this->alwaysDisplayErrors) {
+				if (error_reporting() & $error->getLevel()) {
+					echo $this->errorRenderer->renderError($error);
+				}
 			}
 		}
 	}
@@ -56,8 +68,10 @@ class ToOutputErrorHandler implements ErrorHandlerInterface {
 	 * @param Exception $e
 	 */
 	public function handleException(Exception $e) {
-		if (ini_get("display_errors") || $this->alwaysDisplayErrors) {
-			echo $this->exceptionRenderer->renderException($e);
+		if ($this->condition == null || $this->condition->isOk()) {
+			if (ini_get("display_errors") || $this->alwaysDisplayErrors) {
+				echo $this->exceptionRenderer->renderException($e);
+			}
 		}
 	}
 }

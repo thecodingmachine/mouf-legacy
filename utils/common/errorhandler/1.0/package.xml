@@ -22,6 +22,11 @@
 			<name>krumo</name>
 			<version>&gt;=0.2.1a</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>conditioninterface</name>
+			<version>&gt;=1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>PhpError.php</require>
