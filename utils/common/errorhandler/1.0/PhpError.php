@@ -51,6 +51,8 @@ class PhpError {
 				return "E_USER_NOTICE";
 			case E_RECOVERABLE_ERROR:
 				return "E_RECOVERABLE_ERROR";
+			case E_STRICT:
+				return "E_STRICT";
 			default:
 				return "Unkown error code ".$this->errno;
 		}
