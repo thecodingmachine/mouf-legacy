@@ -24,13 +24,62 @@ class MailLogger implements LogInterface {
 	 * @var ErrorMail
 	 */
 	public $mail;
-		
-	public static $TRACE = 1;
-	public static $DEBUG = 2;
-	public static $INFO = 3;
-	public static $WARN = 4;
-	public static $ERROR = 5;
-	public static $FATAL = 6;
+	
+	/**
+	 * If true, errors will be aggregated in one big mail that is sent at the end
+	 * of the script. If false, each error will trigger a mail.
+	 *
+	 * @Property
+	 * @var bool
+	 */
+	public $aggregateErrorsInOneMail = true;
+	
+	/**
+	 * The maximum number of errors that can be put in one mail.
+	 * If this number is reached, additional errors will be discarded.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var int
+	 */
+	public $maxNbErrorsInOneMail = 30;
+	
+	/**
+	 * Number of errors displayed so far.
+	 * 
+	 * @var int
+	 */
+	private $nbErrors = 0;
+	
+	/**
+	 * A text that will be displayed as a prefix to the title of the mail.
+	 * Very useful to add informations about your environement for instance.
+	 *
+	 * @Property
+	 * @var string
+	 */
+	public $titlePrefix;
+	
+	/**
+	 * The text body of the email (only used if aggregateErrorsInOneMail is true).
+	 * 
+	 * @var string
+	 */
+	public $bodyText = null;
+	
+	/**
+	 * The HTML body of the email (only used if aggregateErrorsInOneMail is true).
+	 * 
+	 * @var string
+	 */
+	public $bodyHtml = null;
+	
+	const TRACE = 1;
+	const DEBUG = 2;
+	const INFO = 3;
+	const WARN = 4;
+	const ERROR = 5;
+	const FATAL = 6;
 	
 	/**
 	 * The minimum level that will be tracked by this logger.
@@ -44,72 +93,132 @@ class MailLogger implements LogInterface {
 	 */
 	public $level;
 	
+	/**
+	 * The prefix of the text mail (contains the URL of the web page displayed)
+	 * @var string
+	 */
+	public $mailTextPrefix;
+	
+	/**
+	* The prefix of the HTML mail (contains the URL of the web page displayed)
+	* @var string
+	*/
+	public $mailHTMLPrefix;
+	
 	public function trace($string, Exception $e=null, array $additional_parameters=array()) {
-		if($this->level<=self::$TRACE) {
+		if($this->level<=self::TRACE) {
 			$this->logMessage("TRACE", $string, $e, $additional_parameters);
 		}
 	}
 	public function debug($string, Exception $e=null, array $additional_parameters=array()) {
-		if($this->level<=self::$DEBUG) {
+		if($this->level<=self::DEBUG) {
 			$this->logMessage("DEBUG", $string, $e, $additional_parameters);
 		}
 	}
 	public function info($string, Exception $e=null, array $additional_parameters=array()) {
-		if($this->level<=self::$INFO) {
+		if($this->level<=self::INFO) {
 			$this->logMessage("INFO", $string, $e, $additional_parameters);
 		}
 	}
 	public function warn($string, Exception $e=null, array $additional_parameters=array()) {
-		if($this->level<=self::$WARN) {
+		if($this->level<=self::WARN) {
 			$this->logMessage("WARN", $string, $e, $additional_parameters);
 		}
 	}
 	public function error($string, Exception $e=null, array $additional_parameters=array()) {
-		if($this->level<=self::$ERROR) {
+		if($this->level<=self::ERROR) {
 			$this->logMessage("ERROR", $string, $e, $additional_parameters);
 		}
 	}
 	public function fatal($string, Exception $e=null, array $additional_parameters=array()) {
-		if($this->level<=self::$FATAL) {
+		if($this->level<=self::FATAL) {
 			$this->logMessage("FATAL", $string, $e, $additional_parameters);
 		}
 	}
 
 	private function logMessage($level, $string, $e=null, array $additional_parameters=array()) {
 		
-		$title = "An error occured in your application. Error level: ".$level.". ".substr($string,0,20);
-		if (is_string($string)) {
-			if (strlen($string)<20) {
-				$title .= $string;
+		$this->computeMailPrefix();
+		$this->nbErrors++;
+		if ($this->nbErrors < $this->maxNbErrorsInOneMail + 1) {
+			if ($e == null) {
+				if (!$string instanceof Exception) {
+					$trace = debug_backtrace();
+					$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
+					$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
+				} else {
+					$msg = $level.': '.self::getTextForException($string);
+					$msgHtml = $level.': '.self::getHtmlForException($string);
+				}
 			} else {
-				$title .= substr($string, 0, 19)."...";
-			}
-		}
-		
-		$this->mail->setTitle($title);
-				
-		if ($e == null) {
-			if (!$string instanceof Exception) {
 				$trace = debug_backtrace();
-				$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
-				$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string;
-			} else {
-				$msg = $level.': '.self::getTextForException($string);
-				$msgHtml = $level.': '.self::getHtmlForException($string);
+				$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".self::getTextForException($e);
+				$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".self::getHtmlForException($e);
 			}
+		} elseif ($this->nbErrors == $this->maxNbErrorsInOneMail + 1) {
+			$msg = "Maximum number of errors displayed in one mail reached... further errors are discarded.\n";
+			$msgHtml = "Maximum number of errors displayed in one mail reached... further errors are discarded.<br/>";
 		} else {
-			$trace = debug_backtrace();
-			$msg = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".self::getTextForException($e);
-			$msgHtml = $level.': '.$trace[1]['file']."(".$trace[1]['line'].") ".(isset($trace[2])?($trace[2]['class'].$trace[2]['type'].$trace[2]['function']):"")." -> ".$string."\n".self::getHtmlForException($e);
+			return;
 		}
-
-		$this->mail->setBodyText($msg);
-		$this->mail->setBodyHtml($msgHtml);
-		$this->mailService->send($this->mail);
+				
+		if (!$this->aggregateErrorsInOneMail) {
+			$title = $this->titlePrefix;
+			$title .= " An error occured in your application. Error level: ".$level.". ".substr($string,0,20);
+			if (is_string($string)) {
+				if (strlen($string)<20) {
+					$title .= $string;
+				} else {
+					$title .= substr($string, 0, 19)."...";
+				}
+			}
+			
+			$this->mail->setTitle($title);
+			
+			$this->mail->setBodyText($this->mailTextPrefix.$msg);
+			$this->mail->setBodyHtml($this->mailHTMLPrefix.$msgHtml);
+			$this->mailService->send($this->mail);
+		} else {
+			// If this is the first time an error is logged, let's register the end function to be called.
+			if ($this->bodyText == null) {
+				register_shutdown_function(array($this, "sendAggregatedMail"));
+			}
+			$this->bodyText .= $msg."\n";
+			$this->bodyHtml .= $msgHtml."<br/>\n";
+		}
 	}
 	
+	public function computeMailPrefix() {
+		if ($this->mailTextPrefix) {
+			return;
+		}
+		
+		if (isset($_SERVER['HTTPS'])) {
+			$url = "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		} else {
+			if ($_SERVER['SERVER_PORT'] != 80) {
+				$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
+			} else {
+				$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+			}
+		}
+				
+		$this->mailTextPrefix = "URL: ".$url."\n\n"; 
+		$this->mailHTMLPrefix = "URL: <a href='".htmlentities($url, ENT_QUOTES)."'>".htmlentities($url)."</a><br/><br/>";
+	}
 	
-	
+	/**
+	 * At the very end of the script, this will send all logged messages.
+	 */
+	public function sendAggregatedMail() {
+		$title = $this->titlePrefix;
+		$title .= " Errors occured in your application.";
+		
+		$this->mail->setTitle($title);
+		$this->mail->setBodyText($this->mailTextPrefix.$this->bodyText);
+		$this->mail->setBodyHtml($this->mailHTMLPrefix.$this->bodyHtml);
+		$this->mailService->send($this->mail);
+	}
 	
 	/**
 	* Returns the Exception Backtrace as a nice HTML view.
