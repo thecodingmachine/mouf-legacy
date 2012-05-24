@@ -1,0 +1,16 @@
+<h1>Using the Paypal module</h1>
+
+<p>At the core of the Paypal module, there is the PaypalService class.</p>
+<p>Using this class, you can easily request subscriptions via the <code>PaypalService->requestSubscription</code> method.</p>
+
+<h2>Installation</h2>
+
+<p>The Paypal module requires 3 tables. You must create those 3 tables in your database.
+If you are using MySQL, you can use the script provided in <code>database/paypal_tables.sql</code>.</p>
+
+<p>The PaypalService class stores all its config in the PaypalConfig instance.
+This instance has several parameters, to decide whether we use the real Paypal or the Sandbox, and 
+to specify the IPN URL address.</p>
+
+<p>To use this module, you will have to provide an external IP address (the website_url parameter).
+It will be used by the Paypal IPN to contact your machine.</p>
