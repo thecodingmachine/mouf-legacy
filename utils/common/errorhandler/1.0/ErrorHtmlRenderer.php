@@ -159,8 +159,10 @@ class ErrorHtmlRenderer implements ErrorRendererInterface {
 				}
 				$str .= ')';
 				$str .= '</td><td style="border-bottom: 1px solid #EEEEEE">';
-				$file = self::shortenFilePath($step['file']);
-				$str .= ((isset($step['file']))?htmlspecialchars($file, ENT_NOQUOTES, "UTF-8"):'');
+				if (isset($step['file'])) {
+					$file = self::shortenFilePath($step['file']);
+					$str .= htmlspecialchars($file, ENT_NOQUOTES, "UTF-8");
+				}
 				$str .= '</td><td style="border-bottom: 1px solid #EEEEEE">';
 				$str .= ((isset($step['line']))?$step['line']:'');
 				$str .= '</td></tr>';
