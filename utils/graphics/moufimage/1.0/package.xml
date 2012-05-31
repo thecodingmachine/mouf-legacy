@@ -2,7 +2,6 @@
 <package>
 	<displayName>Mouf Image</displayName>
 	<shortDescription>Images handler interface for resizing, croping, or any other action</shortDescription>
-	<docUrl>http://www.google.com/</docUrl>
 	<logo>logo.png</logo>
 	<requires>
 		<require>MoufImageInterface.php</require>

@@ -1,8 +1,4 @@
 <?php
-// This file validates that a .htaccess file is defined at the root of the project.
-// If not, an alert is raised.
-
-// We only include the MoufUniversalParameters.php because that's all we need to access the ROOT_PATH constant.
 require_once dirname(__FILE__)."/../../../../../../Mouf.php";
 
 $instances = $_GET['instances'];

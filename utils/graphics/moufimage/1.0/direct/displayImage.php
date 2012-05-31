@@ -1,5 +1,5 @@
 <?php
-require_once '../../../../../../Mouf.php';
+require_once dirname(__FILE__).'/../../../../../../Mouf.php';
 
 $diplayerInstance = $_GET['instance'];
 $sourceFileName = $_GET['url'];

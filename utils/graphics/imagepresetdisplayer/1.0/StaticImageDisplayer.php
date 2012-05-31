@@ -1,18 +1,21 @@
 <?php
 /**
  * This Class will handle the display of MoufImages. 
- * Images are successiely treated by a set of MoufImageInterafce instances, and then, the final image resource will be outputed.
- * The first time the image is generated, it is saved in order to save some time.
- * The StaticImageDisplayer is called by using a direct URL inside this package: 
- *   ROOT_URL/plugins/utils/graphics/moufimage/1.0/direct/displayImage.php
- *   This URL should be called using 2 parameters:
- *       - instance: name of the StaticImageDisplayer instance 
- *       - path: relative path of the original image
+ * <p>Images are successively processed by a set of instances implementing MoufImageInterface, and then, the final image resource will be outputed.
+ * The first time the image is generated, it is saved. If you ask for the same image, the saved copy will be served, in order to save some time.</p>
+ * <p>The StaticImageDisplayer is called by using a direct URL inside this package:</p> 
+ *   <em>ROOT_URL/plugins/utils/graphics/moufimage/1.0/direct/displayImage.php</em>
+ *  <p>This URL should be called using 2 parameters:</p>
+ *  <ul>
+ *  	<li>instance: name of the StaticImageDisplayer instance</li> 
+ *      <li>path: relative path of the original image</li>
+ *  </ul>
  *       
- *  This class has helpers that will generate the given URL: 
- *    - $displayerInstance->getURL($path);
- *    or 
- *    - $displayerInstance->toHTML($path);
+ *  <p>This class has helpers that will generate the given URL:</p> 
+ *  <ul>
+ *  	<li>Use $displayerInstance->getURL($path);</li>
+ *    	<li>or $displayerInstance->toHTML($path);</li>
+ * </ul>
  * 
  * @Component
  * 
@@ -38,8 +41,8 @@ class StaticImageDisplayer{
 	public $imageSource;
 	
 	/**
-	 * The pathe into which the image file will be saved if it doesn't exist.
-	 * This path is relative to the applcation's ROOT_PATH, and souhld have trailing slashes.
+	 * The path into which the image file will be saved if it doesn't exist.
+	 * This path is relative to the applcation's ROOT_PATH, and should have trailing slashes.
 	 * @Property
 	 * @Compulsory
 	 * @var string $savePath
@@ -48,7 +51,7 @@ class StaticImageDisplayer{
 	
 	/**
 	 * The path to the original image that will be loaded (by the $initialImageFilter, transformed by a set of MoufImage instances.
-	 * This path is relative to the applcation's ROOT_PATH, and souhld have trailing slashes.
+	 * This path is relative to the application's ROOT_PATH, and should have trailing slashes.
 	 * @Property
 	 * @Compulsory
 	 * @var string $basePath
@@ -91,8 +94,10 @@ class StaticImageDisplayer{
 		//rebuild the original file pathe from the root image folder and the relative file's pathe
 		$originalFilePath = ROOT_PATH . $this->basePath . DIRECTORY_SEPARATOR . $this->sourceFileName;
 // 		echo "$originalFilePath exits? ".(file_exists($originalFilePath) ? "ok" : "ko");exit;
+		$is404 = false;
 		if (!file_exists($originalFilePath)){
 			$originalFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR."404_image.png";
+			$is404 = true;
 		}
 		$this->initialImageFilter->path = $originalFilePath;
 		
@@ -107,7 +112,7 @@ class StaticImageDisplayer{
 		
 		
 		$created = true;
-		if (!file_exists($finalPath)){
+		if (!file_exists($finalPath) && !$is404){
 			//if sourceFileName contains sub folders, create them
 			$subPath = dirname($this->sourceFileName);
 			if ($subPath != '.' && !file_exists(ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $subPath)){
@@ -125,8 +130,9 @@ class StaticImageDisplayer{
 			}
 		}
 		
-		if (!$created) throw new Exception("File could not be created: $finalPath");
+		if (!$created && !$is404) throw new Exception("File could not be created: $finalPath");
 		
+		// FIXME: si on recalcule l'image à chaque fois, il n'y a aucun intérêt à avoir un cache!!!!
 		if( $image_type == IMAGETYPE_JPEG ) {
 			header('Content-Type: image/jpeg');
 			imagejpeg($finalImage);
@@ -140,6 +146,11 @@ class StaticImageDisplayer{
 		imagedestroy($finalImage);
 	}
 	
+	/**
+	 * Returns the URL of an image based on the file name.
+	 * 
+	 * @param string $path The filename, with directory, related to the $savePath declared in the configuration.
+	 */
 	public function getURL($path){
 		return ROOT_URL. $this->savePath . "/" . $path;
 	}
