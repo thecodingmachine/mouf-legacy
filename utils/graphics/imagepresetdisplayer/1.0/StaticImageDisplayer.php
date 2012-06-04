@@ -96,6 +96,7 @@ class StaticImageDisplayer{
 // 		echo "$originalFilePath exits? ".(file_exists($originalFilePath) ? "ok" : "ko");exit;
 		$is404 = false;
 		if (!file_exists($originalFilePath)){
+			error_log("file not exists : $originalFilePath");
 			$originalFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR."404_image.png";
 			$is404 = true;
 		}
