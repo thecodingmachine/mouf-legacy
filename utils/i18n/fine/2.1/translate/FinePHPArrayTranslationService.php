@@ -195,6 +195,10 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 			$this->language = $this->languageDetection->getLanguage();
 		} elseif(MoufManager::getMoufManager()->instanceExists("translationService")) {
 			$this->language = MoufManager::getMoufManager()->getInstance("translationService")->getLanguage();
+			if ($this->language === null) {
+				$this->languageDetection = new BrowserLanguageDetection();
+				$this->language = $this->languageDetection->getLanguage();
+			}
 		} else {
 			$this->languageDetection = new BrowserLanguageDetection();
 			$this->language = $this->languageDetection->getLanguage();
@@ -259,6 +263,9 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * Returns the language of the browser, or "default" if the language is not supported (no messages_$language.php).
 	 */
 	public function getLanguage() {
+		if ($this->languageDetection === null) {
+			$this->languageDetection = new BrowserLanguageDetection();
+		}
 		$language = $this->languageDetection->getLanguage();
 		if (file_exists(ROOT_PATH.$this->i18nMessagePath.'message_'.$language.'.php')) {
 			return $language;
