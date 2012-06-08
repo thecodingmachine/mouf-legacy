@@ -17,5 +17,6 @@
 		<require>HtmlFromFile.php</require>
 		<require>HtmlFromFunction.php</require>
 		<require>HtmlString.php</require>
+		<require>HtmlBlock.php</require>
 	</requires>
 </package>
