@@ -24,6 +24,15 @@ class BasicMenuRenderer implements HtmlElementInterface {
 	public $menu;
 	
 	/**
+	 * The whole CSS class to apply to the UL element.
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var string
+	 */
+	public $cssClass = "menu";
+	
+	/**
 	 * Initialize the object, optionnally with the array of menu items to be displayed.
 	 *
 	 * @param array<SplashMenuItem> $menuItems
@@ -34,7 +43,7 @@ class BasicMenuRenderer implements HtmlElementInterface {
 	
 	public function toHtml() {
 		if ($this->menu && !$this->menu->isHidden()) {
-			echo '<ul class="menu">';
+			echo '<ul class="'.$this->cssClass.'">';
 			
 			$menuItems = $this->menu->getChildren();
 			if (is_array($menuItems)) {
@@ -65,7 +74,7 @@ class BasicMenuRenderer implements HtmlElementInterface {
 			}
 			$children = $menuItem->getChildren();
 			if ($children) {
-				echo '<ul class="menu">';
+				echo '<ul class="'.$this->cssClass.'">';
 				foreach ($children as $child) {
 					/* @var $child MenuItemInterface */
 					$this->renderHtmlMenuItem($child);

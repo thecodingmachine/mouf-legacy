@@ -31,7 +31,7 @@ class Menu implements MenuInterface {
 	 * @var ConditionInterface
 	 */
 	private $displayCondition;
-		
+	
 	private $sorted = false;
 	
 	/**
