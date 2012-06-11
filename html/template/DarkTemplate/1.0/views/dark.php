@@ -10,6 +10,13 @@
 		<title><?php print $this->title ?></title>
 		<?php print $this->getCssFiles() ?>
 		<?php $this->drawArray($this->head); ?>
+		<script type="text/javascript">
+		<!--
+			var settings = {
+				baseUrl : "<?php echo ROOT_URL; ?>"
+			}
+		//-->
+		</script>
 		<?php print $this->getJsFiles() ?>
 		
 	</head>
