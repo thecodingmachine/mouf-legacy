@@ -79,7 +79,7 @@
 					<?php $this->drawArray($this->right);?>
 				</div>
 			<?php }*/ ?>
-     <div class="span9">
+     <div class="span9 well">
 
 				<?php $this->drawArray($this->content); ?>
 			</div>
