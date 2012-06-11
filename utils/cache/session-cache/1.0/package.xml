@@ -15,7 +15,7 @@
 		<dependency>
 			<group>utils/log</group>
 			<name>log_interface</name>
-			<version>1.0</version>
+			<version>&gt;=1.0</version>
 		</dependency>
 	</dependencies>
 	<requires>
