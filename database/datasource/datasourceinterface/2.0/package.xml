@@ -9,7 +9,7 @@
 		<dependency>
 			<group>database/datasource</group>
 			<name>formatters</name>
-			<version>1.0</version>
+			<version>&gt;=1.0</version>
 		</dependency>
 		<dependency>
 			<group>database</group>
