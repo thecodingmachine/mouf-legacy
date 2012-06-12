@@ -193,18 +193,23 @@ class MailLogger implements LogInterface {
 			return;
 		}
 		
-		if (isset($_SERVER['HTTPS'])) {
-			$url = "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-		} else {
-			if ($_SERVER['SERVER_PORT'] != 80) {
-				$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
+		if (isset($_SERVER['SERVER_NAME'])) {
+			if (isset($_SERVER['HTTPS'])) {
+				$url = "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 			} else {
-				$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+				if ($_SERVER['SERVER_PORT'] != 80) {
+					$url = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI'];
+				} else {
+					$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+				}
 			}
-		}
 				
-		$this->mailTextPrefix = "URL: ".$url."\n\n"; 
-		$this->mailHTMLPrefix = "URL: <a href='".htmlentities($url, ENT_QUOTES)."'>".htmlentities($url)."</a><br/><br/>";
+			$this->mailTextPrefix = "URL: ".$url."\n\n"; 
+			$this->mailHTMLPrefix = "URL: <a href='".htmlentities($url, ENT_QUOTES)."'>".htmlentities($url)."</a><br/><br/>";
+		} else {
+			$this->mailTextPrefix = "Script: ".$_SERVER['SCRIPT_FILENAME']."\n\n";
+			$this->mailHTMLPrefix = "Script: ".htmlentities($_SERVER['SCRIPT_FILENAME'], ENT_QUOTES)."<br/><br/>";
+		}
 	}
 	
 	/**
