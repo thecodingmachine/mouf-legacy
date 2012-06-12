@@ -193,7 +193,7 @@ class MailLogger implements LogInterface {
 			return;
 		}
 		
-		if (isset($_SERVER['SERVER_NAME'])) {
+		if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_PORT'])) {
 			if (isset($_SERVER['HTTPS'])) {
 				$url = "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 			} else {
