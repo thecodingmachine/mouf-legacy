@@ -82,6 +82,13 @@ class StaticImageDisplayer{
 	public $pngQuality = 6;
 	
 	/**
+	 * The path to the default image if not found
+	 * @Property
+	 * @var int $pngQuality
+	 */
+	public $defaultImagePath;
+	
+	/**
 	 * Output the image: 
 	 *   - original image is loaded by the $initialImageFilter, 
 	 *   - final image (given by the $imageSource) is outputed (and saved if it doesn't exist yet)
@@ -97,7 +104,11 @@ class StaticImageDisplayer{
 		$is404 = false;
 		if (!file_exists($originalFilePath)){
 			error_log("file not exists : $originalFilePath");
-			$originalFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR."404_image.png";
+			if (empty($this->defaultImagePath)){
+				$originalFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR."404_image.png";
+			}else{
+				$originalFilePath = ROOT_PATH.$this->defaultImagePath;
+			}
 			$is404 = true;
 		}
 		$this->initialImageFilter->path = $originalFilePath;
@@ -113,7 +124,7 @@ class StaticImageDisplayer{
 		
 		
 		$created = true;
-		if (!file_exists($finalPath) && !$is404){
+		if (!file_exists($finalPath)){
 			//if sourceFileName contains sub folders, create them
 			$subPath = dirname($this->sourceFileName);
 			if ($subPath != '.' && !file_exists(ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $subPath)){
