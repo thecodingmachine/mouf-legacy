@@ -56,6 +56,13 @@ class ErrorHtmlRenderer implements ErrorRendererInterface {
 				$color = "#009999";
 				$type = "User Notice";
 				break;
+			case E_RECOVERABLE_ERROR:
+				$color = "#FF3333";
+				$type = "Recoverable Error";
+				break;
+			default:
+				$color = "#000000";
+				$type = "Unknown Error level";
 		}
 		
 		$msg .= "<tr><td colspan='3' style='background-color:$color; color:white; text-align:center'><b>$type</b></td></tr>";
