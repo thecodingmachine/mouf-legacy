@@ -1,7 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<?php /* @var $this DarkTemplate */ ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-
-
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<?php if ($this->favIconUrl) { ?>
@@ -31,6 +29,12 @@
 				data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 				class="icon-bar"></span> <span class="icon-bar"></span> </a> <a
 				class="brand" href="<?php echo ROOT_URL ?>"><?php print $this->title ?></a>
+				
+				<?php if ($this->menuRight) { ?>
+				<div class="btn-group pull-right">
+					<?php $this->menuRight->toHtml(); ?>
+				</div>
+				<?php } ?>
 			<!-- <div class="btn-group pull-right">
 				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"> <i
 					class="icon-user"></i> Username <span class="caret"></span> </a>
@@ -107,6 +111,4 @@
 
 </div>
 </body>
-
 </html>
-

@@ -26,6 +26,14 @@ class DarkTemplate extends BaseTemplate  {
 	protected $templateRootUrl;
 	
 	/**
+	 * The block in the top right corner.
+	 * 
+	 * @Property
+	 * @var HtmlBlock
+	 */
+	public $menuRight;
+	
+	/**
 	 * Default constructor
 	 */
 	public function __construct() {
