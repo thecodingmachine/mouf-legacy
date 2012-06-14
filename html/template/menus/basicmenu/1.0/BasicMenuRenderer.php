@@ -60,8 +60,13 @@ class BasicMenuRenderer implements HtmlElementInterface {
 		if (!$menuItem->isHidden()) {
 			echo '<li ';
 			$menuCssClass = $menuItem->getCssClass();
-			if (!empty($menuCssClass)) {
-				echo 'class="'.$menuCssClass.'"';
+			if (!empty($menuCssClass) || $menuItem->isActive() || $menuItem->isExtended()) {
+				echo 'class="';
+				echo $menuCssClass;
+				if ($menuItem->isActive()) {
+					echo ' active';
+				}
+				echo '"';
 			}
 			echo '>';
 			$url = $menuItem->getLink();
@@ -74,7 +79,7 @@ class BasicMenuRenderer implements HtmlElementInterface {
 			}
 			$children = $menuItem->getChildren();
 			if ($children) {
-				echo '<ul class="'.$this->cssClass.'">';
+				echo '<ul>';
 				foreach ($children as $child) {
 					/* @var $child MenuItemInterface */
 					$this->renderHtmlMenuItem($child);

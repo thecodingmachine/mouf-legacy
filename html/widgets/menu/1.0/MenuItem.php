@@ -111,7 +111,7 @@ class MenuItem implements MenuItemInterface {
 	 * @param string $label
 	 * @param string $url
 	 */
-	public function __construct($label=null, $url=null, $children=null) {
+	public function __construct($label=null, $url=null, $children=array()) {
 		$this->label = $label;
 		$this->url = $url;
 		$this->children = $children;
@@ -156,6 +156,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setUrl($url) {
 		$this->url = $url;
+		return $this;
 	}	
 	
 	/**
@@ -207,6 +208,7 @@ class MenuItem implements MenuItemInterface {
 	public function setChildren(array $children) {
 		$this->sorted = false;
 		$this->children = $children;
+		return $this;
 	}
 
 	/**
@@ -255,6 +257,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setIsActive($isActive) {
 		$this->isActive = $isActive;
+		return $this;
 	}
 	
 	/**
@@ -263,6 +266,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function enable() {
 		$this->isActive = true;
+		return $this;
 	}
 	
 	/**
@@ -282,6 +286,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setIsExtended($isExtended = true) {
 		$this->isExtended = $isExtended;
+		return $this;
 	}
 	
 	/**
@@ -301,6 +306,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setCssClass($cssClass) {
 		$this->cssClass = $cssClass;
+		return $this;
 	}
 
 	/**
@@ -311,6 +317,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setPriority($priority) {
 		$this->priority = $priority;
+		return $this;
 	}
 
 	/**
@@ -372,6 +379,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setAdditionalStyles($menuItemStyleInterface) {
 		$this->additionalStyles = $menuItemStyleInterface;
+		return $this;
 	}
 	
 	/**
@@ -406,6 +414,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setTranslationService(LanguageTranslationInterface $translationService) {
 		$this->translationService = $translationService;
+		return $this;
 	}
 
 
@@ -417,6 +426,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setDisplayCondition(ConditionInterface $displayCondition) {
 		$this->displayCondition = $displayCondition;
+		return $this;
 	}	
 	
 	/**
@@ -429,6 +439,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setPropagatedUrlParameters($propagatedUrlParameters) {
 		$this->propagatedUrlParameters = $propagatedUrlParameters;
+		return $this;
 	}
 	
 	
@@ -487,6 +498,7 @@ class MenuItem implements MenuItemInterface {
 	 */
 	public function setActivateBasedOnUrl($activateBasedOnUrl = true) {
 		$this->activateBasedOnUrl = $activateBasedOnUrl;
+		return $this;
 	}
 }
 ?>
