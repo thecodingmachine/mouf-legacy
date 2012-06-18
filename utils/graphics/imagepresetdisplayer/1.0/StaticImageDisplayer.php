@@ -103,7 +103,7 @@ class StaticImageDisplayer{
 // 		echo "$originalFilePath exits? ".(file_exists($originalFilePath) ? "ok" : "ko");exit;
 		$is404 = false;
 		if (!file_exists($originalFilePath)){
-			error_log("file not exists : $originalFilePath");
+			//error_log("file not exists : $originalFilePath");
 			if (empty($this->defaultImagePath)){
 				$originalFilePath = dirname(__FILE__).DIRECTORY_SEPARATOR."404_image.png";
 			}else{
@@ -119,12 +119,12 @@ class StaticImageDisplayer{
 		$image_info = $moufImageResource->originInfo;
 		$image_type = $image_info[2];
 		
-		//Originakl file's relative pat is teh file's Key, so no need to check whether there is already an image with the same file name
+		//Original file's relative path is the file's key, so no need to check whether there is already an image with the same file name
 		$finalPath = ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $this->sourceFileName;
 		
 		
 		$created = true;
-		if (!file_exists($finalPath)){
+		if (!file_exists($finalPath) && !$is404){
 			//if sourceFileName contains sub folders, create them
 			$subPath = dirname($this->sourceFileName);
 			if ($subPath != '.' && !file_exists(ROOT_PATH . $this->savePath . DIRECTORY_SEPARATOR . $subPath)){
