@@ -315,7 +315,7 @@ class MoufManager {
 	public function declareComponent($instanceName, $className, $external = false, $mode = self::DECLARE_ON_EXIST_EXCEPTION, $weak = false) {
 		if (isset($this->declaredInstances[$instanceName])) {
 			if ($mode == self::DECLARE_ON_EXIST_EXCEPTION) {
-				throw new MoufException("Unable to create Mouf istance named '".$instanceName."'. An instance with this name already exists.");
+				throw new MoufException("Unable to create Mouf instance named '".$instanceName."'. An instance with this name already exists.");
 			} elseif ($mode == self::DECLARE_ON_EXIST_KEEP_INCOMING_LINKS) {
 				$this->declaredInstances[$instanceName]["fieldProperties"] = array();
 				$this->declaredInstances[$instanceName]["setterProperties"] = array();
@@ -1843,7 +1843,9 @@ class ".$this->mainClassName." {
 			foreach ($instance['fieldBinds'] as $prop) {
 				if(is_array($prop)) {
 					foreach ($prop as $singleProp) {
-						$this->walkForGarbageCollection($this->declaredInstances[$singleProp]);
+						if ($singleProp != null) {
+							$this->walkForGarbageCollection($this->declaredInstances[$singleProp]);
+						}
 					}
 				}
 				else {
@@ -1855,7 +1857,9 @@ class ".$this->mainClassName." {
 			foreach ($instance['setterBinds'] as $prop) {
 				if(is_array($prop)) {
 					foreach ($prop as $singleProp) {
-						$this->walkForGarbageCollection($this->declaredInstances[$singleProp]);
+						if ($singleProp != null) {
+							$this->walkForGarbageCollection($this->declaredInstances[$singleProp]);
+						}
 					}
 				}
 				else {
@@ -1993,8 +1997,6 @@ class ".$this->mainClassName." {
 	 */
 	public function getClassDescriptor($className) {
 		if (!isset($this->classDescriptors[$className])) {
-			// FIXME: il faudrait optimiser pour faire en sorte qu'on puisse appeler cette métode même hors du contexte de Mouf administration UI.
-			// Pour cela, il faudrait savoir si quel class-loader est actif!!!!
 			if (MoufManager::getMoufManager()->getScope() == self::SCOPE_APP && $this->getScope() == self::SCOPE_APP) {
 				// We are fully in the scope of the application:
 				$this->classDescriptors[$className] = new MoufReflectionClass($className);

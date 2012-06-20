@@ -177,7 +177,11 @@ class MoufInstancePropertyDescriptor {
 				if ($arrayOfString !== null){//KEVIN : getBoundComponentsOn[Property | Setter] may return null, avoid PHP WARNING by testing
 					$arrayOfDescriptors = array(); 
 					foreach ($arrayOfString as $key=>$instanceName) {
-						$arrayOfDescriptors[$key] = $this->moufManager->getInstanceDescriptor($instanceName);
+						if ($instanceName != null) {
+							$arrayOfDescriptors[$key] = $this->moufManager->getInstanceDescriptor($instanceName);
+						} else {
+							$arrayOfDescriptors[$key] = null;
+						}
 					}
 				}else{
 					$arrayOfDescriptors = null;
