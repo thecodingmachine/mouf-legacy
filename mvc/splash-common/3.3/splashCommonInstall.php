@@ -9,7 +9,7 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 $moufManager = MoufManager::getMoufManager();
 if (!$moufManager->instanceExists("splashTranslateService")) {
 	$moufManager->declareComponent("splashTranslateService", "FinePHPArrayTranslationService");
-	$moufManager->setParameter("splashTranslateService", "i18nMessagePath", "plugins/mvc/splash-common/3.2/resources/");
+	$moufManager->setParameter("splashTranslateService", "i18nMessagePath", "plugins/mvc/splash-common/3.3/resources/");
 	
 	if (!$moufManager->instanceExists("splashBrowserLanguageDetection")) {
 		$moufManager->declareComponent("splashBrowserLanguageDetection", "BrowserLanguageDetection");

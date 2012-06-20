@@ -23,7 +23,7 @@ class SplashUrlManager {
 		// itself, we cannot include this file directly, since it is used inside the admin of mouf).
 		require_once dirname(__FILE__)."/SplashCallback.php";
 		
-		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/mvc/splash-common/3.2/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/mvc/splash-common/3.3/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
 
 		$response = self::performRequest($url);
 
