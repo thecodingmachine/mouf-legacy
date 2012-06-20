@@ -129,11 +129,36 @@ class SplashInstallController extends Controller {
 		}
 		
 		if (!$this->moufManager->instanceExists("splash")) {
-			$this->moufManager->declareComponent("splash", "Splash");
-			$this->moufManager->bindComponent("splash", "defaultTemplate", "splashTemplate");
-			
-			$this->moufManager->setParameter("splash", "debugMode", true);
+			$splashInstance = $this->moufManager->createInstance("Splash");
+			$splashInstance->setName("splash");
+			$splashInstance->getProperty("defaultTemplate")->setValue($this->moufManager->getInstanceDescriptor("splashTemplate"));
+			$splashInstance->getProperty("debugMode")->setValue(true);
+
+			//
 			// TODOOOOOOOOOOOOOOOOOOOOO: bind au ErrorLogLogger
+		} else {
+			$splashInstance = $this->moufManager->getInstanceDescriptor("splash");
+		}
+		
+		if ($splashInstance->getProperty("cacheService")->getValue() == null) {
+			if (!$this->moufManager->instanceExists("splashCacheApc")) {
+				$splashCacheApc = $this->moufManager->createInstance("ApcCache");
+				$splashCacheApc->setName("splashCacheApc");
+
+				if (!$this->moufManager->instanceExists("splashCacheFile")) {
+					$splashCacheFile = $this->moufManager->createInstance("FileCache");
+					$splashCacheFile->setName("splashCacheFile");
+					$splashCacheFile->getProperty("cacheDirectory")->setValue("splashCache");					
+				} else {
+					$splashCacheFile = $this->moufManager->getInstanceDescriptor("splashCacheApc");
+				}
+				$splashCacheApc->getProperty("fallback")->setValue($splashCacheFile);
+			
+			} else {
+				$splashCacheApc = $this->moufManager->getInstanceDescriptor("splashCacheApc");
+			}
+		
+			$splashInstance->getProperty("cacheService")->setValue($splashCacheApc);
 		}
 		
 		$uri = $_SERVER["REQUEST_URI"];
