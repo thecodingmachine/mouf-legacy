@@ -132,8 +132,17 @@ class SplashInstallController extends Controller {
 			$splashInstance = $this->moufManager->createInstance("Splash");
 			$splashInstance->setName("splash");
 			$splashInstance->getProperty("defaultTemplate")->setValue($this->moufManager->getInstanceDescriptor("splashTemplate"));
-			$splashInstance->getProperty("debugMode")->setValue(true);
+			
+			$configManager = $this->moufManager->getConfigManager();
+			$constants = $configManager->getMergedConstants();
+			
+			if (!isset($constants['DEBUG_MODE'])) {
+				$configManager->registerConstant("DEBUG_MODE", "bool", true, "When the application is in debug mode, stacktraces are outputed directly to the user. Otherwise, they are hidden.");
+			}
 
+			// TODO: gérer les ORIGIN
+			$splashInstance->getProperty("debugMode")->setValue("DEBUG_MODE")->setOrigin("config");
+				
 			//
 			// TODOOOOOOOOOOOOOOOOOOOOO: bind au ErrorLogLogger
 		} else {
