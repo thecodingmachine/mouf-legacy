@@ -633,7 +633,7 @@ class MoufManager {
 	}
 
 	/**
-	 * Returns the type for the given parameter.
+	 * Returns the type for the given parameter (can be one of "string", "config", "session" or "request")
 	 *
 	 * @param string $instanceName
 	 * @param string $paramName
@@ -648,7 +648,7 @@ class MoufManager {
 	}
 	
 	/**
-	 * Returns the type for the given parameter that has been set using a setter.
+	 * Returns the type for the given parameter that has been set using a setter (can be one of "string", "config", "session" or "request")
 	 *
 	 * @param string $instanceName
 	 * @param string $setterName
@@ -660,6 +660,28 @@ class MoufManager {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Sets the type for the given parameter (can be one of "string", "config", "session" or "request")
+	 *
+	 * @param string $instanceName
+	 * @param string $paramName
+	 * @param string $type
+	 */
+	public function setParameterType($instanceName, $paramName, $type) {
+		$this->declaredInstances[$instanceName]['fieldProperties'][$paramName]['type'] = $type;
+	}
+	
+	/**
+	 * Sets the type for the given parameter that has been set using a setter (can be one of "string", "config", "session" or "request")
+	 *
+	 * @param string $instanceName
+	 * @param string $setterName
+	 * @param string $type
+	 */
+	public function setParameterTypeForSetter($instanceName, $setterName, $type) {
+		$this->declaredInstances[$instanceName]['setterProperties'][$setterName]['type'] = $type;
 	}
 	
 

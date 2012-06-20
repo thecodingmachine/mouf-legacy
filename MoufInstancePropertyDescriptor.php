@@ -135,7 +135,7 @@ class MoufInstancePropertyDescriptor {
 				throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 			}
 		}
-		
+		return $this;
 	}
 	
 	/**
@@ -232,6 +232,25 @@ class MoufInstancePropertyDescriptor {
 		} else {
 			throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 		}
+	}
+	
+	/**
+	 * Sets the parameter "origin" (where the value that feeds the parameter comes from).
+	 * Can be one of "string|config|request|session"
+	 *
+	 * @param string $origin
+	 * @throws MoufException
+	 * @return MoufInstancePropertyDescriptor Returns $this for chaining.
+	 */
+	public function setOrigin($origin) {
+		if ($this->propertyDescriptor->isPublicFieldProperty()) {
+			$this->moufManager->setParameterType($this->instanceDescriptor->getName(), $this->name, $origin);
+		} elseif ($this->propertyDescriptor->isSetterProperty()) {
+			$this->moufManager->setParameterTypeForSetter($this->instanceDescriptor->getName(), $this->name, $origin);
+		} else {
+			throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
+		}
+		return $this;
 	}
 	
 	/**

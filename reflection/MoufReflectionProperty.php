@@ -168,9 +168,11 @@ class MoufReflectionProperty extends ReflectionProperty implements MoufReflectio
      * @return mixed
      */
     public function getDefault() {
-    	if ($this->isPublic() && !$this->isStatic()) {	    		 
+    	if ($this->isPublic() && !$this->isStatic() && $this->refClass->isAbstract() == false) {	    		 
 	  		$className = $this->refClass->getName();
-			$instance = new $className();
+	  		// TODO: find a way to get default value for abstract properties.
+	  		// TODO: optimize this: we should not have to create one new instance for every property....
+	  		$instance = new $className();
 			$property = $this->getName();
 	    	return $instance->$property;
     	} else {
