@@ -23,7 +23,6 @@ class FileCache implements CacheInterface {
 	 * The logger used to trace the cache activity.
 	 *
 	 * @Property
-	 * @Compulsory
 	 * @var LogInterface
 	 */
 	public $log;
@@ -67,16 +66,22 @@ class FileCache implements CacheInterface {
 				fclose($fp);
 				$value = unserialize($contents);
 				//$this->log->trace("Retrieving key '$key' from file cache: value returned:".var_export($value, true));
-				$this->log->trace("Retrieving key '$key' from file cache.");
+				if ($this->log) {
+					$this->log->trace("Retrieving key '$key' from file cache.");
+				}
 				return $value;
 			} else {
 				fclose($fp);
 				unlink($filename);
-				$this->log->trace("Retrieving key '$key' from file cache: key outdated, cache miss.");
+				if ($this->log) {
+					$this->log->trace("Retrieving key '$key' from file cache: key outdated, cache miss.");
+				}
 				return null;
 			}
 		} else {
-			$this->log->trace("Retrieving key '$key' from file cache: cache miss.");
+			if ($this->log) {
+				$this->log->trace("Retrieving key '$key' from file cache: cache miss.");
+			}
 			return null;
 		}
 	}
@@ -91,7 +96,9 @@ class FileCache implements CacheInterface {
 	public function set($key, $value, $timeToLive = null) {
 		$filename = $this->getFileName($key);
 		//$this->log->trace("Storing value in cache: key '$key', value '".var_export($value, true)."'");
-		$this->log->trace("Storing value in cache: key '$key'");
+		if ($this->log) {
+			$this->log->trace("Storing value in cache: key '$key'");
+		}
 		
 		if (!is_writable($filename)) {
 			if (!file_exists($this->getDirectory())) {
@@ -121,7 +128,9 @@ class FileCache implements CacheInterface {
 	 * @param string $key The key of the object
 	 */
 	public function purge($key) {
-		$this->log->trace("Purging key '$key' from file cache.");
+		if ($this->log) {
+			$this->log->trace("Purging key '$key' from file cache.");
+		}
 		$filename = $this->getFileName($key);
 		unlink($filename);
 	}
@@ -131,7 +140,9 @@ class FileCache implements CacheInterface {
 	 *
 	 */
 	public function purgeAll() {
-		$this->log->trace("Purging the whole file cache.");
+		if ($this->log) {
+			$this->log->trace("Purging the whole file cache.");
+		}
 		$files = glob($this->getDirectory()."*");
 		foreach ($files as $filename) {
 		    unlink($filename);
