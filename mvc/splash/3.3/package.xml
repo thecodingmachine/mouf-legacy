@@ -20,7 +20,17 @@
 		<dependency>
 			<group>html/template</group>
 			<name>SplashTemplate</name>
-			<version>>=1.0</version>
+			<version>&gt;=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/cache</group>
+			<name>apc-cache</name>
+			<version>&gt;=1.1</version>
+		</dependency>
+		<dependency>
+			<group>utils/cache</group>
+			<name>file-cache</name>
+			<version>&gt;=1.1</version>
 		</dependency>
 	</dependencies>
 	<requires>

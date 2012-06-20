@@ -42,6 +42,14 @@ class Splash {
 	 */
 	public $defaultTemplate;
 
+	/**
+	 * Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
+	 * 
+	 * @Property
+	 * @Compulsory
+	 * @var CacheInterface
+	 */
+	public $cacheService;
 
 	/**
 	 * If Splash debug mode is enabled, stack traces on error messages will be displayed.
@@ -120,9 +128,6 @@ class Splash {
 		$urlsList = SplashUtils::getSplashUrlManager()->getUrlsList(false);
 		
 		$redirect_uri = $_SERVER['REDIRECT_URL'];
-		
-		//var_dump($redirect_uri);
-		//var_dump($urlsList); 
 
 		$pos = strpos($redirect_uri, $this->splashUrlPrefix);
 		if ($pos === FALSE) {
@@ -131,7 +136,6 @@ class Splash {
 
 		$tailing_url = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
 		
-		//var_dump($tailing_url); exit;
 		
 		// Step 1: parse the @URL returned by SplashUrlManager
 		$urlsList = SplashUtils::getSplashUrlManager()->getUrlsList(false);
@@ -140,38 +144,38 @@ class Splash {
 			foreach ($urlsList as $urlCallback) {
 				//var_dump($urlCallback->url);
 				/* @var $urlCallback SplashCallback */
-				
+		
 				//var_dump($urlCallback);
 					
 				$url = $urlCallback->url;
 				// remove trailing slash and get lower case
 				$url = strtolower(rtrim($url, "/"));
-				
+		
 					
 				if(preg_match("#^{$url}\$#", strtolower($tailing_url), $arguments)) {
-					
+						
 					//echo "in!";
 					//echo $urlCallback->controllerInstanceName;
-					
-					 array_shift($arguments);
-					 //var_dump($urlCallback->methodName);
-					
+						
+					array_shift($arguments);
+					//var_dump($urlCallback->methodName);
+						
 					$this->controller = MoufManager::getMoufManager()->getInstance($urlCallback->controllerInstanceName);
 					$this->action = $urlCallback->methodName;
 					//args
 					$this->args = $arguments;
-					
-					
+						
+						
 					//var_dump($this->controller);
-					 //var_dump($this->action);
-					 
-					 //echo "my args :";
-					 //var_dump($this->args);
+					//var_dump($this->action);
+		
+					//echo "my args :";
+					//var_dump($this->args);
 				}
 			}
 		}
 		
-
+		
 		// Step 2: look at the route map
 		if($this->routeMap && !$this->controller) {
 			foreach ($this->routeMap as $url=>$splashAction) {
@@ -215,17 +219,17 @@ class Splash {
 			$this->args = $array;
 		}
 		
-		//var_dump($this->action); 
+		//var_dump($this->action);
 		
 		$refClass = new MoufReflectionClass(get_class($this->controller));
 		$refMethod = $refClass->getMethod($this->action);
 		
 		//echo "ARGS:";
 		//var_dump($this->args);
-
+		
 		/**
-		 * FIXME: append Splash arguments and routes arguments
-		 */
+		* FIXME: append Splash arguments and routes arguments
+		*/
 		$this->args=SplashUtils::mapParameters($refMethod,$this->args);
 		
 		$this->analyzeDone = true;
