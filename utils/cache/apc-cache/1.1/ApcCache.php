@@ -30,7 +30,6 @@ class ApcCache implements CacheInterface {
 	 * The logger used to trace the cache activity.
 	 *
 	 * @Property
-	 * @Compulsory
 	 * @var LogInterface
 	 */
 	public $log;
