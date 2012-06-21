@@ -154,7 +154,6 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 
 		// Let's analyze the @param annotations.
 		$paramAnnotations = $refMethod->getAnnotations('param');
-		
 		$values = array();
 		foreach ($parameters as $parameter) {
 			// First step: let's see if there is an @param annotation for that parameter.
