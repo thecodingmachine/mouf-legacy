@@ -44,7 +44,7 @@ class Splash {
 
 	/**
 	 * Splash uses the cache service to store the URL mapping (the mapping between a URL and its controller/action)
-	 * 
+	 *
 	 * @Property
 	 * @Compulsory
 	 * @var CacheInterface
@@ -124,10 +124,11 @@ class Splash {
 	 *
 	 */
 	private function analyze() {
-		
+
 		$urlsList = SplashUtils::getSplashUrlManager()->getUrlsList(false);
-		
+
 		$redirect_uri = $_SERVER['REDIRECT_URL'];
+		$httpMethod = $_SERVER['REQUEST_METHOD'];
 
 		$pos = strpos($redirect_uri, $this->splashUrlPrefix);
 		if ($pos === FALSE) {
@@ -135,47 +136,43 @@ class Splash {
 		}
 
 		$tailing_url = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
-		
-		
+
+
 		// Step 1: parse the @URL returned by SplashUrlManager
 		$urlsList = SplashUtils::getSplashUrlManager()->getUrlsList(false);
-		
+
 		if (count($urlsList)>0) {
 			foreach ($urlsList as $urlCallback) {
-				//var_dump($urlCallback->url);
 				/* @var $urlCallback SplashCallback */
-		
-				//var_dump($urlCallback);
-					
+
 				$url = $urlCallback->url;
 				// remove trailing slash and get lower case
 				$url = strtolower(rtrim($url, "/"));
-		
 					
+				// Let's see if the tailing url matches the URL in urlCallback, regex or not.
 				if(preg_match("#^{$url}\$#", strtolower($tailing_url), $arguments)) {
+
+					// It does, let's check the http method
+					// First, get the authorized methods (imploded to avoid a loop, since we only need to check the requested one)
+					$authorized_methods = '';
+					$authorized_methods_array = $urlCallback->httpMethods;
+					var_dump($authorized_methods_array);
+					if(count($authorized_methods_array)>0)$authorized_methods = strtolower(implode($authorized_methods_array));
+					if($authorized_methods=='' ||preg_match("#^".strtolower($httpMethod)."\$#",$authorized_methods)){
 						
-					//echo "in!";
-					//echo $urlCallback->controllerInstanceName;
-						
-					array_shift($arguments);
-					//var_dump($urlCallback->methodName);
-						
-					$this->controller = MoufManager::getMoufManager()->getInstance($urlCallback->controllerInstanceName);
-					$this->action = $urlCallback->methodName;
-					//args
-					$this->args = $arguments;
-						
-						
-					//var_dump($this->controller);
-					//var_dump($this->action);
-		
-					//echo "my args :";
-					//var_dump($this->args);
+						array_shift($arguments);
+						$this->controller = MoufManager::getMoufManager()->getInstance($urlCallback->controllerInstanceName);
+						$this->action = $urlCallback->methodName;
+						//args
+						$this->args = $arguments;
+					}else {
+						var_dump("Not a good Http Method");
+					}
 				}
 			}
 		}
-		
-		
+
+
 		// Step 2: look at the route map
 		if($this->routeMap && !$this->controller) {
 			foreach ($this->routeMap as $url=>$splashAction) {
@@ -218,20 +215,20 @@ class Splash {
 
 			$this->args = $array;
 		}
-		
+
 		//var_dump($this->action);
-		
+
 		$refClass = new MoufReflectionClass(get_class($this->controller));
 		$refMethod = $refClass->getMethod($this->action);
-		
+
 		//echo "ARGS:";
 		//var_dump($this->args);
-		
+
 		/**
-		* FIXME: append Splash arguments and routes arguments
-		*/
+		 * FIXME: append Splash arguments and routes arguments
+		 */
 		$this->args=SplashUtils::mapParameters($refMethod,$this->args);
-		
+
 		$this->analyzeDone = true;
 	}
 
@@ -288,7 +285,7 @@ class Splash {
 		}
 
 		$action = $this->getAction();
-		
+
 		if ($this->log != null) {
 			$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
 		}
@@ -298,7 +295,7 @@ class Splash {
 			if(method_exists($controller, $action.'__'.$_SERVER['REQUEST_METHOD']))
 				$controller->callAction($action.'__'.$_SERVER['REQUEST_METHOD'],$this->args);
 			else
-				$controller->callAction($action, $this->args);			
+				$controller->callAction($action, $this->args);
 		} elseif ($controller instanceof WebServiceInterface) {
 			$this->handleWebservice($controller);
 		} else {
@@ -309,18 +306,18 @@ class Splash {
 
 
 	}
-	
+
 	/**
 	 * Handles the call to the webservice
-	 * 
+	 *
 	 * @param WebServiceInterface $webserviceInstance
 	 */
 	private function handleWebservice(WebServiceInterface $webserviceInstance) {
 		$url = $webserviceInstance->getWebserviceUri();
-		
+
 		$server = new SoapServer(null, array('uri' => $url));
-   		$server->setObject($webserviceInstance); 
-   		$server->handle();
+		$server->setObject($webserviceInstance);
+		$server->handle();
 	}
 }
 
