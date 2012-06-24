@@ -14,48 +14,67 @@ class SplashUtils {
 	}
 	
 	/**
-	 * Analyses the method, the annotation parameters, and returns an array to be passed to the method.
+	 * Analyses the method, the @param annotation parameters, and returns an array of SplashRequestParameterFetcher.
+	 * 
+	 * @return array<SplashParameterFetcherInterface>
 	 */
-	public static function mapParameters(MoufReflectionMethod $refMethod, $args) {
+	public static function mapParameters(MoufReflectionMethod $refMethod) {
 		$parameters = $refMethod->getParameters();
-		
-		//If the action doesn't take any excplicit arguments, let's return the existing args
-		if (!$parameters){
-			return $args;
+
+	
+		// Let's try to find parameters in the @URL annotation
+		// Let's build a set of those parameters.
+		$urlAnnotations = $refMethod->getAnnotations('URL');
+		$urlParamsList = array();
+		if ($urlAnnotations != null) {
+			foreach ($urlAnnotations as $urlAnnotation) {
+				/* @var $urlAnnotation URLAnnotation */
+				$url = $urlAnnotation->getUrl();
+				$urlParts = explode("/", $url);
+				foreach ($urlParts as $part) {
+					if (strpos($part, "{") === 0 && strpos($part, "}") === strlen($part)-1) {
+						// Parameterized URL element
+						$varName = substr($part, 1, strlen($part)-2);
+						$urlParamsList[$varName] = $varName;
+					}
+				}
+			}
 		}
-	
-		//echo "Parameters in SplashUtils.php: ";
-		//var_dump($parameters);
-	
+		
 		// Let's analyze the @param annotations.
 		$paramAnnotations = $refMethod->getAnnotations('param');
-	
+			
 		$values = array();
 		foreach ($parameters as $parameter) {
 			// First step: let's see if there is an @param annotation for that parameter.
 			$found = false;
+			
+			// Let's first see if our parameter is part of the URL
+			if (isset($urlParamsList[$parameter->getName()])) {
+				unset($urlParamsList[$parameter->getName()]);
+				
+				if ($parameter->isDefaultValueAvailable()) {
+					$values[] = new SplashUrlParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
+				} else {
+					$values[] = new SplashUrlParameterFetcher($parameter->getName(), true);
+				}
+				break;
+			}
+			
 			if ($paramAnnotations != null) {
 				foreach ($paramAnnotations as $annotation) {
 					/* @var paramAnnotation $annotation */
 						
 					if (substr($annotation->getParameterName(), 1) == $parameter->getName()) {
-						$paramAnnotationAnalyzer = new ParamAnnotationAnalyzer($annotation);
-						$value = $paramAnnotationAnalyzer->getValue();
-	
-						if ($value !== null) {
-							$values[] = $value;
+						//$paramAnnotationAnalyzer = new ParamAnnotationAnalyzer($annotation);
+						//$value = $paramAnnotationAnalyzer->getValue();
+
+						if ($parameter->isDefaultValueAvailable()) {
+							$values[] = new SplashRequestParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
 						} else {
-							if ($parameter->isDefaultValueAvailable()) {
-								$values[] = $parameter->getDefaultValue();
-							} else {
-								// No default value and no parameter... this is an error!
-								// TODO: we could provide a special annotation to redirect on another action on error.
-								$application_exception = new ApplicationException();
-								$application_exception->setTitle("controller.incorrect.parameter.title",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
-								$application_exception->setMessage("controller.incorrect.parameter.text",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
-								throw $application_exception;
-							}
+							$values[] = new SplashRequestParameterFetcher($parameter->getName(), true);
 						}
+
 						$found = true;
 						break;
 					}
@@ -65,27 +84,19 @@ class SplashUtils {
 			if (!$found) {
 				// There is no annotation for the parameter.
 				// Let's map it to the request.
-				$paramValue = get($parameter->getName());
-	
-				if ($paramValue !== false) {
-					$values[] = $paramValue;
+				
+				if ($parameter->isDefaultValueAvailable()) {
+					$values[] = new SplashRequestParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
 				} else {
-					if ($parameter->isDefaultValueAvailable()) {
-						$values[] = $parameter->getDefaultValue();
-					} else {
-						// No default value and no parameter... this is an error!
-						// TODO: we could provide a special annotation to redirect on another action on error.
-						$application_exception = new ApplicationException();
-						$application_exception->setTitle("controller.incorrect.parameter.title",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
-						$application_exception->setMessage("controller.incorrect.parameter.text",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
-						throw $application_exception;
-					}
+					$values[] = new SplashRequestParameterFetcher($parameter->getName(), true);
 				}
 			}
-	
-	
 		}
 	
+		if (!empty($urlParamsList)) {
+			throw new SplashException("An error occured while handling a @URL annotation: the @URL annotation is parameterized with those variable(s): '".implode('/', $urlParamsList)."'. However, there is no such parameters in the function call.");
+		}
+		
 		return $values;
 	}
 }

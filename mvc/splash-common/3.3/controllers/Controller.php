@@ -108,12 +108,6 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 			$refClass = new MoufReflectionClass(get_class($this));
 			$refMethod = $refClass->getMethod($method);    // $refMethod is an instance of stubReflectionMethod
 			//$this->getLogger()->trace("REF METHOD : ".$refMethod." // has annotation Action ? ".$refMethod->hasAnnotation('Action'));
-			if ($refMethod->hasAnnotation('Action') == false) {
-				$debug = MoufManager::getMoufManager()->getInstance("splash")->debugMode;
-				// This is not an action. Let's go in error.
-				self::FourOFour(iMsg("controller.404.no.action", get_class($this), $method), $debug);
-				exit;
-			}
 
 			try {
 				$filters = FilterUtils::getFilters($refMethod, $this);
@@ -195,13 +189,9 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 	/**
 	 * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
 	 * 
-	 * @return array<SplashCallback>
+	 * @return array<SplashRoute>
 	 */
-	public function getUrlsList() {
-		// Let's perform a late loading on the SplashCallback class (because the admin version of Mouf might use a different version of the class than the application
-		// itself, we cannot include this file directly, since it is used inside the admin of mouf).
-		require_once dirname(__FILE__)."/../services/SplashCallback.php";
-		
+	public function getUrlsList() {		
 		// Let's analyze the controller and get all the @Action annotations:
 		$urlsList = array();
 		$moufManager = MoufManager::getMoufManager();
@@ -230,7 +220,8 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				} else {
 					$url = $moufManager->findInstanceName($this)."/".$methodName;
 				}
-				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod));
+				$parameters = SplashUtils::mapParameters($refMethod);
+				$urlsList[] = new SplashRoute($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters);
 			}
 
 			// Now, let's check the "URL" annotation (note: we support multiple URL annotations for the same method)
@@ -239,10 +230,11 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 				foreach ($urls as $urlAnnotation) {
 					/* @var $urlAnnotation URLAnnotation */
 					$url = $urlAnnotation->getUrl();
-					$url = trim($url, "/");
+					$url = ltrim($url, "/");
 				}
-				
-				$urlsList[] = new SplashCallback($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod));
+				$parameters = SplashUtils::mapParameters($refMethod);
+				// TODO: add support for the {var} parameter inside the URL
+				$urlsList[] = new SplashRoute($url, $moufManager->findInstanceName($this), $refMethod->getName(), $title, $refMethod->getDocCommentWithoutAnnotations(), $refMethod->getDocComment(), $this->getSupportedHttpMethods($refMethod), $parameters);
 			}
 			
 		}
@@ -262,6 +254,12 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 		}
 		if ($refMethod->hasAnnotation('Post')) {
 			$methods[] = "POST";
+		}
+		if ($refMethod->hasAnnotation('Put')) {
+			$methods[] = "PUT";
+		}
+		if ($refMethod->hasAnnotation('Delete')) {
+			$methods[] = "DELETE";
 		}
 		return $methods;
 	}

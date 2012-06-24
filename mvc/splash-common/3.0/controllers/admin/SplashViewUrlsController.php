@@ -26,7 +26,7 @@ class SplashViewUrlsController extends Controller {
 	 */
 	public function defaultAction($selfedit = "false") {
 		$this->selfedit = $selfedit;
-		$this->splashUrlsList = SplashUrlManager::getUrlsList($selfedit == "true");
+		$this->splashUrlsList = SplashUrlManager::getUrlsByProxy($selfedit == "true");
 		
 		$this->template->addContentFile(dirname(__FILE__)."/../../views/admin/splashUrlsList.php", $this);
 		$this->template->draw();

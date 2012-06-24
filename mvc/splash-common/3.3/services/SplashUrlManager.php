@@ -10,18 +10,19 @@ class SplashUrlManager {
 	/**
 	 * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
 	 * 
-	 * @return array<SplashCallback>
+	 * @return array<SplashRoute>
 	 */
-	
 	public static function getUrlsList($selfedit) {
 		
 		return self::getUrlsByProxy($selfedit);
 	}
 	
-	private static function getUrlsByProxy($selfEdit) {
-		// Let's perform a late loading on the SplashCallback class (because the admin version of Mouf might use a different version of the class than the application
+	public static function getUrlsByProxy($selfEdit) {
+		// Let's perform a late loading on the SplashRoute class (because the admin version of Mouf might use a different version of the class than the application
 		// itself, we cannot include this file directly, since it is used inside the admin of mouf).
-		require_once dirname(__FILE__)."/SplashCallback.php";
+		
+		// TODO: the proxy should return JSON instead of objects (because Splash is sued both on the admin and on the app side, with different versions)
+		require_once dirname(__FILE__)."/SplashRoute.php";
 		
 		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/mvc/splash-common/3.3/direct/get_urls_list.php?selfedit=".(($selfEdit)?"true":"false");;
 

@@ -10,7 +10,7 @@ interface UrlProviderInterface {
 	/**
 	 * Returns the list of URLs that can be accessed, and the function/method that should be called when the URL is called.
 	 * 
-	 * @return array<SplashCallback>
+	 * @return array<SplashRoute>
 	 */
 	function getUrlsList();
 }

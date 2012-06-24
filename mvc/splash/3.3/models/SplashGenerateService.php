@@ -62,7 +62,7 @@ class RootController extends Controller {
 	/**
 	 * Page displayed when a user arrives on your web application.
 	 * 
-	 * @Action
+	 * @URL /
 	 */
 	public function index() {
 		$this->template->addContentFile(ROOT_PATH."'.$viewDirectory.'root/index.php", $this);

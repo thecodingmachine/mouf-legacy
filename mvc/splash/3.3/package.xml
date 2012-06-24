@@ -35,6 +35,10 @@
 	</dependencies>
 	<requires>
 		<require>models/Splash.php</require>
+		<require>models/SplashAction.php</require>
+		<require>models/store/SplashUrlNode.php</require>
+		<require>controllers/WebServiceInterface.php</require>
+		<require>controllers/WebService.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>SplashExternalComponent.php</require>

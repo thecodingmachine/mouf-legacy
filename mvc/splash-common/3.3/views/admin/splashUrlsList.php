@@ -13,7 +13,7 @@
 	$i=0;
 	foreach ($this->splashUrlsList as $splashUrl) { 
 		$i++;
-	/* @var $splashUrl SplashCallback */
+	/* @var $splashUrl SplashRoute */
 	?>
 	<tr class="<?php echo (($i%2)?"odd":"even") ?>">
 		<td title="<?php echo plainstring_to_htmlprotected($splashUrl->comment); ?>"><?php echo ROOT_URL.$splashUrl->url ?></td>
