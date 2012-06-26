@@ -36,6 +36,13 @@ class SplashRoute {
 	public $parameters;
 	
 	/**
+	 * A list of all filters to apply to the route.
+	 * 
+	 * @var array<AbstractFilter>
+	 */
+	public $filters;
+	
+	/**
 	 * The list of parameters matched during the route.
 	 * This is filled at runtime, by the SplashUrlNode class.
 	 * 
@@ -44,7 +51,7 @@ class SplashRoute {
 	public $filledParameters = array();
 	// Question: abstraire SplashRoute et rajouter un getCallbackHandler???
 	
-	public function __construct($url, $controllerInstanceName, $methodName, $title, $comment, $fullComment = null, $httpMethods = array(), $parameters = array()) {
+	public function __construct($url, $controllerInstanceName, $methodName, $title, $comment, $fullComment = null, $httpMethods = array(), $parameters = array(), $filters=array()) {
 		$this->url = $url;
 		$this->httpMethods = $httpMethods;
 		$this->controllerInstanceName = $controllerInstanceName;
@@ -53,6 +60,7 @@ class SplashRoute {
 		$this->comment = $comment;
 		$this->fullComment = $fullComment;
 		$this->parameters = $parameters;
+		$this->filters = $filters;
 	}
 }
 

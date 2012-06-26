@@ -32,6 +32,11 @@
 			<name>file-cache</name>
 			<version>&gt;=1.1</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>mouf_helpers</name>
+			<version>&gt;=1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>models/Splash.php</require>
@@ -47,6 +52,7 @@
 		<require>SplashAdmin.php</require>
 		<require>models/SplashGenerateService.php</require>
 		<require>controllers/admin/SplashAdminApacheConfigureController.php</require>
+		<require>controllers/admin/SplashPurgeCacheController.php</require>
 		<require>controllers/admin/SplashInstallController.php</require>
 	</adminRequires>
 	<install>

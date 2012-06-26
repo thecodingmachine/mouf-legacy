@@ -90,108 +90,6 @@ class Splash {
 	private $splashUrlPrefix;
 
 	/**
-	 * Analyze the URL and fills the "controller", "action" and "args" variables.
-	 *
-	 */
-//	private function analyze() {
-
-		
-		
-		// //Step 1: parse the @URL returned by SplashUrlManager
-
-// 		if (count($urlsList)>0) {
-// 			foreach ($urlsList as $urlCallback) {
-// 				/* @var $urlCallback SplashAction */
-
-// 				$url = $urlCallback->url;
-				// //remove trailing slash and get lower case
-// 				$url = strtolower(rtrim($url, "/"));
-					
-				// // Let's see if the tailing url matches the URL in urlCallback, regex or not.
-// 				if(preg_match("#^{$url}\$#", strtolower($tailing_url), $arguments)) {
-
-					// //It does, let's check the http method
-					// //First, get the authorized methods (imploded to avoid a loop, since we only need to check the requested one)
-// 					$authorized_methods = '';
-// 					$authorized_methods_array = $urlCallback->httpMethods;
-// 					var_dump($authorized_methods_array);
-// 					if(count($authorized_methods_array)>0)$authorized_methods = strtolower(implode($authorized_methods_array));
-// 					if($authorized_methods=='' ||preg_match("#^".strtolower($httpMethod)."\$#",$authorized_methods)){
-						
-// 						array_shift($arguments);
-// 						$this->controller = MoufManager::getMoufManager()->getInstance($urlCallback->controllerInstanceName);
-// 						$this->action = $urlCallback->methodName;
-						// //args
-// 						$this->args = $arguments;
-// 					}else {
-// 						var_dump("Not a good Http Method");
-// 					}
-// 				}
-// 			}
-// 		}
-
-
-		// //Step 2: look at the route map
-// 		if($this->routeMap && !$this->controller) {
-// 			foreach ($this->routeMap as $url=>$splashAction) {
-// 				if(strtolower($url) == substr(strtolower($tailing_url),0,strlen($url))) {
-// 					$this->controller = $splashAction->controller;
-// 					$this->action = $splashAction->actionName;
-					// //args
-// 					$args = substr($tailing_url, strlen($url));
-// 					$array = explode("/", $args);
-// 					$this->args = $array;
-// 				}
-// 			}
-// 		}
-
-		// //Step 3: If no controller is found with the mapping, search in the available controllers
-		// //Warning : if Instance Access forbidden -> Map use only!
-// 		if($this->authorizeInstanceAccess && !$this->controller){
-// 			$array = explode("/", $tailing_url);
-
-// 			try {
-// 				if(isset($array[0]) && !empty($array[0])){
-// 					$this->controller = MoufManager::getMoufManager()->getInstance($array[0]);
-// 				}
-// 			}catch (MoufInstanceNotFoundException $e) {
-				// //If the error is because there is no such instance:
-// 				if ($e->getMissingInstanceName() == $array[0]) {
-// 					Controller::FourOFour($e->getMessage(), $this->debugMode);
-// 					exit;
-// 				}
-				// //If the error is because there is a missing instance into the grap of objects retrieved:
-// 				throw $e;
-// 			}
-// 			if (isset($array[1])) {
-// 				$this->action = $array[1];
-// 			}
-// 			$this->args = array();
-
-// 			array_shift($array);
-// 			array_shift($array);
-
-// 			$this->args = $array;
-// 		}
-
-		//var_dump($this->action);
-
-// 		$refClass = new MoufReflectionClass(get_class($this->controller));
-// 		$refMethod = $refClass->getMethod($this->action);
-
-		//echo "ARGS:";
-		//var_dump($this->args);
-
-		/**
-		 * FIXME: append Splash arguments and routes arguments
-		 */
-		//$this->args=SplashUtils::mapParameters($refMethod,$this->args);
-
-//		$this->analyzeDone = true;
-//	}
-
-
-	/**
 	 * Route the user to the right controller according to the URL.
 	 * 
 	 * @param string $splashUrlPrefix The beginning of the URL before Splash is activated. This is basically the webapp directory name.
@@ -199,12 +97,21 @@ class Splash {
 	 */
 	public function route($splashUrlPrefix) {
 
-		// Retrieve the split parts
-		$urlsList = $this->getSplashActionsList();
-		$urlNodes = $this->generateUrlNode($urlsList);
+		if ($this->cacheService == null) {
+			// Retrieve the split parts
+			$urlsList = $this->getSplashActionsList();
+			$urlNodes = $this->generateUrlNode($urlsList);
+		} else {
+			$urlNodes = $this->cacheService->get("splashUrlNodes");
+			if ($urlNodes == null) {
+				// No value in cache, let's get the URL nodes
+				$urlsList = $this->getSplashActionsList();
+				$urlNodes = $this->generateUrlNode($urlsList);
+				$this->cacheService->set("splashUrlNodes", $urlNodes);
+			}
+		}
 		
-		// TODO: take $urlsList, split on / build an object tree to find quickly the destination.
-		// Note: {var} pour le nom de variable, %instance% pour le nom d'instance
+		// TODO: add support for %instance% for injecting the instancename of the controller
 		
 		$redirect_uri = $_SERVER['REDIRECT_URL'];
 		$httpMethod = $_SERVER['REQUEST_METHOD'];
@@ -222,7 +129,7 @@ class Splash {
 		
 		if ($splashRoute == null) {
 			// Let's go for the 404
-			Controller::FourOFour("Page not found", $this->debugMode);
+			$this->print404("Page not found");
 			exit();
 		}
 		$controller = MoufManager::getMoufManager()->getInstance($splashRoute->controllerInstanceName);
@@ -230,12 +137,6 @@ class Splash {
 		
 		$context->setUrlParameters($splashRoute->filledParameters);
 		
-		$args = array();
-		foreach ($splashRoute->parameters as $paramFetcher) {
-			/* @var $param SplashParameterFetcherInterface */
-			$args[] = $paramFetcher->fetchValue($context);
-		}
-
 
 		if ($this->log != null) {
 			$this->log->trace("Routing user with URL ".$_SERVER['REDIRECT_URL']." to controller ".get_class($controller)." and action ".$action);
@@ -243,16 +144,46 @@ class Splash {
 
 		if ($controller instanceof Controller) {
 			// Let's pass everything to the controller:
-			if(method_exists($controller, $action.'__'.$_SERVER['REQUEST_METHOD']))
-				$controller->callAction($action.'__'.$_SERVER['REQUEST_METHOD'],$args);
-			else
-				$controller->callAction($action, $args);
+			try {
+				$args = array();
+				foreach ($splashRoute->parameters as $paramFetcher) {
+					/* @var $param SplashParameterFetcherInterface */
+					$args[] = $paramFetcher->fetchValue($context);
+				}
+					
+				// Handle action__GET or action__POST method (for legacy code).
+				if(method_exists($controller, $action.'__'.$_SERVER['REQUEST_METHOD'])) {
+					$action = $action.'__'.$_SERVER['REQUEST_METHOD'];
+				}
+				
+				$filters = $splashRoute->filters;
+				
+				// Apply filters
+				for ($i=count($filters)-1; $i>=0; $i--) {
+					$filters[$i]->beforeAction();
+				}
+			
+				// Ok, now, let's store the parameters.
+				//call_user_func_array(array($this,$method), AdminBag::getInstance()->argsArray);
+				//$result = call_user_func_array(array($this,$method), $argsArray);
+				$result = call_user_func_array(array($controller,$action), $args);
+			
+				foreach ($filters as $filter) {
+					$filter->afterAction();
+				}
+			}
+			catch (Exception $e) {
+				return $this->handleException($e);
+			}
+			
+			
+			
 		} elseif ($controller instanceof WebServiceInterface) {
 			// FIXME: handle correctly webservices
 			$this->handleWebservice($controller);
 		} else {
 			// "Invalid class";
-			Controller::FourOFour("The class ".get_class($controller)." should extend the Controller class or the WebServiceInterface class.", $this->debugMode);
+			$this->print404("The class ".get_class($controller)." should extend the Controller class or the WebServiceInterface class.");
 			exit();
 		}
 
@@ -275,6 +206,8 @@ class Splash {
 	/**
 	 * Returns the list of all SplashActions.
 	 * This call is LONG and should be cached
+	 * 
+	 * @return array<SplashAction>
 	 */
 	private function getSplashActionsList() {
 		$moufManager = MoufManager::getMoufManager();
@@ -288,6 +221,8 @@ class Splash {
 			$tmpUrlList = $urlProvider->getUrlsList();
 			$urls = array_merge($urls, $tmpUrlList);
 		}
+		
+		
 		return $urls;
 	}
 	
@@ -304,6 +239,70 @@ class Splash {
 			$urlNode->registerCallback($splashAction);
 		}
 		return $urlNode;
+	}
+	
+	private function handleException (Exception $e) {
+		$logger = $this->log;
+		if ($logger != null) {
+			$logger->error($e);
+		}
+	
+		$debug = $this->debugMode;
+	
+		if (!headers_sent()) {
+			$template = $this->defaultTemplate;
+			if($e instanceof ApplicationException ) {
+				if ($template != null) {
+					$template->addContentFunction("FiveOO",$e,$debug);
+				} else {
+					FiveOO($e,$debug);
+				}
+			}else {
+				if ($template != null) {
+					$template->addContentFunction("UnhandledException",$e,$debug);
+				} else {
+					UnhandledException($e, $debug);
+				}
+			}
+			if ($template != null) {
+				$template->draw();
+			}
+		} else {
+			UnhandledException($e,$debug);
+		}
+	
+	}
+	
+	public function print404($message) {
+	
+		$text = "The page you request is not available. Please use <a href='".ROOT_URL."'>this link</a> to return to the home page.";
+	
+		if ($this->debugMode) {
+			$text .= "<div class='info'>".$message.'</div>';
+		}
+	
+		if ($this->log != null) {
+			$this->log->info("HTTP 404 : ".$message);
+		}
+	
+	
+		header("HTTP/1.0 404 Not Found");
+		if ($this->defaultTemplate != null) {
+			$this->defaultTemplate->addContentFunction("FourOFour",$text)
+			->setTitle("404 - Not Found");
+			$this->defaultTemplate->draw();
+		} else {
+			FourOFour($text);
+		}
+	
+	}
+	
+	/**
+	 * Purges the urls cache.
+	 * @throws Exception
+	 */
+	public function purgeUrlsCache() {
+		$this->cacheService->purge("splashUrlNodes");
 	}
 }
 
