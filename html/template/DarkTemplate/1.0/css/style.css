@@ -182,3 +182,10 @@ h2 {
 	font-size: 1.1em;
 }
 .bottom a {color: #888;}
+
+input.error , .error {
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+

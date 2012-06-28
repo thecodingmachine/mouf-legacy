@@ -284,11 +284,11 @@ class DB_MySqlConnection extends Mouf_DBConnection {
 	public function getConstraintsFromTable($table_name,$column_name=false) {
 		if ($column_name)
 		{
-			$sql = "SELECT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND referenced_table_name='$table_name' AND referenced_column_name='$column_name'";
+			$sql = "SELECT DISTINCT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND referenced_table_name='$table_name' AND referenced_column_name='$column_name'";
 		}
 		else
 		{
-			$sql = "SELECT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND referenced_table_name='$table_name'";
+			$sql = "SELECT DISTINCT referenced_column_name as col2, table_name as table1, column_name as col1 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA='".$this->dbname."' AND referenced_table_name='$table_name'";
 		}
 
 		$result = $this->getAll($sql);
