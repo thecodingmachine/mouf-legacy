@@ -1,0 +1,111 @@
+<h1>The Uploadify Widget</h1>
+
+<p>The uploadify widget can be used to generate an "upload" button that will perform file uploading in Ajax (actually via a Flash plugin).
+The user can see the upload progress bar, and you can trigger actions when the file upload is complete (in PHP server-side, and in Javascript, client side).</p>
+
+<p>To be successfully used, you first need to import jQuery, and uploadify JS and CSS files in your PHP page.
+Once this is done, you will need to create an instance of the UploadifySingleFileWidget in Mouf. Call $instance-&gt;toHtml() to render the widget in 
+your HTML page (or include your instance in a container).</p>
+
+<h2>Parameters</h2>
+
+<img src="uploadifyinstancescreenshot.png" alt="uploadify instance screenshot" />
+
+<p>Below is a list of the main parameters:</p>
+
+<ul>
+<li><b>directory</b>: The destination directory for the file to be written. If it does not start with "/", this is relative to ROOT_PATH. 
+The directory is created if it does not exist.<br/>
+You can of course set this value dynamically, in your code, using
+<pre>$instance-&gt;directory = "my/directory";</pre></li>
+<li><b>fileName</b>: The destination file name for the file to be written. This is a unique file name and cannot contain "/".
+Most of the time, you will set this value dynamically, in your code, using
+<pre>$instance-&gt;fileName = "myFileName.ext";</pre>
+</li>
+<li><b>fileExtensions</b>: The list of file extensions for the files to upload, separated by a ";".
+<p>For instance: *.jpg;*.gif;*.png</p></li>
+<li><b>fileDescription</b>: The $fileDescription option sets the text that will appear in the file type drop down in the file selection system window.
+<p>This option is required when using the $fileExtensions option.
+For instance: 'Web Image Files (.JPG, .GIF, .PNG)'</p></li>
+<li><b>fileId</b>: If you want to trigger some code when the file is uploaded, you will need to give the file a unique ID.
+You should set this ID programmatically, using:
+<pre>$instance-&gt;fileId = $myId;</pre>
+Then, you should register a listener that will be triggered when the file is uploaded (see the "listeners"
+property). The ID will be passed to the listener when an upload is completed.</li>
+<li><b>listeners</b>: Use this property to register "listeners" that will be triggered when a file upload is performed.
+To be registered, an instance should implement the UploadifyOnUploadInterface interface.</li>
+<li><b>onCompleteJavascriptFunction</b>: Use this property to register a Javascript function that will be triggered as soon as
+an upload is complete. See <a href="http://www.uploadify.com/documentation/events/oncomplete-2/">the uploadify doc</a> for more information.</li>
+</ul>
+
+<h2>Using listeners</h2>
+
+<p>To develop a listerner, you must write a class with the @Component annotation implementing the <code>UploadifyOnUploadInterface</code> interface.</p>
+<p>Create an instance of this class, and bind that instance the the "listeners" property of your uplodify widget instance.</p>
+
+<p>Here is the interface to be implemented:</p>
+<pre>
+interface UploadifyOnUploadInterface {
+	
+	/**
+	 * This method is called by an UploadifySingleFileWidget when an upload is complete.
+	 * 
+	 * &lt;p&gt;Please note the 5th parameter is passed in reference. It is a PHP array containing additional data
+	 * to be passed back to the page. The PHP array will be converted to JSON and be sent to the page.
+	 * You can put additional parameters in this array, and read those parameters in your page, using the
+	 * onCompleteJavascriptFunction property that will trigger some Javascript function when the upload
+	 * is complete, client-side.&lt;/p&gt;
+	 * 
+	 * &lt;p&gt;The $result array will always contain one key:&lt;/p&gt;
+	 * &lt;pre&gt;$result = array("status"=&gt;"error|ok")&lt;/pre&gt;
+	 * 
+	 * @param string $tmpFile The temporary path to the uploaded file.
+	 * @param string $destFile The final path of the uploaded file. When the onUpload method is called, the file is not yet there. In this function, you can change the value of $destFile since it is passed by reference
+	 * @param string $fileId The fileId that was set in the uploadify widget (see UploadifySingleFileWidget::fileId)
+	 * @param UploadifySingleFileWidget $widget
+	 * @param array $result The result array that will be returned to the page as a JSON object.
+	 * @param string $uploadedFileName The name of the uploaded file
+	 * @return boolean Return false to cancel the upload
+	 */
+	public function onUpload($tmpFile, &$destFile, $fileId, UploadifySingleFileWidget $widget, array &amp;$result, $uploadedFileName);
+}
+</pre>
+
+<p>As you can see, using the listener, you must return true to authorize the upload. If you return false, the upload will be canceled.
+You can access the file being uploaded using its temporary name ($tmpFile), and the unique file ID will be given to you in the $fileId
+parameter (if you previously did set the fileId).</p>
+
+<p>You can pass back parameters in your Javascript code using the $result parameter. This parameter is a simple PHP array.
+Is is passed in reference, so you can modify it in your method, and the changes will be transmited to the Javascript complete callback.</p>
+
+<h3>Listener example</h3>
+
+<p>Below is a listener example. It checks that the uploaded file is an image, and returns the width and height of the image to the calling script.</p>
+
+<pre>
+public function onUpload($tmpFile, &$destFile, $fileId, UploadifySingleFileWidget $widget, array &amp;$result, $uploadedFileName) {
+	$file_info = getimagesize($tmpFile);
+	if(empty($file_info)) // No Image?
+	{
+		$result['msg'] = "The uploaded file doesn't seem to be an image"; 
+		return false;
+	}
+	
+	$result['width'] = $file_info[0];
+	$result['height'] = $file_info[1];
+	return true;
+}
+</pre>
+
+<p>And you can get the result back in javascript in your page:</p>
+
+<pre>
+function onUploadComplete(event, ID, fileObj, response, data) {
+	var jsonResponse = jQuery.parseJSON(response);
+	if (jsonResponse.status == "error") {
+		alert('An error occurred during the upload of your image. Please try again');
+	} else {
+		alert('Image successfully loaded. Width: '+jsonResponse.width+" - Height: "+jsonResponse.height);
+	}
+}
+</pre>

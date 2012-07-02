@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Uploadify Widget</displayName>
+	<shortDescription>This package contains an upload widget based on jQuery uploadify plugin.
+	This allows easy uploading of files.</shortDescription>
+	<docUrl></docUrl>
+	<doc root='doc'>
+		<page title="Using the Uploadify Widget" url="index.html" />
+	</doc>	
+	<dependencies>
+		<dependency>
+			<group>html/widgets</group>
+			<name>BaseHtmlWidget</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery.uploadify</name>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/session</group>
+			<name>sessionmanager</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>UploadifyOnUploadInterface.php</require>
+		<require>UploadifySingleFileWidget.php</require>
+		<require>UploadifyMultiFileWidget.php</require>
+	</requires>
+</package>
