@@ -102,7 +102,7 @@ public function onUpload($tmpFile, &$destFile, $fileId, UploadifySingleFileWidge
 <pre>
 function onUploadComplete(event, ID, fileObj, response, data) {
 	var jsonResponse = jQuery.parseJSON(response);
-	if (jsonResponse == "error") {
+	if (jsonResponse.status == "error") {
 		alert('An error occurred during the upload of your image. Please try again');
 	} else {
 		alert('Image successfully loaded. Width: '+jsonResponse.width+" - Height: "+jsonResponse.height);

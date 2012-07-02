@@ -49,6 +49,7 @@ if(count($diff)){
 	exit;
 }
 
+error_log('1.0');
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
 	if($_FILES['Filedata']['error']!==UPLOAD_ERR_OK){
