@@ -6,7 +6,7 @@
  *
  * @Component
  */
-class NumberFormatter implements FormatterInterface {
+class MoufNumberFormatter implements FormatterInterface {
 
 	/**
 	 * Determines the separator for the decimals.
