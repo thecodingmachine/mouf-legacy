@@ -6,10 +6,10 @@
  *
  * @Component
  */
-class HtmlJSJQueryUploadify implements HtmlElementInterface {
+class HtmlJSJQueryUploadifySwfObject implements HtmlElementInterface {
 	
 	public function toHtml() {
-		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/jquery.uploadify.v2.1.0.min.js"></script>';
+		echo '<script type="text/javascript" src="'.ROOT_URL.'plugins/javascript/jquery/jquery.uploadify/2.1.0/swfobject.js"></script>';
 		
 	}
 }

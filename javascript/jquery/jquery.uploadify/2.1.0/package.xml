@@ -13,6 +13,7 @@
 	</dependencies>
 	<requires>
 		<require>HtmlJSJQueryUploadify.php</require>
+		<require>HtmlJSJQueryUploadifySwfObject.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>JQueryUploadifyExternalComponent.php</require>
