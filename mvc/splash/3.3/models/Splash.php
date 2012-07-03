@@ -67,16 +67,9 @@ class Splash {
 	public $supportsHttps;
 
 	/**
-	 * Whether we can use the @Action annotation or not
-	 *
-	 * @Property
-	 * @var bool
-	 */
-	public $authorizeInstanceAccess=true;
-
-	/**
 	 * Defines the route map for input URLs
-	 *
+	 * FIXME: currently unused
+	 * 
 	 * @Property
 	 * @var array<string,SplashAction>
 	 */
@@ -129,7 +122,7 @@ class Splash {
 		
 		if ($splashRoute == null) {
 			// Let's go for the 404
-			$this->print404("Page not found");
+			$this->print404(SplashUtils::translate("404.page.not.found"));
 			exit();
 		}
 		$controller = MoufManager::getMoufManager()->getInstance($splashRoute->controllerInstanceName);
@@ -148,7 +141,13 @@ class Splash {
 				$args = array();
 				foreach ($splashRoute->parameters as $paramFetcher) {
 					/* @var $param SplashParameterFetcherInterface */
-					$args[] = $paramFetcher->fetchValue($context);
+					try {
+						$args[] = $paramFetcher->fetchValue($context);
+					} catch (SplashValidationException $e) {
+						
+						$e->setPrependedMessage(SplashUtils::translate("validate.error.while.validating.parameter", $paramFetcher->getName()));
+						throw $e;
+					}
 				}
 					
 				// Handle action__GET or action__POST method (for legacy code).

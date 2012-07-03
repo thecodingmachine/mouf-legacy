@@ -38,7 +38,7 @@ class NumericValidator extends AbstractValidator implements JsValidatorInterface
 	 * @see JsValidatorInterface::getErrorMessage()
 	 */
 	function getErrorMessage(){
-		return $this->allowDecimals ? iMsg("validate.numeric") : iMsg("validate.integer");
+		return $this->allowDecimals ? ValidatorUtils::translate("validate.numeric") : ValidatorUtils::translate("validate.integer");
 	}
 	
 	/**

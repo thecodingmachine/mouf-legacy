@@ -65,11 +65,11 @@ class MaxMinRangeLengthValidator extends AbstractValidator implements JsValidato
 	 */
 	function getErrorMessage(){
 		if ($this->minLength && !$this->maxLength)
-			return iMsg("validate.min-length");
+			return ValidatorUtils::translate("validate.min-length", $this->minLength, $this->maxLength);
 		else if ($this->maxLength && !$this->minLength)
-			return iMsg("validate.max-length");
+			return ValidatorUtils::translate("validate.max-length", $this->minLength, $this->maxLength);
 		else if ($this->minLength && $this->maxLength)
-			return iMsg("validate.range-length");
+			return ValidatorUtils::translate("validate.range-length", $this->minLength, $this->maxLength);
 	}
 	
 	/**

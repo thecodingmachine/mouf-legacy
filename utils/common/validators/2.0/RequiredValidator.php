@@ -40,7 +40,7 @@ class RequiredValidator extends AbstractValidator implements JsValidatorInterfac
 	 * @see JsValidatorInterface::getErrorMessage()
 	 */
 	function getErrorMessage(){
-		return iMsg("validate.required");
+		return ValidatorUtils::translate("validate.required");
 	}
 	
 	/**

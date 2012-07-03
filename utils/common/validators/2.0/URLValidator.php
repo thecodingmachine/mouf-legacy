@@ -54,7 +54,7 @@ class URLValidator extends AbstractValidator implements JsValidatorInterface{
 	 * @see JsValidatorInterface::getErrorMessage()
 	 */
 	function getErrorMessage(){
-		return iMsg("validate.url");
+		return ValidatorUtils::translate("validate.url");
 	}
 	
 	/**

@@ -53,11 +53,13 @@ class SplashUtils {
 			if (isset($urlParamsList[$parameter->getName()])) {
 				unset($urlParamsList[$parameter->getName()]);
 				
+				
 				if ($parameter->isDefaultValueAvailable()) {
-					$values[] = new SplashUrlParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
+					$value= new SplashUrlParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
 				} else {
-					$values[] = new SplashUrlParameterFetcher($parameter->getName(), true);
+					$value = new SplashUrlParameterFetcher($parameter->getName(), true);
 				}
+				$values[] = $value;
 				break;
 			}
 			
@@ -69,12 +71,22 @@ class SplashUtils {
 						//$paramAnnotationAnalyzer = new ParamAnnotationAnalyzer($annotation);
 						//$value = $paramAnnotationAnalyzer->getValue();
 
+						
 						if ($parameter->isDefaultValueAvailable()) {
-							$values[] = new SplashRequestParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
+							$value = new SplashRequestParameterFetcher($parameter->getName(), false, $parameter->getDefaultValue());
 						} else {
-							$values[] = new SplashRequestParameterFetcher($parameter->getName(), true);
+							$value = new SplashRequestParameterFetcher($parameter->getName(), true);
 						}
-
+						$type = strtolower($annotation->getType());
+						if ($type == "float" || $type == "double" || $type == "real" || $type == "number") {
+							$numericValidator = new NumericValidator();
+							$value->registerValidator($numericValidator);
+						} elseif ($type == "int" || $type == "integer") {
+							$intValidator = new NumericValidator();
+							$intValidator->allowDecimals = false;
+							$value->registerValidator($intValidator);
+						}
+						$values[] = $value;
 						$found = true;
 						break;
 					}
@@ -99,6 +111,18 @@ class SplashUtils {
 		
 		return $values;
 	}
+	
+	/**
+	 * Thranslates a string using the Splash dictionnary 
+	 * @param string $msg
+	 */
+	public static function translate($msg) {
+		$translationService = MoufManager::getMoufManager()->getInstance("splashTranslateService");
+		/* @var $translationService FinePHPArrayTranslationService */
+	
+		return call_user_func_array(array($translationService, "getTranslation"), func_get_args());
+	}
+	
 }
 
 ?>

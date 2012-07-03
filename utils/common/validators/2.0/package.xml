@@ -23,8 +23,12 @@
 		<require>MaxMinRangeLengthValidator.php</require>
 		<require>MaxMinRangeValidator.php</require>
 		<require>URLValidator.php</require>
+		<require>ValidatorUtils.php</require>
 	</requires>
 	<externalComponentRequires>
 		<require>ValidatorsExternalComponents.php</require>
-	</externalComponentRequires>	
+	</externalComponentRequires>
+	<install>
+		<file>validatorsInstall.php</file>
+	</install>		
 </package>

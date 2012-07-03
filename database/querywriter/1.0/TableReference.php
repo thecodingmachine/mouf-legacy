@@ -14,6 +14,7 @@ class TableReference implements TableReferenceInterface {
 	 * 
 	 * @Property
 	 * @Compulsory
+	 * @Important
 	 * @var string
 	 */
 	public $tableName;
@@ -22,6 +23,7 @@ class TableReference implements TableReferenceInterface {
 	 * The alias.
 	 * 
 	 * @Property
+	 * @Important
 	 * @var string
 	 */
 	public $alias;

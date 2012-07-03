@@ -7,6 +7,13 @@
 interface SplashParameterFetcherInterface {
 
 	/**
+	 * Get the name of the parameter (only for error handling purposes).
+	 * 
+	 * @return string
+	 */
+	public function getName();
+	
+	/**
 	 * We pass the context of the request, the object returns the value to fill.
 	 * 
 	 * @param SplashRequestContext $context

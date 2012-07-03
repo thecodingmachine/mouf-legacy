@@ -64,11 +64,11 @@ class MaxMinRangeValidator extends AbstractValidator implements JsValidatorInter
 	 */
 	function getErrorMessage(){
 		if ($this->minValue && !$this->maxValue)
-			return iMsg("validate.min");
+			return ValidatorUtils::translate("validate.min");
 		else if ($this->maxValue && !$this->minValue)
-			return iMsg("validate.max");
+			return ValidatorUtils::translate("validate.max");
 		else if ($this->minValue && $this->maxValue)
-			return iMsg("validate.range");
+			return ValidatorUtils::translate("validate.range");
 	}
 	
 	/**

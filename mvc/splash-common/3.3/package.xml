@@ -18,7 +18,7 @@
 		<dependency>
 			<group>utils/common</group>
 			<name>validators</name>
-			<version>1.0</version>
+			<version>&gt;=2.0</version>
 		</dependency>
 		<dependency>
 			<group>html</group>
@@ -36,6 +36,7 @@
 		<require>services/SplashUtils.php</require>
 		<require>services/SplashRoute.php</require>
 		<require>services/SplashMissingParameterException.php</require>
+		<require>services/SplashValidationException.php</require>
 		<require>services/SplashRequestContext.php</require>
 		<require>services/SplashParameterFetcherInterface.php</require>
 		<require>services/SplashRequestParameterFetcher.php</require>

@@ -40,7 +40,7 @@ class EmailValidator extends AbstractValidator implements JsValidatorInterface{
 	 * @see ValidatorInterface::getErrorMessage()
 	 */
 	public function getErrorMessage(){
-		return iMsg('validate.email');
+		return ValidatorUtils::translate('validate.email');
 	}
 	
 	public function getScript(){

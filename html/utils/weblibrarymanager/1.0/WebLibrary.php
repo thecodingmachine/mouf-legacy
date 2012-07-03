@@ -48,7 +48,7 @@ class WebLibrary implements WebLibraryInterface {
 	}
 	
 	/**
-	 * List of JS files to add in header.
+	 * List of JS files to put in the web library.
 	 * <p>If you don't specify http:// or https:// and if the file does not start with /, the file is considered to be relative to ROOT_URL.</p>
 	 * <div class="info">It is a good practice to make sure the file does not start with /, http:// or https:// (unless you are using a CDN).</div>
      * 
@@ -57,6 +57,17 @@ class WebLibrary implements WebLibraryInterface {
 	 */
 	public function setJsFiles($jsFiles) {
 		$this->jsFiles = $jsFiles;
+	}
+	
+	/**
+	 * Adds a JS file to the web library.
+	 * <p>If you don't specify http:// or https:// and if the file does not start with /, the file is considered to be relative to ROOT_URL.</p>
+	 * <div class="info">It is a good practice to make sure the file does not start with /, http:// or https:// (unless you are using a CDN).</div>
+	 * 
+	 * @param string $jsFile
+	 */
+	public function addJsFile($jsFile) {
+		$this->jsFiles[] = $jsFile;
 	}
 	
 	/**
@@ -69,7 +80,7 @@ class WebLibrary implements WebLibraryInterface {
 	}
 	
 	/**
-	 * List of CSS files to add in header.
+	 * List of CSS files to add in web library.
 	 * <p>If you don't specify http:// or https:// and if the file does not start with /, the file is considered to be relative to ROOT_URL.</p>
 	 * <div class="info">It is a good practice to make sure the file does not start with /, http:// or https:// (unless you are using a CDN).</div>
 	 *
@@ -78,6 +89,17 @@ class WebLibrary implements WebLibraryInterface {
 	 */
 	public function setCssFiles($cssFiles) {
 		$this->cssFiles = $cssFiles;
+	}
+	
+	/**
+	 * Adds a CSS file to the web library.
+	 * <p>If you don't specify http:// or https:// and if the file does not start with /, the file is considered to be relative to ROOT_URL.</p>
+	 * <div class="info">It is a good practice to make sure the file does not start with /, http:// or https:// (unless you are using a CDN).</div>
+	 * 
+	 * @param string $jsFile
+	 */
+	public function addCssFile($cssFile) {
+		$this->cssFiles[] = $cssFile;
 	}
 	
 	/**
