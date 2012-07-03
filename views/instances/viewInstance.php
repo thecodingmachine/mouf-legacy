@@ -25,6 +25,8 @@ div.classComment {
 
 <div id="messages"></div>
 
+<?php
+/* 
 <div class="inlinemenuicon">
 	<ul>
 		<li>Title</li>
@@ -50,15 +52,21 @@ jQuery(function() {
            ]).appendTo(jQuery("#myGeneratedMenu"));
 });
 </script>
-
+*/
+?>
 <div id="instance" class="instance"></div>
 
+<?php
+/* 
 <div id="instance2" class="instance"></div>
-
+*/
+?>
 <div id="renderedInstance"></div>
 
+<!-- 
 Dropzone:
 <div class="droppable ui-widget-header"><p>Drop here a BInterface</p></div>
+ -->
 
 <div>
 <button onclick="MoufUI.showSourceFile('testClasses.php',6);return false;">Show PHP file</button>
@@ -67,6 +75,7 @@ Dropzone:
 
 
 <script type="text/javascript">
+/*
 jQuery(function() {
 	jQuery( ".droppable" ).droppable({
 		accept: ".mouftype_BInterface",
@@ -80,9 +89,11 @@ jQuery(function() {
 		}
 	});
 });
+*/
 
 
-MoufInstanceManager.getInstance(<?php echo json_encode($this->instanceName) ?>).then(function(instance) {
+ MoufInstanceManager.getInstance(<?php echo json_encode($this->instanceName) ?>).then(function(instance) {
+	 /*
 	var myClass = MoufInstanceManager.getLocalClass(instance.getClassName());
 
 	var html = "";
@@ -138,13 +149,14 @@ MoufInstanceManager.getInstance(<?php echo json_encode($this->instanceName) ?>).
 	
 	
 	jQuery("#instance").append(html);
-
+*/
 	instance.render('big').appendTo(jQuery("#renderedInstance"));
 	
 }).onError(function(e) {
 	addMessage("<pre>"+e+"</pre>", "error");
 });
 
+/*
 MoufInstanceManager.getInstanceListByType("A").then(function(instances, classes) {
 	html = "<h2>List of instances that are of type A</h2>";
 	for (var key in instances) {
@@ -159,8 +171,9 @@ MoufInstanceManager.getInstanceListByType("A").then(function(instances, classes)
 }).onError(function(e) {
 	addMessage("<pre>"+e+"</pre>", "error");
 });
+*/
 
-MoufUI.displayInstanceOfType("#instance2", "NoRenderer", true, true);
+//MoufUI.displayInstanceOfType("#instance2", "NoRenderer", true, true);
 
 /*
 //let the gallery items be draggable

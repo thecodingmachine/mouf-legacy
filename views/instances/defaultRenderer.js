@@ -1,8 +1,5 @@
 
 
-
-
-
 /**
  * The default renderer if no renderer is to be found.
  * This renderer is in charge of rendering instances (small, medium, big) and classes.
@@ -24,7 +21,7 @@ var MoufDefaultRenderer = (function () {
 		} while (parentClass);
 		var cssClass = "";
 		for (var i = 0; i<subclassOf.length; i++) {
-			cssClass += "mouftype_"+subclassOf[i] + " ";
+			cssClass += MoufUI.getCssNameFromType(subclassOf[i]) + " ";
 		}
 		return jQuery("<div/>").addClass(cssClass).data("class", classDescriptor);
 	}
@@ -131,26 +128,32 @@ var MoufDefaultRenderer = (function () {
 			}
 			var subtype = moufProperty.getSubType();
 			// If this is a known primitive type, let's display a "add a value" button
+			
+			
+			var addDiv = jQuery("<div/>").addClass('addavalue')
+				.appendTo(elem)
+				.click(function() {
+					var renderer = getFieldRenderer(subtype, null, null);
+					// key=null (since we are not an associative array), and we init the value to null too.
+					var moufNewSubInstanceProperty = moufInstanceProperty.addArrayElement(null, null);
+					
+					var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+						.data("key", moufNewSubInstanceProperty.getKey())
+						.appendTo(sortable);
+					
+					var sortableElem = jQuery("<div/>").addClass('sortable');
+					jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
+					
+					var rowElem = renderer(moufNewSubInstanceProperty);
+					rowElem.appendTo(fieldElem);
+				});
+			
 			if (fieldsRenderer[subtype]) {
-				jQuery("<div/>").addClass('addavalue')
-					.text("Add a value")
-					.appendTo(elem)
-					.click(function() {
-						var renderer = getFieldRenderer(subtype, null, null);
-						// key=null (since we are not an associative array), and we init the value to null too.
-						var moufNewSubInstanceProperty = moufInstanceProperty.addArrayElement(null, null);
-						
-						var fieldElem = jQuery("<div/>").addClass('fieldContainer')
-							.data("key", moufNewSubInstanceProperty.getKey())
-							.appendTo(sortable);
-						
-						var sortableElem = jQuery("<div/>").addClass('sortable');
-						jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
-						
-						var rowElem = renderer(moufNewSubInstanceProperty);
-						rowElem.appendTo(fieldElem);
-					});
+				addDiv.text("Add a value");
+			} else {
+				addDiv.text("Add an instance");
 			}
+			
 		} else {
 			// If this is an associative array
 			// Check that value is not null
@@ -180,38 +183,46 @@ var MoufDefaultRenderer = (function () {
 			}
 			var subtype = moufProperty.getSubType();
 			// If this is a known primitive type, let's display a "add a value" button
-			if (fieldsRenderer[subtype]) {
-				jQuery("<div/>").addClass('addavalue')
-					.text("Add a value")
-					.appendTo(elem)
-					.click(function() {
-						var renderer = getFieldRenderer(subtype, null, null);
-						// key="" (since we are an associative array), and we init the value to null too.
-						var moufNewSubInstanceProperty = moufInstanceProperty.addArrayElement("", null);
-						
-						var fieldElem = jQuery("<div/>").addClass('fieldContainer')
-							.data("key", moufNewSubInstanceProperty.getKey())
-							.appendTo(sortable);
-						
-						var sortableElem = jQuery("<div/>").addClass('sortable');
-						jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
-						
-						jQuery("<input/>").addClass("key").appendTo(fieldElem).change(function() {
-							// Set's the key if changed
+			
+			var addDiv = jQuery("<div/>").addClass('addavalue')
+				.appendTo(elem)
+				.click(function() {
+					var renderer = getFieldRenderer(subtype, null, null);
+					// key="" (since we are an associative array), and we init the value to null too.
+					var moufNewSubInstanceProperty = moufInstanceProperty.addArrayElement("", null);
+					
+					var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+						.data("key", moufNewSubInstanceProperty.getKey())
+						.appendTo(sortable);
+					
+					var sortableElem = jQuery("<div/>").addClass('sortable');
+					jQuery("<div/>").addClass('moveable').appendTo(fieldElem);
+					
+					jQuery("<input/>").addClass("key").appendTo(fieldElem).change(function() {
+						// Set's the key if changed
 							moufNewSubInstanceProperty.setKey(jQuery(this).val());							
 						});
-;
 						jQuery("<span>=&gt;</span>").appendTo(fieldElem);
 
-						var rowElem = renderer(moufNewSubInstanceProperty);
-						rowElem.appendTo(fieldElem);
-					});
+					var rowElem = renderer(moufNewSubInstanceProperty);
+					rowElem.appendTo(fieldElem);
+				});
+			
+			if (fieldsRenderer[subtype]) {
+				addDiv.text("Add a value");
+			} else {
+				addDiv.text("Add an instance");
 			}
 		}
 		var _startPosition = null;
 		sortable.sortable({
 			start: function(event, ui) {
 				_startPosition = jQuery(ui.item).index();
+				MoufUI.onDroppedInBin(function() {
+					// When an element graphically is dropped in the bin, let's apply the change in the instances list.
+					moufInstanceProperty.removeArrayElement(_startPosition);
+					jQuery(ui.item).remove();
+				});
 				MoufUI.showBin();
 			},
 			stop: function(event, ui) {
@@ -223,10 +234,6 @@ var MoufDefaultRenderer = (function () {
 				moufInstanceProperty.reorderArrayElement(_startPosition, newPosition);
 				// This is because the "remove" trigger might be called after the "update" trigger. In that case, _startPosition must point to the new position.
 				_startPosition = newPosition;
-			},
-			remove: function(event, ui) {
-				// When an element graphically is dropped in the bin, let's apply the change in the instances list.
-				moufInstanceProperty.removeArrayElement(_startPosition);
 			},
 			// Elements of this sortable can be dropped in the bin.
 			connectWith: "div.bin"
@@ -245,41 +252,70 @@ var MoufDefaultRenderer = (function () {
 		var type = moufInstanceProperty.getMoufProperty().getType();
 	
 		var parentElem = jQuery('<div/>').addClass("fieldInstanceRenderer");
-		
+				
 		var elem = jQuery("<div/>").addClass('instanceReceiver');
-	
+		
 		// An element containing the text to display when the value is null
 		var nullElem = jQuery("<div/>");
 		nullElem.addClass("null");
 		jQuery("<a href='#'>Drop here a <em>"+type+"</em> instance</a>").click(function() {
-			
+			jQuery("#instanceList").empty();
 			MoufUI.displayInstanceOfType("#instanceList", type, true, true);
 			jQuery("#instanceList").scrollintoview({duration: "slow", direction: "y"});
 			
 			return false;
 		}).appendTo(nullElem);
 		
+		var setToNull = function() {
+			elem.find("*").remove();
+			nullElem.appendTo(elem);
+			moufInstanceProperty.setValue(null);
+		}
+	
+		var renderInstanceInField = function(instance) {
+			// Let's do that in a setTimeout.
+			// This way, we can be sure other instances are already in the DOM before displaying our instance.
+			
+			setTimeout(function() {
+				var found = isInstanceDisplayed(instance);
+				var displayType = found?"small":"medium";
+				
+				instance.render(displayType).appendTo(elem).draggable({
+					revert: "invalid",
+					containment: "window",
+					start: function(event, ui) { 
+						MoufUI.onDroppedInBin(function() {
+							setToNull();
+							MoufUI.hideBin();
+						});
+						MoufUI.showBin();
+					},
+					stop: function(event, ui) {
+						alert("TODO: manage drops")
+						MoufUI.hideBin();
+					}
+				});
+			}, 0);
+		}
+		
+		
 		if (value === null) {
 			nullElem.appendTo(elem);
 		} else {
 			MoufInstanceManager.getInstance(value).then(function(instance) {
-				instance.render('small').appendTo(elem);
+				renderInstanceInField(instance);
 			})
 		}
 		
 		var menu = MoufUI.createMenuIcon([
   			{
   				label: "Set to <em>null</em>",
-  				click: function() {
-  					elem.find("*").remove();
-  					nullElem.appendTo(elem);
-  					moufInstanceProperty.setValue(null);
-  				}
+  				click: setToNull
   			}
   		]);
 		
 		elem.droppable({
-			accept: ".mouftype_"+type,
+			accept: "."+MoufUI.getCssNameFromType(type),
 			activeClass: "stateActive",
 			hoverClass: "stateHover",
 			drop: function( event, ui ) {
@@ -290,7 +326,7 @@ var MoufDefaultRenderer = (function () {
 					// If an instance was dropped
 					moufInstanceProperty.setValue(droppedInstance.getName());
 					elem.html("");
-					droppedInstance.render('small').appendTo(elem);
+					renderInstanceInField(droppedInstance);
 				} else {
 					// If not, it's a class that has been dropped
 					var droppedClass = jQuery( ui.draggable ).data("class");
@@ -302,7 +338,7 @@ var MoufDefaultRenderer = (function () {
 					var newInstance = MoufInstanceManager.newInstance(droppedClass, "__anonymous_"+timestamp.getTime(), true);
 					moufInstanceProperty.setValue(newInstance.getName());
 					
-					newInstance.render('small').appendTo(elem);
+					renderInstanceInField(newInstance);
 				}
 			}
 		});
@@ -384,6 +420,45 @@ var MoufDefaultRenderer = (function () {
 		}
 	}
 	
+	/**
+	 * Returns true if one big or medium instance is currently displayed on the screen.
+	 * This can be useful to avoid multiplying displaying instances.
+	 */
+	var isInstanceDisplayed = function(instance) {
+		var found = false;
+		jQuery("div.mediuminstance,div.biginstance").each(function(index, elem) {
+			// Note: in some circumstances, we might have 2 instances retrieved (if we ask twice for the instance at the same time)
+			// Therefore, let's compare the names instead of the objects.
+			if (jQuery(elem).data("instance").getName() == instance.getName()) {
+				found = true;
+			}
+		});
+		return found;
+	}
+	
+	/**
+	 * Sets the title and logo for the wrapper (applies to small and medium instances).
+	 */
+	var setWrapperTitleAndLogo = function(wrapper, instance) {
+		var classDescriptor = MoufInstanceManager.getLocalClass(instance.getClassName());
+		
+		if (instance.isAnonymous()) {
+			wrapper.html("<em>"+classDescriptor.getName()+"</em>").attr("title", "Anonymous instance of type '"+classDescriptor.getName()+"'");
+		} else {
+			wrapper.text(instance.getName()).attr('title', "Instance of type '"+classDescriptor.getName()+"'");
+		}
+		
+		// Let's add the small logo image (if any).
+		// Is there a logo to display? Let's see in the smallLogo property of the renderer annotation, if any.
+		var renderer = getRendererAnnotation(classDescriptor);
+		if (renderer != null) {
+			if (renderer.smallLogo != null) {
+				wrapper.css("background-image", "url("+MoufInstanceManager.rootUrl+"../"+renderer.smallLogo+")");
+			}
+		}
+
+	}
+	
 	return {
 		/**
 		 * Returns the list of renderers supported by this renderer.
@@ -397,34 +472,46 @@ var MoufDefaultRenderer = (function () {
 					 * Result is returned as a jQuery in-memory DOM object
 					 */
 					renderer: function(instance) {
-						var classDescriptor = MoufInstanceManager.getLocalClass(instance.getClassName());
-						
-						
 						var wrapper = getInstanceWrapper(instance).addClass("smallinstance");
-						
-						if (instance.isAnonymous()) {
-							wrapper.html("<em>"+classDescriptor.getName()+"</em>").attr("title", "Anonymous instance of type '"+classDescriptor.getName()+"'");
-						} else {
-							wrapper.text(instance.getName()).attr('title', "Instance of type '"+classDescriptor.getName()+"'");
-						}
-												
-						// Let's add the small logo image (if any).
-						// Is there a logo to display? Let's see in the smallLogo property of the renderer annotation, if any.
-						var renderer = getRendererAnnotation(classDescriptor);
-						if (renderer != null) {
-							if (renderer.smallLogo != null) {
-								wrapper.css("background-image", "url("+MoufInstanceManager.rootUrl+"../"+renderer.smallLogo+")");
-							}
-						}
-						
-						//wrapper.appendTo(parent);
+						setWrapperTitleAndLogo(wrapper, instance);						
 						return wrapper;
 					}
 				},
 				"medium" : {
 					title: "Medium",
 					renderer: function(instance, parent) {
-						alert('TODO');
+						var classDescriptor = MoufInstanceManager.getLocalClass(instance.getClassName());
+						var wrapper = getInstanceWrapper(instance).addClass("mediuminstance");
+						setWrapperTitleAndLogo(wrapper, instance);
+						
+						var propertiesList = jQuery("<div/>").addClass('propertieslist');
+
+						// For each Mouf property, let's display a field... if it is marked as "@Important".
+						var moufProperties = classDescriptor.getMoufProperties();
+						for (var i=0; i<moufProperties.length; i++) {
+							var moufProperty = moufProperties[i];
+							var annotations = moufProperty.getAnnotations();
+							var isImportant = annotations['Important'];
+							if (isImportant) {
+								var fieldGlobalElem = jQuery("<div/>");
+								jQuery("<label/>").text(moufProperty.getPropertyName()).appendTo(fieldGlobalElem);
+								var fieldElem = jQuery("<div/>").addClass('fieldContainer')
+									.data("moufProperty", moufProperty)
+									.appendTo(fieldGlobalElem);
+
+								var fieldRenderer = getFieldRenderer(moufProperty.getType(), moufProperty.getSubType(), moufProperty.getKeyType());
+	
+								var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);
+								fieldRenderer(moufInstanceProperty).appendTo(fieldElem);
+								
+								fieldGlobalElem.appendTo(propertiesList);
+							}
+
+						}
+						propertiesList.appendTo(wrapper);
+						
+						
+						return wrapper;
 					}
 				},
 				"big" : {
@@ -448,9 +535,9 @@ var MoufDefaultRenderer = (function () {
 							var fieldGlobalElem = jQuery("<div/>");
 							jQuery("<label/>").text(moufProperty.getPropertyName()).appendTo(fieldGlobalElem);
 							var fieldElem = jQuery("<div/>").addClass('fieldContainer')
-								.data("moufProperty", moufProperty)
-								.appendTo(fieldGlobalElem);
+								.data("moufProperty", moufProperty).appendTo(fieldGlobalElem);
 
+							
 							var fieldRenderer = getFieldRenderer(moufProperty.getType(), moufProperty.getSubType(), moufProperty.getKeyType());
 
 							var moufInstanceProperty = moufProperty.getMoufInstanceProperty(instance);

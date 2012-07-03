@@ -280,6 +280,32 @@ class MoufController extends Controller implements MoufSearchable {
 	}
 	
 	/**
+	 * Displays the screen allowing to create new instances.
+	 *
+	 * @Action
+	 * @Logged
+	 */
+	public function newInstance2($selfedit = "false", $instanceName=null, $instanceClass=null) {
+		$this->instanceName = $instanceName;
+		$this->instanceClass = $instanceClass;
+		$this->selfedit = $selfedit;
+		
+		$this->template->addCssFile("mouf/views/instances/defaultRenderer.css");
+		
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/messages.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/utils.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/instances.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/defaultRenderer.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/moufui.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/saveManager.js");
+		$this->template->addJsFile(ROOT_URL."mouf/views/instances/jquery.scrollintoview.js");
+		
+		$template = $this->template;
+		$template->addContentFile(dirname(__FILE__)."/../views/instances/newInstance.php", $this);
+		$template->draw();	
+	}
+	
+	/**
 	 * Displays the new component view
 	 *
 	 */

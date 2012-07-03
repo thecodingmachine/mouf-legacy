@@ -54,136 +54,139 @@ var MoufInstanceManager = (function () {
 				// Let's check if there are any renderers. If yes, let's load them.
 				var myClass = _classes[className];
 				var annotations = myClass.getAnnotations();
-				var renderers = annotations['Renderer'];
-				if (renderers) {
-					for (var i=0; i<renderers.length; i++) {
-						var renderer = renderers[i];
-						try {
-							var jsonRenderer = jQuery.parseJSON(renderer);
-						} catch (e) {
-							throw "Invalid @Renderer annotation sent. The @Renderer must have a JSON object attached.\nAnnotation found: @Renderer "+renderer+"\nError detected:"+e;
-						}
-						// Let's load JS files for the renderer
-						var jsFiles;
-						if (jsonRenderer['jsFiles']) {
-							jsFiles = jsonRenderer['jsFiles'];
-						} else {
-							jsFiles = [];
-						}
-						if (jsonRenderer['jsFile']) {
-							jsFiles.push(jsonRenderer['jsFile']);
-						}
-						for (var i=0; i<jsFiles.length; i++) {
-							var jsFile = jsFiles[i];
-							if (_jsrenderers[jsFile]) {
-								continue;
+				// Note: a class can have no annotation (if this is a parent class of a component)
+				if (annotations) {
+					var renderers = annotations['Renderer'];
+					if (renderers) {
+						for (var i=0; i<renderers.length; i++) {
+							var renderer = renderers[i];
+							try {
+								var jsonRenderer = jQuery.parseJSON(renderer);
+							} catch (e) {
+								throw "Invalid @Renderer annotation sent. The @Renderer must have a JSON object attached.\nAnnotation found: @Renderer "+renderer+"\nError detected:"+e;
 							}
-							
-							
-							var fileUrl;
-					        if (jsFile.indexOf("http://") == 0 || jsFile.indexOf("https://") == 0) {
-					        	fileUrl = jsFile;
-					        } else {
-					        	fileUrl = MoufInstanceManager.rootUrl+'../'+jsFile;
-					        }
-					        
-					        _nbFilesToLoad++;
-					        
-					        var thisClass = myClass;
-					        var thisClassName = myClass.getName();
-					        var thisRendererName = jsonRenderer['object'];
-				        	
-					        jQuery.getScript(fileUrl).done(function() {
-					        	// Note: if wa don't put the content of the callback in a setTimeout, there is this completely wierd
-					        	// behaviour of Firefox that will stop the current Javascript function executed to execute the script loaded,
-					        	// and then start over. Very disturbing. It's a bit like a multithreaded behaviour that would not be
-					        	// wanted.
-					        	setTimeout(function() {
-					        		_nbFilesToLoad--;
+							// Let's load JS files for the renderer
+							var jsFiles;
+							if (jsonRenderer['jsFiles']) {
+								jsFiles = jsonRenderer['jsFiles'];
+							} else {
+								jsFiles = [];
+							}
+							if (jsonRenderer['jsFile']) {
+								jsFiles.push(jsonRenderer['jsFile']);
+							}
+							for (var i=0; i<jsFiles.length; i++) {
+								var jsFile = jsFiles[i];
+								if (_jsrenderers[jsFile]) {
+									continue;
+								}
+								
+								
+								var fileUrl;
+						        if (jsFile.indexOf("http://") == 0 || jsFile.indexOf("https://") == 0) {
+						        	fileUrl = jsFile;
+						        } else {
+						        	fileUrl = MoufInstanceManager.rootUrl+'../'+jsFile;
+						        }
+						        
+						        _nbFilesToLoad++;
+						        
+						        var thisClass = myClass;
+						        var thisClassName = myClass.getName();
+						        var thisRendererName = jsonRenderer['object'];
+					        	
+						        jQuery.getScript(fileUrl).done(function() {
+						        	// Note: if wa don't put the content of the callback in a setTimeout, there is this completely wierd
+						        	// behaviour of Firefox that will stop the current Javascript function executed to execute the script loaded,
+						        	// and then start over. Very disturbing. It's a bit like a multithreaded behaviour that would not be
+						        	// wanted.
+						        	setTimeout(function() {
+						        		_nbFilesToLoad--;
+					                	
+					                	// Let's add the renderer to the possible renderer of this class.
+						        		MoufInstanceManager.getLocalClass(thisClassName).renderers.push(window[thisRendererName]);
+						        		//thisClass.renderers.push(window[thisRendererName]);
+	
+						        		// Let's trigger the callbacks if all files are loaded.
+					            		triggerAllCallbacksWhenFilesLoaded();
+						        	}, 0)
+						        	
+						        }).fail(function(jqxhr, settings, exception) {
+						        	alert("Error while loading script: "+exception);
+						        });
+								
+						        /*var scriptElem = document.createElement('script');
+						        scriptElem.type = 'text/javascript';
+						        scriptElem.async = true;
+						        scriptElem.src = fileUrl;
+				
+						        _nbFilesToLoad++;
+						        
+						        var onScriptLoaded = function() {
+						        	_nbFilesToLoad--;
 				                	
 				                	// Let's add the renderer to the possible renderer of this class.
-					        		MoufInstanceManager.getLocalClass(thisClassName).renderers.push(window[thisRendererName]);
-					        		//thisClass.renderers.push(window[thisRendererName]);
-
+					        		thisClass.renderers.push(window[thisRendererName]);
+	
 					        		// Let's trigger the callbacks if all files are loaded.
 				            		triggerAllCallbacksWhenFilesLoaded();
-					        	}, 0)
-					        	
-					        }).fail(function(jqxhr, settings, exception) {
-					        	alert("Error while loading script: "+exception);
-					        });
-							
-					        /*var scriptElem = document.createElement('script');
-					        scriptElem.type = 'text/javascript';
-					        scriptElem.async = true;
-					        scriptElem.src = fileUrl;
-			
-					        _nbFilesToLoad++;
-					        
-					        var onScriptLoaded = function() {
-					        	_nbFilesToLoad--;
-			                	
-			                	// Let's add the renderer to the possible renderer of this class.
-				        		thisClass.renderers.push(window[thisRendererName]);
-
-				        		// Let's trigger the callbacks if all files are loaded.
-			            		triggerAllCallbacksWhenFilesLoaded();
-			            	}
-					        
-					        // Now, let's make sure we call the callback when everything is loaded.
-					        if (scriptElem.readyState){  //IE
-					        	var thisClass = myClass;
-					        	var thisRendererName = jsonRenderer['object'];
-					        	scriptElem.onreadystatechange = function(){
-					                if (scriptElem.readyState == "loaded" ||
-					                		scriptElem.readyState == "complete"){
-					                	scriptElem.onreadystatechange = null;
-					                	
-					                	onScriptLoaded();
-					                }
-					            };
-					        } else {  //Others
-					        	var thisClass = myClass;
-					        	var thisRendererName = jsonRenderer['object'];
-					        	scriptElem.onload = function(){
-					        		onScriptLoaded();
-					            };
-					        }
-					        
-					        //var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(scriptElem, s);
-					        document.getElementsByTagName("head")[0].appendChild(scriptElem);*/
-							_jsrenderers[jsFile] = true;
-						}
-						
-						// Let's load CSS files for the renderer
-						var cssFiles;
-						if (jsonRenderer['cssFiles']) {
-							cssFiles = jsonRenderer['cssFiles'];
-						} else {
-							cssFiles = [];
-						}
-						if (jsonRenderer['cssFile']) {
-							cssFiles.push(jsonRenderer['cssFile']);
-						}
-						for (var i=0; i<cssFiles.length; i++) {
-							var cssFile = cssFiles[i];
-							if (_cssrenderers[cssFile]) {
-								continue;
+				            	}
+						        
+						        // Now, let's make sure we call the callback when everything is loaded.
+						        if (scriptElem.readyState){  //IE
+						        	var thisClass = myClass;
+						        	var thisRendererName = jsonRenderer['object'];
+						        	scriptElem.onreadystatechange = function(){
+						                if (scriptElem.readyState == "loaded" ||
+						                		scriptElem.readyState == "complete"){
+						                	scriptElem.onreadystatechange = null;
+						                	
+						                	onScriptLoaded();
+						                }
+						            };
+						        } else {  //Others
+						        	var thisClass = myClass;
+						        	var thisRendererName = jsonRenderer['object'];
+						        	scriptElem.onload = function(){
+						        		onScriptLoaded();
+						            };
+						        }
+						        
+						        //var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(scriptElem, s);
+						        document.getElementsByTagName("head")[0].appendChild(scriptElem);*/
+								_jsrenderers[jsFile] = true;
 							}
-							var fileref=document.createElement("link");
-							fileref.setAttribute("rel", "stylesheet")
-							fileref.setAttribute("type", "text/css")
-							var fileUrl;
-					        if (cssFile.indexOf("http://") == 0 || cssFile.indexOf("https://") == 0) {
-					        	fileUrl = cssFile;
-					        } else {
-					        	fileUrl = MoufInstanceManager.rootUrl+'../'+cssFile;
-					        }
-					        fileref.setAttribute("href", fileUrl)
-					        document.getElementsByTagName("head")[0].appendChild(fileref);
-							_cssrenderers[cssFile] = true;
+							
+							// Let's load CSS files for the renderer
+							var cssFiles;
+							if (jsonRenderer['cssFiles']) {
+								cssFiles = jsonRenderer['cssFiles'];
+							} else {
+								cssFiles = [];
+							}
+							if (jsonRenderer['cssFile']) {
+								cssFiles.push(jsonRenderer['cssFile']);
+							}
+							for (var i=0; i<cssFiles.length; i++) {
+								var cssFile = cssFiles[i];
+								if (_cssrenderers[cssFile]) {
+									continue;
+								}
+								var fileref=document.createElement("link");
+								fileref.setAttribute("rel", "stylesheet")
+								fileref.setAttribute("type", "text/css")
+								var fileUrl;
+						        if (cssFile.indexOf("http://") == 0 || cssFile.indexOf("https://") == 0) {
+						        	fileUrl = cssFile;
+						        } else {
+						        	fileUrl = MoufInstanceManager.rootUrl+'../'+cssFile;
+						        }
+						        fileref.setAttribute("href", fileUrl)
+						        document.getElementsByTagName("head")[0].appendChild(fileref);
+								_cssrenderers[cssFile] = true;
+							}
+	
 						}
-
 					}
 				}
 			}
@@ -320,6 +323,51 @@ var MoufInstanceManager = (function () {
 				});
 			}
 			return promise;
+		},
+		
+		/**
+		 * Returns the list of all classes defined as @Component, in a promise.
+		 * 
+		 * @return Mouf.Promise
+		 */
+		getComponents : function() {
+			var promise = new Mouf.Promise();
+			
+			
+			jQuery.ajax(this.rootUrl+"direct/get_all_classes.php", {
+				data: {
+					encode: "json"
+				}
+			}).fail(function(e) {
+				var msg = e;
+				if (e.responseText) {
+					msg = "Status code: "+e.status+" - "+e.statusText+"\n"+e.responseText;
+				}
+				promise.triggerError(window, msg);
+			}).done(function(result) {
+				if (typeof(result) == "string") {
+					promise.triggerError(window, result);
+					return;
+				}
+				try {
+					handleUniversalResponse(result, function() {
+						var componentsList = _.filter(_classes, function(classDescriptor) {
+							var annotations = classDescriptor.getAnnotations(); 
+							if (annotations && annotations["Component"]) {
+								return true;
+							} else {
+								return false;
+							}
+						})
+						promise.triggerSuccess(window, componentsList);
+					});
+				} catch (e) {
+					promise.triggerError(window, e);
+					throw e;
+				}
+			});
+			
+			return promise;			
 		},
 		
 		/**
@@ -574,6 +622,8 @@ MoufInstanceProperty.prototype.getValue = function() {
 
 /**
  * Sets the value for this property.
+ * Note: do not call this method for arrays. It won't work.
+ * Use method to manipulate arrays instead!
  */
 MoufInstanceProperty.prototype.setValue = function(value) {
 	this.json['value'] = value;
@@ -643,8 +693,9 @@ MoufInstanceProperty.prototype.addArrayElement = function(key, value) {
 		
 		return instanceSubProperty;
 	} else {
-		// TODO
-	}  
+		throw "Unable to add an array element to a property that is not an array";
+	}
+	MoufInstanceManager.firePropertyChange(this);
 }
 
 /**
@@ -673,35 +724,37 @@ MoufInstanceProperty.prototype.reorderArrayElement = function(i, j) {
 		throw "Error, the '"+moufProperty.getName()+"' property is not an array.";
 	}
 
-	var values = this.getValue();
+	//var values = this.getValue();
 	
-	var elemToMove = values[i];
+	//var elemToMove = values[i];
 	var instanceSubPropertyToMove = this.moufInstanceSubProperties[i];
 	
-	var newValues = [];
+	//var newValues = [];
 	var newMoufInstanceProperties = [];
 	
 	var m=0;
-	for (var k=0; k<values.length; k++) {
+	for (var k=0; k<this.moufInstanceSubProperties.length; k++) {
 		if (m==j) {
-			newValues[m] = elemToMove;
+			//newValues[m] = elemToMove;
 			newMoufInstanceProperties[m] = instanceSubPropertyToMove;
 			m++;
 		}
 		
 		if (i != k) {
-			newValues[m] = values[k];
+			//newValues[m] = values[k];
 			newMoufInstanceProperties[m] = this.moufInstanceSubProperties[k];
 			m++;
 		}
 	}
-	if (values.length != newValues.length) {
-		newValues[m] = elemToMove;
+	if (this.moufInstanceSubProperties.length != newMoufInstanceProperties.length) {
+		//newValues[m] = elemToMove;
 		newMoufInstanceProperties[m] = instanceSubPropertyToMove;
 	}
 	
 	this.moufInstanceSubProperties = newMoufInstanceProperties;
-	this.setValue(newValues);
+	//this.setValue(newValues);
+	MoufInstanceManager.firePropertyChange(this);
+
 }
 
 /**
@@ -714,24 +767,26 @@ MoufInstanceProperty.prototype.removeArrayElement = function(i) {
 		throw "Error, the '"+moufProperty.getName()+"' property is not an array.";
 	}
 
-	var values = this.getValue();
+	//var values = this.getValue();
 	
-	var newValues = [];
+	//var newValues = [];
 	var newMoufInstanceProperties = [];
 	
 	var m=0;
-	for (var k=0; k<values.length; k++) {
+	for (var k=0; k<this.moufInstanceSubProperties.length; k++) {
 		if (k==i) {
 			continue;
 		}
 		
-		newValues[m] = values[k];
+		//newValues[m] = values[k];
 		newMoufInstanceProperties[m] = this.moufInstanceSubProperties[k];
 		m++;
 	}
 	
 	this.moufInstanceSubProperties = newMoufInstanceProperties;
-	this.setValue(newValues);
+	//this.setValue(newValues);
+	MoufInstanceManager.firePropertyChange(this);
+
 }
 
 
@@ -892,7 +947,7 @@ MoufClass.prototype.getRenderers = function() {
 }
 
 /**
- * Renders the class to the display, inside the target element.
+ * Renders the class to the display and returns the result as a jQuery element.
  */
 MoufClass.prototype.render = function() {
 	var renderers = this.getRenderers();

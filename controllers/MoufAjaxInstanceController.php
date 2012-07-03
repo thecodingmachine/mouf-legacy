@@ -26,13 +26,15 @@ require_once(dirname(__FILE__)."/../annotations/ExtendedActionAnnotation.php");*
 class MoufAjaxInstanceController extends AbstractMoufInstanceController {
 
 	/**
+	 * Displays the page to edit an instance.
+	 * 
 	 * @Action
 	 * @Logged
 	 *
 	 * @param string $name the name of the component to display
 	 * @param string $selfedit If true, the name of the component must be a component from the Mouf framework itself (internal use only) 
 	 */
-	public function defaultAction($name, $selfedit = false) {
+	public function index($name, $selfedit = false) {
 		$this->initController($name, $selfedit);
 
 		$this->template->addCssFile("mouf/views/instances/defaultRenderer.css");
@@ -51,5 +53,14 @@ class MoufAjaxInstanceController extends AbstractMoufInstanceController {
 		$this->template->draw();	
 	}
 	
+	/**
+	 * Displays the "create a new instance" page
+	 * 
+	 * @Action
+	 * @Logged
+	 */
+	public function create__GET() {
+		
+	}
 }
 ?>
