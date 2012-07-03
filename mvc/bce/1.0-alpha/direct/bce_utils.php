@@ -264,9 +264,6 @@ class BCEUtils{
 			}
 		}
 		$return = $isMultiple ? $matches : (count($matches) ? $matches[0] : null);
-		echo $beanField->columnName;
-		var_dump($return);
-		echo '<br/>';
 		return $return;
 	}
 	

@@ -198,18 +198,16 @@ class BCEForm{
 		}
 		if (!count($this->errorMessages)){
 			//save
-			echo "<h1>Save!!</h1>";
 			$this->mainDAO->save($this->baseBean);//
 			
-			echo "<h2>M2M</h2>";
 			$id = $this->getMainBeanId();
 			foreach ($this->many2ManyFieldDescriptors as $descriptor){
-				echo "<h3>".$descriptor->getFieldName()."</h3>";
 				$this->m2mSave($id, $descriptor);		
 			}
+			
+			return true;
 		}else{
-			echo "<h1>Php Errors!!</h1>";
-			var_dump($this->errorMessages);
+			return false;
 		}
 		
 	}
