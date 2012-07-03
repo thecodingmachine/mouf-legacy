@@ -1,6 +1,7 @@
 <?php
 /**
  * Basic validator that defines a value as required
+ * 
  * @Component
  */
 class RequiredValidator extends AbstractValidator implements JsValidatorInterface{

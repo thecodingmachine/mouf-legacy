@@ -31,14 +31,8 @@
 		<require>classes/HiddenRenderer.php</require>
 		<require>classes/Many2ManyFieldDescriptor.php</require>
 		<require>classes/MultipleSelectFieldRenderer.php</require>
-		<require>classes/Role.php</require>
-		<require>classes/RoleDAO.php</require>
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
-		<require>classes/User.php</require>
-		<require>classes/UserDAO.php</require>
-		<require>classes/UserHobby.php</require>
-		<require>classes/UserHobbyDAO.php</require>
 		<require>classes/validators/JsValidationHandlerInterface.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
 	</requires>

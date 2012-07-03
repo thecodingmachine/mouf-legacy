@@ -25,24 +25,9 @@ class BaseFieldDescriptor extends FieldDescriptor{
 
 	/**
 	 * The value of the field once the FiedDescriptor has been loaded
-	 * @Property
 	 * @var mixed
 	 */
 	public $value;
-
-	/**
-	 * The renderer that will be responsible for delivering the HTML for that field
-	 * @Property
-	 * @var FieldRendererInterface
-	 */
-	public $renderer;
-
-	/**
-	 * The validator of the field. Returns true/(false+errorString)
-	 * @Property
-	 * @var array<ValidatorInterface>
-	 */
-	public $validators;
 
 
 	/**

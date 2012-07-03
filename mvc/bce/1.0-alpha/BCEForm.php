@@ -30,7 +30,7 @@ class BCEForm{
 	 * @Property 
 	 * @var array<BaseFieldDescriptor>
 	 */
-	public $fieldDescriptors;
+	public $fieldDescriptors = array();
 	
 	
 	/**
@@ -39,7 +39,7 @@ class BCEForm{
 	 * @Property 
 	 * @var array<Many2ManyFieldDescriptor>
 	 */
-	public $many2ManyFieldDescriptors;
+	public $many2ManyFieldDescriptors = array();
 	
 	/**
 	 * Field Decriptors of the bean's identifier.
@@ -82,7 +82,7 @@ class BCEForm{
 	
 	/**
 	 * The action attribute of the form 
-	 * 
+	 * @Property
 	 * @var string
 	 */
 	public $action = "save";
@@ -124,10 +124,9 @@ class BCEForm{
 	public function load($id = null){
 		//Intantiate form's main bean (like JAVA Spring's formBindingObject)
 		$this->baseBean = $id ? $this->mainDAO->getById($id) :  $this->mainDAO->getNew();
-		
 		$this->validationJS = array();
 		//Load bean values into related field Descriptors
-		$this->idFieldValidator->load($this->baseBean);
+		$this->idFieldDescriptor->load($this->baseBean);
 		foreach ($this->fieldDescriptors as $descriptor) {
 			/* @var $descriptor FieldDescriptor */
 			$descriptor->load($this->baseBean);
@@ -162,8 +161,7 @@ class BCEForm{
 	}
 	
 	public function save($postValues){
-		//getBean
-		$id = $postValues[$this->idFieldValidator->getFieldName()];
+		$id = $postValues[$this->idFieldDescriptor->getFieldName()];
 		$this->baseBean = empty($id) ? $this->mainDAO->getNew() : $this->mainDAO->getById($id);
 		
 		$descriptors = array_merge($this->fieldDescriptors, $this->many2ManyFieldDescriptors);
@@ -176,7 +174,7 @@ class BCEForm{
 			$values[$descriptor->getFieldName()] = $value;
 			
 			//unformat values
-			$formatter = $descriptor->getFormatter();
+			$formatter = $descriptor->getFormatter();//TODO à passer dans le descriptor->setValue ?
 			if ($formatter && $formatter instanceof BijectiveFormatterInterface) {
 				$value = $formatter->unformat($value);
 			}
@@ -186,11 +184,12 @@ class BCEForm{
 			if (count($validators)){
 				foreach ($validators as $validator) {
 					/* @var $validator ValidatorInterface */
-					if (is_array($validator->validate($value))){
+					if (is_array($validator->validate($value))){//FIXME : array no use : validate should return true or false
 						$this->errorMessages[$descriptor->getFieldName()][] = $validator->getErrorMessage();
 					}
 				}
 			}
+			//Set same behavior :: call a $descriptor->mapValueToBeanField([no params]) and
 			if ($descriptor instanceof BaseFieldDescriptor) {
 				$descriptor->setValue($this->baseBean, $value);
 			}else if ($descriptor instanceof Many2ManyFieldDescriptor) {
@@ -200,7 +199,7 @@ class BCEForm{
 		if (!count($this->errorMessages)){
 			//save
 			echo "<h1>Save!!</h1>";
-			$this->mainDAO->save($this->baseBean);
+			$this->mainDAO->save($this->baseBean);//
 			
 			echo "<h2>M2M</h2>";
 			$id = $this->getMainBeanId();
@@ -225,22 +224,27 @@ class BCEForm{
 	 * @param mixed $mainBeanId : the Id of the current table
 	 * @param Many2ManyFieldDescriptor $descriptor
 	 */
-	private function m2mSave($mainBeanId, Many2ManyFieldDescriptor $m2mdescriptor){
+	private function m2mSave($mainBeanId, Many2ManyFieldDescriptor $m2mdescriptor){//TODO :: push into the M2MDescriptor!!
 		$m2mdescriptor->loadValues($mainBeanId);
-		$beforeValues = $m2mdescriptor->getBeanValues();
+		$beforVals = $m2mdescriptor->getBeanValues();
+		$beforeValues = array();
+		foreach ($beforVals as $bean) {
+			$beforeValues[] = $m2mdescriptor->getMappingRightKey($bean); 
+		}
+		
 		$finalValues = $m2mdescriptor->getSaveValues();
 		
 		$toDelete = array_diff($beforeValues, $finalValues);
 		$toSave = array_diff($finalValues, $beforeValues);
 
 		foreach ($toDelete as $linkedBeanId) {
-			$m2mdescriptor->dao->deleteByForeignKeys($mainBeanId, $linkedBeanId);
+			$m2mdescriptor->mappingDao->delete($beanToDelete);
 		}
-		foreach ($toSave as $linkedBeanId) {
-			$bean = $m2mdescriptor->dao->getNew();
-			$m2mdescriptor->setMainId($mainBeanId, $bean);
-			$m2mdescriptor->setLinkedId($linkedBeanId, $bean);
-			$m2mdescriptor->dao->save($bean);
+		foreach ($toSave as $linkedBeanId) {//TODO shouldn't it be the mapping dao ?
+			$bean = $m2mdescriptor->mappingDao->getNew();
+			$m2mdescriptor->setMappingLeftKey($mainBeanId, $bean);
+			$m2mdescriptor->setMappingRightKey($linkedBeanId, $bean);
+			$m2mdescriptor->mappingDao->save($bean);
 		}
 	}
 	

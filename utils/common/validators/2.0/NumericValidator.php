@@ -2,7 +2,7 @@
 /**
  * Numeric validator: validates a input to be a numeric value.
  * Validation may be specified if decimal values are accepted
- * 
+ * @ApplyTo { "php" : [ "int", "number" ] }
  * @Component
  */
 class NumericValidator extends AbstractValidator implements JsValidatorInterface{

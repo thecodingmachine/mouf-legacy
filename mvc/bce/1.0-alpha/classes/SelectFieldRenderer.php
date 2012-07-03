@@ -1,8 +1,9 @@
 <?php
 /**
  * A renderer class that ouputs a simple select box: it doesn't handle multiple selection
- * TODO: add radio buttons since they will be fed by teh same data
+ * 
  * @Component
+ * @ApplyTo {"type": ["fk"]}
  */
 class SelectFieldRenderer implements FieldRendererInterface{
 	
@@ -16,20 +17,31 @@ class SelectFieldRenderer implements FieldRendererInterface{
 	public function render($descriptor){
 		/* @var $descriptor ForeignKeyFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
+		$data = $descriptor->getData();
 		$value = $descriptor->getFieldValue();
 		$html = "";
 		if (!$this->radioMode){
 			$html = "<select name='$fieldName' id='$fieldName'>";
-			foreach ($descriptor->getData() as $id => $label) {
-				if ($id == $value) $selectStr = "selected = 'selected'";
+			foreach ($data as $linkedBean) {
+				$beanId = $descriptor->getRelatedBeanId($linkedBean);
+				$beanLabel = $descriptor->getRelatedBeanLabel($linkedBean);
+				if ($beanId == $value) $selectStr = "selected = 'selected'";
 				else $selectStr = "";
-				$html .= "<option value='$id' $selectStr>$label</option>";
+				$html .= "<option value='$beanId' $selectStr>$beanLabel</option>";
 			}
 			$html .= "</select>";
 		}else{
-			foreach ($descriptor->getData() as $id => $label) {
-				$checkedStr = ($id == $value) ? "checked='checked'" : "";
-				$html .= "<label for='$fieldName"."-"."$id'>$label</label><input type='radio' $checkedStr name='$fieldName' id='$fieldName"."-"."$id' value='$id'/>";
+			foreach ($data as $linkedBean) {
+				$beanId = $descriptor->getRelatedBeanId($linkedBean);
+				$beanLabel = $descriptor->getRelatedBeanLabel($linkedBean);
+				$checkedStr = ($beanId == $value) ? "checked='checked'" : "";
+				
+				
+				$html.="
+					<label class='radio inline' for='$fieldName"."-"."$beanId'>
+						<input type='radio' value='$beanId' $checkedStr id='inlineCheckbox1' id='$fieldName"."-"."$beanId' name='$fieldName'> $beanLabel
+					</label>
+				";
 			}
 		}
 		return $html;

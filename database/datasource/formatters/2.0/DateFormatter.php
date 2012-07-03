@@ -4,6 +4,7 @@
  * It must be attached to a column in order to be activated.
  *
  * @Component
+ * @ApplyTo { "php" : [ "timestamp", "datetime", "date" ] }
  */
 class DateFormatter implements BijectiveFormatterInterface {
 

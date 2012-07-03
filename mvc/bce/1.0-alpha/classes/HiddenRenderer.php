@@ -3,6 +3,7 @@ require_once 'FieldRendererInterface.php';
 
 /**
  * This renderer handles hidden input fields
+ * @ApplyTo { "pk" : [ "pk" ] }
  * @Component
  */
 class HiddenRenderer implements FieldRendererInterface{

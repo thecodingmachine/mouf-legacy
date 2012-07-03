@@ -51,7 +51,26 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 	}
 	
 	public function getValidationJs($formId){
-		$rulesJson = json_encode($this->validationRules);
+		$rulesJson = json_encode($this->validationRules->rules);
+		
+		$rulesJson = "
+			{
+				rules: $rulesJson,
+				errorPlacement : function(error, element){
+					var id = element.attr('id');
+					var htmlElem = document.getElementById(id);
+					var type = htmlElem.nodeName.toLowerCase();
+					if (type == 'input' && _checkable(htmlElem)){
+						error.insertAfter($('input[name='+htmlElem.name+']:checkbox:last').parent());
+					}else{
+						error.insertAfter(element);
+					}
+					element.closest('.control-group').addClass('error');
+				},
+				errorClass: 'help-inline',
+				errorElement: 'span'
+			}
+		";
 		
 		$js = '
 		$(document).ready(function(){
@@ -105,8 +124,9 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 			";
 		}
 		$js.= "
-		
-			$('#$formId').validate($rulesJson);
+			$('#$formId').validate(
+				$rulesJson
+			);
 		});";
 		
 		

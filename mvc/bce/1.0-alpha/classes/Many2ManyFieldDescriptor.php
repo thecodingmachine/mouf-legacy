@@ -8,54 +8,89 @@
  * @Component
  */
 class Many2ManyFieldDescriptor extends FieldDescriptor{
+	
 	/**
 	 * @Property
 	 * @var DAOInterface
 	 */
-	public $dao;	
+	public $mappingDao;
 	
 	/**
-	 * Name of the method that returns the associative array of values
+	 * @Property
+	 * @var DAOInterface
+	 */
+	public $linkedDao;	
+	
+	/**
+	 * Name of the method that get's the id of the linked Bean
+	 * @Property
+	 * @var string
+	 */
+	public $linkedIdGetter;
+	
+	/**
+	 * Name of the method that get's the label of the linked Bean
+	 * @Property
+	 * @var string
+	 */
+	public $linkedLabelGetter;
+	
+	/**
+	 * Name of the method that returns the list of beans to be linked
 	 * @Property
 	 * @var string
 	 */
 	public $dataMethod;
 	
 	/**
-	 * Name of the method that returns beans values
+	 * Name of the method that returns the beans of the mapping table that are already linked to the main bean
 	 * @Property
 	 * @var string
 	 */
 	public $beanValuesMethod;
 	
 	/**
-	 * Name of the method that sets main bean's foreign key
+	 * Name of the method that gets the Id of the mapping table
 	 * @Property
 	 * @var string
 	 */
-	public $mainBeanIdSetter;
+	public $mappingIdGetter;
 	
 	/**
-	 * Name of the method that sets linked bean's foreign key
+	 * Name of the method that sets main bean's main bean's Id in mapping table (left column)
 	 * @Property
 	 * @var string
 	 */
-	public $linkedBeanIdSetter;
+	public $mappingLeftKeySetter;
 	
 	/**
-	 * Associative array of ids and values
-	 * @var array
+	 * Name of the method that gets linked bean's foreing key from mapping table (right column)
+	 * @Property
+	 * @var string
+	 */
+	public $mappingRightKeyGetter;
+	
+	/**
+	 * Name of the method that sets linked bean's foreing key into mapping table (right column)
+	 * @Property
+	 * @var string
+	 */
+	public $mappingRightKeySetter;
+	
+	/**
+	 * List of all beans available to be linked 
+	 * @var array<mixed>
 	 */
 	private $data;
 	
 	/**
-	 * array of ids the bean is linked to (before performing save action)
+	 * List of all beans from the mapping table that are linked to the main bean
 	 * @var array<mixed>
 	 */
 	private $beanValues;
 	
 	/**
-	 * array of ids (after save action)
+	 * array of ids to be saved
 	 * @var array<mixed>
 	 */
 	private $saveValues;
@@ -74,30 +109,46 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	 * @param mixed $mainBeanId the id of the main bean 
 	 */
 	public function loadValues($mainBeanId){
-		$this->beanValues = call_user_func(array($this->dao, $this->beanValuesMethod), $mainBeanId);
+		$this->beanValues = call_user_func(array($this->mappingDao, $this->beanValuesMethod), $mainBeanId);
 	}
 	
 	/**
 	 * Loads all available data
 	 */
 	public function loadData(){
-		$this->data = call_user_func(array($this->dao, $this->dataMethod));
+		$this->data = call_user_func(array($this->linkedDao, $this->dataMethod));
 	}
 	
 	/**
 	 * Main bean Id setter (sets the foreign key value for main bean)
 	 * @param mixed $id
 	 */
-	public function setMainId($id, $bean){
-		call_user_func(array($bean, $this->mainBeanIdSetter), $id);
+	public function setMappingLeftKey($id, $bean){
+		call_user_func(array($bean, $this->mappingLeftKeySetter), $id);
 	}
 	
 	/**
 	 * Linked bean Id setter (sets the foreign key value for main bean)
 	 * @param mixed $id
 	 */
-	public function setLinkedId($id, $bean){
-		call_user_func(array($bean, $this->linkedBeanIdSetter), $id);
+	public function setMappingRightKey($id, $bean){
+		call_user_func(array($bean, $this->mappingRightKeySetter), $id);
+	}
+	
+	public function getMappingRightKey($bean){
+		return call_user_func(array($bean, $this->mappingRightKeyGetter));
+	}
+	
+	public function getMappingId($bean){
+		return call_user_func(array($bean, $this->mappingIdGetter));
+	}
+	
+	public function getRelatedBeanId($bean){
+		return call_user_func(array($bean, $this->linkedIdGetter));
+	}
+	
+	public function getRelatedBeanLabel($bean){
+		return call_user_func(array($bean, $this->linkedLabelGetter));
 	}
 	
 	/**

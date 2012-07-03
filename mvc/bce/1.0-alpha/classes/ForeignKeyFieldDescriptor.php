@@ -30,6 +30,20 @@ class ForeignKeyFieldDescriptor extends BaseFieldDescriptor{
 	public $dataMethod;
 	
 	/**
+	 * Name of the method that get's the id of the linked Bean
+	 * @Property
+	 * @var string
+	 */
+	public $linkedIdGetter;
+	
+	/**
+	 * Name of the method that get's the label of the linked Bean
+	 * @Property
+	 * @var string
+	 */
+	public $linkedLabelGetter;
+	
+	/**
 	 * Associative array if ids and values
 	 * @var array
 	 */
@@ -49,6 +63,14 @@ class ForeignKeyFieldDescriptor extends BaseFieldDescriptor{
 	 */
 	public function getData(){
 		return $this->data;
+	}
+	
+	public function getRelatedBeanId($bean){
+		return call_user_func(array($bean, $this->linkedIdGetter));
+	}
+	
+	public function getRelatedBeanLabel($bean){
+		return call_user_func(array($bean, $this->linkedLabelGetter));
 	}
 	
 }

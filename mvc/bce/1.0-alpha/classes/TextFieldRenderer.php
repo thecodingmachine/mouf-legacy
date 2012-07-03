@@ -4,6 +4,7 @@ require_once 'FieldRendererInterface.php';
 /**
  * Base class for rendering simple text fields
  * @Component
+ * @ApplyTo { "php" :[ "string", "int", "number", "boolean", "timestamp", "datetime", "date" ], "type": ["base"] }
  */
 class TextFieldRenderer implements FieldRendererInterface{
 	

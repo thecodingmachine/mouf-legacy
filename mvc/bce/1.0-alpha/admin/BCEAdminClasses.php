@@ -1,138 +1,150 @@
 <?php
-class BceAdminBaseFieldBean{
+class BCEFormInstanceBean{
 	
 	/**
-	 * @var string
+	 * @var DaoDescriptorBean
 	 */
-	public $instanceName;
+	public $daoData;
 	
 	/**
-	 * @var string
+	 * @var BaseFieldDescriptorBean
 	 */
+	public $idFieldDescriptor;
+	
+	public $mainBeanTableName;
+	public $descriptors;
+	
+	public $renderer;
+	public $validationHandler;
+	public $action;
+	public $method;
+	public $name;
+	public $id;
+	
+}
+
+class FieldDescriptorBean{
+	public $type;
+	public $name;
+	public $renderer;
+	public $formater;
 	public $fieldName;
-	
-	/**
-	* @var string
-	*/
 	public $label;
-	
+	public $validators;
+	public $isPk = false;
+	public $active = true;
+	public $is_new = false;
+	public $db_column;
+}
+
+class BaseFieldDescriptorBean extends FieldDescriptorBean{
 	/**
-	* @var string
+	* @var BeanMethodHelper
 	*/
 	public $getter;
 	
 	/**
-	* @var string
-	*/
+	 * @var BeanMethodHelper
+	 */
 	public $setter;
 	
-	//TODO type this property
-	public $validator;
-	
-	//TODO type this property
-	public $formatter;
-	
-	public function __construct(MoufInstanceDescriptor $desc){
-		$this->instanceName = $desc->getName();
-		$this->fieldName = $desc->getProperty('fieldName')->getValue();
-		$this->label = $desc->getProperty('label')->getValue();
-		$this->getter = $desc->getProperty('getter')->getValue();
-		$this->setter = $desc->getProperty('setter')->getValue();
-	}
-	
-	public function renderAdmin(){
-	?>
-		<div>
-			<div>
-				<label>Field Name</label>
-				<span><?php echo $this->fieldName?></span>
-			</div>
-			<div>
-				<label>Label</label>
-				<input type="text" name="label[<?php echo $this->instanceName?>]" value="<?php echo $this->label?>"/>
-			</div>
-			<div>
-				<label>Getter</label>
-				<input type="text" name="getter[<?php echo $this->instanceName?>]" value="<?php echo $this->getter?>"/>
-			</div>
-			<div>
-				<label>Setter</label>
-				<input type="text" name="setter[<?php echo $this->instanceName?>]" value="<?php echo $this->setter?>"/>
-			</div>
-		</div>
-	<?php
+	public function __construct(){
+		$this->type = 'base';
 	}
 }
 
-class BceAdminFKFieldBean extends BceAdminBaseFieldBean{
+class ForeignKeyFieldDescriptorBean extends BaseFieldDescriptorBean{
 	
-	//TODO type this property
-	public $dao;
-	
-	/**
-	 * @var string
-	 */
-	public $linkedFieldGetter;
+	public $daoName;
+	public $dataMethod;
+	public $linkedIdGetter;
+	public $linkedLabelGetter;
 	
 	/**
-	 * @var string
+	 * @var DaoDescriptorBean
 	 */
-	public $linkedValueGetter;
+	public $daoData;
 	
-	/**
-	 * @var BceConfigController
-	 */
-	public $context;
-	
-	public function __construct(MoufInstanceDescriptor $desc, $context){
-		parent::__construct($desc);
-		
-		$this->linkedFieldGetter = $desc->getProperty('linkedFieldGetter')->getValue();
-		$this->linkedValueGetter = $desc->getProperty('linkedValueGetter')->getValue();
-		
-		$this->context = $context;
+	public function __construct(){
+		$this->type = 'fk';
 	}
 	
-	public function renderAdmin(){
-		?>
-			<div>
-				<div>
-					<label>Field Name</label>
-					<span><?php echo $this->fieldName; ?></span>
-				</div>
-				<div>
-					<label>Label</label>
-					<input type="text" name="label[<?php echo $this->instanceName; ?>]" value="<?php echo $this->label; ?>"/>
-				</div>
-				<div>
-					<label>Getter</label>
-					<input type="text" name="getter[<?php echo $this->instanceName; ?>]" value="<?php echo $this->getter; ?>"/>
-				</div>
-				<div>
-					<label>Setter</label>
-					<input type="text" name="setter[<?php echo $this->instanceName; ?>]" value="<?php echo $this->setter; ?>"/>
-				</div>
-				<div>
-					<label>DAO</label>
-					<select>
-					<?php 
-					/*foreach ($this->context->daoInstances as $dao) {
-					?>
-						<option value="<?php echo $dao?>"><?php echo $dao?></option>
-					<?php
-					}*/
-					?>	
-					</select>					
-				</div>
-				<div>
-					<label>Field Getter</label>
-					<input type="text" name="fieldGetter[<?php echo $this->instanceName?>]" value="<?php echo $this->linkedFieldGetter?>"/>
-				</div>
-				<div>
-					<label>Value Getter</label>
-					<input type="text" name="valueGetter[<?php echo $this->instanceName?>]" value="<?php echo $this->linkedValueGetter?>"/>
-				</div>
-			</div>
-		<?php
-		}
+}
+
+class Many2ManyFieldDescriptorBean extends FieldDescriptorBean{
+	
+	public $mappingDaoName;
+	/**
+	 * @var DaoDescriptorBean
+	 */
+	public $mappingDaoData;
+	public $beanValuesMethod;
+	public $mappingIdGetter;
+	public $mappingLeftKeySetter;
+	public $mappingRightKeyGetter;
+	public $mappingRightKeySetter;
+	
+	public $linkedDaoName;
+	
+	/**
+	 * @var DaoDescriptorBean
+	 */
+	public $linkedDaoData;
+	public $linkedIdGetter;
+	public $linkedLabelGetter;
+	public $dataMethod;
+	
+	public function __construct(){
+		$this->type = 'm2m';
+	}
+	
+}
+
+class DaoDescriptorBean{
+	public $beanTableName;
+	public $beanClassFields;
+	public $daoMethods;
+}
+
+class BeanMethodHelper{
+	
+	public $name;
+	public $dbType;
+	public $phpType;
+
+	/**
+	 * @var ForeignKeyDataBean
+	 */
+	public $fkData;
+}
+
+class BeanFieldHelper{
+	
+	/**
+	 * @var BeanMethodHelper
+	 */
+	public $getter;
+
+	/**
+	 * @var BeanMethodHelper
+	 */
+	public $setter;
+	
+	/**
+	 * @var BaseFieldDescriptorBean
+	 */
+	public $asDescriptor;
+	
+	public $columnName;
+	public $isPk = false;
+	
+	public $type = 'base';
+	
+}
+
+class ForeignKeyDataBean{
+	
+	public $refTable;
+	public $refColumn;
+	
 }

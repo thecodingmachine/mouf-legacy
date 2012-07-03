@@ -1,69 +1,81 @@
 <?php 
 /* @var $this BceConfigController */
 ?>
+
+
+<style>
+	.ui-tabs-vertical { width: 950px; }
+	.ui-tabs-vertical .ui-tabs-nav { float: left; width: 100px; padding: 0; border: 1px solid gray;}
+	.ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; }
+	.ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+	.ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected {  }
+	.ui-tabs-vertical .ui-tabs-panel { float: left; width: 813px; background-color: white;}
+</style>
+
+<script type="text/javascript">
+<!--
+var daos = ['<?php echo implode("', '", $this->daoInstances); ?>']
+
+var renderers = ['<?php echo implode("', '", $this->renderers); ?>'];
+var formaters = ['<?php echo implode("', '", $this->formaters); ?>'];
+var validators = ['<?php echo implode("', '", $this->validators); ?>'];
+
+var formRenderers = ['<?php echo implode("', '", $this->formRenderers); ?>'];
+var validationHandlers = ['<?php echo implode("', '", $this->validationHandlers); ?>'];
+
+var bceSettings = {
+	rootUrl : "<?php echo ROOT_URL?>"
+}
+jQuery(document).ready(function() {
+	
+	<?php 
+	if ($this->mainDAOName){
+	?>
+	initInstance('<?php echo $this->instanceName; ?>');
+	<?php
+	}
+	?>
+});
+//-->
+</script>
 <h1>Configuration of <i>'<?php echo $this->instanceName ?>'</i> instance</h1>
-<form>
-	<div>
-		<label>
-			Main DAO:&nbsp;
-			<?php
-			//http://localhost/samples/mouftests/mouf/mouf/displayComponent?name=db2frDateFormater&selfedit=false 
-			if ($this->mainDAOName){echo "<span><a href='".ROOT_URL."mouf/mouf/displayComponent?name=".$this->mainDAOName."&selfedit=false'>".$this->mainDAOName."</a></span>";}
-			else{
-			?>
-			<select>
-			<?php 
-			foreach ($this->daoInstances as $dao) {
-			?>
-				<option value="<?php echo $dao?>"><?php echo $dao?></option>
-			<?php
-			}
-			?>	
-			</select>
-			<?php 
-			}
-			?>
-		</label>
-		<fieldset>
-			<legend>Id field</legend>
-			<?php 
-			$this->idFieldDescriptor->renderAdmin();			
-			?>	
-		</fieldset>
-		<?php if ($this->existingFieldDescriptors){?>
-		<fieldset>
-			<legend>Existing Fields</legend>
-			<?php foreach ($this->existingFieldDescriptors as $field) {
-				$field->renderAdmin();
-			}?>
-		</fieldset>
-		<?php }?>
-		<?php if ($this->fields){?>
-		<fieldset>
-			<legend>Fields</legend>
-			<table>
-				<tr>
-					<th>Field Name</th>
-					<th>Label</th>
-					<th>Getter Method</th>
-					<th>Setter Method</th>
-					<th>Formatter</th>
-					<th>Renderer</th>
-				</tr>
-			<?php foreach ($this->fields as $fieldName => $data) {
-			?>
-				<tr>
-					<td><?php echo $fieldName ?></td>
-					<td><input name="fieldnames[<?php echo $fieldName ?>]" value="<?php echo $fieldName ?>"/></td>
-					<td><input name="getters[<?php echo $fieldName ?>]" value="<?php echo $data['getter'] ?>"/></td>
-					<td><input name="setters[<?php echo $fieldName ?>]" value="<?php echo $data['setter'] ?>"/></td>
-					<td>Formatter</td>
-					<td>Renderer</td>
-				</tr>
-			<?php
-			}?>
-			</table>
-		</fieldset>
-		<?php }?>
+	<label class="label">Main DAO :</label>
+	<span>
+	<?php
+	$value= "";
+	if ($this->mainDAOName){
+		$value = "<span>$this->mainDAOName</span>";
+	}else{
+		foreach ($this->daoInstances as $daoInstance) {
+			$value .= "<option value='$daoInstance' id='$daoInstance'>$daoInstance</option>";
+		}
+		$value = "<select onchange='refershValues(this, \"".$this->instanceName."\")'>$value</select>";
+	}
+	echo $value;
+	?>
+	</span>
+	<form action="save" method="post">
+	<input type="hidden" name="formInstanceName" value="<?php echo $this->instanceName; ?>" />
+	<div id="tabs">
+		<ul>
+			<li><a href="#descriptors-tab">Descriptors</a></li>
+			<li><a href="#config-tab">Configuration</a></li>
+			<li>&nbsp;</li>
+			<li><div onclick="addM2MBlock(); return false;" class="naked addm2m">m2m</div></li>
+		</ul>
+		<div id="descriptors-tab">
+			<div id="data" class="sortable" style="width: 750px; float: left;">
+			</div>
+			<div style="clear: both"></div>
+		</div>
+		<div id="config-tab">
+			<div id="data_add" style="width: 850px; float: left">
+				<div>
+					<label>Id descriptor</label>
+					<div id="id_desc"></div>
+				</div>
+			</div>
+		</div>		
 	</div>
-</form>
+	<button type="submit" onclick="getNewM2MInstancesNames()">Save</button>
+	</form>

@@ -1,6 +1,6 @@
 <?php
 /**
- * A renderer class that ouputs multiple values field like checkboxes , multiselect list, ... fits for many to many relations  
+ * A renderer class that ouputs multiple values field like checkboxes , multiselect list, ... fits for many to many relations
  * @Component
  */
 class MultipleSelectFieldRenderer implements FieldRendererInterface{
@@ -25,23 +25,37 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 		$fieldName = $descriptor->getFieldName();
 		$values = $descriptor->getBeanValues();
 		$html = "";
+		$data = $descriptor->getData();
+		$selectIds = array();
+		if ($values){
+			foreach ($values as $bean) {
+				$id = $descriptor->getMappingRightKey($bean);
+				$selectIds[] = $id;
+			}
+		}
 		switch ($this->mode) {
 			case 'multiselect':
 				$html = "<select name='$fieldName' id='$fieldName' multiple='multiple'>";
-				foreach ($descriptor->getData() as $id => $label) {
+				foreach ($data as $bean) {
+					$beanId = $descriptor->getRelatedBeanId($bean);
+					$beanLabel = $descriptor->getRelatedBeanLabel($bean);
 					//TODO here :: change to check array search and select subset
-					if (array_search($id, $values)!==false) $selectStr = "selected = 'selected'";
+					if (array_search($beanId, $selectIds)!==false) $selectStr = "selected = 'selected'";
 					else $selectStr = "";
-					$html .= "<option value='$id' $selectStr>$label</option>";
+					$html .= "<option value='$beanId' $selectStr>$beanLabel</option>";
 				}
 				$html .= "</select>";
 			break;
 			
 			case 'chbx':
-				foreach ($descriptor->getData() as $id => $label) {
-					$checked = (array_search($id, $values)!==false) ? "checked='checked'" : "";
-					$html .= "<label for='$fieldName"."-"."$id'>$label</label><input type='checkbox' $checked name='".$fieldName."[]' id='$fieldName"."-"."$id' value='$id'/>";
-				}	
+				foreach ($data as $bean) {
+					$beanId = $descriptor->getRelatedBeanId($bean);
+					$beanLabel = $descriptor->getRelatedBeanLabel($bean);
+					$checked = (array_search($beanId, $selectIds)!==false) ? "checked='checked'" : "";
+					$html .= "<label class='checkbox inline' for='$fieldName"."-"."$beanId'>
+						<input type='checkbox' $checked value='$beanId' id='$fieldName"."-"."$beanId' name='".$fieldName."'> $beanLabel
+					</label>";
+				}
 			break;
 		}
 		return $html;

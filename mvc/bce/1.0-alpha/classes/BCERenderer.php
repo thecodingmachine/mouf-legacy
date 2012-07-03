@@ -12,4 +12,9 @@ interface BCERenderer{
 	 */
 	public function render(BCEForm $fieldDescriptors);
 	
+	/**
+	 * Returns the css stylesheet depending on the chosen skin
+	 */
+	public function getDefaultStyleSheet();
+	
 }

@@ -2,7 +2,7 @@
 /**
  * Numeric validator: validates a input to be a numeric value.
  * Validation may be specified if decimal values are accepted
- * 
+ *
  * @Component
  */
 class MaxMinRangeLengthValidator extends AbstractValidator implements JsValidatorInterface{
