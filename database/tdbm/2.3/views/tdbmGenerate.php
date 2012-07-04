@@ -21,6 +21,11 @@
 <div>
 <label>DaoFactory instance name:</label><input type="text" name="daofactoryinstancename" value="<?php echo plainstring_to_htmlprotected($this->daoFactoryInstanceName) ?>"></input>
 </div>
+
+<div>
+<label>Keep support for previous DAOs:</label><input type="checkbox" name="keepSupport"></input>
+</div>
+
 <div>
 	<button name="action" value="generate" type="submit">Generate DAOs</button>
 </div>

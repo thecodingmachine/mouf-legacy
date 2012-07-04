@@ -90,7 +90,7 @@ class BceConfigController extends AbstractMoufInstanceController {
 			require_once dirname(__FILE__).'/../../../../../mouf/actions/InstallUtils.php';
 			
 			// Let's init Mouf
-			InstallUtils::init(InstallUtils::$INIT_APP);
+// 			InstallUtils::init(InstallUtils::$INIT_APP);
 			
 			// Let's create the instance
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();

@@ -15,7 +15,7 @@ interface DAOInterface{
 	 * Get a new bean record
 	 * * @return mixed the new bean object
 	 */
-	public function getNew();
+	public function create();
 	
 	/**
 	 * 

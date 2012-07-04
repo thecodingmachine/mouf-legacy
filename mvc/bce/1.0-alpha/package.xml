@@ -18,6 +18,11 @@
 			<name>formatters</name>
 			<version>>=2.0</version>
 		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>daointerface</name>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>BCEForm.php</require>
@@ -25,7 +30,6 @@
 		<require>classes/BaseFieldDescriptor.php</require>
 		<require>classes/BaseRenderer.php</require>
 		<require>classes/BCERenderer.php</require>
-		<require>classes/DAOInterface.php</require>
 		<require>classes/FieldRendererInterface.php</require>
 		<require>classes/ForeignKeyFieldDescriptor.php</require>
 		<require>classes/HiddenRenderer.php</require>

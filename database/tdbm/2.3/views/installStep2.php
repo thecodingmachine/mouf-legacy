@@ -12,6 +12,9 @@
 <div>
 <label>Bean directory:</label><input type="text" name="beandirectory" value="<?php echo plainstring_to_htmlprotected($this->beanDirectory) ?>"></input>
 </div>
+<div>
+<label>Keep support for previous DAOs:</label><input type="checkbox" name="keepSupport" value="1"></input>
+</div>
 
 <div>
 	<button name="action" value="generate" type="submit">Install TDBM</button>

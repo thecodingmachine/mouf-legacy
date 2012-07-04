@@ -52,10 +52,10 @@ class TdbmController extends AbstractMoufInstanceController {
 	 * @param string $name
 	 * @param bool $selfedit
 	 */
-	public function generate($name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
+	public function generate($name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $keepSupport = 0,$selfedit="false") {
 		$this->initController($name, $selfedit);
 
-		self::generateDaos($this->moufManager, $name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit);
+		self::generateDaos($this->moufManager, $name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit, $keepSupport);
 				
 		// TODO: better: we should redirect to a screen that list the number of DAOs generated, etc...
 		header("Location: ".ROOT_URL."mouf/instance/?name=".urlencode($name)."&selfedit=".$selfedit);
@@ -65,7 +65,7 @@ class TdbmController extends AbstractMoufInstanceController {
 	 * This function generates the DAOs and Beans for the TDBM service passed in parameter. 
 	 * 
 	 */
-	public static function generateDaos(MoufManager $moufManager, $name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false") {
+	public static function generateDaos(MoufManager $moufManager, $name, $daodirectory, $beandirectory, $daofactoryclassname, $daofactoryinstancename, $selfedit="false", $keepSupport = null) {
 		$moufManager->setVariable("tdbmDefaultDaoDirectory", $daodirectory);
 		$moufManager->setVariable("tdbmDefaultBeanDirectory", $beandirectory);
 		$moufManager->setVariable("tdbmDefaultDaoFactoryName", $daofactoryclassname);
@@ -87,7 +87,7 @@ class TdbmController extends AbstractMoufInstanceController {
 		
 		
 		
-		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/database/tdbm/2.2/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory);
+		$url = MoufReflectionProxy::getLocalUrlToProject()."plugins/database/tdbm/2.3/generateDaos.php?name=".urlencode($name)."&selfedit=".$selfedit."&daofactoryclassname=".urlencode($daofactoryclassname)."&daodirectory=".urlencode($daodirectory)."&beandirectory=".urlencode($beandirectory)."&support=".urlencode($keepSupport);
 		$response = self::performRequest($url);
 		
 		/*if (trim($response) != "") {

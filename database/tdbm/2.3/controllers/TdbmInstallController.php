@@ -107,7 +107,7 @@ class TdbmInstallController extends Controller {
 	 * @param string $name
 	 * @param bool $selfedit
 	 */
-	public function generate($daodirectory, $beandirectory, $selfedit="false") {
+	public function generate($daodirectory, $beandirectory, $keepSupport = 0, $selfedit="false") {
 		$this->selfedit = $selfedit;
 		
 		if ($selfedit == "true") {
@@ -124,7 +124,7 @@ class TdbmInstallController extends Controller {
 		
 		$this->moufManager->rewriteMouf();
 		
-		TdbmController::generateDaos($this->moufManager, "tdbmService", $daodirectory, $beandirectory, "DaoFactory", "daoFactory", $selfedit);
+		TdbmController::generateDaos($this->moufManager, "tdbmService", $daodirectory, $beandirectory, "DaoFactory", "daoFactory", $selfedit, $keepSupport);
 				
 		InstallUtils::continueInstall($selfedit == "true");
 	}

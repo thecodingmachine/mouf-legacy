@@ -18,7 +18,7 @@
 		<dependency>
 			<group>utils/common</group>
 			<name>validators</name>
-			<version>1.0</version>
+			<version>>=1.0</version>
 		</dependency>
 		<dependency>
 			<group>html</group>
