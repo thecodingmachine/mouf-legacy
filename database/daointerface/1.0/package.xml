@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>DAO Interface</displayName>
+	<shortDescription>This package only contains a basic interface for implementing common DAO methods. Those DAOs will be used by BCE forms among other things</shortDescription>
+	<docUrl></docUrl>
+	<logo>database.png</logo>
+	<dependencies/>
+	<requires>
+		<require>DAOInterface.php</require>
+	</requires>
+</package>
