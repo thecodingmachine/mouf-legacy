@@ -189,3 +189,10 @@ input.error , .error {
   border-color: #eed3d7;
 }
 
+.pointer{
+	cursor:pointer;
+}
+.pager-cursor {
+	text-indent: -9999px;
+}
+
