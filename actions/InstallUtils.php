@@ -44,4 +44,48 @@ class InstallUtils {
 	public static function continueInstall($selfEdit = false) {
 		header("Location: ".ROOT_URL."mouf/install/installStepDone?selfedit=".(($selfEdit)?"true":"false"));
 	}
+	
+	public static function massCreate($classes, $moufManager){
+		foreach ($classes as $class) {
+			$settings = null;
+			if (($index = strpos($class, "{")) !== false){
+				$className = substr($class, 0, $index);
+				$settings = substr($class, $index);
+				$class = $className;
+			}
+		
+			if ($settings){
+				$settings = json_decode($settings);
+				$instance = self::createInstance($class, $moufManager);
+				$adds = "";
+				foreach ($settings as $prop => $value) {
+					/* @var $instance MoufInstanceDescriptor */
+					$propName = str_replace("allow", "", $prop);
+					$adds .= $value === true ? $propName : ($value === false ?"No".$propName : "");
+					$instance->getProperty($prop)->setValue($value);
+					$instance->setName(self::getInstanceName($class, $moufManager, $adds));
+				}
+			}else{
+				$instance = self::createInstance($class, $moufManager);
+			}
+		}
+	}
+	
+	public static function createInstance($class, $moufManager){
+		$instance = $moufManager->createInstance($class);
+		$instance->setName(self::getInstanceName($class, $moufManager));
+		return $instance;
+	}
+	
+	public static function getInstanceName($class, $moufManager, $adds = ""){
+		$name = lcfirst($class).$adds;
+		$instanceName = $name;
+		$i = 2;
+		while($moufManager->instanceExists($instanceName)){
+			$instanceName = $name . $i;
+			$i++;
+		}
+	
+		return $instanceName;
+	}
 }
