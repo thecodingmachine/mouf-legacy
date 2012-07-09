@@ -17,4 +17,7 @@
 	<externalComponentRequires>
 		<require>JQueryValidateExternalComponent.php</require>
 	</externalComponentRequires>
+	<install>
+		<file>install.php</file>
+	</install>
 </package>

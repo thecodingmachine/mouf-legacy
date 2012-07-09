@@ -18,4 +18,7 @@
 	<externalComponentRequires>
 		<require>JQueryUIExternalComponent.php</require>
 	</externalComponentRequires>
+	<install>
+		<file>install.php</file>
+	</install>
 </package>
