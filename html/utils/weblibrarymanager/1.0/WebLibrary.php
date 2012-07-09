@@ -142,4 +142,14 @@ class WebLibrary implements WebLibraryInterface {
 	public function setRenderer(WebLibraryRendererInterface $renderer) {
 		$this->renderer = $renderer;
 	}
+	
+	/**
+	 * The list of all libraries that are needed for this library
+	 * 
+	 * @Property
+	 * @param array<WebLibraryInterface> $libraries
+	 */
+	public function setDependencies($libraries) {
+		$this->dependencies = $libraries;
+	}
 }
