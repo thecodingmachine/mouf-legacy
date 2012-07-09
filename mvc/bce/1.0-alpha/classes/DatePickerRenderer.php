@@ -2,11 +2,11 @@
 require_once 'FieldRendererInterface.php';
 
 /**
- * Base class for rendering simple text fields
+ * This renderer handles date / timestamp input fields
+* @ApplyTo { "php" :[ "string", "int", "number", "boolean", "timestamp", "datetime", "date" ] }
  * @Component
- * @ApplyTo { "php" :[ "string", "int", "number", "boolean" ], "type": ["base"] }
  */
-class TextFieldRenderer implements FieldRendererInterface{
+class DatePickerRenderer implements FieldRendererInterface{
 	
 	public function render($descriptor){
 		/* @var $descriptor FieldDescriptor */
@@ -15,11 +15,13 @@ class TextFieldRenderer implements FieldRendererInterface{
 		return "<input type='text' value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";
 	}
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldRendererInterface::getJS()
-	 */
 	public function getJS($descriptor){
-		return array();
+		/* @var $libManager WebLibraryManager */
+		$fieldName = $descriptor->getFieldName();
+		return array(
+			"ready" => "$('#$fieldName').datepicker();"	
+		);
 	}
+	
+	
 }

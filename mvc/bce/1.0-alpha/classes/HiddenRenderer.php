@@ -19,4 +19,8 @@ class HiddenRenderer implements FieldRendererInterface{
 		return "<input type='hidden' value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";
 	}
 	
+	public function getJS($descriptor){
+		return array();
+	}
+	
 }

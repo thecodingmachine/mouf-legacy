@@ -18,4 +18,9 @@ interface JsValidationHandlerInterface{
 	 * @param $formId the html 'id' attribute of the form
 	 */
 	public function getValidationJs($formId);	
+	
+	/**
+	 * Returns the JS library needed for validation handling
+	 */
+	public function getJsLibrary();
 }

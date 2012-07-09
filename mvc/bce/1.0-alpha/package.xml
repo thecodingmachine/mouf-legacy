@@ -23,13 +23,22 @@
 			<name>daointerface</name>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<group>html/utils</group>
+			<name>weblibrarymanager</name>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<group>database</group>
+			<name>tdbm</name>
+			<version>>=2.3</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>BCEForm.php</require>
 		<require>classes/FieldDescriptor.php</require>
 		<require>classes/BaseFieldDescriptor.php</require>
-		<require>classes/BaseRenderer.php</require>
-		<require>classes/BCERenderer.php</require>
+		<require>form_renderer/base/BaseRenderer.php</require>
 		<require>classes/FieldRendererInterface.php</require>
 		<require>classes/ForeignKeyFieldDescriptor.php</require>
 		<require>classes/HiddenRenderer.php</require>
@@ -37,7 +46,7 @@
 		<require>classes/MultipleSelectFieldRenderer.php</require>
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
-		<require>classes/validators/JsValidationHandlerInterface.php</require>
+		<require>classes/DatePickerRenderer.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
 	</requires>
 	<adminRequires>
@@ -45,4 +54,7 @@
 		<require>controllers/BceConfigController.php</require>
 		<require>BCEAdmin.php</require>
 	</adminRequires>
+	<install>
+		<file>bceInstall.php</file>
+	</install>
 </package>

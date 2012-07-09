@@ -118,6 +118,12 @@ class BCEForm{
 	public $errorMessages;
 	
 	/**
+	 * The js scripts added by the renderers
+	 * @var array<string>
+	 */
+	public $scripts = array();
+	
+	/**
 	 * Load the main bean of the Form, and then the linked descriptors to display bean values
 	 * @param mid $id: The id of the bean (may be null for new objects)
 	 */
@@ -133,6 +139,8 @@ class BCEForm{
 			if ($this->validationHandler && count($descriptor->getValidators())){
 				$this->validationHandler->buildValidationScript($descriptor, $this->id);
 			}
+			$renderer = $descriptor->getRenderer();
+			$this->loadScripts($renderer,$descriptor);
 		}
 		
 		foreach ($this->many2ManyFieldDescriptors as $descriptor) {
@@ -141,6 +149,8 @@ class BCEForm{
 			if ($this->validationHandler && count($descriptor->getValidators())){
 				$this->validationHandler->buildValidationScript($descriptor, $this->id);
 			}
+			$renderer = $descriptor->getRenderer();
+			$this->loadScripts($renderer,$descriptor);
 		}
 	}
 	
@@ -149,7 +159,44 @@ class BCEForm{
 	 * @return string
 	 */
 	public function getValidationJS(){
-		return $this->validationHandler->getValidationJs($this->id);
+		$js = $this->validationHandler->getValidationJs($this->id);
+		$js .= $this->renderScripts();
+		
+		return $js;
+	}
+	
+	public function renderScripts(){
+		$jsPrefix = $jsSuffix = $js = "";
+		
+		foreach ($this->scripts as $scope => $values){
+			switch ($scope) {
+				case "ready":
+					$jsPrefix = "
+						$(document).ready(function(){";
+					$jsSuffix = "
+						});";
+				break;
+				case "load":
+					$jsPrefix = "
+						$(window).ready(function(){";
+					$jsSuffix = "
+						});";
+				break;
+				case "unload":
+					$jsPrefix = "
+						$(window).ready(function(){";
+					$jsSuffix = "
+						});";
+				break;
+			}
+			foreach ($values as $value){
+				$js .= "
+					$value
+				";
+			}
+		}
+		
+		return $jsPrefix . $js . $jsSuffix;
 	}
 	
 	/**
@@ -158,6 +205,12 @@ class BCEForm{
 	public function toHTML(){
 		//Render the form
 		$this->renderer->render($this);
+	}
+	
+	public function loadScripts($renderer, $descriptor){
+		foreach ($renderer->getJs($descriptor) as $scope => $script){
+			$this->scripts[$scope][] = $script;
+		}
 	}
 	
 	public function save($postValues){

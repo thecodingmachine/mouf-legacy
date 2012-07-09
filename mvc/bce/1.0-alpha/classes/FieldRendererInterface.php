@@ -12,4 +12,11 @@ interface FieldRendererInterface{
 	 */
 	public function render($descriptor);
 	
+	/**
+	 * Function that may return some JS script (eg. datepicker, slider, etc...) related to this renderer
+	 * @param FieldDescriptor $descriptor
+	 * @return array<string>
+	 */
+	public function getJS($descriptor);
+	
 }

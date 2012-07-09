@@ -1,5 +1,5 @@
 <?php
-require_once 'BCERenderer.php';
+require_once '/../BCERendererInterface.php';
 
 /**
  * This is a simple form rendering class, using a simple field layout :
@@ -7,12 +7,11 @@ require_once 'BCERenderer.php';
  * @Component
  *
  */
-class BaseRenderer implements BCERenderer{
+class BaseRenderer implements BCERendererInterface{
 	
 	/**
 	 * @Property
-	 * @var string
-	 * @OneOf ("basic", "smart")
+	 * @var WebLibrary
 	 */
 	public $skin;
 	
@@ -47,16 +46,7 @@ class BaseRenderer implements BCERenderer{
 <?php
 	}
 	
-	public function getDefaultStyleSheet(){
-		switch ($this->skin) {
-			case "basic":
-				return "plugins/mvc/bce/1.0-alpha/css/basic.css";
-			break;
-			case "smart":
-				return "plugins/mvc/bce/1.0-alpha/css/smart.css";
-			;
-			break;
-		}
+	public function getSkin(){
+		return $this->skin;
 	}
-	
 }

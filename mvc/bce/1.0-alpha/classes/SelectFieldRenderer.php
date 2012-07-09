@@ -39,12 +39,20 @@ class SelectFieldRenderer implements FieldRendererInterface{
 				
 				$html.="
 					<label class='radio inline' for='$fieldName"."-"."$beanId'>
-						<input type='radio' value='$beanId' $checkedStr id='inlineCheckbox1' id='$fieldName"."-"."$beanId' name='$fieldName'> $beanLabel
+						<input type='radio' value='$beanId' $checkedStr id='$fieldName"."-"."$beanId' name='$fieldName'> $beanLabel
 					</label>
 				";
 			}
 		}
 		return $html;
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::getJS()
+	 */
+	public function getJS($descriptor){
+		return array();
 	}
 	
 }

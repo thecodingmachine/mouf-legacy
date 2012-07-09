@@ -4,7 +4,7 @@
  * This interface is implemented by all form renderers
  * @Component
  */
-interface BCERenderer{
+interface BCERendererInterface{
 	
 	/**
 	 * Main function of the Renderer: output the form's HTML
@@ -14,7 +14,8 @@ interface BCERenderer{
 	
 	/**
 	 * Returns the css stylesheet depending on the chosen skin
+	 * @return WebLibrary
 	 */
-	public function getDefaultStyleSheet();
+	public function getSkin();
 	
 }

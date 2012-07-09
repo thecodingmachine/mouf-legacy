@@ -1,4 +1,5 @@
 <?php
+require_once 'JsValidationHandlerInterface.php';
 /**
  * Builds the validation script of a form depending on it's field descriptors and their validators using the jQuery Validate syntax and library
  * 
@@ -10,13 +11,21 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 	
 	/**
 	 * Contains all the validation functions
+	 * @var array<string>
 	 */
 	private $validationMethods;
 	
 	/**
 	 * Contains all the rule to be applied, field by field
+	 * @var stdClass
 	 */
 	private $validationRules;
+	
+	/**
+	 * @Property
+	 * @var WebLibrary $jsLib
+	 */
+	public $jsLib;
 	
 	private function wrapRule(FieldDescriptor $fieldDescriptor, JsValidatorInterface $validator, $ruleIndex){
 		return "
@@ -131,6 +140,10 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 		
 		
 		return $js;
+	}
+	
+	public function getJsLibrary(){
+		return $this->jsLib;
 	}
 	
 }
