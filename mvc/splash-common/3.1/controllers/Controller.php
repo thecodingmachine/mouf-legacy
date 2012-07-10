@@ -91,8 +91,12 @@ abstract class Controller implements Scopable, UrlProviderInterface {
 		
 		if (empty($method)) {
 			// Support for both defaultAction, and if not foudn "index" method.
-			if (method_exists($this,"defaultAction")) {
+			if(method_exists($this, 'defaultAction__'.$_SERVER['REQUEST_METHOD']))
+				$method = 'defaultAction__'.$_SERVER['REQUEST_METHOD'];
+			elseif (method_exists($this,"defaultAction")) {
 				$method = "defaultAction";
+			} elseif(method_exists($this, 'index__'.$_SERVER['REQUEST_METHOD'])) {
+				$method = 'index__'.$_SERVER['REQUEST_METHOD'];
 			} else {
 				$method = "index";
 			}
