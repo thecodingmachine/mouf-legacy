@@ -18,6 +18,7 @@
 		<require>WebLibraryRendererInterface.php</require>
 		<require>WebLibrary.php</require>
 		<require>WebLibraryManager.php</require>
+		<require>WebLibraryException.php</require>
 		<require>DefaultWebLibraryRenderer.php</require>
 	</requires>
 	<install>
