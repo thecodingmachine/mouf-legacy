@@ -14,45 +14,29 @@ $classes = array(
 		'MultipleSelectFieldRenderer',
 		"RequiredValidator",
 		'SelectFieldRenderer',
-		'TextFieldRenderer',
-		'JQueryValidateHandler'
+		'TextFieldRenderer'
 );
+InstallUtils::massCreate($classes, $moufManager);
 
-//now create default jquery and jquery UI instances that will be used
-$renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
-
-$jQueryUiLib = $moufManager->createInstance("WebLibrary");
-$jQueryUIInstanceName = InstallUtils::getInstanceName("jQueryUI", $moufManager);
-$jQueryUiLib->setName($jQueryUIInstanceName);
-$jQueryUiLib->getProperty("jsFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-ui/1.8.20/js/jquery-1.7.2.min.js', 
-	'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'
-));
-$jQueryUiLib->getProperty("cssFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-ui/1.8.20/css/ui-darkness/jquery-ui-1.8.20.custom.css'
-));
-$jQueryUiLib->getProperty("renderer")->setValue($renderer);
-
-$bceWebLibrairyManager = $moufManager->createInstance("WebLibraryManager");
-$webLibManagerInstanceName = InstallUtils::getInstanceName("bceLibManager", $moufManager);
-$bceWebLibrairyManager->setName($webLibManagerInstanceName);
-$bceWebLibrairyManager->getProperty('webLibraries')->setValue(array($jQueryLib, $jQueryUiLib));
-
+//now create default renderer skin
 $baseSkinLib = $moufManager->createInstance("WebLibrary");
 $baseSkinLibName = InstallUtils::getInstanceName("bceBaseSkin", $moufManager);
-$jQueryInstanceNames->setName($baseSkinLibName);
+$baseSkinLib->setName($baseSkinLibName);
 $baseSkinLib->getProperty("cssFiles")->setValue(array(
-	"plugins/mvc/bce/1.0-alpha/form_renderer/base/css/basic.css"
+	"plugins/mvc/bce/1.0-alpha/form_renderer/base/basic/css/basic.css"
 ));
-$baseSkinLib->getProperty("renderer")->setValue($renderer);
-
+$baseSkinLib->getProperty("renderer")->setValue("defaultWebLibraryRenderer");
 
 $baseRendererInstance = $moufManager->createInstance('BaseRenderer');
 $baseRendererInstanceName = InstallUtils::getInstanceName("BaseRenderer", $moufManager);
 $baseRendererInstance->setName($baseRendererInstanceName);
-$baseRendererInstance->getProperty("skin")->setValue($baseSkinLib);
+$baseRendererInstance->getProperty("skin")->setValue($baseSkinLibName);
 
-InstallUtils::massCreate($classes, $moufManager);
+/* JQueryValidateHandler */
+$jQValidateInstance = $moufManager->createInstance('JQueryValidateHandler');
+$jQValidateInstanceName = InstallUtils::getInstanceName("JQueryValidateHandler", $moufManager);
+$jQValidateInstance->setName($jQValidateInstanceName);
+$jQValidateInstance->getProperty('jsLib')->setValue("jQueryValidateLibrary");
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();

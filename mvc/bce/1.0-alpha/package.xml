@@ -4,7 +4,7 @@
 	<shortDescription>The best CRUD ever!</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
 	<doc>
-		<page title="Introduction to Splash" url="index.html" />
+		<page title="Introduction to BCE" url="index.html" />
 	</doc>
 	<logo>icons/logo.png</logo>
 	<dependencies>
@@ -32,6 +32,21 @@
 			<group>database</group>
 			<name>tdbm</name>
 			<version>>=2.3</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>>=1.7</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-ui</name>
+			<version>>=1.8.20</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery-validate</name>
+			<version>>=1.7</version>
 		</dependency>
 	</dependencies>
 	<requires>
