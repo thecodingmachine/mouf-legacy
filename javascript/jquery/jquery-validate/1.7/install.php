@@ -11,13 +11,13 @@ $moufManager = MoufManager::getMoufManager();
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
 
 $jQueryValidateLib = $moufManager->createInstance("WebLibrary");
-$jQueryValidateLibName = InstallUtils::getInstanceName("jQueryUi", $moufManager);
+$jQueryValidateLibName = InstallUtils::getInstanceName("jQueryValidateLibrary", $moufManager);
 $jQueryValidateLib->setName($jQueryValidateLibName);
 $jQueryValidateLib->getProperty("jsFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery-validate/1.7/jquery.validate.min.js'
 ));
 $jQueryValidateLib->getProperty("renderer")->setValue($renderer);
-$jQueryValidateLib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQuery')));
+$jQueryValidateLib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();

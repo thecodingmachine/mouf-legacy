@@ -11,13 +11,13 @@ $moufManager = MoufManager::getMoufManager();
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
 
 $jQueryUILib = $moufManager->createInstance("WebLibrary");
-$jQueryUILibName = InstallUtils::getInstanceName("jQueryUi", $moufManager);
+$jQueryUILibName = InstallUtils::getInstanceName("jQueryUiLibrary", $moufManager);
 $jQueryUILib->setName($jQueryUILibName);
 $jQueryUILib->getProperty("jsFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery-ui/1.8.20/js/jquery-ui-1.8.20.custom.min.js'
 ));
 $jQueryUILib->getProperty("renderer")->setValue($renderer);
-$jQueryUILib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQuery')));
+$jQueryUILib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();

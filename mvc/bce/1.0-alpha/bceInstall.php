@@ -12,7 +12,7 @@ $moufManager = MoufManager::getMoufManager();
 $classes = array(
 		'HiddenRenderer',
 		'MultipleSelectFieldRenderer',
-		"RequiredValidator",
+		'DatePickerRenderer',
 		'SelectFieldRenderer',
 		'TextFieldRenderer'
 );
@@ -25,18 +25,18 @@ $baseSkinLib->setName($baseSkinLibName);
 $baseSkinLib->getProperty("cssFiles")->setValue(array(
 	"plugins/mvc/bce/1.0-alpha/form_renderer/base/basic/css/basic.css"
 ));
-$baseSkinLib->getProperty("renderer")->setValue("defaultWebLibraryRenderer");
+$baseSkinLib->getProperty("renderer")->setValue($moufManager->getInstanceDescriptor("defaultWebLibraryRenderer"));
 
 $baseRendererInstance = $moufManager->createInstance('BaseRenderer');
 $baseRendererInstanceName = InstallUtils::getInstanceName("BaseRenderer", $moufManager);
 $baseRendererInstance->setName($baseRendererInstanceName);
-$baseRendererInstance->getProperty("skin")->setValue($baseSkinLibName);
+$baseRendererInstance->getProperty("skin")->setValue($moufManager->getInstanceDescriptor($baseSkinLibName));
 
 /* JQueryValidateHandler */
 $jQValidateInstance = $moufManager->createInstance('JQueryValidateHandler');
 $jQValidateInstanceName = InstallUtils::getInstanceName("JQueryValidateHandler", $moufManager);
 $jQValidateInstance->setName($jQValidateInstanceName);
-$jQValidateInstance->getProperty('jsLib')->setValue("jQueryValidateLibrary");
+$jQValidateInstance->getProperty('jsLib')->setValue($moufManager->getInstanceDescriptor("jQueryValidateLibrary"));
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();

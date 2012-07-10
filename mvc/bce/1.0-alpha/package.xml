@@ -36,7 +36,7 @@
 		<dependency>
 			<group>javascript/jquery</group>
 			<name>jquery</name>
-			<version>>=1.7</version>
+			<version>>=1.6</version>
 		</dependency>
 		<dependency>
 			<group>javascript/jquery</group>

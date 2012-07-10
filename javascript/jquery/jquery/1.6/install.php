@@ -11,7 +11,7 @@ $moufManager = MoufManager::getMoufManager();
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
 
 $jQueryLib = $moufManager->createInstance("WebLibrary");
-$jQueryLibName = InstallUtils::getInstanceName("jQuery", $moufManager);
+$jQueryLibName = InstallUtils::getInstanceName("jQueryLibrary", $moufManager);
 $jQueryLib->setName($jQueryLibName);
 $jQueryLib->getProperty("jsFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery/1.6/jquery-1.6.min.js'
