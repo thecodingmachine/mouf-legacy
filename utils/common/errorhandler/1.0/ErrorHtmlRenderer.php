@@ -60,6 +60,14 @@ class ErrorHtmlRenderer implements ErrorRendererInterface {
 				$color = "#FF3333";
 				$type = "Recoverable Error";
 				break;
+			case E_DEPRECATED:
+				$color = "#FFFF33";
+				$type = "Deprecated";
+				break;
+			case E_USER_DEPRECATED:
+				$color = "#FFFF77";
+				$type = "User Deprecated";
+				break;
 			default:
 				$color = "#000000";
 				$type = "Unknown Error level";
