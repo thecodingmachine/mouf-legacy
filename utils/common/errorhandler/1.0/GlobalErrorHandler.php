@@ -52,7 +52,7 @@ class GlobalErrorHandler implements ErrorHandlerInterface {
 		}
 	}
 	
-	public static function handleGlobalError($errno, $errstr, $errfile, $errline, $errcontext) {
+	public static function handleGlobalError($errno, $errstr, $errfile, $errline, array $errcontext=array()) {
 		$defaultGlobalErrorHandler = MoufManager::getMoufManager()->getInstance("defaultGlobalErrorHandler");
 		/* @var $defaultGlobalErrorHandler GlobalErrorHandler */
 		$defaultGlobalErrorHandler->handleError(new PhpError($errno , $errstr, $errfile, $errline, $errcontext));
