@@ -59,7 +59,7 @@ class ErrorTextRenderer implements ErrorRendererInterface, ExceptionRendererInte
 					$str .= $step['class'].$step['type'].$step['function'].'(';
 				}
 	
-				if (is_array($step['args'])) {
+				if (isset($step['args']) && is_array($step['args'])) {
 					$drawn = false;
 					$params = '';
 					foreach ( $step['args'] as $param)
