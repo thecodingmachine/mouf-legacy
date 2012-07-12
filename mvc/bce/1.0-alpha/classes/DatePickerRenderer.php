@@ -3,7 +3,7 @@ require_once 'FieldRendererInterface.php';
 
 /**
  * This renderer handles date / timestamp input fields
-* @ApplyTo { "php" :[ "string", "int", "number", "boolean", "timestamp", "datetime", "date" ] }
+ * @ApplyTo { "php" :[ "timestamp", "datetime", "date" ] }
  * @Component
  */
 class DatePickerRenderer implements FieldRendererInterface{
@@ -21,6 +21,14 @@ class DatePickerRenderer implements FieldRendererInterface{
 		return array(
 			"ready" => "$('#$fieldName').datepicker();"	
 		);
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::getLibrary()
+	 */
+	public function getLibrary(){
+		return MoufManager::getMoufManager()->getInstance('jQueryUiLibrary');
 	}
 	
 	

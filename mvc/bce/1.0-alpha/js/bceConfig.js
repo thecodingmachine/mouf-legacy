@@ -1,22 +1,22 @@
 var formMethods = [ "GET" , "POST" ];
 
-var refreshFKDaoSettings = [
-	{
+var refreshFKDaoSettings = {
+	'id_getter':{
 		field : "linkedIdGetter",
      	defaultSelect : "getId|get_id",
         methodType : "getter"
 	},
-    {
+    'label_getter':{
     	field : "linkedLabelGetter",
 		defaultSelect : "getLabel|getValue",
     	methodType : "getter"
     },
-    {
+    'data_method':{
     	field : "dataMethod",
 		defaultSelect : "getList|getValues|getAll",
     	methodType : "any"
     }
-];
+};
 
 var newId = 0;
 
@@ -148,7 +148,7 @@ function completeInstanceData(data){
 		var newField = data.daoData.beanClassFields[newFieldName];
 		var newGetter = newField.getter;
 		
-		if (existingFields.indexOf(newGetter) == -1 && (data.idFieldDescriptor && newGetter !== data.idFieldDescriptor.getter)){
+		if (existingFields.indexOf(newGetter.name) != -1 || (data.idFieldDescriptor && newGetter.name == data.idFieldDescriptor.getter)){
 			continue;
 		}
 		
@@ -156,6 +156,9 @@ function completeInstanceData(data){
 		
 		if (notIdDesc){
 			var tmpField = newField.asDescriptor;
+			if (tmpField.type == 'fk'){
+				fkRefreshCalls.push(tmpField.name);
+			}
 			newFieldElements[newFieldName] = newField.asDescriptor;
 			
 		}else if(!data.idFieldDescriptor){
@@ -450,7 +453,10 @@ function completeDaoFields(data, settings, fieldName){
 	var setters = filterdMethods['setters'];
 	var all = _getDaoMethods(data);
 
-	jQuery.each(settings, function(i, setting) {
+	
+	for(var key in settings){
+		if (typeof(key) == 'undefined') continue;
+		var setting = settings[key];
 		var selectElem = jQuery("#"+fieldName+"_"+setting.field);
 		var methods = null;
 		if (setting.methodType == "getter"){
@@ -461,7 +467,7 @@ function completeDaoFields(data, settings, fieldName){
 			methods = all;
 		}
 		_fillSelectOptions(methods, selectElem, setting.defaultSelect);
-	});
+	}
 }
 
 function _fillSelectOptions(values, selectElem, defaultValueType){
@@ -584,7 +590,34 @@ function unSetFK(event){
 
 function callFkDaoSelectRefresh(){
 	jQuery.each(fkRefreshCalls, function(i, fieldName) {
-		var elem = jQuery("#"+fieldName+"_linkedDao");
-		elem.change();
+		var linkedIdGetterElem = jQuery("#" + fieldName + "_linkedIdGetter");
+		var linkedLabelGetterElem = jQuery("#" + fieldName + "_linkedLabelGetter");
+		
+		_selectFromSettings(linkedIdGetterElem, refreshFKDaoSettings.id_getter);
+		_selectFromSettings(linkedLabelGetterElem, refreshFKDaoSettings.label_getter);
 	});
+}
+
+function _selectFromSettings(elem, setting){
+	var defaultValueType = setting.defaultSelect;
+	if (defaultValueType !== null){
+		var pattern = defaultValueType;
+		if (pattern == "left"){
+			pattern = bceSettings.mainBeanTableName;
+		}else if (pattern == "right"){
+			pattern = "^((?!"+bceSettings.mainBeanTableName+"|[gs]etId).)*$";
+		}
+		var match = new RegExp(pattern, 'gi');
+	}
+	selectVal = "";
+	elem.children().each(function (){
+		var optElem = jQuery(this);
+		var optValue = optElem.val();
+		if (defaultValueType && match.exec(optValue) && selectVal == ""){
+			selectVal = optValue;
+			optElem.attr('seleted', true);
+		}
+	});
+	
+	elem.val(selectVal);
 }

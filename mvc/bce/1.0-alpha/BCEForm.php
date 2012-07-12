@@ -62,7 +62,7 @@ class BCEForm{
 	 * The template used to render the form
 	 * 
 	 * @Property
-	 * @var BCERenderer
+	 * @var BCERendererInterface
 	 */
 	public $renderer;
 	
@@ -141,6 +141,7 @@ class BCEForm{
 			}
 			$renderer = $descriptor->getRenderer();
 			$this->loadScripts($renderer,$descriptor);
+			if ($renderer->getLibrary()) Mouf::getDefaultWebLibraryManager()->addLibrary($renderer->getLibrary());
 		}
 		
 		foreach ($this->many2ManyFieldDescriptors as $descriptor) {
@@ -151,7 +152,12 @@ class BCEForm{
 			}
 			$renderer = $descriptor->getRenderer();
 			$this->loadScripts($renderer,$descriptor);
+			if ($renderer->getLibrary()) Mouf::getDefaultWebLibraryManager()->addLibrary($renderer->getLibrary());
 		}
+		
+		//Load required libraries
+		Mouf::getDefaultWebLibraryManager()->addLibrary($this->renderer->getSkin());
+		Mouf::getDefaultWebLibraryManager()->addLibrary($this->validationHandler->getJsLibrary());
 	}
 	
 	/**

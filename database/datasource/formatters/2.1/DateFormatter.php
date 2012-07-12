@@ -2,7 +2,8 @@
 /**
  * The date formatter is used to format a date in a column.
  * It must be attached to a column in order to be activated.
- *
+ * 
+ * @ApplyTo { "php" :[ "timestamp", "datetime", "date" ] } 
  * @Component
  */
 class DateFormatter implements BijectiveFormatterInterface {

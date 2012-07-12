@@ -55,4 +55,11 @@ class SelectFieldRenderer implements FieldRendererInterface{
 		return array();
 	}
 	
+	
+	/**
+	 * 
+	 */
+	public function getLibrary(){
+		return null;
+	}
 }

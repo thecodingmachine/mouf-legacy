@@ -40,6 +40,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 	 */
 	protected $mainDAOName;
 	
+	public $success = 0;
+	
 
 	/**
 	 * Admin page used to display the DAO generation form.
@@ -47,8 +49,9 @@ class BceConfigController extends AbstractMoufInstanceController {
 	 * @Action
 	 * @Logged
 	 */
-	public function defaultAction($name, $selfedit="false") {
+	public function defaultAction($name, $selfedit="false", $success = 0) {
 		$this->initController($name, $selfedit);
+		$this->success = $success;
 		
 		$desc = $this->moufManager->getInstanceDescriptor($name);
 		$prop = $desc->getProperty('mainDAO');
@@ -68,7 +71,7 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$this->formaters = MoufReflectionProxy::getInstances("FormatterInterface", false);
 		$this->validators = MoufReflectionProxy::getInstances("ValidatorInterface", false);
 
-		$this->formRenderers = MoufReflectionProxy::getInstances("BCERenderer", false);
+		$this->formRenderers = MoufReflectionProxy::getInstances("BCERendererInterface", false);
 		$this->validationHandlers = MoufReflectionProxy::getInstances("JsValidationHandlerInterface", false);
 
 		$this->validationHandlers = MoufReflectionProxy::getInstances("JsValidationHandlerInterface", false);
@@ -130,8 +133,6 @@ class BceConfigController extends AbstractMoufInstanceController {
 	 * @Action
 	 */
 	public function save(){
-// 		var_dump($_POST);exit;
-		
 		$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		$formInstance = $this->moufManager->getInstanceDescriptor($_POST['formInstanceName']);
 		
@@ -170,6 +171,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$formInstance->getProperty('renderer')->setValue($this->moufManager->getInstanceDescriptor($renderer));
 		
 		$this->moufManager->rewriteMouf();
+		
+		header("Location: " . ROOT_URL . "mouf/bceadmin/?name=" . $_POST['formInstanceName'] . "&success=1");
 	}
 	
 	private function updateFieldDescriptor($fieldData){

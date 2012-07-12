@@ -4,7 +4,7 @@ require_once 'FieldRendererInterface.php';
 /**
  * Base class for rendering simple text fields
  * @Component
- * @ApplyTo { "php" :[ "string", "int", "number", "boolean" ], "type": ["base"] }
+ * @ApplyTo { "php" :[ "string", "int", "number", "boolean" ] }
  */
 class TextFieldRenderer implements FieldRendererInterface{
 	
@@ -21,5 +21,13 @@ class TextFieldRenderer implements FieldRendererInterface{
 	 */
 	public function getJS($descriptor){
 		return array();
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::getLibrary()
+	 */
+	public function getLibrary(){
+		return null;
 	}
 }

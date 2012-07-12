@@ -26,12 +26,11 @@ class BaseRenderer implements BCERendererInterface{
 		echo $idRenderer->render($idDescriptor);
 		foreach ($fieldDescriptors as $descriptor) {
 			/* @var $descriptor FieldDescriptor */
-			$renderer = $descriptor->getRenderer();
 			?>	
 			<div class="control-group">
 				<label for="input01" class="control-label"><?php echo $descriptor->getFieldLabel() ?></label>
 				<div class="controls">
-					<?php echo $renderer->render($descriptor); ?>
+					<?php echo $descriptor->toHtml(); ?>
 				</div>
 			</div>
 			<?php

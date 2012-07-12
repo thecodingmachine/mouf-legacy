@@ -68,5 +68,13 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 	public function getJS($descriptor){
 		return array();
 	}
+
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::getLibrary()
+	 */
+	public function getLibrary(){
+		return null;
+	}
 	
 }

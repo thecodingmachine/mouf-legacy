@@ -43,6 +43,10 @@ class FieldDescriptor{
 	 * @var array<ValidatorInterface>
 	 */
 	public $validators;
+	
+	public function toHtml(){
+		echo $this->getRenderer()->render($this);
+	}
 
 	/**
 	 * Get's the field's name (unique Id of the field inside a form (or name attribute)

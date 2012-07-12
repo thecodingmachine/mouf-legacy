@@ -23,4 +23,12 @@ class HiddenRenderer implements FieldRendererInterface{
 		return array();
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::getLibrary()
+	 */
+	public function getLibrary(){
+		return null;
+	}
+	
 }

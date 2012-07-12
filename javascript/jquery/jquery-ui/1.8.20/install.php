@@ -16,6 +16,9 @@ $jQueryUILib->setName($jQueryUILibName);
 $jQueryUILib->getProperty("jsFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery-ui/1.8.20/js/jquery-ui-1.8.20.custom.min.js'
 ));
+$jQueryUILib->getProperty("cssFiles")->setValue(array(
+	'plugins/javascript/jquery/jquery-ui/1.8.20/css/ui-darkness/jquery-ui-1.8.20.custom.css'
+));
 $jQueryUILib->getProperty("renderer")->setValue($renderer);
 $jQueryUILib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
 

@@ -14,4 +14,9 @@ MoufManager::getMoufManager()->setParameter('italicFormatter', 'suffix', '</i>')
 
 MoufManager::getMoufManager()->declareComponent('readOnlyCheckBoxFormatter', 'ReadOnlyCheckboxFormatter', true);
 
+
+MoufManager::getMoufManager()->declareComponent('timestampToFrdateFormatter', 'DateFormatter', true);
+MoufManager::getMoufManager()->setParameter('timestampToFrdateFormatter', 'sourceFormat', 'timestamp');
+MoufManager::getMoufManager()->setParameter('timestampToFrdateFormatter', 'destFormat', 'd/m/Y');
+
 ?>

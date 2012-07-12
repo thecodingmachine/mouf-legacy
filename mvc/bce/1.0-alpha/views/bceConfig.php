@@ -38,6 +38,11 @@ jQuery(document).ready(function() {
 });
 //-->
 </script>
+<?php if ($this->success == 1){
+?>
+<div class="success">Form '<?php echo $this->instanceName ?>' has been saved</div>
+<?php
+}?>
 <h1>Configuration of <i>'<?php echo $this->instanceName ?>'</i> instance</h1>
 	<label class="label">Main DAO :</label>
 	<span>

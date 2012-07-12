@@ -346,10 +346,10 @@ class BCEUtils{
 		$obj->descriptors = $fieldDescs;
 		
 		
-		$obj->name = $desc->getProperty('name')->getValue();
-		$obj->action = $desc->getProperty('action')->getValue();
-		$obj->method = $desc->getProperty('method')->getValue();
-		$obj->id = $desc->getProperty('id')->getValue();
+		$obj->name = $desc->getProperty('name')->getValue() ? $desc->getProperty('name')->getValue() : $instanceName;
+		$obj->action = $desc->getProperty('action')->getValue() ? $desc->getProperty('action')->getValue() : "save";
+		$obj->method = $desc->getProperty('method')->getValue() ? $desc->getProperty('method')->getValue() : "POST";
+		$obj->id = $desc->getProperty('id')->getValue() ? $desc->getProperty('id')->getValue() : $instanceName;
 		
 		$rendererDesc = $desc->getProperty('renderer')->getValue();
 		if ($rendererDesc) $obj->renderer = $rendererDesc->getName();
