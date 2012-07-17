@@ -8,26 +8,22 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 // Let's create the instance
 $moufManager = MoufManager::getMoufManager();
 
-if ($moufManager->instanceExists("jQueryUiLibrary")) {
-	$jQueryUILib = $moufManager->getInstanceDescriptor("jQueryUiLibrary");
+if ($moufManager->instanceExists("jQueryLibrary")) {
+	$jQueryLib = $moufManager->getInstanceDescriptor("jQueryLibrary");
 } else {
-	$jQueryUILib = $moufManager->createInstance("WebLibrary");
-	$jQueryUILib->setName("jQueryUiLibrary");
+	$jQueryLib = $moufManager->createInstance("WebLibrary");
+	$jQueryLib->setName("jQueryUiLibrary");
 }
-$jQueryUILib->getProperty("jsFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-ui/1.8.20/js/jquery-ui-1.8.20.custom.min.js'
-));
-$jQueryUILib->getProperty("cssFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-ui/1.8.20/css/ui-darkness/jquery-ui-1.8.20.custom.css'
+$jQueryLib->getProperty("jsFiles")->setValue(array(
+	'plugins/javascript/jquery/jquery/1.7.2/jquery-1.7.2.min.js'
 ));
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
-$jQueryUILib->getProperty("renderer")->setValue($renderer);
-$jQueryUILib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
+$jQueryLib->getProperty("renderer")->setValue($renderer);
 
 $webLibraryManager = $moufManager->getInstanceDescriptor('defaultWebLibraryManager');
 if ($webLibraryManager) {
 	$libraries = $webLibraryManager->getProperty("webLibraries")->getValue();
-	$libraries[] = $jQueryUILib;
+	$libraries[] = $jQueryLib;
 	$webLibraryManager->getProperty("webLibraries")->setValue($libraries);
 }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery Validate</displayName>
+	<shortDescription>This package contains the JQuery Validator. It allows developers to easily validate forms, using CSS classes.</shortDescription>
+	<docUrl>http://bassistance.de/jquery-plugins/jquery-plugin-validation/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>>=1.4.2</version>
+		</dependency>
+	</dependencies>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>

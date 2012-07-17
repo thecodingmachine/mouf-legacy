@@ -8,26 +8,21 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 // Let's create the instance
 $moufManager = MoufManager::getMoufManager();
 
-if ($moufManager->instanceExists("jQueryUiLibrary")) {
-	$jQueryUILib = $moufManager->getInstanceDescriptor("jQueryUiLibrary");
-} else {
-	$jQueryUILib = $moufManager->createInstance("WebLibrary");
-	$jQueryUILib->setName("jQueryUiLibrary");
-}
-$jQueryUILib->getProperty("jsFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-ui/1.8.20/js/jquery-ui-1.8.20.custom.min.js'
-));
-$jQueryUILib->getProperty("cssFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-ui/1.8.20/css/ui-darkness/jquery-ui-1.8.20.custom.css'
-));
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
-$jQueryUILib->getProperty("renderer")->setValue($renderer);
-$jQueryUILib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
+
+$jQueryValidateLib = $moufManager->createInstance("WebLibrary");
+$jQueryValidateLibName = InstallUtils::getInstanceName("jQueryValidateLibrary", $moufManager);
+$jQueryValidateLib->setName($jQueryValidateLibName);
+$jQueryValidateLib->getProperty("jsFiles")->setValue(array(
+	'plugins/javascript/jquery/jquery-validate/1.9.0/jquery.validate.min.js'
+));
+$jQueryValidateLib->getProperty("renderer")->setValue($renderer);
+$jQueryValidateLib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
 
 $webLibraryManager = $moufManager->getInstanceDescriptor('defaultWebLibraryManager');
 if ($webLibraryManager) {
 	$libraries = $webLibraryManager->getProperty("webLibraries")->getValue();
-	$libraries[] = $jQueryUILib;
+	$libraries[] = $jQueryValidateLib;
 	$webLibraryManager->getProperty("webLibraries")->setValue($libraries);
 }
 
