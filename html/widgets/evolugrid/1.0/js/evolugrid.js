@@ -53,13 +53,17 @@
                 
                 var $this = $(this);
                 if (descriptor.filterForm) {
-                	$(descriptor.filterForm).submit(function() {
-                		try {
-                			$this.evolugrid('refresh', 0);
-                		} catch (e) {
-                			console.error(e);
+                	$(descriptor.filterForm).submit(function(event) {
+                		if ($(event.originalEvent.explicitOriginalTarget).hasClass('no-evolugrid')){
+                			return true;
+                		}else{
+                			try {
+                				$this.evolugrid('refresh', 0);
+                			} catch (e) {
+                				console.error(e);
+                			}
+                			return false;
                 		}
-                		return false;
                 	});
             	}
                 if (descriptor.loadOnInit) {
@@ -79,9 +83,7 @@
 	    		url += "&";
 	    	}
 	    	for (var i=0; i<filters.length; i++) {
-	    		if (filters[i]['value']) {
-	    			url += filters[i]['name']+"="+encodeURIComponent(filters[i]['value'])+"&";
-	    		}
+    			url += filters[i]['name']+"="+encodeURIComponent(filters[i]['value'])+"&";
 	    	}
 	    	url += "output=csv";
 	    	
