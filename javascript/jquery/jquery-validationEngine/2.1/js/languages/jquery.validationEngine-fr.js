@@ -69,8 +69,8 @@
                     "alertText": "* Nombre flottant invalide"
                 },
                 "date": {
-                    "regex": /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/,
-                    "alertText": "* Date invalide, format YYYY-MM-DD requis"
+                    "regex": /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/,
+                    "alertText": "* Date invalide, format jj/mm/aaaa requis"
                 },
                 "ipv4": {
                 	"regex": /^((([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))[.]){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))$/,
