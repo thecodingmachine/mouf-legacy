@@ -11,11 +11,6 @@
 			<version>2.0</version>
 		</dependency>
 		<dependency>
-			<group>javascript/jquery</group>
-			<name>jquery-validationEngine</name>
-			<version>>=1.6.3</version>
-		</dependency>
-		<dependency>
 			<group>html</group>
 			<name>htmlelement</name>
 			<version>&gt;=1.0</version>
