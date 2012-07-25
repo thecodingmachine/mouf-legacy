@@ -18,7 +18,7 @@ if ($moufManager->instanceExists("jQueryValidationEngineLibrary")) {
 $jQueryValidationEngineLibrary->getProperty("languageDetection")->setValue($defaultLanguageDetection);
 $jQueryValidationEngineLibrary->getProperty("jsFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery-validationEngine/2.1.1/js/jquery.validationEngine.js',
-	'plugins/javascript/jquery/jquery-validate/1.9.0/localization/messages_[lang].js'
+	'plugins/javascript/jquery/jquery-validationEngine/2.1.1/js/languages/jquery.validationEngine-[lang].js'
 ));
 $jQueryValidationEngineLibrary->getProperty("cssFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery-validationEngine/2.1.1/css/validationEngine.jquery.css'
