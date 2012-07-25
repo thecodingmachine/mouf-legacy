@@ -85,7 +85,11 @@ class DateFormatter implements BijectiveFormatterInterface {
 	public function unformat($value){
 		$array = date_parse_from_format($this->getDestFormat(), $value);
 		$time = mktime(	$array['hour'], $array['minute'], $array['second'], $array['month'], $array['day'], $array['year']);
-		return date($this->sourceFormat, $time);
+		if ($this->sourceFormat == "timestamp"){
+			return $time;
+		}else{
+			return date($this->sourceFormat, $time);
+		}
 	}
 
 }
