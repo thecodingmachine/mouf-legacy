@@ -248,7 +248,8 @@ class Splash {
 	
 		$debug = $this->debugMode;
 	
-		if (!headers_sent()) {
+		
+		if (!headers_sent() && !ob_get_contents()) {
 			$template = $this->defaultTemplate;
 			if($e instanceof ApplicationException ) {
 				if ($template != null) {
