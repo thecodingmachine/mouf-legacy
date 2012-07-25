@@ -10,13 +10,24 @@ $moufManager = MoufManager::getMoufManager();
 
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
 
-$jQueryLib = $moufManager->createInstance("WebLibrary");
-$jQueryLibName = InstallUtils::getInstanceName("jQueryLibrary", $moufManager);
-$jQueryLib->setName($jQueryLibName);
-$jQueryLib->getProperty("jsFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery/1.7/?'
+if ($moufManager->instanceExists("jQueryLibrary")) {
+	$jQueryLibrary = $moufManager->getInstanceDescriptor("jQueryLibrary");
+} else {
+	$jQueryLibrary = $moufManager->createInstance("WebLibrary");
+	$jQueryLibrary->setName("jQueryLibrary");
+}
+$jQueryLibrary->getProperty("jsFiles")->setValue(array(
+	'plugins/javascript/jquery/jquery/1.7/jquery-1.7.2.min.js'
 ));
-$jQueryLib->getProperty("renderer")->setValue($renderer);
+$renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
+$jQueryLibrary->getProperty("renderer")->setValue($renderer);
+
+$webLibraryManager = $moufManager->getInstanceDescriptor('defaultWebLibraryManager');
+if ($webLibraryManager) {
+	$libraries = $webLibraryManager->getProperty("webLibraries")->getValue();
+	$libraries[] = $jQueryLibrary;
+	$webLibraryManager->getProperty("webLibraries")->setValue($libraries);
+}
 
 // Let's rewrite the MoufComponents.php file to save the component
 $moufManager->rewriteMouf();

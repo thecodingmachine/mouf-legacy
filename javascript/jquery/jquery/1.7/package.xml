@@ -17,9 +17,6 @@
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
-	<requires>
-		<require>HtmlJSJQuery.php</require>
-	</requires>
 	<install>
 		<file>install.php</file>
 	</install>

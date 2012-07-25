@@ -7,16 +7,18 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 
 // Let's create the instance
 $moufManager = MoufManager::getMoufManager();
+$defaultLanguageDetection = $moufManager->getInstanceDescriptor('defaultLanguageDetection');
 
 if ($moufManager->instanceExists("jQueryValidationEngineLibrary")) {
 	$jQueryValidationEngineLibrary = $moufManager->getInstanceDescriptor("jQueryValidationEngineLibrary");
 } else {
-	$jQueryValidationEngineLibrary = $moufManager->createInstance("WebLibrary");
+	$jQueryValidationEngineLibrary = $moufManager->createInstance("I18nWebLibrary");
 	$jQueryValidationEngineLibrary->setName("jQueryValidationEngineLibrary");
 }
-
+$jQueryValidationEngineLibrary->getProperty("languageDetection")->setValue($defaultLanguageDetection);
 $jQueryValidationEngineLibrary->getProperty("jsFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-validationEngine/2.1.1/js/jquery.validationEngine.js'
+	'plugins/javascript/jquery/jquery-validationEngine/2.1.1/js/jquery.validationEngine.js',
+	'plugins/javascript/jquery/jquery-validate/1.9.0/localization/messages_[lang].js'
 ));
 $jQueryValidationEngineLibrary->getProperty("cssFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery-validationEngine/2.1.1/css/validationEngine.jquery.css'

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
+	<displayName>I18N Weblibrary Support</displayName>
+	<shortDescription>TODO</shortDescription>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html/utils</group>
+			<name>weblibrarymanager</name>
+			<version>>=1.0</version>
+		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=2.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>I18nWebLibrary.php</require>
+	</requires>
+</package>

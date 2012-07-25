@@ -12,7 +12,7 @@ if ($moufManager->instanceExists("jQueryLibrary")) {
 	$jQueryLib = $moufManager->getInstanceDescriptor("jQueryLibrary");
 } else {
 	$jQueryLib = $moufManager->createInstance("WebLibrary");
-	$jQueryLib->setName("jQueryUiLibrary");
+	$jQueryLib->setName("jQueryLibrary");
 }
 $jQueryLib->getProperty("jsFiles")->setValue(array(
 	'plugins/javascript/jquery/jquery/1.7.2/jquery-1.7.2.min.js'

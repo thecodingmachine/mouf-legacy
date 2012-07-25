@@ -7,15 +7,23 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 
 // Let's create the instance
 $moufManager = MoufManager::getMoufManager();
+$defaultLanguageDetection = $moufManager->getInstanceDescriptor('defaultLanguageDetection');
+
+if ($moufManager->instanceExists("jQueryValidateLibrary")) {
+	$jQueryValidateLib = $moufManager->getInstanceDescriptor("jQueryValidateLibrary");
+} else {
+	$jQueryValidateLib = $moufManager->createInstance("I18nWebLibrary");
+	$jQueryValidateLib->setName("jQueryValidateLibrary");
+}
+
+$jQueryValidateLib->getProperty("languageDetection")->setValue($defaultLanguageDetection);
+$jQueryValidateLib->getProperty("jsFiles")->setValue(array(
+	'plugins/javascript/jquery/jquery-validate/1.9.0/jquery.validate.min.js',
+	'plugins/javascript/jquery/jquery-validate/1.9.0/localization/messages_[lang].js'
+));
 
 $renderer = $moufManager->getInstanceDescriptor('defaultWebLibraryRenderer');
 
-$jQueryValidateLib = $moufManager->createInstance("WebLibrary");
-$jQueryValidateLibName = InstallUtils::getInstanceName("jQueryValidateLibrary", $moufManager);
-$jQueryValidateLib->setName($jQueryValidateLibName);
-$jQueryValidateLib->getProperty("jsFiles")->setValue(array(
-	'plugins/javascript/jquery/jquery-validate/1.9.0/jquery.validate.min.js'
-));
 $jQueryValidateLib->getProperty("renderer")->setValue($renderer);
 $jQueryValidateLib->getProperty("dependencies")->setValue(array($moufManager->getInstanceDescriptor('jQueryLibrary')));
 
