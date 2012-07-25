@@ -16,19 +16,18 @@ class BaseRenderer implements BCERendererInterface{
 	public $skin;
 	
 	public function render(BCEForm $form){
-		$fieldDescriptors = array_merge($form->fieldDescriptors, $form->many2ManyFieldDescriptors);
 ?>
-	<form class="form-horizontal" action="<?php echo $form->action; ?>" method="<?php echo $form->method?>" name="<?php echo $form->name;?>" id="<?php echo $form->id ?>">
+	<form class="form-horizontal" action="<?php echo $form->action; ?>" method="<?php echo $form->method?>" <?php foreach ($form->attributes as $attrName => $value){ echo "$attrName='$value' "; }?>>
 	<fieldset>
 		<?php
 		$idDescriptor = $form->idFieldDescriptor;
 		$idRenderer = $idDescriptor->getRenderer();
 		echo $idRenderer->render($idDescriptor);
-		foreach ($fieldDescriptors as $descriptor) {
-			/* @var $descriptor FieldDescriptor */
+		foreach ($form->fieldDescriptors as $descriptor) {
+			/* @var $descriptor BCEFieldDescriptorInterface */
 			?>	
 			<div class="control-group">
-				<label for="input01" class="control-label"><?php echo $descriptor->getFieldLabel() ?></label>
+				<label for="<?php echo $descriptor->getFieldName() ?>" class="control-label"><?php echo $descriptor->getFieldLabel() ?></label>
 				<div class="controls">
 					<?php echo $descriptor->toHtml(); ?>
 				</div>

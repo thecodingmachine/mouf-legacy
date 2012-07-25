@@ -101,7 +101,11 @@ var emptyM2MField = {
 		isPK : false
 }; 
 
+var isNewform = false;
+
 function refershValues(element, instanceName){
+	isNewform = true;
+	
 	jQuery.ajax({
 		url: bceSettings.rootUrl + "mouf/bceadmin/setDao",
 		data: "dao=" + jQuery(element).val() + "&instance=" + instanceName,
@@ -139,7 +143,7 @@ function completeInstanceData(data){
 	var fields = data.descriptors;
 	for (var i=0; i<fields.length; i++){
 		var field = fields[i];
-		if (field.type != "m2m") existingFields.push(field.getter);
+		if (field.type != "m2m" && field.type != "custom") existingFields.push(field.getter);
 		fieldElements[field.name] = field;
 	}
 	
@@ -153,6 +157,8 @@ function completeInstanceData(data){
 		}
 		
 		var notIdDesc = !newField.isPk; 
+		
+		newField.asDescriptor.active = isNewform && field.active;
 		
 		if (notIdDesc){
 			var tmpField = newField.asDescriptor;
@@ -193,9 +199,7 @@ function completeInstanceData(data){
 	}
 	
 	//initialize form configuration
-	var formNameField = _getSimpleValueWrapper("Form Name", "name", "attr", data.name, 2);
 	var formActionField = _getSimpleValueWrapper("Form Action URL", "action", "attr", data.action, 2);
-	var formIdField = _getSimpleValueWrapper("Form Id", "id", "attr", data.id, 2);
 	var formMethodField = _getListValueWrapper("Method", "method", "attr", data.method, formMethods, null, 2);
 	
 	if (!data.validationHandler){
@@ -208,10 +212,15 @@ function completeInstanceData(data){
 	var validatorField = _getListValueWrapper("Validate Handler", "validate", "attr", data.validationHandler, validationHandlers, null, 2);
 	var rendererField = _getListValueWrapper("Form Renderer", "renderer", "attr", data.renderer, formRenderers, null, 2);
 	
-	jQuery("#data_add").append(formNameField);
 	jQuery("#data_add").append(formActionField);
-	jQuery("#data_add").append(formIdField);
 	jQuery("#data_add").append(formMethodField);
+	
+	for ( var attributeName in data.attributes) {
+		var attributeValue = data.attributes[attributeName];
+		jQuery("#data_add").append(_getSimpleValueWrapper(attributeName, attributeName, "attr", attributeValue, 2));
+	}
+	
+	
 
 	jQuery("#data_add").append(jQuery('<br/>').css('clear', 'both'));
 
@@ -250,6 +259,24 @@ function initUI(){
 }
 
 function _fieldHtml(field, addClass, fieldNames, editName, isIdDesc){
+	if (field.type == "custom"){
+		return  "<div id='wrapper-"+ field.name +"' class='field-bloc base'>" +
+					"<div class='field-title'>" +
+						"<div style='float: left;'>" +
+							"<div style='margin-left: 30px; display: block; float: left'>&nbsp</div>" +
+							"<div style='float: left'><input type='checkbox' checked='checked' name='fields["+ field.name +"][active]'></div>"+
+							"<input type='hidden' name='fields["+ field.name +"][new]' value='false'/>"+
+							"<input type='hidden' name='fields["+ field.name +"][type]' value='"+ field.type +"' />"+
+							"<input type='hidden' name='fields["+ field.name +"][instanceName]' value='"+ field.name +"'/>"+
+							"<div class='name-val'>"+ field.name +"</div>" +
+							"<div style='float: left'>&nbsp;&nbsp;[custom]</div>" +
+						"</div>" +
+						"<div style='clear:both'></div>" +
+					"</div>" +
+					"<br style='clear:both'>" +
+				"<div>";
+	}
+	
 	var strAddClass = addClass ? " "+addClass : "";
 	
 	var setFK = field.type == "base" && isIdDesc != true ? "<button class='naked set-fk' onclick='setFK(\""+ field.name +"\");return false;' title='Set FK'>&nbsp;</button>" : "";

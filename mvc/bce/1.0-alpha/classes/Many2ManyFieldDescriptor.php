@@ -87,19 +87,19 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	 * List of all beans from the mapping table that are linked to the main bean
 	 * @var array<mixed>
 	 */
-	private $beanValues;
+	private $beanValues = array();
 	
 	/**
 	 * array of ids to be saved
 	 * @var array<mixed>
 	 */
-	private $saveValues;
+	private $saveValues = array();
 	
 	/**
 	 * Rewrite the function : load main bean's values and avalable ones
 	 * @param mixed $mainBeanId the id of the main bean 
 	 */
-	public function load($mainBeanId){
+	public function load($bean, $mainBeanId = null, &$form = null){
 		$this->loadValues($mainBeanId);
 		$this->loadData();
 	}
@@ -109,7 +109,10 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	 * @param mixed $mainBeanId the id of the main bean 
 	 */
 	public function loadValues($mainBeanId){
-		$this->beanValues = call_user_func(array($this->mappingDao, $this->beanValuesMethod), $mainBeanId);
+		$tmpArray = call_user_func(array($this->mappingDao, $this->beanValuesMethod), $mainBeanId);
+		foreach ($tmpArray as $bean){
+			$this->beanValues[$this->getMappingRightKey($bean)] = $bean;
+		}
 	}
 	
 	/**
@@ -125,6 +128,34 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	 */
 	public function setMappingLeftKey($id, $bean){
 		call_user_func(array($bean, $this->mappingLeftKeySetter), $id);
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see BCEFieldDescriptorInterface::postSave()
+	 */
+	public function postSave($bean, $beanId){
+		$this->loadValues($beanId);
+		$beforVals = $this->getBeanValues();
+		$beforeValues = array();
+		foreach ($beforVals as $bean) {
+			$beforeValues[] = $this->getMappingRightKey($bean);
+		}
+		
+		$finalValues = $this->getSaveValues();
+		
+		$toDelete = array_diff($beforeValues, $finalValues);
+		$toSave = array_diff($finalValues, $beforeValues);
+		
+		foreach ($toDelete as $linkedBeanId) {
+			$this->mappingDao->delete($beforVals[$linkedBeanId]);
+		}
+		foreach ($toSave as $linkedBeanId) {
+			$bean = $this->mappingDao->create();
+			$this->setMappingLeftKey($beanId, $bean);
+			$this->setMappingRightKey($linkedBeanId, $bean);
+			$this->mappingDao->save($bean);
+		}
 	}
 	
 	/**

@@ -53,7 +53,7 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 					$beanLabel = $descriptor->getRelatedBeanLabel($bean);
 					$checked = (array_search($beanId, $selectIds)!==false) ? "checked='checked'" : "";
 					$html .= "<label class='checkbox inline' for='$fieldName"."-"."$beanId'>
-						<input type='checkbox' $checked value='$beanId' id='$fieldName"."-"."$beanId' name='".$fieldName."'> $beanLabel
+						<input type='checkbox' $checked value='$beanId' id='$fieldName"."-"."$beanId' name='".$fieldName."[]'> $beanLabel
 					</label>";
 				}
 			break;

@@ -35,11 +35,23 @@ class BaseFieldDescriptor extends FieldDescriptor{
 	 * Eventually formats the value before displaying it 	
 	 * @param mixed $mainBean
 	 */
-	public function load($mainBean){
-		$fieldValue = call_user_func(array($mainBean, $this->getter));
-		if ($this->formatter) $this->value = $this->formatter->format($fieldValue);
-		else $this->value = $fieldValue;
+	public function load($mainBean, $id = null, &$form = null){
+		if ($mainBean == null){
+			$this->value = null;
+		}else{
+			$fieldValue = call_user_func(array($mainBean, $this->getter));
+			if ($this->formatter) $this->value = $this->formatter->format($fieldValue);
+			else $this->value = $fieldValue;
+		}
 	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see BCEFieldDescriptorInterface::postSave()
+	 */
+	public function postSave($bean, $beanId){
+		return;
+	} 
 	
 	/**
 	 * Simply calls the setter of the descriptor's related field into the bean

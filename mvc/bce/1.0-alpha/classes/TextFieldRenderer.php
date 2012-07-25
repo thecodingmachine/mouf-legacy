@@ -4,12 +4,12 @@ require_once 'FieldRendererInterface.php';
 /**
  * Base class for rendering simple text fields
  * @Component
- * @ApplyTo { "php" :[ "string", "int", "number", "boolean" ] }
+ * @ApplyTo { "php" :[ "string", "int", "number"] }
  */
 class TextFieldRenderer implements FieldRendererInterface{
 	
 	public function render($descriptor){
-		/* @var $descriptor FieldDescriptor */
+		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
 		$value = $descriptor->getFieldValue();
 		return "<input type='text' value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";

@@ -45,15 +45,21 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 	 * @see JsValidationHandlerInterface::buildValidationScript()
 	 */
 	public function buildValidationScript(FieldDescriptor $descriptor, $formId){
+		if (!count($descriptor->getValidators())){
+			return;
+		}
+		
 		$i = 0;
 		$fieldName = $descriptor->getFieldName();
 		$validators = $descriptor->getValidators();
+		
+		$realFieldName = $descriptor instanceof Many2ManyFieldDescriptor ? $fieldName."[]" : $fieldName;
 		
 		foreach ($validators as $validator) {
 			if ($validator instanceof JsValidatorInterface) {
 				$this->validationMethods[] = $this->wrapRule($descriptor, $validator, $i);
 				$methodName = $fieldName."_rule_".$i;
-				$this->validationRules->rules->$fieldName->$methodName = $validator->getJsArguments();
+				$this->validationRules->rules->$realFieldName->$methodName = $validator->getJsArguments();
 				$i++;
 			}
 		}
@@ -133,7 +139,7 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 			";
 		}
 		$js.= "
-			$('#$formId').validate(
+			var validateHandler = $('#$formId').validate(
 				$rulesJson
 			);
 		});";

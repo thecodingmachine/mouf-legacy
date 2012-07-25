@@ -2,23 +2,23 @@
 require_once 'FieldRendererInterface.php';
 
 /**
- * This renderer handles hidden input fields
- * @ApplyTo { "pk" : [ "pk" ] }
+ * Base class for rendering simple text fields
  * @Component
+ * @ApplyTo { "php" :[ "boolean" ] }
  */
-class HiddenRenderer implements FieldRendererInterface{
+class BooleanFieldRenderer implements FieldRendererInterface{
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldRendererInterface::render()
-	 */
 	public function render($descriptor){
 		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
-		$value = $descriptor->getFieldValue();
-		return "<input type='hidden' value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";
+		$strChecked = $descriptor->getFieldValue() ? "checked = 'checked'" : "";
+		return "<input type='checkbox' value='1' name='$fieldName' id='$fieldName' $strChecked/>";
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::getJS()
+	 */
 	public function getJS($descriptor){
 		return array();
 	}
@@ -30,5 +30,4 @@ class HiddenRenderer implements FieldRendererInterface{
 	public function getLibrary(){
 		return null;
 	}
-	
 }

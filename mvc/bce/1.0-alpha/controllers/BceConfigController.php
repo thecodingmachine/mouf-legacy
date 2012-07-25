@@ -133,6 +133,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 	 * @Action
 	 */
 	public function save(){
+// 		var_dump($_POST);exit;
+		
 		$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		$formInstance = $this->moufManager->getInstanceDescriptor($_POST['formInstanceName']);
 		
@@ -142,33 +144,34 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$formInstance->getProperty('idFieldDescriptor')->setValue($idFieldDesc);		
 		
 		$fields = array();
-		$m2mfields = array();
 		foreach ($_POST['fields'] as $data){
 			if (isset($data['active'])){
 				$field = $this->updateFieldDescriptor($data);
-				if ($data['type'] != 'm2m'){
-					$fields[] = $field; 
-				}else{
-					$m2mfields[] = $field; 
-				}
+				$fields[] = $field; 
 			}
 		}
 		$formInstance->getProperty("fieldDescriptors")->setValue($fields);
-		$formInstance->getProperty("many2ManyFieldDescriptors")->setValue($m2mfields);
 		
-		$name = $_POST['config']['name'];
+		
+		
 		$action = $_POST['config']['action'];
-		$id = $_POST['config']['id'];
 		$method = $_POST['config']['method'];
 		$validate = $_POST['config']['validate'];
 		$renderer = $_POST['config']['renderer'];
 		
-		$formInstance->getProperty('name')->setValue($name);
+		//TODO here : re-do attributes saving
 		$formInstance->getProperty('action')->setValue($action);
-		$formInstance->getProperty('id')->setValue($id);
 		$formInstance->getProperty('method')->setValue($method);
 		$formInstance->getProperty('validationHandler')->setValue($this->moufManager->getInstanceDescriptor($validate));
 		$formInstance->getProperty('renderer')->setValue($this->moufManager->getInstanceDescriptor($renderer));
+		
+		//Save form attributes
+		$attributes['name'] = $_POST['config']['name'];
+		$attributes['id'] = $_POST['config']['id'];
+		$attributes['acceptCharset'] = $_POST['config']['accept-charset'];
+		$attributes['enctype'] = $_POST['config']['enctype'];
+		$attributes['class'] = $_POST['config']['class'];
+		$formInstance->getProperty('attributes')->setValue($attributes);
 		
 		$this->moufManager->rewriteMouf();
 		
@@ -176,19 +179,19 @@ class BceConfigController extends AbstractMoufInstanceController {
 	}
 	
 	private function updateFieldDescriptor($fieldData){
-		switch ($fieldData['type']) {
-			case "base":
-				$className = "BaseFieldDescriptor";
-			break;
-			case "fk":
-				$className = "ForeignKeyFieldDescriptor";
-			break;
-			case "m2m":
-				$className = "Many2ManyFieldDescriptor";
-			break;
-		}
-		
 		if ($fieldData['new'] != "false"){
+			switch ($fieldData['type']) {
+				case "base":
+					$className = "BaseFieldDescriptor";
+				break;
+				case "fk":
+					$className = "ForeignKeyFieldDescriptor";
+				break;
+				case "m2m":
+					$className = "Many2ManyFieldDescriptor";
+				break;
+			}
+			
 			$fieldDescriptor = $this->moufManager->createInstance($className);
 			$instanceName = $fieldData['type'] == "m2m" ? $this->getInstanceName($fieldData['instanceNameInput']) : $this->getInstanceName($fieldData['instanceName']);
 			$fieldDescriptor->setName($instanceName);
@@ -196,16 +199,18 @@ class BceConfigController extends AbstractMoufInstanceController {
 			$fieldDescriptor = $this->moufManager->getInstanceDescriptor($fieldData['instanceName']);
 		}
 		
-		$this->loadFieldDescriptor($fieldDescriptor, $fieldData);
-		
-		if ($fieldData['type'] != "m2m"){
-			$this->loadBaseFieldDescriptor($fieldDescriptor, $fieldData);
-		}
-		
-		if ($fieldData['type'] == "fk"){
-			$this->loadFKDescriptor($fieldDescriptor, $fieldData);
-		}else if ($fieldData['type'] == "m2m"){
-			$this->loadM2MDescriptor($fieldDescriptor, $fieldData);
+		if ($fieldData['type'] != "custom"){
+			$this->loadFieldDescriptor($fieldDescriptor, $fieldData);
+			
+			if ($fieldData['type'] != "m2m"){
+				$this->loadBaseFieldDescriptor($fieldDescriptor, $fieldData);
+			}
+			
+			if ($fieldData['type'] == "fk"){
+				$this->loadFKDescriptor($fieldDescriptor, $fieldData);
+			}else if ($fieldData['type'] == "m2m"){
+				$this->loadM2MDescriptor($fieldDescriptor, $fieldData);
+			}
 		}
 		
 		return $fieldDescriptor;

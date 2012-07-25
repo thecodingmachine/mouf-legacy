@@ -1,11 +1,12 @@
 <?php
+require_once 'BCEFieldDescriptorInterface.php';
 /**
  * This class is the simpliest FieldDescriptor:
  * it handles a field that has no "connections" to other objects (
  * as user name or login for example)
  * @Component
  */
-class FieldDescriptor{
+abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 
 	/**
 	 * Name of the field. This value must remain unique inside a form,
@@ -44,8 +45,52 @@ class FieldDescriptor{
 	 */
 	public $validators;
 	
+	/**
+	 * The javascript functions and calls of the form
+	 * @var array<string, string>
+	 */
+	public $script = array();
+	
 	public function toHtml(){
 		echo $this->getRenderer()->render($this);
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see BCEFieldDescriptorInterface::getJS()
+	 */
+	public function getJS(){
+		foreach ($this->renderer->getJS($this) as $scope => $script){
+			$this->script[$scope][] = $script;
+		}
+		return $this->script;
+	}
+	
+	public function preSave($post, BCEForm &$form){
+		$value = isset($post[$this->getFieldName()]) ? $post[$this->getFieldName()] : null;
+			
+		//unformat values
+		$formatter = $this->getFormatter();
+		if ($formatter && $formatter instanceof BijectiveFormatterInterface) {
+			$value = $formatter->unformat($value);
+		}
+			
+		//validate fields
+		$validators = $this->getValidators();
+		if (count($validators)){
+			foreach ($validators as $validator) {
+				/* @var $validator ValidatorInterface */
+				if (!$validator->validate($value)){//FIXME : array no use : validate should return true or false
+					$form->addError($this->fieldName, $validator->getErrorMessage());
+				}
+			}
+		}
+		//Set same behavior :: call a $descriptor->mapValueToBeanField([no params]) and
+		if ($this instanceof BaseFieldDescriptor) {
+			$this->setValue($form->baseBean, $value);
+		}else if ($this instanceof Many2ManyFieldDescriptor) {
+			$this->setSaveValues($value);
+		}
 	}
 
 	/**

@@ -28,18 +28,9 @@ class BCEForm{
 	 * They define a lot of data<br/>
 	 * 
 	 * @Property 
-	 * @var array<BaseFieldDescriptor>
+	 * @var array<BCEFieldDescriptorInterface>
 	 */
 	public $fieldDescriptors = array();
-	
-	
-	/**
-	 * Field Decriptors that are not directly related to the bean, but through an associative table (many to many relation ships)
-	 * 
-	 * @Property 
-	 * @var array<Many2ManyFieldDescriptor>
-	 */
-	public $many2ManyFieldDescriptors = array();
 	
 	/**
 	 * Field Decriptors of the bean's identifier.
@@ -75,12 +66,6 @@ class BCEForm{
 	public $validationHandler;
 	
 	/**
-	 * The validation JS scripts of the form
-	 * @var array<string>
-	 */
-	public $validationJS;
-	
-	/**
 	 * The action attribute of the form 
 	 * @Property
 	 * @var string
@@ -96,20 +81,18 @@ class BCEForm{
 	public $method = "POST";
 	
 	/**
-	 * The name attribute of the form
-	 * 
+	 * The attributes of the form
+	 *
 	 * @Property
-	 * @var string
+	 * @var array<string, string>
 	 */
-	public $name = "default_form";
-	
-	/**
-	 * The id attribute of the form
-	 * 
-	 * @Property
-	 * @var string
-	 */
-	public $id = "default_id";
+	public $attributes = array(
+		"id" => "default_id",
+		"name" => "default_name",
+		"accept-charset" => "UTF-8",
+		"class" => "",
+		"enctype" => "application/x-www-form-urlencoded"
+	);
 	
 	/**
 	 * The errors returned by the fields' validators
@@ -123,36 +106,29 @@ class BCEForm{
 	 */
 	public $scripts = array();
 	
+	
+	
 	/**
 	 * Load the main bean of the Form, and then the linked descriptors to display bean values
-	 * @param mid $id: The id of the bean (may be null for new objects)
+	 * @param mixed $id: The id of the bean (may be null for new objects)
 	 */
 	public function load($id = null){
-		//Intantiate form's main bean (like JAVA Spring's formBindingObject)
-		$this->baseBean = $id ? $this->mainDAO->getById($id) :  $this->mainDAO->getNew();
-		$this->validationJS = array();
+		//Intantiate form's main bean (like JAVA Spring's formBindingObject), if ot is an existing one
+		$this->baseBean = $id ? $this->mainDAO->getById($id) :  null;
 		//Load bean values into related field Descriptors
-		$this->idFieldDescriptor->load($this->baseBean);
+		$this->idFieldDescriptor->load($this->baseBean, $id, $this);
 		foreach ($this->fieldDescriptors as $descriptor) {
 			/* @var $descriptor FieldDescriptor */
-			$descriptor->load($this->baseBean);
-			if ($this->validationHandler && count($descriptor->getValidators())){
-				$this->validationHandler->buildValidationScript($descriptor, $this->id);
+			$descriptor->load($this->baseBean, $id, $this);
+			if ($descriptor instanceof FieldDescriptor) {
+				$this->validationHandler->buildValidationScript($descriptor, $this->attributes['id']);
 			}
-			$renderer = $descriptor->getRenderer();
-			$this->loadScripts($renderer,$descriptor);
-			if ($renderer->getLibrary()) Mouf::getDefaultWebLibraryManager()->addLibrary($renderer->getLibrary());
+			$this->loadScripts($descriptor);
 		}
 		
-		foreach ($this->many2ManyFieldDescriptors as $descriptor) {
-			/* @var $descriptor Many2ManyFieldDescriptor */
-			$descriptor->load($id);
-			if ($this->validationHandler && count($descriptor->getValidators())){
-				$this->validationHandler->buildValidationScript($descriptor, $this->id);
-			}
-			$renderer = $descriptor->getRenderer();
-			$this->loadScripts($renderer,$descriptor);
-			if ($renderer->getLibrary()) Mouf::getDefaultWebLibraryManager()->addLibrary($renderer->getLibrary());
+		//Instantiate new bean (after because of TDBM's constraint to trigger complete save when getting other objects, like FKDaos List methods)
+		if ($id == null){
+			$this->baseBean = $this->mainDAO->create();
 		}
 		
 		//Load required libraries
@@ -165,7 +141,7 @@ class BCEForm{
 	 * @return string
 	 */
 	public function getValidationJS(){
-		$js = $this->validationHandler->getValidationJs($this->id);
+		$js = $this->validationHandler->getValidationJs($this->attributes['id']);
 		$js .= $this->renderScripts();
 		
 		return $js;
@@ -213,96 +189,56 @@ class BCEForm{
 		$this->renderer->render($this);
 	}
 	
-	public function loadScripts($renderer, $descriptor){
-		foreach ($renderer->getJs($descriptor) as $scope => $script){
-			$this->scripts[$scope][] = $script;
+	public function loadScripts($descriptor){
+		foreach ($descriptor->getJs($descriptor) as $scope => $scripts){
+			foreach ($scripts as $script){
+				$this->scripts[$scope][] = $script;
+			}
 		}
 	}
 	
 	public function save($postValues){
 		$id = $postValues[$this->idFieldDescriptor->getFieldName()];
-		$this->baseBean = empty($id) ? $this->mainDAO->getNew() : $this->mainDAO->getById($id);
+		$this->baseBean = empty($id) ? $this->mainDAO->create() : $this->mainDAO->getById($id);
 		
-		$descriptors = array_merge($this->fieldDescriptors, $this->many2ManyFieldDescriptors);
-		foreach ($descriptors as $descriptor) {
-			if (!isset($postValues[$descriptor->getFieldName()])){
-				$value = null;
-			}else{
-				$value = $postValues[$descriptor->getFieldName()];
-			}
-			$values[$descriptor->getFieldName()] = $value;
-			
-			//unformat values
-			$formatter = $descriptor->getFormatter();//TODO à passer dans le descriptor->setValue ?
-			if ($formatter && $formatter instanceof BijectiveFormatterInterface) {
-				$value = $formatter->unformat($value);
-			}
-			
-			//validate fields
-			$validators = $descriptor->getValidators();
-			if (count($validators)){
-				foreach ($validators as $validator) {
-					/* @var $validator ValidatorInterface */
-					if (is_array($validator->validate($value))){//FIXME : array no use : validate should return true or false
-						$this->errorMessages[$descriptor->getFieldName()][] = $validator->getErrorMessage();
-					}
-				}
-			}
-			//Set same behavior :: call a $descriptor->mapValueToBeanField([no params]) and
-			if ($descriptor instanceof BaseFieldDescriptor) {
-				$descriptor->setValue($this->baseBean, $value);
-			}else if ($descriptor instanceof Many2ManyFieldDescriptor) {
-				$descriptor->setSaveValues($value);
-			}
+		foreach ($this->fieldDescriptors as $descriptor) {
+			$descriptor->preSave($postValues, $this);
 		}
 		if (!count($this->errorMessages)){
-			//save
-			$this->mainDAO->save($this->baseBean);//
+			//save the main bean
+			$this->mainDAO->save($this->baseBean);
 			
-			$id = $this->getMainBeanId();
-			foreach ($this->many2ManyFieldDescriptors as $descriptor){
-				$this->m2mSave($id, $descriptor);		
+			$id = $this->getMainBeanId();//Get bean Id after save if it's an add
+			//Now call the postSave scripts (important for M2M descs for example)
+			foreach ($this->fieldDescriptors as $descriptor){ 
+				$descriptor->postSave($this->baseBean, $id);
 			}
 			
 			return true;
 		}else{
 			return false;
 		}
-		
 	}
 	
+	/**
+	 * Gets the id of the bean
+	 * @param mixed $id the old id of the bean
+	 */
 	private function getMainBeanId(){
 		$this->idFieldDescriptor->load($this->baseBean);
 		return $this->idFieldDescriptor->getFieldValue();
 	}
 	
-	/**
-	 * Handle saving data for Many 2 Many relationships
-	 * @param mixed $mainBeanId : the Id of the current table
-	 * @param Many2ManyFieldDescriptor $descriptor
-	 */
-	private function m2mSave($mainBeanId, Many2ManyFieldDescriptor $m2mdescriptor){//TODO :: push into the M2MDescriptor!!
-		$m2mdescriptor->loadValues($mainBeanId);
-		$beforVals = $m2mdescriptor->getBeanValues();
-		$beforeValues = array();
-		foreach ($beforVals as $bean) {
-			$beforeValues[] = $m2mdescriptor->getMappingRightKey($bean); 
-		}
-		
-		$finalValues = $m2mdescriptor->getSaveValues();
-		
-		$toDelete = array_diff($beforeValues, $finalValues);
-		$toSave = array_diff($finalValues, $beforeValues);
-
-		foreach ($toDelete as $linkedBeanId) {
-			$m2mdescriptor->mappingDao->delete($beanToDelete);
-		}
-		foreach ($toSave as $linkedBeanId) {//TODO shouldn't it be the mapping dao ?
-			$bean = $m2mdescriptor->mappingDao->getNew();
-			$m2mdescriptor->setMappingLeftKey($mainBeanId, $bean);
-			$m2mdescriptor->setMappingRightKey($linkedBeanId, $bean);
-			$m2mdescriptor->mappingDao->save($bean);
+	public function setAttribute($attributeName, $value){
+		if (array_key_exists($attributeName, $this->attributes)){
+			$this->attributes[$attributeName] = $value;
+		}else{
+			throw new Exception("Attribute '$attributeName' of BCEForm can not be set...");
 		}
 	}
 	
+	
+	public function addError($fieldName, $errorMessage){
+		$this->errorMessages[$fieldName][] = $errorMessage;
+	}
 }

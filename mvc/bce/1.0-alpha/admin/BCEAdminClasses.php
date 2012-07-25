@@ -18,9 +18,8 @@ class BCEFormInstanceBean{
 	public $validationHandler;
 	public $action;
 	public $method;
-	public $name;
-	public $id;
-	
+
+	public $attributes;
 }
 
 class FieldDescriptorBean{
@@ -99,6 +98,16 @@ class Many2ManyFieldDescriptorBean extends FieldDescriptorBean{
 	}
 	
 }
+
+class CustomFieldDescriptorBean{
+	
+	public function __construct(){
+		$this->type = 'custom';
+	}
+	
+}
+
+
 
 class DaoDescriptorBean{
 	public $beanTableName;

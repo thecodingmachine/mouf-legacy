@@ -11,9 +11,10 @@ $moufManager = MoufManager::getMoufManager();
 //Let's automatically create validators for the components that are not parametized (eg : don't create a MinMaxRangeValidator)...
 $classes = array(
 		'HiddenRenderer',
-		'MultipleSelectFieldRenderer',
+		'MultipleSelectFieldRenderer{"mode":"chbx"}',
 		'DatePickerRenderer',
 		'SelectFieldRenderer',
+		'BooleanFieldRenderer',
 		'TextFieldRenderer'
 );
 InstallUtils::massCreate($classes, $moufManager);

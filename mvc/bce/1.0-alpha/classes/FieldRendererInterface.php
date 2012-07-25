@@ -19,10 +19,4 @@ interface FieldRendererInterface{
 	 */
 	public function getJS($descriptor);
 	
-	/**
-	 * The required JS library
-	 * @return WebLibrary
-	 */
-	public function getLibrary();
-	
 }

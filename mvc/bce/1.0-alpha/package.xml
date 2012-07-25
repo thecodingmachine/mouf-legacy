@@ -62,7 +62,9 @@
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
 		<require>classes/DatePickerRenderer.php</require>
+		<require>classes/BooleanFieldRenderer.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
+		<require>classes/BCEException.php</require>
 	</requires>
 	<adminRequires>
 		<require>admin/BCEAdminClasses.php</require>

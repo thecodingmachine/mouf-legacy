@@ -334,22 +334,13 @@ class BCEUtils{
 			}
 		}
 		
-		$m2mFiedDescriptors = $desc->getProperty('many2ManyFieldDescriptors');
-		$val = $m2mFiedDescriptors->getValue();
-		if ($val){
-			foreach ($val as $descriptor) {
-				$fieldData = $this->getFieldDescriptorBean($descriptor);
-				$fieldDescs[] = $fieldData;
-			}
-		}
-		
 		$obj->descriptors = $fieldDescs;
 		
 		
-		$obj->name = $desc->getProperty('name')->getValue() ? $desc->getProperty('name')->getValue() : $instanceName;
 		$obj->action = $desc->getProperty('action')->getValue() ? $desc->getProperty('action')->getValue() : "save";
 		$obj->method = $desc->getProperty('method')->getValue() ? $desc->getProperty('method')->getValue() : "POST";
-		$obj->id = $desc->getProperty('id')->getValue() ? $desc->getProperty('id')->getValue() : $instanceName;
+		
+		$obj->attributes = $desc->getProperty('attributes')->getValue();
 		
 		$rendererDesc = $desc->getProperty('renderer')->getValue();
 		if ($rendererDesc) $obj->renderer = $rendererDesc->getName();
@@ -363,6 +354,8 @@ class BCEUtils{
 	private function getFieldDescriptorBean($descriptor){
 		if (!$descriptor) return null;
 		
+		$isCustom = false;
+		
 		$instance = MoufManager::getMoufManager()->getInstanceDescriptor($descriptor->getName());
 		
 		if ($descriptor->getClassName() == 'ForeignKeyFieldDescriptor'){
@@ -371,21 +364,28 @@ class BCEUtils{
 			$fieldData = new BaseFieldDescriptorBean();
 		}else if ($descriptor->getClassName() == 'Many2ManyFieldDescriptor'){
 			$fieldData = new Many2ManyFieldDescriptorBean();
+		}else{
+			$isCustom = true;
+			$fieldData = new CustomFieldDescriptorBean();
 		}
 		
-		
-		$this->loadBaseValues($fieldData, $descriptor, $instance);
-		
-		if ($descriptor->getClassName() != 'Many2ManyFieldDescriptor'){
-			$fieldData->getter = $instance->getProperty('getter')->getValue();
-			$fieldData->setter = $instance->getProperty('setter')->getValue();
+		if ($isCustom){
+			$fieldData->name = $descriptor->getName();
+		}else{
+			$this->loadBaseValues($fieldData, $descriptor, $instance);
+			
+			if ($descriptor->getClassName() != 'Many2ManyFieldDescriptor'){
+				$fieldData->getter = $instance->getProperty('getter')->getValue();
+				$fieldData->setter = $instance->getProperty('setter')->getValue();
+			}
+			
+			if ($descriptor->getClassName() == 'ForeignKeyFieldDescriptor'){
+				$this->loadFKDescriptorValues($fieldData, $instance);
+			}else if ($descriptor->getClassName() == 'Many2ManyFieldDescriptor'){
+				$this->loadM2MDescriptorValues($fieldData, $instance);
+			}
 		}
 		
-		if ($descriptor->getClassName() == 'ForeignKeyFieldDescriptor'){
-			$this->loadFKDescriptorValues($fieldData, $instance);
-		}else if ($descriptor->getClassName() == 'Many2ManyFieldDescriptor'){
-			$this->loadM2MDescriptorValues($fieldData, $instance);
-		}
 		
 		return $fieldData;
 	}
