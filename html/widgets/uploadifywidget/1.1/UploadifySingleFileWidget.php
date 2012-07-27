@@ -140,7 +140,7 @@ class UploadifySingleFileWidget extends AbstractHtmlInputWidget {
 		
 		$id = $this->id;
 		if (!$id) {
-			$id = "mouf_slider_".self::$count;
+			$id = "mouf_uploadify_".self::$count;
 		}
 		
 		echo "<label for='".plainstring_to_htmlprotected($id)."'>\n";
