@@ -56,8 +56,8 @@ class HtmlFormTag extends AbstractHtmlElement {
 	 * Use "list mode" is the form widgets are directly at the root of the widget.
 	 *
 	 * @Property
-	 * @OneOf("none","list")
-	 * @OneOfText("No layout","List layout (using li tags)")
+	 * @OneOf("none","list","div")
+	 * @OneOfText("No layout","List layout (using li tags)","Block layout (using div tags)")
 	 * @var string
 	 */
 	public $layoutMode;
@@ -109,19 +109,27 @@ class HtmlFormTag extends AbstractHtmlElement {
 		echo " method='".plainstring_to_htmlprotected($this->method)."'>\n";
 		if ($this->layoutMode == 'list') {
 			echo "<ol>\n";
+		} elseif($this->layoutMode == 'div') {
+			echo "<div>\n";
 		}
 		foreach ($this->htmlFields as $elem) {
 			/* @var $elem HtmlElementInterface); */
 			if ($this->layoutMode == 'list') {
 				echo "<li>\n";
+			} elseif($this->layoutMode == 'div') {
+				echo "<div>\n";
 			}
 			$elem->toHtml();
 			if ($this->layoutMode == 'list') {
 				echo "</li>\n";
+			} elseif($this->layoutMode == 'div') {
+				echo "</div>\n";
 			}
 		}
 		if ($this->layoutMode == 'list') {
 			echo "</ol>\n";
+		} elseif($this->layoutMode == 'div') {
+			echo "</div>\n";
 		}
 		
 		echo "</form>\n";
