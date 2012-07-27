@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>FileUploader</displayName>
+	<shortDescription>This package contains functions to upload file in Ajax or HTML5.</shortDescription>
+	<docUrl>http://valums.com/ajax-upload/</docUrl>
+	<logo>logo.png</logo>
+	<dependency>
+		<group>html/utils</group>
+		<name>weblibrarymanager</name>
+		<version>&gt;=1.0</version>
+	</dependency>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
