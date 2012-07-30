@@ -89,13 +89,13 @@ class EvoluGrid implements \HtmlElementInterface {
 				
 			$fp = fopen("php://output", "w");
 			$columnsTitles = array_map(function(EvoluColumn $column) {
-				return $column->title;
+				return utf8_decode($column->title);
 			}, $this->columns);
 			fputcsv($fp, $columnsTitles, ";");
 			foreach ($this->rows as $row) {
 				$columns = array_map(function(EvoluColumn $elem) use ($row) {
 					if (isset($row[$elem->key])) {
-						return ($row[$elem->key] == "")?" ":$row[$elem->key];
+						return ($row[$elem->key] == "")?" ":utf8_decode($row[$elem->key]);
 					} else {
 						return " ";
 					}
