@@ -14,6 +14,10 @@ class SelectFieldRenderer implements FieldRendererInterface{
 	 */
 	public $radioMode = false;
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::render()
+	 */
 	public function render($descriptor){
 		/* @var $descriptor ForeignKeyFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
@@ -55,11 +59,4 @@ class SelectFieldRenderer implements FieldRendererInterface{
 		return array();
 	}
 	
-	
-	/**
-	 * 
-	 */
-	public function getLibrary(){
-		return null;
-	}
 }

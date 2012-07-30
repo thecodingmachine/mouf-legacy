@@ -2,7 +2,7 @@
 require_once 'FieldRendererInterface.php';
 
 /**
- * This renderer handles date / timestamp input fields
+ * This renderer handles date / timestamp input fields with the jQuery DatePicker
  * @ApplyTo { "php" :[ "timestamp", "datetime", "date" ] }
  * @Component
  */
@@ -15,6 +15,10 @@ class DatePickerRenderer implements FieldRendererInterface{
 	 */
 	public $settings;
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::render()
+	 */
 	public function render($descriptor){
 		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
@@ -24,6 +28,7 @@ class DatePickerRenderer implements FieldRendererInterface{
 	
 	/**
 	 * (non-PHPdoc)
+	 * The datepicker depends on jQueryUI's datepicker widget, therefore load the library into the WebLibrary manager, and call the datepicker initialization on dom ready
 	 * @see FieldRendererInterface::getJS()
 	 */
 	public function getJS($descriptor){
@@ -44,13 +49,6 @@ class DatePickerRenderer implements FieldRendererInterface{
 		return array(
 			"ready" => "$('#$fieldName').datepicker($settings);"
 		);
-	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldRendererInterface::getLibrary()
-	 */
-	public function getLibrary(){
 	}
 	
 	

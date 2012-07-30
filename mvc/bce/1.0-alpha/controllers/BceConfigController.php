@@ -22,7 +22,7 @@ class BceConfigController extends AbstractMoufInstanceController {
 	/**
 	 * @var array<string>
 	 */
-	protected $formaters;
+	protected $formatters;
 	
 	/**
 	 * @var array<string>
@@ -45,6 +45,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 
 	/**
 	 * Admin page used to display the DAO generation form.
+	 * The main part of the form's confifuration is handled in bce_utils.pho and bceConfig.js.
+	 * Therefore, this controller just load the context for form's configuration
 	 *
 	 * @Action
 	 * @Logged
@@ -53,6 +55,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$this->initController($name, $selfedit);
 		$this->success = $success;
 		
+		// Test if the main DAO has already been set 
+		// (if yes, do not allow to change it, else simply diplay a dao instances select box)
 		$desc = $this->moufManager->getInstanceDescriptor($name);
 		$prop = $desc->getProperty('mainDAO');
 		/* @var $val MoufInstanceDescriptor */
@@ -66,14 +70,15 @@ class BceConfigController extends AbstractMoufInstanceController {
 			$this->mainDAOClass = null;
 		}
 		
+		//Initialize descriptor's attributes possible values
 		$this->daoInstances = MoufReflectionProxy::getInstances("DAOInterface", false);
 		$this->renderers = MoufReflectionProxy::getInstances("FieldRendererInterface", false);
-		$this->formaters = MoufReflectionProxy::getInstances("FormatterInterface", false);
+		$this->formatters = MoufReflectionProxy::getInstances("FormatterInterface", false);
 		$this->validators = MoufReflectionProxy::getInstances("ValidatorInterface", false);
 
+		//Initialize form's attributes possible values
 		$this->formRenderers = MoufReflectionProxy::getInstances("BCERendererInterface", false);
 		$this->validationHandlers = MoufReflectionProxy::getInstances("JsValidationHandlerInterface", false);
-
 		$this->validationHandlers = MoufReflectionProxy::getInstances("JsValidationHandlerInterface", false);
 		
 		$this->template->addJsFile(ROOT_URL."plugins/mvc/bce/1.0-alpha/js/bceConfig.js");
@@ -86,14 +91,12 @@ class BceConfigController extends AbstractMoufInstanceController {
 	
 	/**
 	 * @Action
+	 * Ajax Call : Just set the main property of the DAO
 	 */
 	public function setDao($instance, $dao){
 		try {
 			// First, let's request the install utilities
 			require_once dirname(__FILE__).'/../../../../../mouf/actions/InstallUtils.php';
-			
-			// Let's init Mouf
-// 			InstallUtils::init(InstallUtils::$INIT_APP);
 			
 			// Let's create the instance
 			$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
@@ -110,31 +113,12 @@ class BceConfigController extends AbstractMoufInstanceController {
 		}
 	}
 	
-	private static function performRequest($url) {
-		// preparation de l'envoi
-		$ch = curl_init();
-				
-		curl_setopt( $ch, CURLOPT_URL, $url);
-		
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
-		curl_setopt( $ch, CURLOPT_POST, FALSE );
-		
-		if( curl_error($ch) ) { 
-			throw new Exception("TODO: texte de l'erreur curl");
-		} else {
-			$response = curl_exec( $ch );
-		}
-		curl_close( $ch );
-		
-		return $response;
-	}
-
 	/**
 	 * @Action
+	 * Update the form
 	 */
 	public function save(){
-// 		var_dump($_POST);exit;
-		
+		//Get the form instance
 		$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		$formInstance = $this->moufManager->getInstanceDescriptor($_POST['formInstanceName']);
 		
@@ -143,6 +127,7 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$idFieldDesc = $this->updateFieldDescriptor($_POST["idField"]);
 		$formInstance->getProperty('idFieldDescriptor')->setValue($idFieldDesc);		
 		
+		//Field Descriptors
 		$fields = array();
 		foreach ($_POST['fields'] as $data){
 			if (isset($data['active'])){
@@ -153,19 +138,18 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$formInstance->getProperty("fieldDescriptors")->setValue($fields);
 		
 		
-		
+		//Form's own attributes
 		$action = $_POST['config']['action'];
 		$method = $_POST['config']['method'];
 		$validate = $_POST['config']['validate'];
 		$renderer = $_POST['config']['renderer'];
 		
-		//TODO here : re-do attributes saving
 		$formInstance->getProperty('action')->setValue($action);
 		$formInstance->getProperty('method')->setValue($method);
 		$formInstance->getProperty('validationHandler')->setValue($this->moufManager->getInstanceDescriptor($validate));
 		$formInstance->getProperty('renderer')->setValue($this->moufManager->getInstanceDescriptor($renderer));
 		
-		//Save form attributes
+		//Save form tag's attributes
 		$attributes['name'] = $_POST['config']['name'];
 		$attributes['id'] = $_POST['config']['id'];
 		$attributes['acceptCharset'] = $_POST['config']['accept-charset'];
@@ -178,7 +162,12 @@ class BceConfigController extends AbstractMoufInstanceController {
 		header("Location: " . ROOT_URL . "mouf/bceadmin/?name=" . $_POST['formInstanceName'] . "&success=1");
 	}
 	
+	/**
+	 * Gets descriptor value from the POST, create or update the descriptor and return it
+	 * @param array $fieldData
+	 */
 	private function updateFieldDescriptor($fieldData){
+		//Create or update the descriptor
 		if ($fieldData['new'] != "false"){
 			switch ($fieldData['type']) {
 				case "base":
@@ -199,6 +188,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 			$fieldDescriptor = $this->moufManager->getInstanceDescriptor($fieldData['instanceName']);
 		}
 		
+		
+		//Set data depending on descriptor's type
 		if ($fieldData['type'] != "custom"){
 			$this->loadFieldDescriptor($fieldDescriptor, $fieldData);
 			
@@ -216,10 +207,15 @@ class BceConfigController extends AbstractMoufInstanceController {
 		return $fieldDescriptor;
 	}
 	
-	private function loadFieldDescriptor(&$fieldDescriptor, $fieldData){
-		if (isset($fieldData['formater']) && !empty($fieldData['formater'])){
-			$formater = $this->moufManager->getInstanceDescriptor($fieldData['formater']);
-			$fieldDescriptor->getProperty('formatter')->setValue($formater);
+	/**
+	 * Set common properties for any descriptor
+	 * @param MoufInstanceDescriptor $fieldDescriptor
+	 * @param array $fieldData the data to be updated
+	 */
+	private function loadFieldDescriptor(MoufInstanceDescriptor &$fieldDescriptor, $fieldData){
+		if (isset($fieldData['formatter']) && !empty($fieldData['formatter'])){
+			$formatter = $this->moufManager->getInstanceDescriptor($fieldData['formatter']);
+			$fieldDescriptor->getProperty('formatter')->setValue($formatter);
 		}
 		if (isset($fieldData['renderer']) && !empty($fieldData['renderer'])){
 			$renderer = $this->moufManager->getInstanceDescriptor($fieldData['renderer']);
@@ -239,12 +235,22 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$fieldDescriptor->getProperty('validators')->setValue($validators);
 	}
 	
-	private function loadBaseFieldDescriptor(&$fieldDescriptor, $fieldData){
+	/**
+	 * Set properties for base descriptors (Base and FK)
+	 * @param MoufInstanceDescriptor $fieldDescriptor
+	 * @param array $fieldData the data to be updated
+	 */
+	private function loadBaseFieldDescriptor(MoufInstanceDescriptor &$fieldDescriptor, $fieldData){
 		$fieldDescriptor->getProperty('getter')->setValue($fieldData['getter']);
 		$fieldDescriptor->getProperty('setter')->setValue($fieldData['setter']);
 		
 	}
 	
+	/**
+	 * Set common properties for FK descriptors
+	 * @param MoufInstanceDescriptor $fieldDescriptor
+	 * @param array $fieldData the data to be updated
+	 */
 	private function loadFKDescriptor(MoufInstanceDescriptor &$fieldDescriptor, $fieldData){
 		/* @var $fkFieldDescriptor ForeignKeyFieldDescriptor */
 		$dao = $this->moufManager->getInstanceDescriptor($fieldData['linkedDao']);
@@ -255,6 +261,11 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$fieldDescriptor->getProperty('linkedLabelGetter')->setValue($fieldData['linkedLabelGetter']);
 	}
 	
+	/**
+	 * Set common properties for M2M descriptors
+	 * @param MoufInstanceDescriptor $fieldDescriptor
+	 * @param array $fieldData the data to be updated
+	 */
 	private function loadM2MDescriptor(&$fieldDescriptor, $fieldData){
 		$mappingDao = $this->moufManager->getInstanceDescriptor($fieldData['mappingDao']);
 		$fieldDescriptor->getProperty('mappingDao')->setValue($mappingDao);
@@ -273,6 +284,11 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$fieldDescriptor->getProperty('dataMethod')->setValue($fieldData['dataMethod']);
 	}
 	
+	/**
+	 * Helper for get a new instance Name, 
+	 * and being sure an instance with the same name doesn't exist already
+	 * @param string $defaultName the initial name to be set
+	 */
 	public function getInstanceName($defaultName){
 		$i = 2;
 		$finalName = $defaultName;

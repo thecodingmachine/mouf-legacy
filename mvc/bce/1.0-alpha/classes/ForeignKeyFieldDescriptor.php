@@ -50,7 +50,8 @@ class ForeignKeyFieldDescriptor extends BaseFieldDescriptor{
 	private $data;
 	
 	/**
-	 * (non-PHPdoc)
+	 * Load bean an handle value, but also retrive the list of available values.
+	 * E.g. load user's role_id (FK on main bean), AND the list of RoleBeans
 	 * @see BaseFieldDescriptor::load()
 	 */
 	public function load($mainBean, $id = null, &$form = null){
@@ -59,16 +60,30 @@ class ForeignKeyFieldDescriptor extends BaseFieldDescriptor{
 	}
 	
 	/**
-	 * 
+	 * The method responsible of returning the list of beans that can be linked 
+	 * e.g. main bean is user, that has a given role, getData will return the list of role beans
+	 * @return array<mixed> 
 	 */
 	public function getData(){
 		return $this->data;
 	}
 	
+	/**
+	 * Helper to get the id of the linked objects, in other terms it gets the primary key pointed by bean's foreing key
+	 * e.g. the id of the role bean
+	 * @param mixed $bean
+	 * @return mixed (usualy an int)
+	 */
 	public function getRelatedBeanId($bean){
 		return call_user_func(array($bean, $this->linkedIdGetter));
 	}
 	
+	/**
+	 * Helper to get the label of the linked objects, as it will be displayd in the form
+	 * e.g. the roles' labels
+	 * @param mixed $bean
+	 * @return string
+	 */
 	public function getRelatedBeanLabel($bean){
 		return call_user_func(array($bean, $this->linkedLabelGetter));
 	}

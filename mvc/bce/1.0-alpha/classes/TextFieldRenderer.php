@@ -8,6 +8,10 @@ require_once 'FieldRendererInterface.php';
  */
 class TextFieldRenderer implements FieldRendererInterface{
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::render()
+	 */
 	public function render($descriptor){
 		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
@@ -23,11 +27,4 @@ class TextFieldRenderer implements FieldRendererInterface{
 		return array();
 	}
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldRendererInterface::getLibrary()
-	 */
-	public function getLibrary(){
-		return null;
-	}
 }

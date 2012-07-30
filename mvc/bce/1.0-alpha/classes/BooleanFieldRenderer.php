@@ -2,12 +2,16 @@
 require_once 'FieldRendererInterface.php';
 
 /**
- * Base class for rendering simple text fields
+ * Base class for rendering simple boolean fields
  * @Component
  * @ApplyTo { "php" :[ "boolean" ] }
  */
 class BooleanFieldRenderer implements FieldRendererInterface{
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::render()
+	 */
 	public function render($descriptor){
 		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
@@ -23,11 +27,4 @@ class BooleanFieldRenderer implements FieldRendererInterface{
 		return array();
 	}
 	
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldRendererInterface::getLibrary()
-	 */
-	public function getLibrary(){
-		return null;
-	}
 }

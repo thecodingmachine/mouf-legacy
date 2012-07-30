@@ -4,7 +4,20 @@
  * For example, a user has a set of hobbies, that are stored in a hobby table, and linked to the user by a user_hobby table
  * 
  * Therefore, this class references
- * 		- a linked DAO that handles the relation beans ('userhobby' bean)
+ * 		- a mapping DAO that handles the relation beans ('userhobby' bean)
+ * 		- a linked DAO that handles the linked beans ('hobby' bean)
+ * 
+ * 
+ *    Main DAO					Mapping DAO 					     Linked DAO 
+ *    						   (bean values)                      (available data)
+ *   |--------|		  |-------------------------------|      
+ *   |  user  |       |       user hobby              |	 	   |--------------------|
+ *   |--------|		  |-------------------------------|	       |        hobby       |
+ * 	 |   id   | <---- |       id (mappingId)          |	       |--------------------|
+ *	 |________|		  |  user_id (mappingLeftKey)     | -----> |    id (linkedId)   |
+ *					  | hobby_id (mappingRightKey)    |   	   | label (linkedLabel)|
+ *                    |_______________________________|        |____________________|
+ * 
  * @Component
  */
 class Many2ManyFieldDescriptor extends FieldDescriptor{
@@ -96,8 +109,10 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	private $saveValues = array();
 	
 	/**
-	 * Rewrite the function : load main bean's values and avalable ones
-	 * @param mixed $mainBeanId the id of the main bean 
+	 * Load main bean's values and avalable ones
+	 * @param mixed $mainBeanId the id of the main bean
+	 * 
+	 * @see BCEFieldDescriptorInterface::load()
 	 */
 	public function load($bean, $mainBeanId = null, &$form = null){
 		$this->loadValues($mainBeanId);
@@ -106,6 +121,7 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	
 	/**
 	 * Loads the values of the bean
+	 * These values are stored in an associative array, the key being the linked bean's Id
 	 * @param mixed $mainBeanId the id of the main bean 
 	 */
 	public function loadValues($mainBeanId){
@@ -131,21 +147,28 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	}
 	
 	/**
-	 * (non-PHPdoc)
+	 * This Descriptor will do all the persistance job in this postSave method, beacause is has to wait the main bean has been persisted 
 	 * @see BCEFieldDescriptorInterface::postSave()
 	 */
 	public function postSave($bean, $beanId){
+		//First remember which "secondary beans" the main bean was linked to
 		$this->loadValues($beanId);
 		$beforVals = $this->getBeanValues();
+		//Persist them into a keyset of "secondary bean IDs" 
+		//E.G the ids of all hobbies that has the user
 		$beforeValues = array();
 		foreach ($beforVals as $bean) {
 			$beforeValues[] = $this->getMappingRightKey($bean);
 		}
-		
+
+		//Save values have been set by the preSave handler 
+		//(defined in the FieldDescriptor class), that calls in fact the own "setValue" method
 		$finalValues = $this->getSaveValues();
 		
+		//Make 2 inverse diffs to identify which mappings have changed (added and removed) 
 		$toDelete = array_diff($beforeValues, $finalValues);
 		$toSave = array_diff($finalValues, $beforeValues);
+		
 		
 		foreach ($toDelete as $linkedBeanId) {
 			$this->mappingDao->delete($beforVals[$linkedBeanId]);
@@ -187,7 +210,7 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	 * If everything went well, thses values will be used to perform saves and deletes
 	 * @param mixed $values: the values to be set
 	 */
-	public function setSaveValues($values){
+	public function setValue($baseBean, $values){
 		$this->saveValues = $values;
 	}
 	

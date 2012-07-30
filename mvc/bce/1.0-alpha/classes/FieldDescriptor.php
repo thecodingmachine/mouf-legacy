@@ -39,7 +39,7 @@ abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 	public $renderer;
 
 	/**
-	 * The validator of the field. Returns true/(false+errorString)
+	 * The validator of the field. Returns true/false
 	 * @Property
 	 * @var array<ValidatorInterface>
 	 */
@@ -66,6 +66,15 @@ abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 		return $this->script;
 	}
 	
+	/**
+	 * (non-PHPdoc)
+	 * For a FieldDecsriptor instance, the preSave function id responsible for :
+	 *  - unformatting the posted value
+	 *  - valideting the value
+	 *  - setting the value into the bean (case of BaseFieldDescriptors)
+	 *  - settings the linked ids to associate in mapping table (Many2ManyFieldDEscriptors)
+	 * @see BCEFieldDescriptorInterface::preSave()
+	 */
 	public function preSave($post, BCEForm &$form){
 		$value = isset($post[$this->getFieldName()]) ? $post[$this->getFieldName()] : null;
 			
@@ -80,18 +89,24 @@ abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 		if (count($validators)){
 			foreach ($validators as $validator) {
 				/* @var $validator ValidatorInterface */
-				if (!$validator->validate($value)){//FIXME : array no use : validate should return true or false
+				if (!$validator->validate($value)){//TODO if return array (false, error), the tests passes ???
 					$form->addError($this->fieldName, $validator->getErrorMessage());
 				}
 			}
 		}
-		//Set same behavior :: call a $descriptor->mapValueToBeanField([no params]) and
-		if ($this instanceof BaseFieldDescriptor) {
-			$this->setValue($form->baseBean, $value);
-		}else if ($this instanceof Many2ManyFieldDescriptor) {
-			$this->setSaveValues($value);
-		}
+		
+		//Set value context before saving
+		$this->setValue($form->baseBean, $value);
 	}
+	
+	/**
+	 * Abstract method : sets the value(s) context before saving data.
+	 *   - Base and FK Descriptors just set the value into the bean,
+	 *   - M2M Decsriptors set the array of linked beans ID's 
+	 * @param mixed $baseBean
+	 * @param mixed $value
+	 */
+	public function setValue($baseBean, $value);
 
 	/**
 	 * Get's the field's name (unique Id of the field inside a form (or name attribute)

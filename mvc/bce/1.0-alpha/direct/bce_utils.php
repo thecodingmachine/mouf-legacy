@@ -1,4 +1,25 @@
 <?php
+/**
+ * ----------------------------------------------------------------
+ * ------------------------- Head's UP!!!--------------------------
+ * ----------------------------------------------------------------
+ * 
+ * This is one of the moste important file of the Form configuration. bce_utils is an AJAX helper that handles:
+ *   - get data about an existing instance
+ *   - get data about a DAO (can be used either for the main dao or any secondary dao used in FK, M2M, ... descriptors)
+ *   
+ *   Here are some explanations on how the form configuration works :
+ *   - First, if the main dao isn't set, then the only choice is to select one in the dropdown list
+ *   
+ *   - Once the DAO is defined, bce_utils will be called to get instance data
+ *   
+ *   - Of course, the instance data will load the form configuration (id, name, class, validation handler, etc...,
+ *     but also the descriptors. 
+ *     Even more! bce_utils will also return a set of descriptors for each getter / setter of the main bean (the one handled by the main dao)
+ *     
+ *   - Finally, bce_utils also retuns DAO data, which are used when a secondary dao is required (FK or M2M daos for example)
+ */
+
 session_start();
 require_once '../../../../../Mouf.php';
 require_once(dirname(__FILE__)."/../../../../../mouf/reflection/MoufReflectionProxy.php");
@@ -10,6 +31,7 @@ $inputName = $_GET['n'];
 
 $utils = new BCEUtils();
 
+//depending on the $query parameter, return instance or dao data
 switch ($query) {
 	case 'daoData':
 		echo json_encode($utils->getDaoDataFromInstance($inputName));
@@ -22,22 +44,42 @@ switch ($query) {
 
 class BCEUtils{
 	
+	/**
+	 * List of all objects that are used by the descriptors : 
+	 *  - validators
+	 *  - renderers
+	 *  - formatters
+	 *  - daos
+	 */
 	private $validators = array();
 	private $renderers = array();
 	private $formatters = array();
 	private $daos = array();
 	
+	/**
+	 * The @ApplyTo annotations in the validators, renderers and formatters 
+	 * are used to define when to apply those instances to some descriptors.
+	 * 
+	 * For example, a DatePickerRenderer is applyied to Date, Timestamp, and Datetime PHP types
+	 * 
+	 * The $handleOrder variable defines the priority of the @ApplyTo annotations : 
+	 * For example, 'pk' @ApplyTo annotation prevails on 'type' ones...
+	 */
 	public $handleOrder = array("pk", "type", "php", "db");
 	
 	public function __construct(){
+		//Simply initialize collections (used for drop downs)
 		$this->initValidators();
-		
 		$this->initRenderers();
 		$this->initFormatters();
 		$this->initDaos();
-		
 	}
 	
+	/**
+	 * Get the list of all suitable DAOs, and put them into an associative array 
+	 * Key is table name, which will help suggesting the right dao for a FK descriptor, see _fitDaoByTableName function
+	 * @return array
+	 */
 	private function initDaos(){
 		$daos = Moufspector::getComponentsList("DAOInterface");
 		foreach ($daos as $className) {
@@ -50,6 +92,15 @@ class BCEUtils{
 		}
 	}
 	
+	/**
+	 * Gets the list of instances of classes that implement the interface parameter.
+	 * The returned array has 2 dimensions, first one is the type (see $handleOrder variable), and the second is the value of the type
+	 * For example $array['php']['number']
+	 * 
+	 * This will help the configurator to suggest adapted validators, renderers, etc for new descriptors
+	 * 
+	 * @param string $interface
+	 */
 	private function initHandler($interface){
 		$handlers = array();
 		$instances = MoufManager::getMoufManager()->findInstances($interface);
@@ -82,13 +133,29 @@ class BCEUtils{
 		$this->formatters = $this->initHandler('FormatterInterface');
 	}
 	
+	/**
+	 * Shortcut for getting daoData from dao instancename, rather then from className
+	 * @param string $daoInstanceName
+	 */
 	public function getDaoDataFromInstance($daoInstanceName){
 		$desc = MoufManager::getMoufManager()->getInstanceDescriptor($daoInstanceName);
 		$daoClass = $desc->getClassName();
-		
 		return $this->getDaoData($daoClass);
 	}
 	
+	/**
+	 * The DAO data will return the method descriptors for the dao itself and the bean that is handled by this dao.
+	 * For example, 
+	 *  - userDao has save, create, getById, etc.. methods
+	 *  - userBean has getId, getName, getEmail, etc...
+	 *  
+	 *  The bean's methods can by used to suggest descriptors (the get / set Name methods) will suggest to create a nameDescriptor.
+	 *  Moreover, those bean methods will be used for FK & M2M descriptors (like the linkedIdGetter property)
+	 *  
+	 *  The DAO's methods will be used for FK and M2M descriptors (like the dataMethod property)
+	 * 
+	 * @param string $daoClass
+	 */
 	private function getDaoData($daoClass){
 		$daoDescripror = new DaoDescriptorBean();
 		
@@ -104,6 +171,10 @@ class BCEUtils{
 		return $daoDescripror;
 	}
 	
+	/**
+	 * Get the methods of a dao
+	 * @param array<string> $daoClass
+	 */
 	private function getDaoMethods($daoClass){
 		$daoMethodNames = array();
 		$daoClassReflexion = new MoufReflectionClass($daoClass);
@@ -114,46 +185,67 @@ class BCEUtils{
 		return $daoMethodNames;
 	}
 	
+	/**
+	 * Retrieve the methods of a bean class
+	 * @param string $beanClassName
+	 */
 	private function getBeanMethods($beanClassName){
 		$beanClass = new MoufReflectionClass($beanClassName);
+		
+		//The table name will be used to the DB model data as primary key or foreign keys
 		$tableName = $beanClass->getAnnotations("dbTable");
 		
+		//Get parent class in order to distinguish the bean classe's methods from it's parents' ones
 		$parentBeanClass = $beanClass->getParentClass()->getParentClass();
 		$methods = $beanClass->getMethodsByPattern("^[gs]et");
 		$methodsParent = $parentBeanClass->getMethodsByPattern("^[gs]et");
 		$finalMethods = array();
 
 		$connection = Mouf::getDbConnection();
+		//Primary keys will be used to suggest the idFieldDescriptor
 		$primaryKeys = $connection->getPrimaryKey($tableName[0]);
 		
 		foreach ($methods as $method) {
 			/* @var $method  MoufReflectionMethod */
-			if (!array_key_exists($method->getName(), $methodsParent)){
+			if (!array_key_exists($method->getName(), $methodsParent)){//Only take the bean's methods, not the parent's ones
 				
 				$methodObj = new BeanMethodHelper();
 				$methodObj->name = $method->getName();
-					
+				
+				//Will help to suggest appropriate validators, formatters and rederers
 				$returnAnnotation = $method->getAnnotations('dbType');
-				$columnName = $method->getAnnotations('dbColumn');
+				$columnName = $method->getAnnotations('dbColumn');//Get column name to suggest descriptor name
 				$columnName = $columnName[0];
 				
+				//If there is no column name, the method is not a getter or a setter, and therefore cannot be mapped to a decriptor
 				if (!$columnName){
 					continue;
 				}
 				
 				$fieldIndex = self::toCamelCase($columnName, true)."Desc";
 				
+				/* This script has to get getter AND setter for each property,
+				 * so the method descriptor is in fact linked to 2 methods : the getter and the setter */
 				$fieldDataObj = isset($finalMethods[$fieldIndex]) ? $finalMethods[$fieldIndex] : new BeanFieldHelper();
-				/* @var $fieldDataObj BeanFieldHelper */
 				
+				/* @var $fieldDataObj BeanFieldHelper */
 				$fieldDataObj->columnName = $columnName;
+				
+				/* If the current column is the primary key of the table, the set the pk attribute which will 
+				 * suggest teh descripor to be teh idFieldDescriptor
+				 */
 				foreach ($primaryKeys as $key){
 					if ($key->name == $columnName){
 						$fieldDataObj->isPk = true;
 						break;
 					}
 				}
-				
+				 
+				/*
+				 * Like the primary key test, foreign keys will suggest the field to be a FK descriptor
+				 * The fkData will tell which table is linked and so which dao should be the linked dao
+				 * //TODO : linked column could be used to rather then regex match
+				 */
 				$referencedTables = $connection->getConstraintsOnTable($tableName[0], $columnName);
 				if (!empty($referencedTables)){
 					$ref = $referencedTables[0];
@@ -163,7 +255,8 @@ class BCEUtils{
 					$methodObj->fkData = $foreignKeyData;
 					$fieldDataObj->type = 'fk';
 				}
-					
+
+				/* Set the type declared by the getter (db type is transleted into php type) */
 				if (count($returnAnnotation)){
 					$returnType = $returnAnnotation[0];
 					$returnType = explode(" ", $returnType);
@@ -179,12 +272,19 @@ class BCEUtils{
 			}
 		}
 		
+		/* each  beanFieldHelper have to be converted to a FieldDeescriptorBean 
+		 * in order to have same properties than the existing descriptors */
 		foreach ($finalMethods as $columnName => $fieldData) {
 			$fieldData->asDescriptor = $this->beanHelperConvert2Descriptor($fieldData);
 		}
+		
 		return array($finalMethods, $tableName[0]);
 	}
 	
+	/**
+	 * Quite simple function that returns a FieldDecriptorBean from a BeanFieldHelper
+	 * @param BeanFieldHelper $beanField
+	 */
 	private function beanHelperConvert2Descriptor(BeanFieldHelper $beanField){
 		$descriptorBean = null;
 		if (isset($beanField->getter->fkData)){
@@ -213,7 +313,7 @@ class BCEUtils{
 		
 		
 		$convertBean->renderer = $this->_match($beanField, $this->renderers);
-		$convertBean->formater = $this->_match($beanField, $this->formatters);
+		$convertBean->formatter = $this->_match($beanField, $this->formatters);
 		$convertBean->validators = $this->_match($beanField, $this->validators, true);
 		
 		return $convertBean;
@@ -395,8 +495,8 @@ class BCEUtils{
 		$bean->name = $descriptor->getName();
 		if ($instance->getProperty('renderer')->getValue()) 
 			$bean->renderer = $instance->getProperty('renderer')->getValue()->getName();
-		$formaterDesc = $instance->getProperty('formatter')->getValue();
-		$bean->formater = $formaterDesc ? $formaterDesc->getName() : null;
+		$formatterDesc = $instance->getProperty('formatter')->getValue();
+		$bean->formatter = $formatterDesc ? $formatterDesc->getName() : null;
 		$bean->fieldName = $instance->getProperty('fieldName')->getValue();
 		$bean->label = $instance->getProperty('label')->getValue();
 		

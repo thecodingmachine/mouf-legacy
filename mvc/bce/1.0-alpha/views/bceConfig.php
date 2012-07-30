@@ -17,7 +17,7 @@
 var daos = ['<?php echo implode("', '", $this->daoInstances); ?>']
 
 var renderers = ['<?php echo implode("', '", $this->renderers); ?>'];
-var formaters = ['<?php echo implode("', '", $this->formaters); ?>'];
+var formatters = ['<?php echo implode("', '", $this->formatters); ?>'];
 var validators = ['<?php echo implode("', '", $this->validators); ?>'];
 
 var formRenderers = ['<?php echo implode("', '", $this->formRenderers); ?>'];

@@ -94,7 +94,7 @@ var emptyM2MField = {
 		type : "m2m",
 		name : "",
 		renderer : null,
-		formater : null,
+		formatter : null,
 		fieldName : "",
 		label : "",
 		validators : [],
@@ -158,7 +158,7 @@ function completeInstanceData(data){
 		
 		var notIdDesc = !newField.isPk; 
 		
-		newField.asDescriptor.active = isNewform && field.active;
+		newField.asDescriptor.active = isNewform && newField.asDescriptor.active;
 		
 		if (notIdDesc){
 			var tmpField = newField.asDescriptor;
@@ -322,7 +322,7 @@ function _getFieldElements(field, fieldNames){
 	var name = _getSimpleValueWrapper("Field Name", "fieldname", field.name, field.fieldName, fieldNames); 
 	var label =_getSimpleValueWrapper("Label", "label", field.name, field.label, fieldNames);
 	var renderer =_getListValueWrapper("Renderer", "renderer", field.name, field.renderer, renderers, null, fieldNames);
-	var formater =_getListValueWrapper("Formater", "formater", field.name, field.formater, formaters, null, fieldNames);
+	var formatter =_getListValueWrapper("formatter", "formatter", field.name, field.formatter, formatters, null, fieldNames);
 	var validatorsElem =_getMultiListValueWrapper("Validators", "validators", field.name, field.validators, validators, fieldNames);
 	
 	var br = jQuery("<div/>").append(jQuery("<br/>").css('clear', 'both'));
@@ -342,7 +342,7 @@ function _getFieldElements(field, fieldNames){
 	
 	
 	
-	return [name, label, renderer, formater, br, validatorsElem, br2, typeElemWrap, isNewElemWrap, instanceNameWrap];
+	return [name, label, renderer, formatter, br, validatorsElem, br2, typeElemWrap, isNewElemWrap, instanceNameWrap];
 }
 
 function _getBaseElements(field, fieldNames){

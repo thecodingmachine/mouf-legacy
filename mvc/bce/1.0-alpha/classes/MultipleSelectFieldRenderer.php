@@ -20,6 +20,10 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 	 */
 	public $mode = 'checkbox';
 	
+	/**
+	 * (non-PHPdoc)
+	 * @see FieldRendererInterface::render()
+	 */
 	public function render($descriptor){
 		/* @var $descriptor Many2ManyFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
@@ -61,20 +65,13 @@ class MultipleSelectFieldRenderer implements FieldRendererInterface{
 		return $html;
 	}
 	
+	
 	/**
 	 * (non-PHPdoc)
 	 * @see FieldRendererInterface::getJS()
 	 */
 	public function getJS($descriptor){
 		return array();
-	}
-
-	/**
-	 * (non-PHPdoc)
-	 * @see FieldRendererInterface::getLibrary()
-	 */
-	public function getLibrary(){
-		return null;
 	}
 	
 }
