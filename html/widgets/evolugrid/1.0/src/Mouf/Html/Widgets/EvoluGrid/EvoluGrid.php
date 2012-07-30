@@ -95,9 +95,9 @@ class EvoluGrid implements \HtmlElementInterface {
 			foreach ($this->rows as $row) {
 				$columns = array_map(function(EvoluColumn $elem) use ($row) {
 					if (isset($row[$elem->key])) {
-						return $row[$elem->key];
+						return ($row[$elem->key] == "")?" ":$row[$elem->key];
 					} else {
-						return "";
+						return " ";
 					}
 				}, $this->columns);
 				fputcsv($fp, $columns, ";");
