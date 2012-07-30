@@ -12,7 +12,8 @@
  *  pagerId : 'listePager' // The ID of the pager,
  *  columns: [...] // A list of columns,
  *  export_csv: true // Whether we can export to CSV or not,
- *  loadOnInit: true // Whether we should start loading the table (true) or wait for the user to submit the search form (false)
+ *  loadOnInit: true // Whether we should start loading the table (true) or wait for the user to submit the search form (false),
+ *  rowCssClass: "key" // If set, for each row, we will look in the dataset for the row, for the "key" passed in parameter. The associated value will be used as a class of the tr row. 
  * }
  * 
  * Any parameter (except URL) can be dynamically passed from the server side.
@@ -41,7 +42,7 @@
    			return $(descriptor.filterForm).serializeArray();
     	}
 	
-		return {};
+		return [];
 	};
 	
 	var methods = {
@@ -122,6 +123,9 @@
 	    		//construct td
 	    		for (var i=0;i<data.data.length;i++){
 	    			tr=$('<tr>');
+	    			if (extendedDescriptor.rowCssClass) {
+	    				tr.addClass(data.data[i][extendedDescriptor.rowCssClass]);
+	    			}
 	    			table.append(tr);
 	    			for(var j=0;j<extendedDescriptor.columns.length;j++){
 	    				var td=$('<td>');
@@ -139,6 +143,9 @@
 			    					var html=display(data.data[i]);
 			    				}else {
 			    					var html=data.data[i][display];
+			    					if (html === 0) {
+			    						html = "0";
+			    					}
 			    				}
 		    				}
 	    				}
@@ -149,29 +156,37 @@
 		    		}   			
 	    		}
 	    		//construct pager
-	    		pager=$('<div>').addClass("pager");
+	    		var pager=$('<div>').addClass("pager");
 	    		if(extendedDescriptor.pagerId){
 	    			pager.attr('id',extendedDescriptor.pagerId);
 	    		}
 	    		
+	    		    		
 	    		if (extendedDescriptor.export_csv) {
 	    			pager.append($('<i>').addClass('icon-file pointer export-csv').text("Export to CSV").click(function(){$this.evolugrid('csvExport');}));
 	    		}
 	    		
-	    		if(noPage>0){
-	    			pager.append($('<i>').addClass('icon-chevron-left pointer pager-cursor').text("<").click(function(){$this.evolugrid('refresh',noPage-1);}));
-	    		}
-	    		var pagerText = "Page "+(noPage+1);
-	    		var pageCount;
+	    		var pageCount = null;
 	    		if (data.count != null) {
 	    			pageCount=Math.floor(data.count/extendedDescriptor.limit);
-	    			pagerText += " de "+(pageCount+1);
 	    		}
-	    		pager.append($('<span>').text(pagerText));
 	    		
-	    		if((data.count != null && noPage<pageCount) || (data.count == null && extendedDescriptor.limit && data.data.length == extendedDescriptor.limit)){
-	    			pager.append($('<i>').addClass('icon-chevron-right pointer pager-cursor').text(">").click(function(){$this.evolugrid('refresh',noPage+1);}));
+	    		if (pageCount>0) {
+		    		if(noPage>0){
+		    			pager.append($('<i>').addClass('icon-chevron-left pointer pager-cursor').text("<").click(function(){$this.evolugrid('refresh',noPage-1);}));
+		    		}
+		    		var pagerText = "Page "+(noPage+1);
+		    		
+		    		if (data.count != null) {
+		    			pagerText += " de "+(pageCount+1);
+		    		}
+		    		pager.append($('<span>').text(pagerText));
+		    		
+		    		if((data.count != null && noPage<pageCount) || (data.count == null && extendedDescriptor.limit && data.data.length == extendedDescriptor.limit)){
+		    			pager.append($('<i>').addClass('icon-chevron-right pointer pager-cursor').text(">").click(function(){$this.evolugrid('refresh',noPage+1);}));
+		    		}
 	    		}
+
 	    		$this.append(pager);
 	    		
 	    	},
