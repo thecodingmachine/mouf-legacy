@@ -15,7 +15,7 @@ InstallUtils::init(InstallUtils::$INIT_APP);
 $moufManager = MoufManager::getMoufManager();
 if (!$moufManager->instanceExists("mailLogger")) {
 	
-	$errorLogLogger = $moufManager->createInstance("mailLogger");
+	$errorLogLogger = $moufManager->createInstance("MailLogger");
 	// Let's set a name for this instance (otherwise, it would be anonymous)
 	$errorLogLogger->setName("mailLogger");
 	$errorLogLogger->getProperty("level")->setValue(4);
