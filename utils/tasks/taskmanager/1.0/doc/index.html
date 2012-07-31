@@ -1,0 +1,153 @@
+<h1>Managing tasks with the Task Manager</h1>
+
+<p>A package in Mouf is available to manage tasks: Task Manager (and its associated package Task Manager UI)</p>
+<p>With the Task Manager package, you can plan tasks. Tasks are bits of code that can run at some date.
+They are regularly retried if the task is not run successfully.</p>
+
+<p>Use the Task Manager UI package to have a nice interface to check the status of the tasks.</p>
+
+<h2>Installing the Task Manager package</h2>
+
+<p>Installing the Task Manager package is easy. You first need to enable the package (utils/tasks/taskmanager).</p>
+<p>Then, you must create the tasks table in your database. The script to create the table is available in <code>plugins/utils/tasks/taskmanager/1.0/database</code>.</p>
+
+<p>Now, you have to create an instance of the TaskManager class in Mouf. The TaskManager class is the class you will use to create new tasks.</p>
+<p>Connect, to the Mouf interface, then click on "Create a new instance", and select the TaskManager class. You can specify "taskManager" as the instance name.</p>
+
+<p>You must configure the TaskManager. In particular, you must:</p>
+<ul>
+<li>Connect the TaskManager to the DbConnection representing your database</li>
+<li>Connect the TaskManager to a logger that will log all actions related to the TaskManager</li>
+</ul>
+
+<p>You are done? Let's start using the TaskManager!</p>
+
+<h2>Building Tasks</h2>
+
+<p>The TaskManager can be used to start "Tasks".</p>
+<p>You start a new Task by calling the createTask method:</p>
+
+<pre>
+Mouf::getTaskManager->createTask($myTaskProcessor, array("myParam"=>1, "myOtherParam"=>42));
+</pre>
+
+<p>In this example, $myTaskProcessor is a Mouf instance of a "TaskProcessor". A TaskProcessor is a bit of code that you will write to act upon a task. The task processor will be passed the second arguments of the function call (the task parameters).</p>
+
+<p>TaskProcessors are objects implementing the TaskProcessorInterface interface. It is a very easy to implement interface, since there are only 3 method calls to implement: <code>run</code>, <code>getTaskName</code> and <code>getRetryInterval</code></p>
+
+<pre>
+<?php
+/**
+ * You must implement the TaskProcessorInterface to be 
+ * able to run your own tasks.
+ * Tasks are bits of code that are run, and retried later
+ * if they fail.
+ * 
+ * @author David Negrier
+ */
+interface TaskProcessorInterface {
+	/**
+	 * The run method performs the action on the task.
+	 * It returns "true" if the task was run successfully,
+	 * or "false" if the task failed (if the task failed,
+	 * it will be retried later).
+	 * 
+	 * @param Task $task
+	 * @return boolean
+	 */
+	public function run(Task $task);
+	
+	/**
+	 * Returns a string describing the task.
+	 * This is used to display the task in the UI.
+	 * 
+	 * @param Task $task
+	 */
+	public function getTaskName(Task $task);
+	
+	/**
+	 * The getRetryInterval function returns the number of seconds to wait before retrying the task (if the task failed).
+	 * The TaskManager will do its best to call the retry. Please note there is no guarantee it will run exactly at
+	 * the specified time. The time the task will run depends first on the time the TaskManager is called (by a cron task
+	 * or any other mechanism).
+	 * 
+	 * @param Task $task
+	 * @return int
+	 */
+	public function getRetryInterval(Task $task);
+}
+?>
+</pre>
+
+<p>Here is a sample task:</p>
+
+<pre>
+/**
+ * This is a sample implementation of the TaskProcessorInterface interface.
+ * @Component
+ */
+class MyTaskProcessor implements TaskProcessorInterface {
+	/**
+	 * The run method performs the action on the task.
+	 * It returns "true" if the task was run successfully,
+	 * or "false" if the task failed (if the task failed,
+	 * it will be retried later).
+	 * 
+	 * @param Task $task
+	 * @return boolean
+	 */
+	public function run(Task $task) {
+		// You can access task parameters using the getParams() method:
+		$myParams = $task->getParams();
+
+	}
+	
+	/**
+	 * Returns a string describing the task.
+	 * This is used to display the task in the UI.
+	 * 
+	 * @param Task $task
+	 */
+	public function getTaskName(Task $task) {
+		return "Sample task with param: ".$task->getParams()->myParam;
+	}
+	
+	/**
+	 * The getRetryInterval function returns the number of seconds to wait before retrying the task (if the task failed).
+	 * The TaskManager will do its best to call the retry. Please note there is no guarantee it will run exactly at
+	 * the specified time. The time the task will run depends first on the time the TaskManager is called (by a cron task
+	 * or any other mechanism).
+	 * 
+	 * @param Task $task
+	 * @return int
+	 */
+	public function getRetryInterval(Task $task) {
+		// Retry once an hour.
+		return 3600;
+	}
+}
+</pre>
+
+<p>Please note that the TaskProcessor has the @Component attribute. It MUST be created as a Mouf instance. The next step is therefore to register it as a Mouf instance:</p>
+<ul>
+<li>In the Mouf UI, start by importing your PHP file containing the MyTaskProcessor class: "Include PHP files".</li>
+<li>Now, create a new instance of that object: "Create a new instance". Then select your class ("MyTaskProcessor"), and an instance name (for instance: "myTaskProcessor").</li>
+</ul>
+
+<h2>Running tasks</h2>
+
+<p>To run a task, you just need to call the createTask method, passing in parameter the TaskProcessor in charge of the task:</p>
+
+<pre>
+$taskProcessor = Mouf::getMyTaskProcessor();
+Mouf::getTaskManager()->createTask($taskProcessor, $myParams);
+</pre>
+
+<h2>Viewing awaiting tasks</h2>
+
+<p>The TaskManager package comes with a user interface to see awaiting tasks. Just connect to Mouf UI, and click the "View awaiting tasks" link.</p>
+
+<h2>Installing a CRON job to run the tasks</h2>
+
+<p>The TaskManager will not trigger automagically when a task reaches the retry date. Instead, it needs to be fired regularly from a cron job (if you are using Linux) or any other job scheduler.</p>
+<p>The TaskManager package can assist you in setting up the CRON job. Just click the "Install Task Manager" menu, and you will be able to view installation instructions.</p>
