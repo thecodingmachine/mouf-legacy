@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="http://xsd.mouf-php.com/packages.xsd">
 	<displayName>Task Manager</displayName>
 	<shortDescription>With the Task Manager package, you can plan tasks. Tasks are bits of code that can run at some date.
 	They are regularly retried if the task is not run successfully.
 	Use the Task Manager UI package to have a nice interface to check the status of the tasks.</shortDescription>
-	<docUrl>http://coders.thecodingmachine.com/ext/mouf/doc/manage_tasks/index.html</docUrl>
+	<doc>
+		<page url="index.html" title="Task manager documentation"></page>
+	</doc>
 	<logo>logo.png</logo>
 	<dependencies>
 		<dependency>
