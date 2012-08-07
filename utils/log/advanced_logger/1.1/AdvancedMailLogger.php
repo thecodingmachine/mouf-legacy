@@ -74,6 +74,12 @@ class AdvancedMailLogger {
 	protected $today;
 	protected $yesterday;
 	
+	//For the StoreLocator Mailer
+	protected $nbErrorByLevel = array();
+	protected $errorByCategory = array();
+	protected $nbNewStores;
+	protected $nbDeletedStores;
+	
 	/**
 	 * Returns the HTML for the stats sent by mail.
 	 *  
@@ -163,4 +169,61 @@ class AdvancedMailLogger {
 		//echo $html;
 	}
 	
+	/**
+	 * Returns the HTML for the stats sent by mail for the store locator
+	 *
+	 * @param int $time The id of the parser
+	 */
+	public function getHtmlForMailForStoreLocator($parserId, $nbNew, $nbDeleted) {
+		$this->nbNewStores = $nbNew;
+		$this->nbDeletedStores = $nbDeleted;
+				
+		$sql = "SELECT *
+		FROM `logstats`
+		WHERE `category1` IS NULL
+		AND `category2` IS NULL
+		AND `parserId` = ".$parserId."
+		AND `log_level` IS NOT NULL";
+	
+		$this->nbErrorByLevel = $this->dbStats->dbConnection->getAll($sql);
+	
+		foreach ($this->nbErrorByLevel as $row) {
+			$this->nbErrorByLevel[$row['log_level']] = $row['nb_logs'];
+		}
+	
+	
+		$sql = "SELECT `category1`, `category2`, `log_level`, `nb_logs`
+		FROM `logstats`
+		WHERE `category1` IS NOT NULL
+		AND `category2` IS ".(($this->aggregateByCategory>=2)?"NOT":"")." NULL
+		AND `parserId` = ".$parserId."
+		AND `log_level` IS NOT NULL
+		ORDER BY `log_level` ASC, `category1` ASC, `category2` ASC";
+	
+		$this->errorByCategory = $this->dbStats->dbConnection->getAll($sql);
+	
+		ob_start();
+		include('views/mailForStoreLocator.php');
+		$html = ob_get_contents();
+		ob_end_clean();
+		return $html;
+	}
+	
+	/**
+	 * Compute stats and sends the mail containing the logs stats for the StoreLocator.
+	 */
+	public function sendMailForStorelocator($parserId, $nbNew, $nbDeleted) {
+		$mail = new Mail();
+		$mail->setTitle($this->title);
+		$mail->setFrom(new MailAddress($this->from));
+		$toArray = explode(",", $this->to);
+		foreach ($toArray as $to) {
+			$mail->addToRecipient(new MailAddress(trim($to)));
+		}
+	
+		$html = $this->getHtmlForMailForStoreLocator($parserId,$nbNew,$nbDeleted);
+	
+		$mail->setBodyHtml($html);
+		$this->mailService->send($mail);
+	}
 }
