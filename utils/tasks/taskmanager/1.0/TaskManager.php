@@ -164,6 +164,15 @@ class TaskManager {
 	}
 	
 	/**
+	 * Save the current task (Public)
+	 * 
+	 * @param Task $task
+	 */
+	public function saveTaskPublic(Task $task) {
+		$this->saveTask($task);
+	}
+	
+	/**
 	 * Runs the task passed in parameter immediately
 	 * 
 	 * @param Task $task
