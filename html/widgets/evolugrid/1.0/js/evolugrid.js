@@ -1,4 +1,4 @@
-
+var sorryAboutThis = false;
 /**
  * A flexible datagrid that refreshes with Ajax and can export to CSV.
  * 
@@ -55,7 +55,7 @@
                 var $this = $(this);
                 if (descriptor.filterForm) {
                 	$(descriptor.filterForm).submit(function(event) {
-                		if ($(event.originalEvent.explicitOriginalTarget).hasClass('no-evolugrid')){
+                		if (sorryAboutThis){
                 			return true;
                 		}else{
                 			try {
