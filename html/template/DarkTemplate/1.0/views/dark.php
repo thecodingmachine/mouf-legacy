@@ -70,7 +70,7 @@
 	<div class="span12">
 	<div class="row-fluid">
 	<?php if (count($this->left) != 0) { ?>
-				<div id="sidebar-left" class="span3">
+				<div id="sidebar-left" class="span2">
 					<?php $this->drawArray($this->left);?>
 				</div>
 			<?php } ?>
@@ -83,7 +83,7 @@
 					<?php $this->drawArray($this->right);?>
 				</div>
 			<?php }*/ ?>
-     <div class="span9 well">
+     <div class="span10 well">
 
 				<?php $this->drawArray($this->content); ?>
 			</div>
