@@ -113,6 +113,10 @@
                 },
                 "validate2fields": {
                     "alertText": "* Por favor entrar HELLO"
+                },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+                    "alertText": "* Sólo letras"
                 }
             };
             

@@ -107,6 +107,10 @@
                 },
                 "validate2fields": {
                     "alertText": "Veuillez taper le mot HELLO"
+                },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+                    "alertText": "* Seules les lettres sont acceptées"
                 }
             };
         }

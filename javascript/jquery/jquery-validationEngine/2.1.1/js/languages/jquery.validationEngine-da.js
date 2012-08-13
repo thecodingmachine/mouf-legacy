@@ -112,6 +112,10 @@
                 },
                 "validate2fields": {
                     "alertText": "* Indsæt venligst HELLO"
+                },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+                    "alertText": "* Kun bogstaver"
                 }
             };
             

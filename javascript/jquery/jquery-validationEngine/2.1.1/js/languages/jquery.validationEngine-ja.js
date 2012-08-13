@@ -123,6 +123,10 @@
                 },
                 "validate2fields": {
                     "alertText": "* 『HELLO』と入力してください"
+                },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+                    "alertText": "* 半角アルファベットで入力してください"
                 }
             };
             

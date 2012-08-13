@@ -112,7 +112,11 @@
 	            },
 	            "validate2fields": {
 	                "alertText": "* Voer aub HELLO in"
-	            }
+	            },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+	                "alertText": "* Alleen leestekens"
+                }
 	        };
 
 	    }

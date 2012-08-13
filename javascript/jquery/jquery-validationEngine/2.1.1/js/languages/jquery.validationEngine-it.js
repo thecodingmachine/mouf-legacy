@@ -87,6 +87,10 @@
                     "alertText": "* Questo nome � gi� stato utilizzato",
                     "alertTextOk": "* Questo nome � disponibile",
                     "alertTextLoad": "* Caricamento, attendere per favore"
+                },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+                    "alertText": "* Solo lettere"
                 }
 
             };

@@ -133,6 +133,10 @@
                 },
                 "validate2fields": {
                     "alertText": "* Prosím napište HELLO"
+                },
+                "customOnlyLetterSp": {
+                    "regex": /^[(\D)\ \']+$/,
+                    "alertText": "* Pouze písmena"
                 }
             };
             
