@@ -88,7 +88,7 @@ class ApcCache implements CacheInterface {
 		
 		if ($success) {
 			if ($this->log) {
-				$this->log->trace("Retrieving key '$key' from file cache: value returned:".var_export($value, true));
+				$this->log->trace("Retrieving key '$key' from file cache.");
 			}
 			return $value;
 		} else {
@@ -113,7 +113,7 @@ class ApcCache implements CacheInterface {
 		}
 		
 		if ($this->log) {
-			$this->log->trace("Storing value in APC cache: key '$key', value '".var_export($value, true)."'");
+			$this->log->trace("Storing value in APC cache: key '$key'.");
 		}
 		
 		if ($timeToLive == null) {
