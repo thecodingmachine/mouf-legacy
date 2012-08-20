@@ -7,6 +7,10 @@
  * This is one of the moste important file of the Form configuration. bce_utils is an AJAX helper that handles:
  *   - get data about an existing instance
  *   - get data about a DAO (can be used either for the main dao or any secondary dao used in FK, M2M, ... descriptors)
+ *
+ *   bce_utils.php has it's client side JavaScript mirror : bceConfig.js. Basically, bce_utils loads BCE objects into well formatted data,
+ *   which will be treated and displayed by bceConfig.js
+ *   
  *   
  *   Here are some explanations on how the form configuration works :
  *   - First, if the main dao isn't set, then the only choice is to select one in the dropdown list
@@ -186,8 +190,11 @@ class BCEUtils{
 	}
 	
 	/**
-	 * Retrieve the methods of a bean class
+	 * Retrieve the field helpers of a bean class.
+	 * This 
+	 * In this function only Base of FK fieldDescriptors can be treated (because they are related to a bean property)
 	 * @param string $beanClassName
+	 * @return array<BeanFieldHelper>
 	 */
 	private function getBeanMethods($beanClassName){
 		$beanClass = new MoufReflectionClass($beanClassName);
@@ -244,10 +251,11 @@ class BCEUtils{
 				/*
 				 * Like the primary key test, foreign keys will suggest the field to be a FK descriptor
 				 * The fkData will tell which table is linked and so which dao should be the linked dao
-				 * //TODO : linked column could be used to rather then regex match
+				 * 
 				 */
 				$referencedTables = $connection->getConstraintsOnTable($tableName[0], $columnName);
 				if (!empty($referencedTables)){
+					//TODO : linked column could be used to rather then regex match
 					$ref = $referencedTables[0];
 					$foreignKeyData = new ForeignKeyDataBean();
 					$foreignKeyData->refTable = $ref['table2'];
@@ -287,12 +295,13 @@ class BCEUtils{
 	 */
 	private function beanHelperConvert2Descriptor(BeanFieldHelper $beanField){
 		$descriptorBean = null;
-		if (isset($beanField->getter->fkData)){
+		if (isset($beanField->getter->fkData)){//if getter is related to a foreign key, then instanciate a FK field decriptor
 			$convertBean = new ForeignKeyFieldDescriptorBean();
 		}else{
 			$convertBean = new BaseFieldDescriptorBean();
 		}
 		
+		//Dummy data mapping
 		$convertBean->fieldName = $beanField->columnName;
 		$convertBean->getter = $beanField->getter->name;
 		$convertBean->setter = $beanField->setter->name;
@@ -304,14 +313,20 @@ class BCEUtils{
 		
 		if (isset($beanField->getter->fkData)){
 			/* @var $convertBean ForeignKeyFieldDescriptorBean */
+			
+			//Just find the dao that is handling the referenced table, then load the dao's data
 			$convertBean->daoName = $this->_fitDaoByTableName($beanField->getter->fkData->refTable);
 			$convertBean->daoData = $this->getDaoDataFromInstance($convertBean->daoName);
+			
+			//By default, we are looking for a "getList" method for the dataMethod attribute. If none exists, no preselection is made clientside
 			$convertBean->dataMethod = array_search("getList", $convertBean->daoData->daoMethods) !== false ? "getList" : $convertBean->daoData->daoMethods[0];
+			
+			//Same thing with linkedIdGetter/linkedLabelGetter properties (getter on the 'id' and 'label' fields if exists)
 			$convertBean->linkedIdGetter =  isset($convertBean->daoData->beanClassFields['id']) ? $convertBean->daoData->beanClassFields['id']->getter->name : "";
 			$convertBean->linkedLabelGetter = isset($convertBean->daoData->beanClassFields['label']) ? $convertBean->daoData->beanClassFields['label']->getter->name : ""; 
 		}
 		
-		
+		/* Find the best matching instances to apply... */
 		$convertBean->renderer = $this->_match($beanField, $this->renderers);
 		$convertBean->formatter = $this->_match($beanField, $this->formatters);
 		$convertBean->validators = $this->_match($beanField, $this->validators, true);
@@ -319,9 +334,47 @@ class BCEUtils{
 		return $convertBean;
 	}
 	
+	/** 
+	 * As explained above, the initHandler calls have built associative arrays with 2 dimensions [type][type_value].
+	 * For example, the validators arrray might look like this :
+	 * array
+		['php'] =>
+			['boolean'] => 
+				0 => 'booleanFieldRenderer'
+			['timestamp'] => 
+				0 => 'datePickerRenderer'
+			['datetime'] => 
+				0 => 'datePickerRenderer'
+			['date'] => 
+				0 => 'datePickerRenderer'
+			['string'] => 
+				0 => 'textFieldRenderer'
+			['int'] => 
+				0 => 'textFieldRenderer'
+			['number'] => 
+				0 => 'textFieldRenderer'
+		['pk'] =>
+			['pk'] => 
+				0 => 'hiddenRenderer'
+		['type'] =>
+			['fk'] => 
+				0 => 'selectFieldRenderer'
+		 * 
+		 * More over the $handleOrder variable defines the priority of the categories, which means, for instance, 
+		 * that the pk matches will hit before the php ones. 
+		 * 
+	 * Once a match has been done for an attibute, other instances cannot be 
+	 * suggested unless the $isMultiple flag is passed to the _match function
+	 * 
+	 *  @param $beanField : the BaseFieldDescriptorBean
+	 *  @param $instances : the arrociative array of validatrs, formatters or renderers
+	 *  @param $isMultiple (optional) : tells if the function may retu one or several instance names
+	 *  
+	 *  @return mixed a string (or null) if the $isMultiple flag is not set or set to false, else an array 
+	* */
 	private function _match($beanField, $instances, $isMultiple = false){
 		$matches = array();
-		foreach ($this->handleOrder as $criteria) {
+		foreach ($this->handleOrder as $criteria) {//follow the priority
 			switch ($criteria) {
 				case 'pk':
 					if (isset($instances[$criteria]) && isset($instances[$criteria]["pk"]) && $beanField->isPk){
@@ -371,14 +424,6 @@ class BCEUtils{
 		return $this->daos[$table];
 	}
 	
-	private function _fitsMultiple($type, $list){
-		return isset($list[$type]) ? $list[$type] : array(); 
-	}
-	
-	private function _fits($type, $list){
-		return isset($list[$type]) ? $list[$type][0] : null; 
-	}
-	
 	private function getLabelFromFieldName($fieldName){
 		return str_replace(" id", "", str_replace("_", " ", ucfirst($fieldName)));
 	}
@@ -386,6 +431,8 @@ class BCEUtils{
 	/**
 	 * Transforms a string to camelCase (except the first letter will be uppercase too).
 	 * Underscores and spaces are removed and the first letter after the underscore is uppercased.
+	 * 
+	 * This method has been "stolen" from Davids TDBM dao generator ... may be it could be set into a "mouf admintool" package ?
 	 * 
 	 * @param $str string
 	 * @return string
@@ -409,15 +456,29 @@ class BCEUtils{
 		return $str;
 	}
 	
+	/**
+	 * Second more important function for the BCEUtils helper :
+	 * get the information about a BCEInstance.
+	 * 
+	 * Of course, the Form is mainly composed of field descriptors, and there for there will be DAO data returned,
+	 * But there also is all the other properties of the form :
+	 *   - all form tag's attributes (id, name, etc...)
+	 *   - JS validation handler
+	 *   - Form renderer
+	 * 
+	 * @param string $instanceName the name of the instance which's information should be returned
+	 */
 	public function getInstanceData($instanceName){
 		$obj = new BCEFormInstanceBean();
 		
+		/* set the main dao property, and the associated table name that will help suggesting the right properties for FK & M2M descriptors */
 		$desc = MoufManager::getMoufManager()->getInstanceDescriptor($instanceName);
 		$prop = $desc->getProperty('mainDAO');
 		$val = $prop->getValue();
 		$obj->daoData = $this->getDaoData($val->getClassName());
 		$obj->mainBeanTableName = $obj->daoData->beanTableName;
 		
+		/* Building the fieldDescriptors list (id Descriptor is made separately) */
 		$fieldDescs = array();
 		
 		$baseFiedDescriptors = $desc->getProperty('idFieldDescriptor');
@@ -436,7 +497,7 @@ class BCEUtils{
 		
 		$obj->descriptors = $fieldDescs;
 		
-		
+		//Load form's configuration data
 		$obj->action = $desc->getProperty('action')->getValue() ? $desc->getProperty('action')->getValue() : "save";
 		$obj->method = $desc->getProperty('method')->getValue() ? $desc->getProperty('method')->getValue() : "POST";
 		
@@ -451,13 +512,20 @@ class BCEUtils{
 		return $obj;
 	}
 	
+	/**
+	 * Intantiate a FieldDescriptorBean from a FieldDescriptor
+	 * @param BCEFieldDescriptorInterface $descriptor
+	 */
 	private function getFieldDescriptorBean($descriptor){
 		if (!$descriptor) return null;
 		
+		//Custom Field Descriptors should be treated very simply : just set the name for displaying purpose and that's it
 		$isCustom = false;
 		
+		//Load the instance from which the data will be extracted
 		$instance = MoufManager::getMoufManager()->getInstanceDescriptor($descriptor->getName());
 		
+		//Instanciate the bean with a class that matches the descriptor instance's class
 		if ($descriptor->getClassName() == 'ForeignKeyFieldDescriptor'){
 			$fieldData = new ForeignKeyFieldDescriptorBean();
 		}else if ($descriptor->getClassName() == 'BaseFieldDescriptor'){
@@ -472,16 +540,28 @@ class BCEUtils{
 		if ($isCustom){
 			$fieldData->name = $descriptor->getName();
 		}else{
+			
+			/* 
+			 * In any case the descriptor extends the fieldDecriptor class,
+			 * so getter, setter, name, label, formatter, etc... are loaded here
+			 */
 			$this->loadBaseValues($fieldData, $descriptor, $instance);
 			
+			/*
+			 * Load BaseFieldDescriptor data
+			 * TODO : find a better way than comparing class names, use instance of, is_a or is_subclass... but one that works :( 
+			 */
 			if ($descriptor->getClassName() != 'Many2ManyFieldDescriptor'){
 				$fieldData->getter = $instance->getProperty('getter')->getValue();
 				$fieldData->setter = $instance->getProperty('setter')->getValue();
 			}
 			
+			/* load FK descriptor specific attributes */
 			if ($descriptor->getClassName() == 'ForeignKeyFieldDescriptor'){
 				$this->loadFKDescriptorValues($fieldData, $instance);
-			}else if ($descriptor->getClassName() == 'Many2ManyFieldDescriptor'){
+			}
+			/* load M2M descriptor specific attributes */
+			else if ($descriptor->getClassName() == 'Many2ManyFieldDescriptor'){
 				$this->loadM2MDescriptorValues($fieldData, $instance);
 			}
 		}
@@ -489,7 +569,16 @@ class BCEUtils{
 		
 		return $fieldData;
 	}
-	
+
+	/**
+	 * The FieldDescriptor abscract class defines a set of properties that are common to all (none custom) FieldDescriptors
+	 * This function is responsible for loading those properties' values into the fieldDescriptorBean.
+	 * In fact, this is quite a simple mapping between the FieldDescriptor ans the FieldDescriptorBean classes...
+	 * 
+	 * @param FieldDescriptorBean $bean the bean to be loaded 
+	 * @param MoufInstanceDescriptor $descriptor : the InstanceDescriptor that will provide the data
+	 * @param FieldDescriptor $instance : the fieldDescriptor that will provide the data
+	 */
 	private function loadBaseValues(&$bean, $descriptor, $instance){
 		/* @var $bean FieldDescriptorBean */
 		$bean->name = $descriptor->getName();
@@ -511,7 +600,12 @@ class BCEUtils{
 			}
 		}
 	}
-	
+
+	/**
+	 * Load the properties' values of a ForeignKeyFieldDescriptor into a ForeignKeyFieldDescriptorBean 
+	 * @param ForeignKeyFieldDescriptorBean $fkDescBean
+	 * @param ForeignKeyFieldDescriptor $instance : the fieldDescriptor that will provide the data
+	 */
 	private function loadFKDescriptorValues(&$fkDescBean, $instance){
 		/* @var $fkDescBean ForeignKeyFieldDescriptorBean */
 		$daoDesc = $instance->getProperty('dao')->getValue();
@@ -525,6 +619,11 @@ class BCEUtils{
 		}
 	}
 	
+	/**
+	 * Load the properties' values of a Many2ManyFieldDescriptor into a Many2ManyFieldDescriptorBean
+	 * @param Many2ManyFieldDescriptorBean $fkDescBean
+	 * @param Many2ManyFieldDescriptor $instance : the fieldDescriptor that will provide the data
+	 */
 	private function loadM2MDescriptorValues(&$m2mDescBean, $instance){
 		/* @var $m2mDescBean Many2ManyFieldDescriptorBean */
 		$mappingDaoDesc = $instance->getProperty("mappingDao")->getValue();

@@ -106,7 +106,7 @@ abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 	 * @param mixed $baseBean
 	 * @param mixed $value
 	 */
-	public function setValue($baseBean, $value);
+	public abstract function setValue($baseBean, $value);
 
 	/**
 	 * Get's the field's name (unique Id of the field inside a form (or name attribute)
