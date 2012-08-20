@@ -157,7 +157,7 @@ class SmtpMailService implements MailServiceInterface {
 		
 
 		$zendMail->send($this->zendMailTransport);
-
+		
 		// Let's log the mail:
 		$recipients = array_merge($mail->getToRecipients(), $mail->getCcRecipients(), $mail->getBccRecipients());
 		$recipientMails = array();
@@ -165,6 +165,7 @@ class SmtpMailService implements MailServiceInterface {
 			$recipientMails[] = $recipient->getMail();
 		}
 		$this->log->debug("Sending mail to ".implode(", ", $recipientMails).". Mail subject: ".$mail->getTitle());
+		
 	}
 	
 	
