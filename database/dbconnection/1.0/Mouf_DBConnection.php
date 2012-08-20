@@ -591,9 +591,16 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 	 */
 	public function getColumnType($table, $column) {
 		$table_info = $this->getTableInfo($table);
-		if (!isset($table_info[$column]))
+		foreach ($table_info as $columnArray) {
+			if ($columnArray['column_name'] == $column) {
+				if (isset($columnArray['data_type'])) {
+					return $columnArray['data_type']; 
+				} else {
+					error_log("Invalid column? ".var_export($columnArray, true));
+				}
+			}
+		}
 		return null;
-		return $table_info[$column]['type'];
 	}
 
 	/**

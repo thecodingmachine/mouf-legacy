@@ -196,12 +196,11 @@ class TDBM_Object implements ArrayAccess, Iterator {
 	 * This methods caches the primary keys so that if it is called twice, the second call will
 	 * not make any query to the database.
 	 *
-	 * TODO: cache this in session
 	 * TODO: move this into TDBM_Service
 	 * @return array
 	 */
 	public function getPrimaryKey() {
-		return $this->tdbmService->getPrimaryKeyStatic($this->db_table_name, $this->db_connection);
+		return $this->tdbmService->getPrimaryKeyStatic($this->db_table_name);
 	}
 
 	/**

@@ -370,8 +370,8 @@ class TDBM_Service {
 	 * If $auto_assign_id is true, the primary key of the object will be automatically be filled.
 	 * Otherwise, the database system or the user will have to fill it itself (for exemple with
 	 * AUTOINCREMENT in MySQL or with a sequence in POSTGRESQL).
-	 *
-	 * Please note that $auto_assign_id does not work on tables that have primary keys on multiple
+	 * Please note that $auto_assign_id parameter is ignored if the primary key is autoincremented (MySQL only)
+	 * Also, please note that $auto_assign_id does not work on tables that have primary keys on multiple
 	 * columns.
 	 *
 	 * @param string $table_name
@@ -408,8 +408,8 @@ class TDBM_Service {
 			$object = new $className($this, $table_name);
 		}
 
-		if ($auto_assign_id) {
-			$pk_table = $object->getPrimaryKey();
+		if ($auto_assign_id && !$this->isPrimaryKeyAutoIncrement($table_name)) {
+			$pk_table =  $this->getPrimaryKeyStatic($table_name);
 			if (count($pk_table)==1)
 			{
 				$root_table = $this->dbConnection->findRootSequenceTable($table_name);
@@ -1619,6 +1619,19 @@ class TDBM_Service {
 
 	}
 
+	/**
+	 * Checks if there is a autoincrement mecanism on the rimary key for the table passed in parameter.
+	 * 
+	 * @param string $table
+	 */
+	private function isPrimaryKeyAutoIncrement($table) {
+		$cols = $this->dbConnection->getPrimaryKey($table);
+		if (count($cols) != 1) {
+			return false;
+		}
+		return $cols[0]->autoIncrement;
+	}
+	
 	public function getPrimaryKeyStatic($table) {
 		if (!isset($this->primary_keys[$table]))
 		{

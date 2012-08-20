@@ -396,7 +396,7 @@ class DB_CachedConnection implements DB_ConnectionInterface {
 	public function getColumnType($table, $column) {
 		// TODO: we should use the getTableWithModel function and get info from here. That would restrict the size of the cache.
 		$this->loadCache();
-		if (!isset($this->cache["getColumnType"]) || !isset($this->cache["getColumnType"][$table]) || !isset($this->cache["getColumnType"][$table][$column])) {
+		if (!isset($this->cache["getColumnType"][$table][$column])) {
 			$this->cache["getColumnType"][$table][$column] = $this->dbConnection->getColumnType($table, $column);
 			$this->saveCache();
 		}

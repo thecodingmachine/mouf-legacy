@@ -43,7 +43,7 @@ class SessionCache implements CacheInterface {
 		if (isset($_SESSION[self::$CACHE_KEY]) && isset($_SESSION[self::$CACHE_KEY][$key])) {
 			$arr = $_SESSION[self::$CACHE_KEY][$key];
 			if ($arr[1] == null || $arr[1] > time()) {
-				$this->log->trace("Retrieving key '$key' from session cache: value returned:".var_export($arr[0], true));
+				$this->log->trace("Retrieving key '$key' from session cache.");
 				return $arr[0];
 			} else {
 				// The cache is outdated, let's flush it:
@@ -65,7 +65,7 @@ class SessionCache implements CacheInterface {
 	 * @param float $timeToLive The time to live of the cache, in seconds.
 	 */
 	public function set($key, $value, $timeToLive = null) {
-		$this->log->trace("Storing value in cache: key '$key', value '".var_export($value, true)."'");
+		$this->log->trace("Storing value in cache: key '$key'");
 		if ($timeToLive == null) {
 			if (empty($this->defaultTimeToLive)) {
 				$_SESSION[self::$CACHE_KEY][$key] = array($value, null);

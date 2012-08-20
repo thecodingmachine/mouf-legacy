@@ -29,7 +29,7 @@ $daoFactoryClassName = $_REQUEST["daofactoryclassname"];
 
 $daodirectory = $_REQUEST["daodirectory"];
 $beandirectory = $_REQUEST["beandirectory"]; 
-$support = isset($_REQUEST["support"]) && $_REQUEST["support"] == 1; 
+$support = isset($_REQUEST["support"]); 
 
 $dbConnection = $tdbmService->dbConnection;
 $daoGenerator = new TDBMDaoGenerator($dbConnection, $daoFactoryClassName, $daodirectory, $beandirectory, $support);
