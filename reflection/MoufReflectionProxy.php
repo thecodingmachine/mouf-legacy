@@ -136,42 +136,6 @@ class MoufReflectionProxy {
 		return $obj;
 	}
 	
-	/**
-	 * Returns the default value for the property of the class, through a call to the "get_default.php" page. 
-	 * 
-	 * @param string $className
-	 * @param string $propertyName
-	 * @return mixed
-	 */
-	/*public static function getDefaultValue($className, $propertyName) {
-
-		var_dump($_SERVER);
-		exit;
-		$url = ROOT_URL."mouf/direct/get_default.php";
-		
-		// preparation de l'envoi
-		$ch = curl_init();
-				
-		curl_setopt( $ch, CURLOPT_URL, $url);
-		
-		curl_setopt( $ch, CURLOPT_HEADER, FALSE );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, TRUE );
-		curl_setopt( $ch, CURLOPT_POST, TRUE );
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, $MSGPBX );
-		
-		if( curl_error($ch) ) { 
-			$REPONSE = ERROR_CURL;
-		} else {
-			$REPONSE = curl_exec( $ch );
-		}
-		curl_close( $ch );
-			
-	
-	
-		return $value;
-	}	*/
-	
 	private static function performRequest($url) {
 		// preparation de l'envoi
 		$ch = curl_init();
@@ -190,7 +154,23 @@ class MoufReflectionProxy {
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 		}
 		
+		// Let's forward all cookies so the session in preserved.
+		// Problem: because the session file is locked, we cannot do that without closing the session first
+		session_write_close();
+		
+		$cookieArr = array();
+		foreach ($_COOKIE as $key=>$value) {
+			$cookieArr[] = $key."=".urlencode($value);
+		}
+		$cookieStr = implode("; ", $cookieArr);
+		curl_setopt($ch, CURLOPT_COOKIE, $cookieStr);
+		
+		
 		$response = curl_exec( $ch );
+
+		// And let's reopen the session...
+		session_start();
+		
 		
 		if( curl_error($ch) ) { 
 			throw new Exception("An error occured: ".curl_error($ch));
