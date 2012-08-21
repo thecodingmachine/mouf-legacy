@@ -80,7 +80,22 @@ class DbStatsController extends AbstractMoufInstanceController {
 		if( curl_error($ch) ) { 
 			throw new Exception("TODO: texte de l'erreur curl");
 		} else {
+			// Let's forward all cookies so the session in preserved.
+			// Problem: because the session file is locked, we cannot do that without closing the session first
+			session_write_close();
+			
+			$cookieArr = array();
+			foreach ($_COOKIE as $key=>$value) {
+				$cookieArr[] = $key."=".urlencode($value);
+			}
+			$cookieStr = implode("; ", $cookieArr);
+			curl_setopt($ch, CURLOPT_COOKIE, $cookieStr);
+			
+			
 			$response = curl_exec( $ch );
+	
+			// And let's reopen the session...
+			session_start();
 		}
 		curl_close( $ch );
 		
