@@ -23,6 +23,8 @@
  * Qualifying the column name with the table name will help TDBM know that the table is used and will allow
  * TDBM to infer the FROM section of the SELECT statement from the WHERE clause.
  * 
+ * !WARNING: String must be delimited by simple quotes and not double quotes!
+ * 
  * @Component
  * @author David Négrier
  */
