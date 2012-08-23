@@ -139,7 +139,7 @@ class DbLoggerInstallController extends Controller {
 			`class` VARCHAR( 100 ) NULL,
 			`function` VARCHAR( 100 ) NULL
 			
-		) ENGINE = MYISAM ;";
+		) ENGINE = InnoDB ;";
 		
 		$index1 = "ALTER TABLE `$tablename` ADD FULLTEXT (
 			`message`
