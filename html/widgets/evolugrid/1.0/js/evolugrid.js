@@ -4,7 +4,8 @@ var sorryAboutThis = false;
  * 
  * options: 
  * {
- *  filterForm: "selector", // A jQuery selector pointing to the form containing the filters (if any) 
+ *  filterForm: "selector", // A jQuery selector pointing to the form containing the filters (if any)
+ *  filterFormSubmitButton: "selector", // A jQuery selector pointing to the button that will trigger search. This is optional, and can only be used if the filterForm option is used. If not passed, any submit button on the form will trigger a search.
  * 	filterCallback: function, // A function taking 0 arguments and returning a map of filters (passed as arguments to the Ajax URL). This is applied before the filterForm
  *  url: url, // The Ajax URL
  *  tableClasses : "table", // The CSS class of the table
@@ -54,18 +55,30 @@ var sorryAboutThis = false;
                 
                 var $this = $(this);
                 if (descriptor.filterForm) {
-                	$(descriptor.filterForm).submit(function(event) {
-                		if (sorryAboutThis){
-                			return true;
-                		}else{
+                	if (descriptor.filterFormSubmitButton) {
+                		$(descriptor.filterFormSubmitButton).click(function(event) {
                 			try {
                 				$this.evolugrid('refresh', 0);
                 			} catch (e) {
                 				console.error(e);
                 			}
                 			return false;
-                		}
-                	});
+	                	});
+                	} else {
+	                	$(descriptor.filterForm).submit(function(event) {
+	                		// FIXME: What the hell is this?
+	                		if (sorryAboutThis){
+	                			return true;
+	                		}else{
+	                			try {
+	                				$this.evolugrid('refresh', 0);
+	                			} catch (e) {
+	                				console.error(e);
+	                			}
+	                			return false;
+	                		}
+	                	});
+                	}
             	}
                 if (descriptor.loadOnInit) {
                 	$(this).evolugrid('refresh',0);
@@ -93,6 +106,14 @@ var sorryAboutThis = false;
 	    refresh : function( noPage, filters ) {
 	    	var descriptor=$(this).data('descriptor');
 	    	
+	    	// While refreshing, let's make sure noone touches the buttons!
+	    	// FIXME: we should check which are already disabled and not reenable them later.... 
+	    	if (descriptor.filterFormSubmitButton) {
+	    		$(descriptor.filterFormSubmitButton).attr("disabled", true);
+	    	} else if (descriptor.filterForm) {
+	    		$(descriptor.filterForm).find("button").attr("disabled", true);
+	    		$(descriptor.filterForm).find("input[type=button]").attr("disabled", true);
+	    	}
 	    	
 	    	$this=$(this);
 	    	filters = _getFilters(descriptor, filters);
@@ -188,6 +209,14 @@ var sorryAboutThis = false;
 	    		}
 
 	    		$this.append(pager);
+	    		
+	    		// Finally, let's enable buttons again:
+		    	if (descriptor.filterFormSubmitButton) {
+		    		$(descriptor.filterFormSubmitButton).attr("disabled", false);
+		    	} else if (descriptor.filterForm) {
+		    		$(descriptor.filterForm).find("button").attr("disabled", false);
+		    		$(descriptor.filterForm).find("input[type=button]").attr("disabled", false);
+		    	}
 	    		
 	    	},
 	    	error : function(err,status) { 
