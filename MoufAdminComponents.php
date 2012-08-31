@@ -136,6 +136,7 @@ $moufManager->addComponentInstances(array (
         1 => 'createNewInstanceMenuItem',
       ),
     ),
+    'weak' => false,
     'setterProperties' => 
     array (
       'setLabel' => 
@@ -187,6 +188,14 @@ $moufManager->addComponentInstances(array (
         ),
       ),
       'setPropagatedUrlParameters' => 
+      array (
+        'value' => false,
+        'type' => 'string',
+        'metadata' => 
+        array (
+        ),
+      ),
+      'setActivateBasedOnUrl' => 
       array (
         'value' => false,
         'type' => 'string',
@@ -2720,6 +2729,7 @@ $moufManager->addComponentInstances(array (
   array (
     'class' => 'MenuItemStyleIcon',
     'external' => false,
+    'weak' => false,
     'setterProperties' => 
     array (
       'setUrl' => 

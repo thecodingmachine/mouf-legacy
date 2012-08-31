@@ -14,6 +14,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'HtmlFromFile' => 'mouf/../plugins/html/htmlelement/1.0/HtmlFromFile.php',
   'HtmlFromFunction' => 'mouf/../plugins/html/htmlelement/1.0/HtmlFromFunction.php',
   'HtmlString' => 'mouf/../plugins/html/htmlelement/1.0/HtmlString.php',
+  'HtmlBlock' => 'mouf/../plugins/html/htmlelement/1.0/HtmlBlock.php',
   'PHPExcel' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
   'PHPExcel_Autoloader' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
   'PHPExcel_Shared_ZipStreamWrapper' => 'mouf/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php',
@@ -80,6 +81,7 @@ MoufManager::getMoufManager()->registerAutoloadedClasses(array (
   'HtmlJSSyntaxHighlighter' => 'mouf/../plugins/javascript/syntaxhighlighter/3.0.83/HtmlJSSyntaxHighlighter.php',
   'WebLibrary' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibrary.php',
   'WebLibraryManager' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryManager.php',
+  'WebLibraryException' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryException.php',
   'DefaultWebLibraryRenderer' => 'mouf/../plugins/html/utils/weblibrarymanager/1.0/DefaultWebLibraryRenderer.php',
   'LogInterface' => 'mouf/../plugins/utils/log/log_interface/1.1/LogInterface.php',
   'ConditionInterface' => 'mouf/../plugins/utils/common/conditioninterface/1.0/ConditionInterface.php',
@@ -166,6 +168,7 @@ require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlElementInterfa
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlFromFile.php';
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlFromFunction.php';
 require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlString.php';
+require_once $localFilePath.'/../plugins/html/htmlelement/1.0/HtmlBlock.php';
 require_once $localFilePath.'/../plugins/utils/export/phpexcel/1.7.5/PHPExcel.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/TemplateInterface.php';
 require_once $localFilePath.'/../plugins/html/template/BaseTemplate/1.0/BaseTemplate.php';
@@ -245,6 +248,7 @@ require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLib
 require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryRendererInterface.php';
 require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibrary.php';
 require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryManager.php';
+require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/WebLibraryException.php';
 require_once $localFilePath.'/../plugins/html/utils/weblibrarymanager/1.0/DefaultWebLibraryRenderer.php';
 
 // User dependencies
