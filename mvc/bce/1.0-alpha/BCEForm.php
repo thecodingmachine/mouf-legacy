@@ -11,7 +11,7 @@
  *   <li>a javascript validation handler that will generate the client side validation script</li>
  * </ul>
  * @Component
- * @ExtendedAction {"name":"Configure Form", "url":"mouf/bceadmin/", "default":false}
+ * @ExtendedAction {"name":"Configure Form", "url":"mouf/bceadmin/", "default":true}
  * @author Kevin
  *
  */

@@ -1,0 +1,27 @@
+<h1>Quick start guide</h1>
+
+<p>In this quick start guide, we will see how you can use BCE to build a user form</p>
+
+<h2>Our playground data model</h2>
+<p>First thing you have to know, is that BCE directy relies your application's ORM system. For now, Mouf's ORM system is TDBM, but when others will be available, we will do our best to provide multi-ORM support. You will find a detailed description of BCE's architecture in the <a href="architecture.html">dedicated chapter</a></p>
+<p>For this tutorial, let's assume a very classic database schema for handling users.<br/>
+We have users. Users have some basic attributes as name, email, etc..., and they have a role defined by a foreign key named role_id. Finally, a user may have some Hobbies, which is represented by a many to many relationship table.
+</p>
+
+<img src="images/data_model.png" alt="data model" />
+
+<h2>Create the basic user form</h2>
+<p>First thing you have to do is, obviously creating a BCE instance. This is done, as usual, by hiting the "create a new instance" link of the ribbon menu. For example, we create a userForm instance :</p>
+<img src="images/create_instance.png" alt="data model" />
+<p>Once you've done this, you reach the default userForm instance page</p>
+
+<pre class="brush:php">
+// Let's get the DAO
+$userDao = Mouf::getUserDao();
+
+// Let's get the bean
+$userBean = $userDao-&gt;getUserById(42);
+
+// Let's display the name
+echo $userBean-&gt;getName();
+</pre>

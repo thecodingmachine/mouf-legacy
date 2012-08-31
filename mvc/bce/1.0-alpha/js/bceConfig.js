@@ -943,25 +943,52 @@ function setFK2(event){
 	setFK(fieldName);
 }
 
+/**
+ * Will switch a base field descriptor to a FK field descriptor
+ * 
+ * Note : 
+ * 		This is in case the foreign key has not been detected (MyIsam engine, or DB newbee :) for instance ).
+ * 		Else, the FK has already been detected and suggested
+ */
 function setFK(fieldName){
+	/*
+	 * Get the field's data from the field data variable
+	 */
 	var field = fieldElements[fieldName];
 	
 	if (field.type != "base") return;
 	
+	/*
+	 * Build FK HTML elements
+	 */
 	var elements = _getFKElements(field);
 	
+	/*
+	 * Add a line breack to append FK specific elements (linked DAO, linkedIdGetter and linkedLabelGetter,
+	 * The append the elements 
+	 */
 	jQuery("#wrapper-"+fieldName+" .field-data").append(jQuery("<br/>").css('clear', 'both'));
 	jQuery.each(elements, function(i, element) {
 		jQuery("#wrapper-"+fieldName+" .field-data").append(element);
 	});
 	
+	/*
+	 * Update field's type
+	 */
 	field.type = "fk";
 	
+	/*
+	 * unset "setFK" behavior and icon and replace it with the "unsetFK" one
+	 */
 	jQuery("#wrapper-"+fieldName+" .field-title button.set-fk").each(function(){
 		jQuery(this).removeClass("set-fk").addClass('unset-fk').unbind('click').click({elem : fieldName}, unSetFK);
 	});
 }
 
+/**
+ * Will do the opposite than the previous function (setFK) : switches a FK descriptor to a Base one
+ * @param event
+ */
 function unSetFK(event){
 	var fieldName = event.data.elem;
 	
@@ -981,6 +1008,10 @@ function unSetFK(event){
 	});
 }
 
+/**
+ * Will loop on every new detected FK fields, (see completeInstanceData function) 
+ * and suggest the appropriate getters for both "linkedIdGetter and linkedLabelGetter" select list
+ */
 function callFkDaoSelectRefresh(){
 	jQuery.each(fkRefreshCalls, function(i, fieldName) {
 		var linkedIdGetterElem = jQuery("#" + fieldName + "_linkedIdGetter");
@@ -991,18 +1022,25 @@ function callFkDaoSelectRefresh(){
 	});
 }
 
+/**
+ * Selects the best matching value in a given selectbox
+ * 
+ * @param elem: the select box element
+ * @param setting : the setting variable (on of the elements of the globale refreshFKDaoSettings variable)
+ */
 function _selectFromSettings(elem, setting){
+	/*
+	 * Get the pattern to match
+	 */
 	var defaultValueType = setting.defaultSelect;
 	if (defaultValueType !== null){
-		var pattern = defaultValueType;
-		if (pattern == "left"){
-			pattern = bceSettings.mainBeanTableName;
-		}else if (pattern == "right"){
-			pattern = "^((?!"+bceSettings.mainBeanTableName+"|[gs]etId).)*$";
-		}
-		var match = new RegExp(pattern, 'gi');
+		var match = new RegExp(defaultValueType, 'gi');
 	}
 	selectVal = "";
+	
+	/*
+	 * loop on each option and select the first matching one
+	 */
 	elem.children().each(function (){
 		var optElem = jQuery(this);
 		var optValue = optElem.val();
