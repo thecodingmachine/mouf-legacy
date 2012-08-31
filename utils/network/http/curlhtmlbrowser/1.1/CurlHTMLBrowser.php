@@ -53,8 +53,9 @@ class CurlHTMLBrowser {
 	 * @param string $url 
 	 * @param string $method the HTTP "get" or "post" method.
 	 * @param array $params
+	 * @param array $headers
 	 */
-	public function query($url, $method="get", $params=null, $headers=null /*, $javascript_loop=0*/) {
+	public function query($url, $method="get", $params=null, $headers=null, $cookies=null /*, $javascript_loop=0*/) {
 		//echo "Browsing page ".$url."<br/>";
 		$method = strtolower($method);
 		if ($method != "post" && $method != "get") {
@@ -103,6 +104,11 @@ class CurlHTMLBrowser {
 		
 		if($headers)
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		
+		// Set cookie values
+		if($cookies)
+			curl_setopt($ch, CURLOPT_COOKIE, $cookies);
+			
 		//array("Content-Type: application/json; charset=utf-8","Accept:application/json, text/javascript, */*; q=0.01")
 		
 		curl_setopt( $ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; rv:1.7.3) Gecko/20041001 Firefox/0.10.1" );
