@@ -103,6 +103,11 @@ class TDBM_AndFilter implements TDBM_FilterInterface {
 		
 		$tables = array();
 		foreach ($this->filters as $filter) {
+			
+			if (!$filter instanceof TDBM_FilterInterface) {
+				throw new TDBM_Exception("Error in TDBM_AndFilter: One of the parameters is not a filter.");
+			}
+			
 			$tables = array_merge($tables,$filter->getUsedTables());
 		}
 		// Remove tables in double.
