@@ -106,12 +106,20 @@ class MoufInstancePropertyDescriptor {
 			} else {
 				// This is an array of objects
 				$names = array();
-				foreach ($value as $item) {
-					if (!($item instanceof MoufInstanceDescriptor)) {
-						throw new MoufException("In MoufInstanceProperty::setValue, the property '{$this->name}' instance '".$this->instanceDescriptor->getName()."' of class '".$this->instanceDescriptor->getClassName()."' is supposed to be an array of MoufInstanceDescriptors (or null).");
+				if(is_array($value)) {
+					foreach ($value as $item) {
+						if (!($item instanceof MoufInstanceDescriptor || empty($item))) {
+							throw new MoufException("In MoufInstanceProperty::setValue, the property '{$this->name}' instance '".$this->instanceDescriptor->getName()."' of class '".$this->instanceDescriptor->getClassName()."' is supposed to be an array of MoufInstanceDescriptors (or null).");
+						}
+						if(empty($item)) {
+							$names[] = $item;
+						} else {
+							/* @var $item MoufInstanceDescriptor */
+							$names[] = $item->getName();
+						}
 					}
-					/* @var $item MoufInstanceDescriptor */
-					$names[] = $item->getName();
+				} else {
+					throw new MoufException("In MoufInstanceProperty::setValue, the property '{$this->name}' instance '".$this->instanceDescriptor->getName()."' of class '".$this->instanceDescriptor->getClassName()."' is supposed to be an array of MoufInstanceDescriptors or an array of null values.");
 				}
 				if ($this->propertyDescriptor->isPublicFieldProperty()) {
 					$this->moufManager->bindComponents($this->instanceDescriptor->getName(), $this->name, $names);
@@ -124,13 +132,18 @@ class MoufInstancePropertyDescriptor {
 			
 		} else {
 			// This is a class or interface
-			if (!($value instanceof MoufInstanceDescriptor)) {
+			if (!($value instanceof MoufInstanceDescriptor || empty($value))) {
 				throw new MoufException("In MoufInstanceProperty::setValue, the property '{$this->name}' instance '".$this->instanceDescriptor->getName()."' of class '".$this->instanceDescriptor->getClassName()."' is supposed to be a MoufInstanceDescriptor (or null).");
 			}
+			if(empty($value)) {
+				$paramValue = $value;
+			} else {
+				$paramValue = $value->getName();
+			}
 			if ($this->propertyDescriptor->isPublicFieldProperty()) {
-				$this->moufManager->bindComponent($this->instanceDescriptor->getName(), $this->name, $value->getName());
+				$this->moufManager->bindComponent($this->instanceDescriptor->getName(), $this->name, $paramValue);
 			} elseif ($this->propertyDescriptor->isSetterProperty()) {
-				$this->moufManager->bindComponentViaSetter($this->instanceDescriptor->getName(), $this->name, $value->getName());
+				$this->moufManager->bindComponentViaSetter($this->instanceDescriptor->getName(), $this->name, $paramValue);
 			} else {
 				throw new MoufException("Unsupported property type: it is not a public field nor a setter...");
 			}
