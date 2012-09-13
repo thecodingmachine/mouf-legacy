@@ -500,6 +500,8 @@ class BCEUtils{
 		//Load form's configuration data
 		$obj->action = $desc->getProperty('action')->getValue() ? $desc->getProperty('action')->getValue() : "save";
 		$obj->method = $desc->getProperty('method')->getValue() ? $desc->getProperty('method')->getValue() : "POST";
+		$obj->saveLabel = $desc->getProperty('saveLabel')->getValue() ? $desc->getProperty('saveLabel')->getValue() : "Save changes";
+		$obj->cancelLabel = $desc->getProperty('cancelLabel')->getValue() ? $desc->getProperty('cancelLabel')->getValue() : "Cancel";
 		
 		$obj->attributes = $desc->getProperty('attributes')->getValue();
 		

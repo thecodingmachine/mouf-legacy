@@ -27,7 +27,19 @@ class BaseRenderer implements BCERendererInterface{
 			/* @var $descriptor BCEFieldDescriptorInterface */
 			?>	
 			<div class="control-group">
-				<label for="<?php echo $descriptor->getFieldName() ?>" class="control-label"><?php echo $descriptor->getFieldLabel() ?></label>
+				<label for="<?php echo $descriptor->getFieldName() ?>" class="control-label">
+					<?php 
+					echo $descriptor->getFieldLabel();
+					if($descriptor->getValidators()) {
+						foreach ($descriptor->getValidators() as $value) {
+							if(get_class($value) == 'RequiredValidator') {
+								echo '<span class="required-field">*</span>';
+								break;
+							}
+						}
+					}
+					?>
+				</label>
 				<div class="controls">
 					<?php echo $descriptor->toHtml(); ?>
 				</div>
@@ -36,8 +48,8 @@ class BaseRenderer implements BCERendererInterface{
 		}
 		?>
 		<div class="form-actions">
-			<button class="btn btn-primary" type="submit">Save changes</button>
-			<button class="btn">Cancel</button>
+			<button class="btn btn-primary" type="submit"><?php echo $form->saveLabel; ?></button>
+			<button class="btn"><?php echo $form->cancelLabel; ?></button>
 		</div>
 	</fieldset>
 	</form>

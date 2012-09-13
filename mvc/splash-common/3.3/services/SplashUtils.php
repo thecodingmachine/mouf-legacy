@@ -60,7 +60,7 @@ class SplashUtils {
 					$value = new SplashUrlParameterFetcher($parameter->getName(), true);
 				}
 				$values[] = $value;
-				break;
+				continue;
 			}
 			
 			if ($paramAnnotations != null) {

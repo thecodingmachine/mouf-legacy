@@ -15,7 +15,8 @@ $classes = array(
 		'DatePickerRenderer',
 		'SelectFieldRenderer',
 		'BooleanFieldRenderer',
-		'TextFieldRenderer'
+		'TextFieldRenderer',
+		'TextAreaFieldRenderer'
 );
 InstallUtils::massCreate($classes, $moufManager);
 

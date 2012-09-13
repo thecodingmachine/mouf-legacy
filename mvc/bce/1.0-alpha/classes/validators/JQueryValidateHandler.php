@@ -66,6 +66,9 @@ class JQueryValidateHandler implements JsValidationHandlerInterface{
 	}
 	
 	public function getValidationJs($formId){
+		if(empty($formId)) {
+			throw new Exception('Error while generating JS validation rules, the id of the form ($formId) must be set.');
+		}
 		$rulesJson = json_encode($this->validationRules->rules);
 		
 		$rulesJson = "

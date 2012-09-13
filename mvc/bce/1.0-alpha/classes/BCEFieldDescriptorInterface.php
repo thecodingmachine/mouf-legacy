@@ -16,6 +16,11 @@ interface BCEFieldDescriptorInterface{
 	 * Returns the name of the field as a unique identifier of that field
 	 */
 	public function getFieldLabel();
+
+	/**
+	 * Returns the list of Validators of the field
+	 */
+	public function getValidators();
 	
 	/**
 	 * Called when initializing the form (loading bean value into decsriptors, getting the validation rules, etc...)

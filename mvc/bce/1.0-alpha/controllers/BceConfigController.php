@@ -122,10 +122,11 @@ class BceConfigController extends AbstractMoufInstanceController {
 		$this->moufManager = MoufManager::getMoufManagerHiddenInstance();
 		$formInstance = $this->moufManager->getInstanceDescriptor($_POST['formInstanceName']);
 		
-		//idfieldDesc 
-		if (isset($_POST["idField"]['active']))
-		$idFieldDesc = $this->updateFieldDescriptor($_POST["idField"]);
-		$formInstance->getProperty('idFieldDescriptor')->setValue($idFieldDesc);		
+		//Set idfieldDesc 
+		if (isset($_POST["idField"]['active'])) {
+			$idFieldDesc = $this->updateFieldDescriptor($_POST["idField"]);
+			$formInstance->getProperty('idFieldDescriptor')->setValue($idFieldDesc);
+		}	
 		
 		//Field Descriptors
 		$fields = array();
@@ -141,18 +142,22 @@ class BceConfigController extends AbstractMoufInstanceController {
 		//Form's own attributes
 		$action = $_POST['config']['action'];
 		$method = $_POST['config']['method'];
+		$saveLabel = $_POST['config']['saveLabel'];
+		$cancelLabel = $_POST['config']['cancelLabel'];
 		$validate = $_POST['config']['validate'];
 		$renderer = $_POST['config']['renderer'];
 		
 		$formInstance->getProperty('action')->setValue($action);
 		$formInstance->getProperty('method')->setValue($method);
+		$formInstance->getProperty('saveLabel')->setValue($saveLabel);
+		$formInstance->getProperty('cancelLabel')->setValue($cancelLabel);
 		$formInstance->getProperty('validationHandler')->setValue($this->moufManager->getInstanceDescriptor($validate));
 		$formInstance->getProperty('renderer')->setValue($this->moufManager->getInstanceDescriptor($renderer));
 		
 		//Save form tag's attributes
 		$attributes['name'] = $_POST['config']['name'];
 		$attributes['id'] = $_POST['config']['id'];
-		$attributes['acceptCharset'] = $_POST['config']['accept-charset'];
+		$attributes['acceptCharset'] = $_POST['config']['acceptCharset'];
 		$attributes['enctype'] = $_POST['config']['enctype'];
 		$attributes['class'] = $_POST['config']['class'];
 		$formInstance->getProperty('attributes')->setValue($attributes);
@@ -179,6 +184,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 				case "m2m":
 					$className = "Many2ManyFieldDescriptor";
 				break;
+				default:
+					throw new Exception('Invalid field data: no type for '.$fieldData['fieldname']);
 			}
 			
 			$fieldDescriptor = $this->moufManager->createInstance($className);
@@ -216,10 +223,14 @@ class BceConfigController extends AbstractMoufInstanceController {
 		if (isset($fieldData['formatter']) && !empty($fieldData['formatter'])){
 			$formatter = $this->moufManager->getInstanceDescriptor($fieldData['formatter']);
 			$fieldDescriptor->getProperty('formatter')->setValue($formatter);
+		} elseif(isset($fieldData['formatter']) && empty($fieldData['formatter'])) {
+			$fieldDescriptor->getProperty('formatter')->setValue(null);
 		}
 		if (isset($fieldData['renderer']) && !empty($fieldData['renderer'])){
 			$renderer = $this->moufManager->getInstanceDescriptor($fieldData['renderer']);
 			$fieldDescriptor->getProperty('renderer')->setValue($renderer);
+		} elseif(isset($fieldData['renderer']) && empty($fieldData['renderer'])) {
+			$fieldDescriptor->getProperty('renderer')->setValue(null);
 		}
 		
 		

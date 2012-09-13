@@ -265,6 +265,10 @@ function completeInstanceData(data){
 	jQuery("#data_add").append(formActionField);
 	var formMethodField = _getListValueWrapper("Method", "method", "attr", data.method, formMethods, null, 2);
 	jQuery("#data_add").append(formMethodField);
+	var formSaveLabelField = _getSimpleValueWrapper("Save label", "saveLabel", "attr", data.saveLabel, 2);
+	jQuery("#data_add").append(formSaveLabelField);
+	var formCancelLabelField = _getSimpleValueWrapper("Cancel label", "cancelLabel", "attr", data.cancelLabel, 2);
+	jQuery("#data_add").append(formCancelLabelField);
 	
 	/* load form tag's attributes' values */
 	for ( var attributeName in data.attributes) {
@@ -345,7 +349,7 @@ function initUI(){
  * @returns {String}
  */
 function _fieldHtml(field, addClass, fieldType, editName){
-	isIdDesc = fieldType == 1;
+	var isIdDesc = fieldType == 1;
 	if (field.type == "custom"){
 		return  "<div id='wrapper-"+ field.name +"' class='field-bloc base'>" +
 					"<div class='field-title'>" +
@@ -445,9 +449,9 @@ function _getFieldElements(field, fieldType){
 	var br = jQuery("<div/>").append(jQuery("<br/>").css('clear', 'both'));
 	var br2 = br.clone();
 	
-	typeElemWrap = _getHiddenElemWrapper(fieldType, "type", field.name, field.type);
-	isNewElemWrap = _getHiddenElemWrapper(fieldType, "new", field.name, field.is_new);
-	instanceNameWrap = _getHiddenElemWrapper(fieldType, "instanceName", field.name, field.name); 
+	var typeElemWrap = _getHiddenElemWrapper(fieldType, "type", field.name, field.type);
+	var isNewElemWrap = _getHiddenElemWrapper(fieldType, "new", field.name, field.is_new);
+	var instanceNameWrap = _getHiddenElemWrapper(fieldType, "instanceName", field.name, field.name); 
 	
 	return [name, label, renderer, formatter, br, validatorsElem, br2, typeElemWrap, isNewElemWrap, instanceNameWrap];
 }
@@ -462,8 +466,16 @@ function _getFieldElements(field, fieldType){
  */
 function _getHiddenElemWrapper(fieldType, attr, name, value){
 	var nameAttr = _getFieldNames(fieldType, attr, name);
-	var typeElem = jQuery('<input/>').attr('type', "hidden").attr('name', nameAttr).val(value);
-	typeElemWrap = jQuery("<div/>").append(typeElem);
+	
+	//console.log(nameAttr);
+	//console.log(value);
+	if (value === null) {
+		console.warn("WARNING! Hidden field "+name+" has empty value");
+	}
+	
+	var typeElem = jQuery('<input/>').attr('type', "hidden").attr('name', nameAttr);
+	typeElem.val(value);
+	var typeElemWrap = jQuery("<div/>").append(typeElem);
 	return typeElemWrap;
 }
 
@@ -1036,7 +1048,7 @@ function _selectFromSettings(elem, setting){
 	if (defaultValueType !== null){
 		var match = new RegExp(defaultValueType, 'gi');
 	}
-	selectVal = "";
+	var selectVal = "";
 	
 	/*
 	 * loop on each option and select the first matching one

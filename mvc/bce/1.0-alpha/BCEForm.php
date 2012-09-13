@@ -81,6 +81,21 @@ class BCEForm{
 	public $method = "POST";
 	
 	/**
+	 * The save button label 
+	 * @Property
+	 * @var string
+	 */
+	public $saveLabel = "Save changes";
+	
+	/**
+	 * The cancel button label
+	 * 
+	 * @Property
+	 * @var string
+	 */
+	public $cancelLabel = "Cancel";
+	
+	/**
 	 * The attributes of the form
 	 *
 	 * @Property
@@ -214,7 +229,7 @@ class BCEForm{
 				$descriptor->postSave($this->baseBean, $id);
 			}
 			
-			return true;
+			return $id;
 		}else{
 			return false;
 		}
