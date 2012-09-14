@@ -1,5 +1,5 @@
 <?php
-require_once '/../BCERendererInterface.php';
+require_once dirname(__FILE__).'/../BCERendererInterface.php';
 
 /**
  * This is a simple form rendering class, using a simple field layout :
