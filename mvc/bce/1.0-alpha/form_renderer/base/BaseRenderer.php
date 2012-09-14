@@ -49,7 +49,7 @@ class BaseRenderer implements BCERendererInterface{
 		?>
 		<div class="form-actions">
 			<button class="btn btn-primary" type="submit"><?php echo $form->saveLabel; ?></button>
-			<button class="btn"><?php echo $form->cancelLabel; ?></button>
+			<button class="btn" type="reset"><?php echo $form->cancelLabel; ?></button>
 		</div>
 	</fieldset>
 	</form>

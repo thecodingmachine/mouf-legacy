@@ -16,7 +16,8 @@ $classes = array(
 		'SelectFieldRenderer',
 		'BooleanFieldRenderer',
 		'TextFieldRenderer',
-		'TextAreaFieldRenderer'
+		'TextAreaFieldRenderer',
+		'PasswordFieldRenderer'
 );
 InstallUtils::massCreate($classes, $moufManager);
 

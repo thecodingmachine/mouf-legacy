@@ -8,9 +8,13 @@ namespace Mouf\Html\Widgets\EvoluGrid;
  * @Component
  */
 class EvoluGrid implements \HtmlElementInterface {
+	
+	/**
+	 * @var \DataSourceInterface
+	 */
+	private $datasource;
 
 	/**
-	 * @Property
 	 * @var array<EvoluColumn>
 	 */
 	private $columns = array();
@@ -39,6 +43,29 @@ class EvoluGrid implements \HtmlElementInterface {
 
 	public function addRow($row) {
 		$this->rows[] = $row;
+	}
+
+	/**
+	 * @Property
+	 * @param array<EvoluColumn> $columns
+	 */
+	public function setColumns($columns) {
+		$this->columns = $columns;
+	}
+
+	public function addColumns($columns) {
+		$this->columns[] = $columns;
+	}
+
+	/**
+	 * The datasource to use by the grid.
+	 *
+	 * @Property
+	 * @Compulsory 
+	 * @param \DataSourceInterface $ds
+	 */
+	public function setDataSource(\DataSourceInterface $ds) {
+		$this->datasource = $ds;
 	}
 
 	/**

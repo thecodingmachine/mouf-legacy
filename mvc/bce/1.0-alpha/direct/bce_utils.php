@@ -349,6 +349,8 @@ class BCEUtils{
 				0 => 'datePickerRenderer'
 			['string'] => 
 				0 => 'textFieldRenderer'
+			['string'] => 
+				0 => 'passwordFieldRenderer'
 			['int'] => 
 				0 => 'textFieldRenderer'
 			['number'] => 
