@@ -28,7 +28,7 @@ session_start();
 require_once '../../../../../Mouf.php';
 require_once(dirname(__FILE__)."/../../../../../mouf/reflection/MoufReflectionProxy.php");
 require_once(dirname(__FILE__)."/../../../../../mouf/Moufspector.php");
-require_once(dirname(__FILE__)."/../admin/BCEAdminClasses.php");
+require_once(dirname(__FILE__)."/../admin/BceAdminClasses.php");
 
 $query = $_GET['q'];
 $inputName = $_GET['n'];
