@@ -197,7 +197,7 @@ class TDBM_Service {
 	 * @Compulsory
 	 * @param boolean $autoSave
 	 */
-	public function setDefaultAutoSaveMode($autoSave) {
+	public function setDefaultAutoSaveMode($autoSave = true) {
 		$this->autosave_default = $autoSave;
 	}
 
