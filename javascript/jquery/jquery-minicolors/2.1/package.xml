@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery MiniColors</displayName>
+	<shortDescription>This package contains the JQuery MiniColors library. 
+	This plugin can be used to display color pickers to pick up any color in a web page.
+	The plugin acts like a normal or hidden input text and adds an icon next to it to choose the color.
+	</shortDescription>
+	<docUrl>https://github.com/claviska/jquery-miniColors/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>>=1.7</version>
+		</dependency>
+		<dependency>
+			<group>utils/i18n</group>
+			<name>fine</name>
+			<version>>=2.1</version>
+		</dependency>
+	</dependencies>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
