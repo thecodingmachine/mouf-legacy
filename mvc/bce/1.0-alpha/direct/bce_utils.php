@@ -348,6 +348,8 @@ class BCEUtils{
 			['date'] => 
 				0 => 'datePickerRenderer'
 			['string'] => 
+				0 => 'colorPickerRenderer'
+			['string'] => 
 				0 => 'textFieldRenderer'
 			['string'] => 
 				0 => 'passwordFieldRenderer'

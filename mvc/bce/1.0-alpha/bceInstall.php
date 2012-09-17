@@ -13,6 +13,7 @@ $classes = array(
 		'HiddenRenderer',
 		'MultipleSelectFieldRenderer{"mode":"chbx"}',
 		'DatePickerRenderer',
+		'ColorPickerRenderer',
 		'SelectFieldRenderer',
 		'BooleanFieldRenderer',
 		'TextFieldRenderer',
