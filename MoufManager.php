@@ -1144,6 +1144,10 @@ class ".$this->mainClassName." {
 	public function findInstances($instanceType) {
 		$instancesArray = array();
 		foreach ($this->declaredInstances as $instanceName=>$classDesc) {
+			if(empty($classDesc['class'])) {
+				throw new MoufException('Invalid instance '.$instanceName.': no class set.');
+			}
+				 
 			$className = $classDesc['class'];
 			$obj = new $className();
 			//if (is_a($obj, $instanceType)) {
