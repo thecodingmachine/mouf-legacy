@@ -128,6 +128,8 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 	 * @return array List of the file moved
 	 */
 	public function moveFile($inputName, $folderDest) {
+		if(strrpos($folderDest, '/') != (strlen($folderDest) - 1))
+			$folderDest = $folderDest.'/';
 		// Search [] to retrieve an array if the input is it
 		if(strrpos($inputName, '[]') == (strlen($inputName) - 2))
 			$inputName = substr($inputName, 0, strlen($inputName) - 2);
