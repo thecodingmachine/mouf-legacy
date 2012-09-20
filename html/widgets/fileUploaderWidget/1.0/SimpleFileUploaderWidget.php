@@ -131,7 +131,7 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 		// Search [] to retrieve an array if the input is it
 		if(strrpos($inputName, '[]') == (strlen($inputName) - 2))
 			$inputName = substr($inputName, 0, strlen($inputName) - 2);
-		
+		umask(0);
 		// Create folder destination if don t exist
 		if(!is_dir($folderDest))
 			mkdir($folderDest, '0777', true);
