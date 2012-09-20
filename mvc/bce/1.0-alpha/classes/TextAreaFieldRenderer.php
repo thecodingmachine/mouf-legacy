@@ -4,7 +4,7 @@ require_once 'FieldRendererInterface.php';
 /**
  * Base class for rendering simple text area fields
  * @Component
- * @ApplyTo { "php" :[ "string", "int", "number"] }
+ * @ApplyTo { "php" :[ "string" ] }
  */
 class TextAreaFieldRenderer implements FieldRendererInterface{
 	

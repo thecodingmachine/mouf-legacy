@@ -535,7 +535,6 @@ abstract class BaseTemplate implements TemplateInterface, Scopable {
 		if (is_array($this->css_files)) {
 			foreach ($this->css_files as $file) {
 				$html .= "<link href='".ROOT_URL."$file' rel='stylesheet' type='text/css' />\n";
-	
 			}
 		}
 		return $html;

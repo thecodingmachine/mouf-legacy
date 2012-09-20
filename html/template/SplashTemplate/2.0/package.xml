@@ -10,7 +10,7 @@
 		<dependency>
 			<group>html/template</group>
 			<name>BaseTemplate</name>
-			<version>1.0</version>
+			<version>>=1.0</version>
 		</dependency>
 		<dependency>
 			<group>html/widgets</group>

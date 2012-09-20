@@ -3,7 +3,7 @@ require_once 'FieldRendererInterface.php';
 
 /**
  * This renderer handles date / timestamp input fields with the jQuery DatePicker
- * @ApplyTo { "php" :[ "string", "int", "number" ] }
+ * @ApplyTo { "php" :[ "string" ] }
  * @Component
  */
 class ColorPickerRenderer implements FieldRendererInterface{

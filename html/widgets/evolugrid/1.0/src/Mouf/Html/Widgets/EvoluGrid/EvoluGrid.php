@@ -10,7 +10,32 @@ namespace Mouf\Html\Widgets\EvoluGrid;
 class EvoluGrid implements \HtmlElementInterface {
 	
 	/**
-	 * @var \DataSourceInterface
+	 * @var string
+	 */
+	private $id;
+	
+	/**
+	 * @var string
+	 */
+	private $class;
+	
+	/**
+	 * @var boolean
+	 */
+	private $exportCSV;
+	
+	/**
+	 * @var int
+	 */
+	private $limit;
+	
+	/**
+	 * @var string
+	 */
+	private $url;
+	
+	/**
+	 * @var \DynamicDataSource
 	 */
 	private $datasource;
 
@@ -27,6 +52,62 @@ class EvoluGrid implements \HtmlElementInterface {
 	private $rows = array();
 
 	private $count = null;
+	
+	/**
+	 * The id of the evolugrid.
+	 * 
+	 * @Property
+	 * @param string $id
+	 */
+	public function setId($id) {
+		if($id != '')
+			$this->id = $id;
+		else
+			$this->id = 'evolugrid__id__'.rand(100000,999999);
+	}
+	
+	/**
+	 * The class of the evolugrid.
+	 * 
+	 * @Property
+	 * @param string $class
+	 */
+	public function setClass($class) {
+		$this->class = $class;
+	}
+	
+	/**
+	 * Export the grid to CSV format.
+	 * 
+	 * @Property
+	 * @param boolean $exportCSV
+	 */
+	public function setExportCSV($exportCSV) {
+		$this->exportCSV = $exportCSV;
+	}
+	
+	/**
+	 * Limit of the grid before pagination.
+	 * 
+	 * @Property
+	 * @param int $limit
+	 */
+	public function setLimit($limit) {
+		if($limit)
+			$this->limit = $limit;
+		else
+			$this->limit = 100;
+	}
+	
+	/**
+	 * URL of the controller to load data.
+	 * 
+	 * @Property
+	 * @param string $url
+	 */
+	public function setUrl($url) {
+		$this->url = ROOT_URL.$url;
+	}
 
 	/**
 	 * Add a new column to the grid.
@@ -39,6 +120,16 @@ class EvoluGrid implements \HtmlElementInterface {
 
 	public function setRows($rows) {
 		$this->rows = $rows;
+	}
+
+	private function getRows() {
+		if(!empty($this->rows)) {
+			return $this->rows;
+		} elseif($this->datasource != null) {
+			return array_values($this->datasource->getRows(DS_FETCH_ASSOC));
+		} else {
+			return array();
+		}
 	}
 
 	public function addRow($row) {
@@ -66,6 +157,17 @@ class EvoluGrid implements \HtmlElementInterface {
 	 */
 	public function setDataSource(\DataSourceInterface $ds) {
 		$this->datasource = $ds;
+	}
+	
+	/**
+	 * The limit and offset of the datasource (to set in the URL callback)
+	 * 
+	 * @param int $limit
+	 * @param int $offset
+	 */
+	public function setDataSourceLimitOffset($limit, $offset) {
+		$this->datasource->setLimit($limit);
+		$this->datasource->setOffset($offset);
 	}
 
 	/**
@@ -104,7 +206,7 @@ class EvoluGrid implements \HtmlElementInterface {
 			if ($this->count !== null) {
 				$jsonMessage['count'] = $this->count;
 			}
-			$jsonMessage['data'] = $this->rows;
+			$jsonMessage['data'] = $this->getRows();
 
 			$jsonMessage['descriptor'] = $descriptor;
 			echo json_encode($jsonMessage);
@@ -134,7 +236,7 @@ class EvoluGrid implements \HtmlElementInterface {
 			return utf8_decode($column->title);
 		}, $this->columns);
 		fputcsv($fp, $columnsTitles, ";");
-		foreach ($this->rows as $row) {
+		foreach ($this->getRows() as $row) {
 			$columns = array_map(function(EvoluColumn $elem) use ($row) {
 				if (is_object($row)) {
 					$key = $elem->key;
@@ -165,6 +267,19 @@ class EvoluGrid implements \HtmlElementInterface {
 	 *
 	 */
 	public function toHtml() {
-
+		echo '
+			<div id="'.$this->id.'"></div>
+			<script type="text/javascript">
+				$(document).ready(function() {
+				    var descriptor = {
+				        url: "'.$this->url.'",
+				        tableClasses : "'.$this->class.'",
+				        export_csv: '.json_encode($this->exportCSV).',
+				        limit: '.$this->limit.'
+				    };
+				    $("#'.$this->id.'").evolugrid(descriptor);
+				});
+			</script> 
+		';
 	}
 }

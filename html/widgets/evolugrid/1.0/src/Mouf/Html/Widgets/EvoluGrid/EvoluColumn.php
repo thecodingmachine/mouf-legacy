@@ -10,6 +10,9 @@ namespace Mouf\Html\Widgets\EvoluGrid;
 class EvoluColumn {
 	/**
 	 * The title of the column to display
+	 * 
+	 * @Property
+	 * @var string
 	 */
 	public $title;
 	
