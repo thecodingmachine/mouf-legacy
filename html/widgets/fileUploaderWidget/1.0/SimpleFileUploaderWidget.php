@@ -133,8 +133,9 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 			$inputName = substr($inputName, 0, strlen($inputName) - 2);
 		umask(0);
 		// Create folder destination if don t exist
-		if(!is_dir($folderDest))
-			mkdir($folderDest, '0777', true);
+		if(!is_dir($folderDest)) {
+			mkdir($folderDest, 0777, true);
+		}
 		
 		// retrieve value of input
 		$values = get($inputName);
