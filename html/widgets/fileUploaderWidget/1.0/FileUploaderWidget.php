@@ -12,7 +12,7 @@ class FileUploaderWidget implements HtmlElementInterface {
 	 *
 	 * @var int
 	 */
-	private static $count = 0;
+	protected static $count = 0;
 	
 	/**
 	 * The list of file extensions for the files to upload, separated by a ",".
@@ -237,7 +237,7 @@ class FileUploaderWidget implements HtmlElementInterface {
 			$fileUploaderParam['showMessage'] = $this->showMessage;
 		}
 		echo '<script type="text/javascript">
-				 var uploaderLogo = new qq.FileUploader({
+				 var uploader'.self::$count.' = new qq.FileUploader({
 			        element: document.getElementById("'.plainstring_to_htmlprotected($id).'"),
 			        action: "'.ROOT_URL.'plugins/html/widgets/fileUploaderWidget/'.$version.'/direct/upload.php",
 					params: '.json_encode($scriptDataArray);
@@ -263,7 +263,6 @@ class FileUploaderWidget implements HtmlElementInterface {
 	 */
 	public function setParams($params) {
 		$this->params = $params;
-		
 	}
 
 	/**
@@ -285,7 +284,7 @@ class FileUploaderWidget implements HtmlElementInterface {
 	 */
 	public function getFileUploadPath() {
 		$directory = $this->directory;
-		if (strpos($directory, '/') !== 0) {
+		if (strpos($directory, '/') !== 0 && strpos($directory, ':') !== 1) {
 			$directory = ROOT_PATH.$directory;
 		}
 		rtrim($directory, DIRECTORY_SEPARATOR);
@@ -293,6 +292,49 @@ class FileUploaderWidget implements HtmlElementInterface {
 		$file = $directory.basename($this->fileName);
 		$file = str_replace(DIRECTORY_SEPARATOR.DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $file);
 		return $file;
+	}
+	
+	/**
+	 * Call all listener before upload file.
+	 *
+	 * @param string $targetFile The final path of the uploaded file. When the afterUpload method is called, the file is there.
+	 *  * @param string $fileName The final name of the uploaded file. When the beforeUpload method is called, the file is not yet there. In this function, you can change the value of $fileName since it is passed by reference
+	 * @param string $fileId The fileId that was set in the uploadify widget (see FileUploadWidget::fileId)
+	 * @param array $result The result array that will be returned to the page as a JSON object.
+	 * @param string $uniqueId Unique id of file uploader form.
+	 */
+	public function triggerBeforeUpload(&$targetFile, &$fileName, $fileId, array &$returnArray, $uniqueId) {
+		if (is_array($this->listenersBefore)) {
+			foreach ($this->listenersBefore as $listener) {
+				/* @var $listener UploadifyOnUploadInterface */
+				$result = $this->beforeUpload($targetFile, $fileName, $fileId, $this, $returnArray, $this->getParams($uniqueId));
+				if($result === false) {
+					$returnArray = array_merge($returnArray, $result);
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Call all listener after upload file.
+	 *
+	 * @param string $targetFile The final path of the uploaded file. When the afterUpload method is called, the file is there.
+	 * @param string $fileId The fileId that was set in the uploadify widget (see FileUploadWidget::fileId)
+	 * @param array $result The result array that will be returned to the page as a JSON object.
+	 * @param string $uniqueId Unique id of file uploader form.
+	 */
+	public function triggerAfterUpload(&$targetFile, $fileId, array &$returnArray, $uniqueId) {
+		if (is_array($this->listenersBefore)) {
+			foreach ($this->listenersBefore as $listener) {
+				/* @var $listener UploadifyOnUploadInterface */
+				$result = $listener->afterUpload($targetFile, $fileId, $this, $returnArray, $this->getParams($uniqueId));
+				if($result === false) {
+					$returnArray = array_merge($returnArray, $result);
+					break;
+				}
+			}
+		}
 	}
 }
 ?>

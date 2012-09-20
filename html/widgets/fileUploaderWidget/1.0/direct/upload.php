@@ -52,36 +52,22 @@ $uploader = new JsFileUploader($allowedExtensions, $sizeLimit);
 
 $fileName = $uploader->getFileName();
 /* @var $instance FileUploaderWidget */
-if (is_array($instance->listenersBefore)) {
-	foreach ($instance->listenersBefore as $listener) {
-		/* @var $listener UploadifyOnUploadInterface */
-		$result = $listener->beforeUpload($targetFile, $fileName, $sessArray["fileId"], $instance, $returnArray, $instance->getParams($uniqueId));
-		if($result === false) {
-			$returnArray = $result;
-			break;
-		}
-	}
-}
+// Call listener Before
+$instance->triggerBeforeUpload($targetFile, $fileName, $sessArray["fileId"], $returnArray, $uniqueId);
+
 if (!is_dir($targetFile)) {
 	mkdir(str_replace('//','/', $targetFile), 0755, true);
 }
 if (!isset($returnArray['error'])) {
 	
-	$returnArray = $uploader->handleUpload($targetFile, $fileName, $instance->replace);
+	$returnUpload = $uploader->handleUpload($targetFile, $fileName, $instance->replace);
 	$targetFile = $uploader->getFileSave(true);
-	if (!$returnArray) {
+	if (!$returnUpload) {
 		$returnArray['error'] = 'no return after JSFileUpload';
 	}
 }
 
-if (is_array($instance->listenersBefore)) {
-	foreach ($instance->listenersBefore as $listener) {
-		/* @var $listener UploadifyOnUploadInterface */
-		$result = $listener->afterUpload($targetFile, $sessArray["fileId"], $instance, $returnArray, $instance->getParams($uniqueId));
-		if($result === false) {
-			$returnArray = $result;
-			break;
-		}
-	}
-}
+// Call listener After
+$instance->triggerAfterUpload($targetFile, $sessArray["fileId"], $returnArray, $uniqueId);
+
 echo htmlspecialchars(json_encode($returnArray), ENT_NOQUOTES);

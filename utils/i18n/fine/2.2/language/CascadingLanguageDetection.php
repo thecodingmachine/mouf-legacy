@@ -34,7 +34,7 @@ class CascadingLanguageDetection implements LanguageDetectionInterface {
 	/**
 	 * Returns the language to use considering all the LanguageDetection services configured.
 	 * 
-	 * @see plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface::getLanguage()
+	 * @see plugins/utils/i18n/fine/2.2/language/LanguageDetectionInterface::getLanguage()
 	 * @return string
 	 */
 	public function getLanguage() {

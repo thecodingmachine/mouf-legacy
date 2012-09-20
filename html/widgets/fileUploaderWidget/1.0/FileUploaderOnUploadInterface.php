@@ -26,9 +26,10 @@ interface FileUploaderOnUploadInterface {
 	 * @param string $fileId The fileId that was set in the uploadify widget (see FileUploadWidget::fileId)
 	 * @param FileUploaderWidget $widget
 	 * @param array $result The result array that will be returned to the page as a JSON object.
+	 * @param array $parameters Parameters add in the Javascript call.
 	 * @return boolean Return false to cancel the upload
 	 */
-	public function beforeUpload(&$targetFile, &$fileName, $fileId, $instance, array &$result);
+	public function beforeUpload(&$targetFile, &$fileName, $fileId, $instance, array &$result, array $parameters);
 	
 	/**
 	 * This method is called by an FileUploadWidget after the file copy.
@@ -47,7 +48,8 @@ interface FileUploaderOnUploadInterface {
 	 * @param string $fileId The fileId that was set in the uploadify widget (see FileUploadWidget::fileId)
 	 * @param FileUploaderWidget $widget
 	 * @param array $result The result array that will be returned to the page as a JSON object.
+	 * @param array $parameters Parameters add in the Javascript call.
 	 * @return boolean Return false to cancel the upload
 	 */
-	public function afterUpload($targetFile, $fileId, $instance, array &$result);
+	public function afterUpload($targetFile, $fileId, $instance, array &$result, array $parameters);
 }

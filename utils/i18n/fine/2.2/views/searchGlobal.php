@@ -15,7 +15,7 @@
 	}
 </style>
 
-<h2>FINE 2.1 Results</h2>
+<h2>FINE 2.2 Results</h2>
 <?php if($this->error) {?>
 	no research
 <?php } else {?>

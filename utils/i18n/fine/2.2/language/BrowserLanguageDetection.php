@@ -24,7 +24,7 @@ class BrowserLanguageDetection implements LanguageDetectionInterface {
 	 * Returns the language used for the users browser.
 	 * The code is stored in a variable to store whether the function is called twice
 	 * 
-	 * @see plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface::getLanguage()
+	 * @see plugins/utils/i18n/fine/2.2/language/LanguageDetectionInterface::getLanguage()
 	 */
 	public function getLanguage() {
 		if($this->language)

@@ -82,7 +82,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * Check in the $msg variable if the key exist to return the value. This function check all the custom file if the translation is not in the main message_[language].php
 	 * If this message doesn't exist, it return a link to edit it.
 	 * 
-	 * @see plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface::getTranslation()
+	 * @see plugins/utils/i18n/fine/2.2/translate/LanguageTranslationInterface::getTranslation()
 	 */
 	public function getTranslation($message) {
 		if($this->language === null) {
@@ -130,7 +130,7 @@ class FinePHPArrayTranslationService implements LanguageTranslationInterface {
 	 * Check in the $msg variable if the key exist to return the value. This function check all the custom file if the translation is not in the main message_[language].php
 	 * If this message doesn't exist, it not return a link to edit it.
 	 * 
-	 * @see plugins/utils/i18n/fine/2.1/translate/LanguageTranslationInterface::getTranslation()
+	 * @see plugins/utils/i18n/fine/2.2/translate/LanguageTranslationInterface::getTranslation()
 	 */
 	public function getTranslationNoEditMode($message) {
 		if($this->language === null) {

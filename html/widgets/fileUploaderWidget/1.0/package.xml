@@ -23,10 +23,16 @@
 			<name>sessionmanager</name>
 			<version>&gt;=1.0</version>
 		</dependency>
+		<dependency>
+			<group>utils/common</group>
+			<name>getvars</name>
+			<version>&gt;=1.0</version>
+		</dependency>
 	</dependencies>
 	<requires>
 		<require>FileUploaderOnUploadInterface.php</require>
 		<require>FileUploaderWidget.php</require>
 		<require>direct/JsUploadFile.php</require>
+		<require>SimpleFileUploaderWidget.php</require>
 	</requires>
 </package>

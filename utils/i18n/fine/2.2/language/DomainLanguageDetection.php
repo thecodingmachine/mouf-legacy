@@ -20,7 +20,7 @@ class DomainLanguageDetection implements LanguageDetectionInterface {
 	 * Returns the language used for the domain name.
 	 * Check if the value exit in keys array. If this value doesn't exist, the function return default.
 	 * 
-	 * @see plugins/utils/i18n/fine/2.1/language/LanguageDetectionInterface::getLanguage()
+	 * @see plugins/utils/i18n/fine/2.2/language/LanguageDetectionInterface::getLanguage()
 	 * @return string Language code store in array
 	 */
 	public function getLanguage() {
