@@ -507,7 +507,21 @@ class BCEUtils{
 		$obj->saveLabel = $desc->getProperty('saveLabel')->getValue() ? $desc->getProperty('saveLabel')->getValue() : "Save changes";
 		$obj->cancelLabel = $desc->getProperty('cancelLabel')->getValue() ? $desc->getProperty('cancelLabel')->getValue() : "Cancel";
 		
+		
+		$attrs = array(
+			"id" => "default_id",
+			"name" => "default_name",
+			"accept-charset" => "UTF-8",
+			"class" => "",
+			"enctype" => "application/x-www-form-urlencoded"
+		);
+		
 		$obj->attributes = $desc->getProperty('attributes')->getValue();
+		foreach ($attrs as $k=>$attr){
+			if (!isset($obj->attributes[$k])){
+				$obj->attributes[$k] = $attrs[$k];
+			}
+		}
 		
 		$rendererDesc = $desc->getProperty('renderer')->getValue();
 		if ($rendererDesc) $obj->renderer = $rendererDesc->getName();
