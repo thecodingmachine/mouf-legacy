@@ -94,7 +94,10 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 		}
 		
 		// Temp folder
-		$this->directory = sys_get_temp_dir().'simplefileupload/'.$folderName.'/';
+		$sysFolder = sys_get_temp_dir();
+		if(strrpos($sysFolder, '/') != (strlen($sysFolder) - 1))
+			$sysFolder = $sysFolder.'/';
+		$this->directory = $sysFolder.'simplefileupload/'.$folderName.'/';
 		// If only one file can be send, remove other file in temp file
 		if($this->onlyOneFile) {
 			if(is_dir($this->directory)) {
@@ -177,7 +180,10 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 	 */
 	private function hasFileToMoveOfFolder($value) {
 		$fileList = array();
-		$directory = sys_get_temp_dir().'simplefileupload/'.$value;
+		$sysFolder = sys_get_temp_dir();
+		if(strrpos($sysFolder, '/') != (strlen($sysFolder) - 1))
+			$sysFolder = $sysFolder.'/';
+		$directory = $sysFolder.'simplefileupload/'.$value;
 		if(is_dir($directory)) {
 			if ($dh = opendir($directory)) {
 				while ($file = readdir($dh)) {
@@ -204,7 +210,10 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 	private function moveFileOfFolder($value, $folderDest) {
 		$fileList = array();
 		// retrieve temp file
-		$directory = sys_get_temp_dir().'simplefileupload/'.$value;
+		$sysFolder = sys_get_temp_dir();
+		if(strrpos($sysFolder, '/') != (strlen($sysFolder) - 1))
+			$sysFolder = $sysFolder.'/';
+		$directory = $sysFolder.'simplefileupload/'.$value;
 		if(is_dir($directory)) {
 			if ($dh = opendir($directory)) {
 				while ($file = readdir($dh)) {
