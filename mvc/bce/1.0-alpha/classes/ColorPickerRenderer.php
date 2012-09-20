@@ -2,8 +2,7 @@
 require_once 'FieldRendererInterface.php';
 
 /**
- * This renderer handles date / timestamp input fields with the jQuery DatePicker
- * @ApplyTo { "php" :[ "string" ] }
+ * This renderer handles text input fields with the jQuery MiniColor
  * @Component
  */
 class ColorPickerRenderer implements FieldRendererInterface{
@@ -21,16 +20,10 @@ class ColorPickerRenderer implements FieldRendererInterface{
 	
 	/**
 	 * (non-PHPdoc)
-	 * The datepicker depends on jQueryUI's datepicker widget, therefore load the library into the WebLibrary manager, and call the datepicker initialization on dom ready
+	 * The MiniColor depends on jQuery, and call the mini color picker initialization on dom ready
 	 * @see FieldRendererInterface::getJS()
 	 */
 	public function getJS($descriptor){
-		/* @var $libManager WebLibraryManager */
-		$jQueryUI = MoufManager::getMoufManager()->getInstance('jQueryUiLibrary');
-		Mouf::getDefaultWebLibraryManager()->addLibrary($jQueryUI);
-		
-		$fieldName = $descriptor->getFieldName();
-		
 		return array(
 			"ready" => "
 				function init() {
