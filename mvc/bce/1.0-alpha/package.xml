@@ -4,7 +4,8 @@
 	<shortDescription>The best CRUD ever!</shortDescription>
 	<docUrl>http://www.thecodingmachine.com/ext/splash</docUrl>
 	<doc>
-		<page title="Introduction to BCE" url="index.html" />
+		<page title="About" url="about.html" />
+		<page title="Getting started" url="quickstart.html" />
 	</doc>
 	<logo>icons/logo.png</logo>
 	<dependencies>
