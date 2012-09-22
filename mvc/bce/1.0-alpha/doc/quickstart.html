@@ -42,30 +42,35 @@ public $userForm;
  * @URL /editUser
  */
 public function edit($id = null) {
-	$this->userForm->load($id);
+	//initialize the Form
+	$this-&gt;userForm-&gt;load($id);
 	
-	$this->template->addHeadText('
-	<script type="text/javascript">
-	<!--
-	'. $this->userForm->getValidationJS() .'
-	//-->
-	</script>
+	//Load the form's JS into the head of the DOM
+	$this-&gt;template-&gt;addHeadText('
+	&lt;script type="text/javascript"&gt;
+	&lt;!--
+	'. $this-&gt;userForm-&gt;getValidationJS() .'
+	//--&gt;
+	&lt;/script&gt;
 	');
 	
-	$this->template->addContentFile(ROOT_PATH."views/user/edit.php", $this);
-	$this->template->draw();
+	$this-&gt;template-&gt;addContentFile(ROOT_PATH."views/user/edit.php", $this);
+	$this-&gt;template-&gt;draw();
 }
 
 /**
  * @URL /saveUser
  */
 public function save(){
-	$this->userForm->save($_POST);
+	$this-&gt;userForm-&gt;save($_POST);
 }
 </pre>
-
-
-
+<p>The view linked to the controller only contains one single line of code:</p>
+<pre class="brush:php">
+$this-&gt;userForm-&gt;toHtml();
+</pre>
+<p>Last thing to do is binding your userController to the userForm instance, and you're done! Visit the /editUser URL, and you get... beautifull form!</p>
+<img src="images/simple_form.png" alt="itab fields" />
 
 <!-- Getting deeper -->
 <p>There is a second tab called "configuration", that allows you to define the specific Id FieldDescriptor, and some other form related attributes (renderer to be used, id, name, action, etc...)</p>
