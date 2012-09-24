@@ -236,7 +236,7 @@ function completeInstanceData(data){
 	}else if (idDesc){
 		idHtml = _fieldHtml(idDesc, "idField", 1);
 	}
-	idDesc = null;
+	
 	if (idHtml){
 		jQuery('#id_desc').html(idHtml);
 	}
