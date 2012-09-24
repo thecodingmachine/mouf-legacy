@@ -1,137 +1,66 @@
-<h1>Advanced tutorial</h1>
-
-<p>In this advanced tutorial, we will learn how to use the getObjects method in details, and see the behaviour of TDBM with more complex data model.</p>
-<p>If you are new to TDBM, you should start with the <a href="quickstart.html">quickstart guide</a>.</p>
-
-<h2>Making complex queries: the getObjects method</h2>
-<p>
-Complex queries with filters and ordering is achieved in TDBM through the <code>xxxDao::getXxxListByFilter</code> protected method.
-<br/><br/>
-
-<pre class="brush:php">
-protected function getXxxListByFilter($filterBag=null, $orderbyBag=null, $from=null, $limit=null);
-</pre>
-
-<p>The getXxxListByFilter method should be the preferred way to perform queries in TDBM.  (Note: if you want to query the database for an object by its primary key, use the getXxxById method).</p>
-<p>The getXxxListByFilter method takes in parameter: </p>
+<style>
+<!--
+ul li span.entry{
+	font-weight: bold;
+}
+-->
+</style>
+<h1>Detailed presentation an configuration of BCE</h1>
+<p><i>We will start over from the last step of the <a hreflang="quickstart.html">"quickstart" presentation</a>, and see how to get a nice userForm. But before you need to get a quick description of BCEForm's structure, and the main objects that it contains.</i></p>
+<h2>Detailed description</h2>
+<h3>Structure</h3>
+<img src="images/structure.jpg" alt="structure" />
 <ul>
-<li>filter_bag (optionnal): The filter bag is anything that you can use to filter your request. It can be a SQL Where clause,	a series of DBM_Filter objects, or even DBM_Objects or DBM_ObjectArrays that you will use as filters.</li>
-<li>order_bag (optionnal): The order bag is what you use to order the results of your request. It can be a SQL OrderBy clause,	a series of DBM_OrderByColumn objects or an array containing both.</li>
-<li>from (optionnal): The offset from which the query should be performed. For instance, if $from=5, the getObjects method will return objects from the 6th row.</li>
-<li>limit (optionnal): The maximum number of objects returned. Together with the <code>from</code> parameter, this can be used to implement paging.</li>
-</ul>
-<p>
-The getXxxListByFilter method will return a TDBM_ObjectArray. A TDBM_ObjectArray is an array of XxxBean that does behave as 
-a single XxxBean if the array has only one member. Refer to the documentation of TDBM_ObjectArray and TDBM_Object to learn more.</p>
-
-<h3>More about the filter bag</h3>
-
-<p>A filter is anything that can change the set of objects returned by getXxxListByFilter. 
-There are many kind of filters in TDBM: A filter can be: </p>
+<li>
+<span class="entry">BCE Form</span>
+Reflexcts the root structure of a form: it embedds two categories of objects/values: the field descriptors and the rest that is mainely the configuration part of the form. As you will see just after, FieldDescriptor are responsible for handeling a field of the edited Bean (a User in this case). The configuration part defines how the form should behave (rendering, attributes as POST/GET method, action, id, etc...), and is also includes one special Field Descriptor: the idFieldDescriptor that handled the "identifier" field that has special rules.
+</li>
+<li><span class="entry"><u>The FieldDescriptors</u></span>
+These insctances describe how a field should be loaded, displayed, validated and persited. Depending on the field's data, and relations, there may be different Types of Field Descriptors:
+</li>
 <ul>
-	<li>A SQL WHERE clause:<br/> 
-	The clause is specified without the "WHERE" keyword. For instance:  
-	<pre class="brush:php">$filter = "users.first_name LIKE 'J%'"</pre>;
-	is a valid filter. 
-	The only difference with SQL is that when you specify a column name, it should always be fully qualified with the table name: "country_name='France'" is not valid, while "countries.country_name='France'" is valid (if  		"countries" is a table and "country_name" a column in that table, sure.  		For instance,  				$french_users = DBM_Object::getObjects("users", "countries.country_name='France'");  		will return all the users that are French (based on trhe assumption that TDBM can find a way to connect the users  		table to the country table using foreign keys, see the manual for that point). </li><li>A DBM_Object:<br/>
-	An object can be used as a filter. 
-	For instance, we could get the France object and then find any users related to that object using:<br/>
-	<pre class="brush:php">
-	// In the CountryDao
-	$france = $this-&gt;getCountryListByFilter("countries.country_name='France'");
-	// In the UserDao
-	$french_users = $this-&gt;getUserListByFilter($france);</pre>
-	</li>
-	
-	<li>A DBM_ObjectArray can be used as a filter too.<br/>
-	<pre class="brush:php">$french_groups = $this-&gt;getGroupListByFilter("groups", $french_users);</pre>
-	This sample will return all the groups in which french users can be found.</li>
-	
-	<li>Finally, TDBM_xxxFilter instances can be used.<br/>
-	TDBM provides the developer a set of TDBM_xxxFilters that can be used to model a SQL Where query. Using the appropriate filter object, you can model the operations =,&lt;,&lt;=,&gt;,&gt;=,IN,LIKE,AND,OR, IS NULL and NOT.<br/>
-	For instance:<br/>
-	<pre class="brush:php">$french_users = $this-&gt;getUserListByFilter(new TDBM_EqualFilter('countries','country_name','France'));</pre>
-	Refer to the documentation of the appropriate filters for more information.</li>
+<li><span class="entry">Base Field Descriptor</span>
+This type is made for handdling simple fields of a table, that are written directly into the table without any relationship. In our example (as defined in the <a href="quickstart.html">quickstart</a>) this corresponds to user's name, email, birtdate, etc...</li>
+<li><span class="entry">ForiegnKey Field Descriptor</span>
+As the name tells it, this type is dedicated for handling One to many relationships, as our user's role_id Foreign Key.</li>
+<li><span class="entry">ManyToMany Field Descriptor</span>
+This third type of decsriptor handles, of course, many-to-many relations, as our user's hobbies
+</li>
+<li><span class="entry">Custom Field Descriptor</span>
+Because there is always some specific needs that need to be implemented, you may code any Field Descriptor you want by implementing the BCEFieldDescriptor Interface.
+</li>
 </ul>
-
-<p>The nice thing about a filter bag is that it can be any filter, or any array of filters.
-In that case, filters are  'ANDed' together.  So a request like this is valid:</p>
-<pre class="brush:php">
-// In the country Dao
-$france = $this-&gt;getCountryByFilter("countries.country_name='France'");
-// In the users Dao
-$french_administrators = $this-&gt;getUserListByFilter(array($france,"role.role_name='Administrators'"));
-</pre>
-
-<p>This requests would return the users that are both French and administrators.</p>
-
-<p>Finally, if filter_bag is null, the whole table is returned.</p>
-
-
-<h3>More about the order bag</h3>
-
-<p>The order bag contains anything that can be used to order the data that is passed back to you. 
-The order bag can contain two kinds of objects: </p>
-
+<li><span class="entry"><u>The Configuration</u></span>
 <ul>
-	<li>A SQL ORDER BY clause:<br/>
-	The clause is specified without the "ORDER BY" keyword. For instance:<br/>
-	<pre class="brush:php">$orderby = "users.last_name ASC, users.first_name ASC";</pre><br/>
-	The only difference with SQL is that when you specify a column name, it should always be fully qualified with the table name: <code>"country_name ASC"</code> is not valid, while <code>"countries.country_name ASC"</code> is valid (if "countries" is a table and "country_name" a column in that table, sure.<br/>
-	<pre class="brush:php">$users = $this-&gt;getUserListByFilter(null, "countries.country_name ASC");</pre>
-	This will return all the users sorted by country.</li>
-	<li>A TDBM_OrderByColumn object.
-	This object models a single column in a database.
-	<pre class="brush:php">$users = $this-&gt;getUserListByFilter(null, new TDBM_OrderByColumn("country", "country_name", "ASC");</pre>
-	</li>
+<li><span class="entry">Id Field Decriptor</span>
+This is a base descriptor that handles the identifier of the table. It is automatically detected if the PrimaryKey is defined for this table, and it is obviously required for the Form to work properly
+</li>
+<li><span class="entry">HTML attributes</span>
+The list of attributes to be found in the Form Tag (id, name, action, method, enctype, etc...)
+</li>
+<li><span class="entry">JS Validation Handler</span>
+The JS library that will handle the client side validation : the validation functions are embedded in the validators, but the JS validation handler is responsible for aggregating the scripts, and diplaying the messages.
+</li>
+<li><span class="entry">Renderer</span>
+Instance that will import the CSS files, and build the Form's DOM, by taking the Form as input.
+</li>
 </ul>
-
-<h2>About ambiguity</h2>
-<br/>
-In the samples of the quick start guide, everything happens to be fine because the object model is quite simple. In 80% of the cases you will encounter, you will be able to stick to the access model presented in the quick start guide. There are, however, cases where there could be several ways to join two tables, as shown below.<br/>
-<img src="images/schema2.png" alt="database schema"/>
-<br/>
-In the example above, we added a company table. A company is attached to a country. A user is attached to a company, and still, a user is attached to a country (for instance, its birth place). Therefore, a user can be attached to a country that is different from the country of its company.<br/>
-<br/>
-Now, what if we write this piece of code:<br/>
-<br/>
-<pre class="brush:php">$user = $userDao-&gt;getUserById(1);
-$country = $user-&gt;getCountry();
-echo $country-&gt;getName();</pre>
-<br/>
-Will we get the country of user 1 (UK) or will we get the country of the company for which user 1 is working for (France)? The code above is to some extent ambiguous. How will TDBM decide?<br/>
-The answer lies in the first design choice of TDBM: <b>Simplicity</b>. TDBM will choose the simplest way to go because it is likely that this is what the developer meant. Here, obiously, the developer certainly meant that he wanted the country of the user, so this is what he will get.<br/>
-For TDBM, the simplest way is the way that requires the less joins between tables to get to the result.<br/>
-<br/>
-This rule works for most of the problems you will encounter. However, there are still cases where ambiguity can happen, and cannot be resolved by TDBM. Have a look at the schema below:<br/>
-<img src="images/schema3.png" alt="database schema"/>
-<br/>
-In this schema, a user is linked to 2 countries. One is its birth country and one is the country he works in. Here, TDBM cannot make any decision... If the user writes<br/>
-<br/>
-<code>$country = $userBean-&gt;getCountry();</code><br/>
-there is no way to know if it more likely that he wanted the birth country or the work country. So TDBM will throw an ambiguity exception. This exception will inform the user that its request is ambiguous and that he should solve it. Below is the exception the user will get:<br/>
-<br/><code>
-Uncaught exception 'DB_AmbiguityException' with message 'An ambiguity has been found during the search. Please catch this exception and execute the $exception-&gt;explainAmbiguity() to get a nice graphical view of what you should do to solve this ambiguity.The table 'users' can be reached using several different ways from the table 'countries'.<br/>
-<br/>
-Solution 1:<br/>
-Table 'countries' is pointed by 'users' through its foreign key 'birth_country_id'<br/>
-
-Solution 2:<br/>
-Table 'countries' is pointed by 'users' through its foreign key 'work_country_id'<br/>
-<br/></code>
-This exception message is quite clear on the ambiguity. However, on big data models, the message might get long enough, with a lot of possible ambiguities. TDBM offers you a nice graphical view of ambiguities (if you are in an HTML page, which is likely since we are using PHP). For this, just follow the steps in the exception message. It informs us that we should catch the exception and use the <code>$exception-&gt;explainAmbiguity();</code> function. Let's do that.
-
-<p>
-<code>
-$user = TDBM_Object::getObject('users',1);<br/>
-try {<br/>
-	$country = $user-&gt;get_countries();<br/>
-} catch (DB_AmbiguityException $ex) {<br/>
-	$ex-&gt;explainAmbiguity();<br/>
-}<br/>
-</code>
-</p>
-<p>
-By running the code, we get this display in our browser:<br/>
-<img src="images/ambiguity_screenshot.png" />
-We get a graphical view of the ambiguity. TDBM also proposes you a way of sorting this ambiguity.
+</li>
+</ul>
+<h3>The configuration interface</h3>
+<h4>Global Overview</h4>
+<img src="images/configuration details.jpg" alt="tab fields" />
+<h4>The Field Descriptor widget</h4>
+<img src="images/fied_descriptor_widget.jpg" alt="tab fields" />
+<p>The widget is composed of a title bar that allows to sort, and expand/collapse the detailed view of the descriptor.</p>
+<ol>
+  <li>For confort, only one detail panel will be shown at once.</li>
+  <li>The "Activate checkbox" will define if the fieldDescriptor should be added to the form. If the field descriptor is a suggested one (in green), then it will be created.</li>
+  <li>The Title bar shows the name of the field descriptor instance.</li>
+  <li>The "switch to PK" button is shown whenever no id field descriptor is set nore has been suggested (may occure for example if no PK is defined for the table, and if the form is being created). It will switch any base field descriptor into the configuration tab, as the id descriptor for the form. This action can be undone, when the button is clicked, it becomes an unset PK button.</li>
+  <li>The switch to FK button will transform a base field descriptor widget into a ForeignKeyFieldDescriptor widget. This action can be undone as the swicth PK one</li>
+</ol>
+<!-- Getting deeper -->
+<h4>Configuration</h4>
+<p>There is a second tab called "configuration", that allows you to define the specific Id FieldDescriptor, and some other form related attributes (renderer to be used, id, name, action, etc...)</p>
+<img src="images/configure_page_2_1.jpg" alt="tab fields" />

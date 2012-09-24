@@ -8,20 +8,20 @@
 We have users. Users have some basic attributes as name, email, etc..., and they have a role defined by a foreign key named role_id. Finally, a user may have some Hobbies, which is represented by a many to many relationship table.
 </p>
 
-<img src="images/data_model.png" alt="data model" />
+<img src="images/data_model.jpg" alt="data model" />
 
 <h2>Create the basic user form</h2>
 <p>First thing you have to do is, obviously creating a BCE instance. This is done, as usual, by hiting the "create a new instance" link of the ribbon menu. For example, we create a userForm instance :</p>
-<img src="images/create_instance.png" alt="data model" />
+<img src="images/create_instance.jpg" alt="data model" />
 <p>Once you've done this, you reach the dedicated configuration interface of BCE that embeds a lot of helpfull functionnalities. A "view properties" link in the left menu will get you back to the classic instance page).</p>
-<img src="images/configure_page_1.png" alt="select dao" />
+<img src="images/configure_page_1.jpg" alt="select dao" />
 <p>The first thing to do is to select a DAO. As soon as you have chosen your DAO, the interface will suggest the detected field descriptors.</p>
 <b><i>Notes:</i></b>
 <ul style="margin-top: 0;">
 <li><i>The detected fields are the one that map getters and setters of the bean handled by the dao you selected, which means basically all columns that are located IN the (user) table. If we have a look back to the Data Model defined previously, all fields will be detected exept the "hobbies" relations, and the role_id field will be automatically set as a "ForeignKey" Field Descriptor (see PHP Documentation for a detailed description of the ForeignKeyFieldDescriptor Class)</i></li>
 <li><i>Any time you will access the form configuration interface, you will be suggested a FieldDescriptor for each field that doesn't seem to be handlded already. These fields will appear with a green outline, whereas existing ones have a white one. By default, when you create the form, all "suggested" fields are checked to be created.</i></li>
 </ul>
-<img src="images/configure_page_2.png" alt="itab fields" />
+<img src="images/configure_page_2.jpg" alt="itab fields" />
 <h2>Save and use the user form</h2>
 <p>For this quickstart, we will not go further, just so you know how quick it is to get a basic user form. So, in fact, you just created a BCEform instance, selected the DAO that handles your main object, and have written about 0 lines of code... Now please click the save button.</p>
 <h3>Write a simple controller</h3>
@@ -69,19 +69,7 @@ public function save(){
 <pre class="brush:php">
 $this-&gt;userForm-&gt;toHtml();
 </pre>
-<p>Last thing to do is binding your userController to the userForm instance, and you're done! Visit the /editUser URL, and you get... beautifull form!</p>
-<img src="images/simple_form.png" alt="itab fields" />
-
-<!-- Getting deeper -->
-<p>There is a second tab called "configuration", that allows you to define the specific Id FieldDescriptor, and some other form related attributes (renderer to be used, id, name, action, etc...)</p>
-<img src="images/configure_page_2_1.png" alt="tab fields" />
-<h3>The Field Descriptor widget</h3>
-<img src="images/fied_descriptor_widget.png" alt="tab fields" />
-<p>The widget is composed of a title bar that allows to sort, and expand/collapse the detailed view of the descriptor.</p>
-<ol>
-  <li>For confort, only one detail panel will be shown at once.</li>
-  <li>The "Activate checkbox" will define if the fieldDescriptor should be added to the form. If the field descriptor is a suggested one (in green), then it will be created.</li>
-  <li>The Title bar shows the name of the field descriptor instance.</li>
-  <li>The "switch to PK" button is shown whenever no id field descriptor is set nore has been suggested (may occure for example if no PK is defined for the table, and if the form is being created). It will switch any base field descriptor into the configuration tab, as the id descriptor for the form. This action can be undone, when the button is clicked, it becomes an unset PK button.</li>
-  <li>The switch to FK button will transform a base field descriptor widget into a ForeignKeyFieldDescriptor widget. This action can be undone as the swicth PK one</li>
-</ol>
+<p>Last thing to do is binding your userController to the userForm instance, and you're done! Visit the /editUser URL, and you get... beautifull form! As you see, the </p>
+<img src="images/simple_form.jpg" alt="itab fields" />
+<p>As you can see, the form is not completely adapted to the data that are edited (the newsletter field should be a checkbox for instance). BUT, the role field has been detected as a foreign key field and displays data from the role table, validation has automatically been applied to numeric fields, and a datepicket widget is also handling the BirthDate field... not that bad, don't you think ?</p>
+<p>So, that was to show you how simple you can get a form using BCE. Of course, there is a lot of features available, and you also need some explaneations about the main objects of the BCE System. Ready ? then let's go to the <a href="advanced.html">detailed description</a></p>
