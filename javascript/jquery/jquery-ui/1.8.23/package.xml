@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>JQuery UI</displayName>
+	<shortDescription>This package contains the JQuery User Interface library, along a PHP wrapper class
+	to include JQuery UI easily in your web pages.</shortDescription>
+	<docUrl>http://jqueryui.com/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>>=1.3.2</version>
+		</dependency>
+	</dependencies>
+	<requires>
+		<require>HtmlJSJQueryUI.php</require>
+	</requires>
+	<externalComponentRequires>
+		<require>JQueryUIExternalComponent.php</require>
+	</externalComponentRequires>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
