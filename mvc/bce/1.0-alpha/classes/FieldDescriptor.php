@@ -116,6 +116,15 @@ abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 	}
 
 	/**
+	 * Set the label of the descriptor.
+	 * 
+	 * @param string $label
+	 */
+	public function setLabel($label){
+		$this->label = $label;
+	}
+
+	/**
 	 * Returns the Renderer for that bean
 	 */
 	public function getRenderer(){

@@ -33,6 +33,14 @@ class BCEForm{
 	public $fieldDescriptors = array();
 	
 	/**
+	 * Field Decriptors by name define which fields avaiable through the main DAO should be involved in the form.<br/>
+	 * They define a lot of data<br/>
+	 * 
+	 * @var array<BCEFieldDescriptorInterface>
+	 */
+	public $fieldDescriptorsByName = array();
+	
+	/**
 	 * Field Decriptors of the bean's identifier.
 	 * This is a special field because the id will help to retrive bean before saving it.
 	 * 
@@ -139,6 +147,9 @@ class BCEForm{
 				$this->validationHandler->buildValidationScript($descriptor, $this->attributes['id']);
 			}
 			$this->loadScripts($descriptor);
+			
+			// Create an array of field descriptor by name
+			$this->fieldDescriptorsByName[$descriptor->getFieldName()] = $descriptor;
 		}
 		
 		//Instantiate new bean (after because of TDBM's constraint to trigger complete save when getting other objects, like FKDaos List methods)
@@ -255,5 +266,18 @@ class BCEForm{
 	
 	public function addError($fieldName, $errorMessage){
 		$this->errorMessages[$fieldName][] = $errorMessage;
+	}
+	
+	/**
+	 * Get a field descriptor with its name.
+	 * 
+	 * @param string $name
+	 * @return BCEFieldDescriptorInterface or null
+	 */
+	public function getFieldDescriptorByName($name) {
+		if(array_key_exists($name, $this->fieldDescriptorsByName))
+			return $this->fieldDescriptorsByName[$name];
+		else
+			return null;
 	}
 }
