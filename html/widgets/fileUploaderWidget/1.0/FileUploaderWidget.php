@@ -16,7 +16,7 @@ class FileUploaderWidget implements HtmlElementInterface {
 	
 	/**
 	 * The list of file extensions for the files to upload, separated by a ",".
-	 * <p>For instance: jpg,gif,png</p>
+	 * <p>For instance: "jpg","gif","png"</p>
 	 * 
 	 * @Property
 	 * @var string
@@ -264,6 +264,16 @@ class FileUploaderWidget implements HtmlElementInterface {
 	public function setParams($params) {
 		$this->params = $params;
 	}
+	
+	/**
+	 * Add parameter. They must be serializable.
+	 * Caution, elements are saved in array
+	 * 
+	 * @param mixed $params
+	 */
+	public function addParams($params) {
+		$this->params = array_merge($this->params, $params);
+	}
 
 	/**
 	 * Return the parameters saved in instance.
@@ -325,8 +335,8 @@ class FileUploaderWidget implements HtmlElementInterface {
 	 * @param string $uniqueId Unique id of file uploader form.
 	 */
 	public function triggerAfterUpload(&$targetFile, $fileId, array &$returnArray, $uniqueId) {
-		if (is_array($this->listenersBefore)) {
-			foreach ($this->listenersBefore as $listener) {
+		if (is_array($this->listenersAfter)) {
+			foreach ($this->listenersAfter as $listener) {
 				/* @var $listener UploadifyOnUploadInterface */
 				$result = $listener->afterUpload($targetFile, $fileId, $this, $returnArray, $this->getParams($uniqueId));
 				if($result === false) {

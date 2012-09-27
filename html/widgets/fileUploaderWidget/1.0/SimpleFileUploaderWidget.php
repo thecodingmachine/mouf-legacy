@@ -66,7 +66,7 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 		echo '<input type="hidden" name="'.$this->inputName.'" value="" id ="'.$this->inputName.'" />';
 		
 		// Save parameters to retrieve data in ajax call back
-		$this->setParams(array('input' => $this->inputName, 'random' => time().rand(1,9999999)));
+		$this->addParams(array('input' => $this->inputName, 'random' => time().rand(1,9999999)));
 		
 		
 		// Call parent toHtml
@@ -119,15 +119,29 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 		parent::triggerBeforeUpload($targetFile, $fileName, $fileId, $returnArray, $uniqueId);
 	}
 	
-	
-	
+
 	/**
-	 * After saved, call this function to retrieve your file.
-	 * @param string $inputName Input name of the hidden field
+	 * If you want move the file in afterUpload function, you haven't the input here.
+	 * Please retrieve the targetFolder parameter in result variable and set it.
+	 * @param string $temporaryFolder targetFolder parameter in result variable
 	 * @param string $folderDest Destination folder name
 	 * @return array List of the file moved
 	 */
-	public function moveFile($inputName, $folderDest) {
+	public function moveFileWithoutSave($temporaryFolder, $folderDest) {
+		return $this->moveFile(null, $folderDest, $temporaryFolder);
+	}
+	
+	/**
+	 * After saved, call this function to retrieve your file.
+	 * @param string $inputName Input name of the hidden field (null if you use $temporaryFolder)
+	 * @param string $folderDest Destination folder name
+	 * @param string $temporaryFolder targetFolder parameter in result variable. Use it if you don't use move in save function
+	 * @return array List of the file moved
+	 */
+	public function moveFile($inputName, $folderDest, $temporaryFolder = null) {
+		if($inputName === null && $temporaryFolder === null)
+			throw new MoufException('please set inputName or temporaryFolder');
+		
 		// Search [] to retrieve an array if the input is it
 		if(strrpos($inputName, '[]') == (strlen($inputName) - 2))
 			$inputName = substr($inputName, 0, strlen($inputName) - 2);
@@ -138,7 +152,10 @@ class SimpleFileUploaderWidget extends FileUploaderWidget {
 		}
 		
 		// retrieve value of input
-		$values = get($inputName);
+		if($inputName)
+			$values = get($inputName);
+		else
+			$values = $temporaryFolder;
 		// if array
 		if(is_array($values)) {
 			$fileList = array();

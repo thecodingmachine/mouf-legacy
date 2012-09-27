@@ -25,6 +25,7 @@
 </pre>
 
 <h3>Step 3: retrieve your files</h3>
+<h4>In save function</h4>
 <p>In the save action, you could retrieve the file. The parameter is the name of hidden input passed in inputName (above).</p>
 <p>Move all file in your folder:</p>
 <pre class="brush:php">
@@ -33,4 +34,11 @@
 <p>There is a function to get the list of files in temporary folder:</p>
 <pre class="brush:php">
 	Mouf::getOneFileUploader()->hasFileToMove('file_uploader');
+</pre>
+
+<h4>In listener afterUpload</h4>
+<p>Your controller (class) must implements FileUploaderOnUploadInterface. you will add 2 functions beforeUpload and afterUpload.</p>
+<p>In afterUpload you could move your file with the function moveFileWithoutSave. The first parameter is ALWAYS $result['targetFolder'].</p>
+<pre class="brush:php">
+	Mouf::getChaineRelanceFileUpload()->moveFileWithoutSave($result['targetFolder'], ROOT_PATH.'file_upload');
 </pre>
