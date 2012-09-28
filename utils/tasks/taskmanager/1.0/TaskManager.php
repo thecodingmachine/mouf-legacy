@@ -207,6 +207,14 @@ class TaskManager {
 		}
 		$this->saveTask($task);
 	}
+	/**
+	 * Runs the task passed in parameter immediately
+	 *
+	 * @param Task $task
+	 */
+	public function runTaskPublic(Task $task) {
+		$this->runTask($task);
+	}
 	
 	/**
 	 * Function called to display an exception if it occurs.
