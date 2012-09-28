@@ -1,11 +1,10 @@
 <?php
 /**
- * Dummy Interface to be implemented by all Descriptors of a form
+ * Interface to be implemented by all Descriptors of a BCE form
  * @author Kevin
  *
  */
 interface BCEFieldDescriptorInterface{
-	
 	
 	/**
 	 * Returns the name of the field as a unique identifier of that field
@@ -25,7 +24,6 @@ interface BCEFieldDescriptorInterface{
 	 */
 	public function load($bean, $id = null, &$form = null);
 	
-	
 	/**
 	 * Function called when rendering the whole Form
 	 */
@@ -38,7 +36,6 @@ interface BCEFieldDescriptorInterface{
 	 *  - In case of a custom field, this may also be some validation script
 	 */
 	public function getJS();
-	
 	
 	/**
 	 * Does all the operations before the main bean is saved. E.G:

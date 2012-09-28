@@ -30,7 +30,7 @@ class BaseRenderer implements BCERendererInterface{
 				<label for="<?php echo $descriptor->getFieldName() ?>" class="control-label">
 					<?php 
 					echo $descriptor->getFieldLabel();
-					if($descriptor->getValidators()) {
+					if($descriptor instanceof FieldDescriptor && $descriptor->getValidators()) {
 						foreach ($descriptor->getValidators() as $value) {
 							if(get_class($value) == 'RequiredValidator') {
 								echo '<span class="required-field">*</span>';

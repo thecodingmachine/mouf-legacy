@@ -1,7 +1,6 @@
 <?php
 /**
- * Numeric validator: validates a input to be a numeric value.
- * Validation may be specified if decimal values are accepted
+ * String range length vaildation: check a string has between MIN and/OR MAX characters
  *
  * @Component
  */
