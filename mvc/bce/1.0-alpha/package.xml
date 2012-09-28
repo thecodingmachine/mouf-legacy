@@ -6,6 +6,7 @@
 	<doc>
 		<page title="About" url="about.html" />
 		<page title="Getting started" url="quickstart.html" />
+		<page title="Getting the final form" url="advanced_example.html" />
 		<page title="Advanced description and configuration" url="advanced.html" />
 	</doc>
 	<logo>icons/logo.png</logo>
