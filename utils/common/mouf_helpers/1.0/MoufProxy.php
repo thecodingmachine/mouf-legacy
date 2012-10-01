@@ -85,6 +85,8 @@ class MoufProxy {
 		$cookieStr = implode("; ", $cookieArr);
 		curl_setopt($ch, CURLOPT_COOKIE, $cookieStr);
 		
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:')); //Fixes the HTTP/1.1 417 Expectation Failed Bug
+		
 		$response = curl_exec($ch );
 		
 		// And let's reopen the session...
