@@ -9,6 +9,14 @@ require_once 'FieldRendererInterface.php';
 class PasswordFieldRenderer implements FieldRendererInterface{
 	
 	/**
+	 * Autocomplete the field in the form.
+	 * 
+	 * @Property
+	 * @var boolean
+	 */
+	public $autocomplete = false;
+	
+	/**
 	 * (non-PHPdoc)
 	 * @see FieldRendererInterface::render()
 	 */
@@ -16,7 +24,7 @@ class PasswordFieldRenderer implements FieldRendererInterface{
 		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
 		$value = $descriptor->getFieldValue();
-		return "<input type='password' value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";
+		return "<input type='password' ".($this->autocomplete ? "autocomplete='on'" : "autocomplete='off'")." value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";
 	}
 	
 	/**
