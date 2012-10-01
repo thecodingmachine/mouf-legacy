@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+	<displayName>Bootstrap</displayName>
+	<shortDescription>This package contains the Bootstrap library. It's front-end framework for faster and easier web development.</shortDescription>
+	<docUrl>http://twitter.github.com/bootstrap/</docUrl>
+	<logo>logo.png</logo>
+	<dependencies>
+		<dependency>
+			<group>html/utils</group>
+			<name>weblibrarymanager</name>
+			<version>&gt;=1.0</version>
+		</dependency>
+		<dependency>
+			<group>javascript/jquery</group>
+			<name>jquery</name>
+			<version>&gt;=1.7</version>
+		</dependency>
+	</dependencies>
+	<install>
+		<file>install.php</file>
+	</install>
+</package>
