@@ -116,7 +116,7 @@ class Splash {
 	 *
 	 */
 	private function analyze() {
-		$redirect_uri = $_SERVER['REDIRECT_URL'];
+		$redirect_uri = $_SERVER['REQUEST_URI'];
 
 		$pos = strpos($redirect_uri, $this->splashUrlPrefix);
 		if ($pos === FALSE) {
@@ -124,6 +124,13 @@ class Splash {
 		}
 
 		$tailing_url = substr($redirect_uri, $pos+strlen($this->splashUrlPrefix));
+		
+		// REQUEST_URI contains params "?"
+		// Remove params to REQUEST_URI
+		$posParam = strpos($tailing_url, '?');
+		if ($posParam !== FALSE) {
+			$tailing_url = substr($tailing_url, 0, $posParam);
+		}
 
 		// Step 1: look at the route map
 		if($this->routeMap) {

@@ -106,7 +106,7 @@ class Splash {
 		
 		// TODO: add support for %instance% for injecting the instancename of the controller
 		
-		$redirect_uri = $_SERVER['REDIRECT_URL'];
+		$redirect_uri = $_SERVER['REQUEST_URI'];
 		$httpMethod = $_SERVER['REQUEST_METHOD'];
 
 		$pos = strpos($redirect_uri, $splashUrlPrefix);
@@ -115,6 +115,13 @@ class Splash {
 		}
 
 		$tailing_url = substr($redirect_uri, $pos+strlen($splashUrlPrefix));
+		
+		// REQUEST_URI contains params "?"
+		// Remove params to REQUEST_URI
+		$posParam = strpos($tailing_url, '?');
+		if ($posParam !== FALSE) {
+			$tailing_url = substr($tailing_url, 0, $posParam);
+		}
 
 		$context = new SplashRequestContext();
 		$splashRoute = $urlNodes->walk($tailing_url, $httpMethod);
