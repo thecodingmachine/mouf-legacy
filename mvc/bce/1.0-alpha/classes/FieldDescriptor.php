@@ -75,8 +75,12 @@ abstract class FieldDescriptor implements BCEFieldDescriptorInterface{
 	 *  - settings the linked ids to associate in mapping table (Many2ManyFieldDEscriptors)
 	 * @see BCEFieldDescriptorInterface::preSave()
 	 */
-	public function preSave($post, BCEForm &$form){
-		$value = isset($post[$this->getFieldName()]) ? $post[$this->getFieldName()] : null;
+	public function preSave($post = null, BCEForm &$form){
+		if($post != null) {
+			$value = isset($post[$this->getFieldName()]) ? $post[$this->getFieldName()] : null;
+		} else {
+			$value = get($this->getFieldName());
+		}
 			
 		//unformat values
 		$formatter = $this->getFormatter();

@@ -17,7 +17,7 @@ class BaseRenderer implements BCERendererInterface{
 	
 	public function render(BCEForm $form){
 ?>
-	<form class="form-horizontal" action="<?php echo $form->action; ?>" method="<?php echo $form->method?>" <?php foreach ($form->attributes as $attrName => $value){ echo "$attrName='$value' "; }?>>
+	<form class="form-horizontal" action="<?php echo ROOT_URL.$form->action; ?>" method="<?php echo $form->method?>" <?php foreach ($form->attributes as $attrName => $value){ echo "$attrName='$value' "; }?>>
 	<fieldset>
 		<?php
 		$idDescriptor = $form->idFieldDescriptor;

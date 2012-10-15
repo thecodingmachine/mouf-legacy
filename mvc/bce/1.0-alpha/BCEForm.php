@@ -223,8 +223,17 @@ class BCEForm{
 		}
 	}
 	
-	public function save($postValues){
-		$id = $postValues[$this->idFieldDescriptor->getFieldName()];
+	/**
+	 * Make the save form action.
+	 * 
+	 * @param array $postValues
+	 */
+	public function save($postValues = null){
+		if($postValues != null) {
+			$id = $postValues[$this->idFieldDescriptor->getFieldName()];
+		} else {
+			$id = get($this->idFieldDescriptor->getFieldName());
+		}
 		$this->baseBean = empty($id) ? $this->mainDAO->create() : $this->mainDAO->getById($id);
 		
 		foreach ($this->fieldDescriptors as $descriptor) {
