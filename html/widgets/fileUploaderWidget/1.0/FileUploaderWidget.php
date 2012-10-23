@@ -272,7 +272,10 @@ class FileUploaderWidget implements HtmlElementInterface {
 	 * @param mixed $params
 	 */
 	public function addParams($params) {
-		$this->params = array_merge($this->params, $params);
+		if($this->params === null)
+			$this->params = $params;
+		else
+			$this->params = array_merge($this->params, $params);
 	}
 
 	/**
