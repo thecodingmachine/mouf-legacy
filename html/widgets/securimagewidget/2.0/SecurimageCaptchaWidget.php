@@ -159,7 +159,7 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 		
 		echo '<img src="'.$imageUrl.'" class="captcha" alt="CAPTCHA Image" id="'.$imageid.'" />';
 		
-		echo '<a class="small" href="#" onclick="document.getElementById(\''.$imageid.'\').src = \''.$imageUrl.'?\' + Math.random(); return false">';
+		echo '<a class="small" href="#" onclick="document.getElementById(\''.$imageid.'\').src = \''.$imageUrl.'&\' + Math.random(); return false">';
 		if ($this->enableI18nReloadText) {
 			eMsg($this->reloadText);
 		} else {
