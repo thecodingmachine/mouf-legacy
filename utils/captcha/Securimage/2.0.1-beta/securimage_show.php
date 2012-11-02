@@ -33,8 +33,7 @@
  * @package Securimage
  *
  */
-
-include 'securimage.php';
+include_once 'securimage.php';
 
 $img = new securimage();
 
