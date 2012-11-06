@@ -114,6 +114,23 @@ class SecurimageCaptchaWidget implements HtmlElementInterface {
 	public $imageHeight = 80;
 	
 	/**
+	 * How much to distort image, higher = more distortion.<br />
+	 * Default is 0.75<br />
+	 *
+	 * @Property
+	 * @var float
+	 */
+	public $perturbation = 0.75;
+	
+	/** 
+	 * Draw vertical and horizontal lines on the image (default is 10)
+	 * 
+	 * @Property
+	 * @var int
+	*/
+	public $num_lines = 10;
+	
+	/**
 	 * Renders the object in HTML.
 	 * The Html is echoed directly into the output.
 	 *

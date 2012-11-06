@@ -8,6 +8,8 @@ $instance = MoufManager::getMoufManager()->getInstance($_GET['instance_name']);
 $img = new securimage();
 $img->image_width = $instance->imageWidth;
 $img->image_height = $instance->imageHeight;
+$img->perturbation = $instance->perturbation;
+$img->num_lines = $instance->num_lines;
 
 
 // Change some settings
