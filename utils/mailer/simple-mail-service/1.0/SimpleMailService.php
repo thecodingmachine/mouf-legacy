@@ -78,7 +78,14 @@ class SimpleMailService implements MailServiceInterface {
 			$html = htmlentities($text, ENT_COMPAT, "UTF-8");
 		}
 		
-		$from = $this->fromString." <".$this->fromAddress.">";
+		if ($mail->getFrom() != null){
+			$fromString = $mail->getFrom()->getDisplayAs();
+			$fromAdress = $mail->getFrom()->getMail();
+		}else{
+			$fromString = $this->fromString;
+			$fromAdress = $this->fromAddress;
+		}
+		$from = $fromString." <".$fromAdress.">";
 		
 		$limite = "_----------=_parties_".md5(uniqid (rand()));
 		
