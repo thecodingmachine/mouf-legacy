@@ -48,9 +48,18 @@ if(!$allowedExtensions) {
 // max file size in bytes
 $sizeLimit = $instance->sizeLimit;
 
+// Object to retrieve file send by user
 $uploader = new JsFileUploader($allowedExtensions, $sizeLimit);
 
-$fileName = $uploader->getFileName();
+// If the user cannot add fileName
+if(!$fileName) {
+	// Retrieve fileName in the instance or the fileName send by user
+	if($instance->fileName)
+		$fileName = $instance->fileName;
+	else
+		$fileName = $uploader->getFileName();
+}
+
 /* @var $instance FileUploaderWidget */
 // Call listener Before
 $instance->triggerBeforeUpload($targetFile, $fileName, $sessArray["fileId"], $returnArray, $uniqueId);
