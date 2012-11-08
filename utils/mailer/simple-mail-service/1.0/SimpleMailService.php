@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__FILE__).'/html2txt.php';
+
 
 /**
  * This class sends mails using the php Mail function. 
@@ -73,11 +75,11 @@ class SimpleMailService implements MailServiceInterface {
 		$html = $mail->getBodyHtml();
 		
 		if (empty($text)){
-			$text = html_entity_decode($html, ENT_COMPAT, "UTF-8");
+			$text = convert_html_to_text(html_entity_decode($html, ENT_COMPAT, "UTF-8"));
 		}if (empty($html)){
 			$html = htmlentities($text, ENT_COMPAT, "UTF-8");
 		}
-		
+
 		if ($mail->getFrom() != null){
 			$fromString = $mail->getFrom()->getDisplayAs();
 			$fromAdress = $mail->getFrom()->getMail();
