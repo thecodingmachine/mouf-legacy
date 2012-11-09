@@ -79,6 +79,7 @@
 		<require>classes/BooleanFieldRenderer.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
 		<require>classes/BCEException.php</require>
+		<require>classes/StaticSelectRenderer.php</require>
 	</requires>
 	<adminRequires>
 		<require>admin/BCEAdminClasses.php</require>
