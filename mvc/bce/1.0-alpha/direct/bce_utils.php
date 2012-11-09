@@ -198,9 +198,13 @@ class BCEUtils{
 	 */
 	private function getBeanMethods($beanClassName){
 		$beanClass = new MoufReflectionClass($beanClassName);
+		$baseBeanClass->getParentClass();
 		
 		//The table name will be used to the DB model data as primary key or foreign keys
 		$tableName = $beanClass->getAnnotations("dbTable");
+		if (empty($tableName)){
+			$tableName = $baseBeanClass->getAnnotations("dbTable");
+		}
 		
 		//Get parent class in order to distinguish the bean classe's methods from it's parents' ones
 		$parentBeanClass = $beanClass->getParentClass()->getParentClass();
