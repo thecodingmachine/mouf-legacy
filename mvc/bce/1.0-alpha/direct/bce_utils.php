@@ -198,11 +198,11 @@ class BCEUtils{
 	 */
 	private function getBeanMethods($beanClassName){
 		$beanClass = new MoufReflectionClass($beanClassName);
-		$baseBeanClass->getParentClass();
 		
 		//The table name will be used to the DB model data as primary key or foreign keys
 		$tableName = $beanClass->getAnnotations("dbTable");
 		if (empty($tableName)){
+			$baseBeanClass = $beanClass->getParentClass();
 			$tableName = $baseBeanClass->getAnnotations("dbTable");
 		}
 		
@@ -212,7 +212,7 @@ class BCEUtils{
 		$methodsParent = $parentBeanClass->getMethodsByPattern("^[gs]et");
 		$finalMethods = array();
 
-		$connection = Mouf::getDbConnection();
+		$connection = Mouf::getTdbmService()->getConnection();
 		//Primary keys will be used to suggest the idFieldDescriptor
 		$primaryKeys = $connection->getPrimaryKey($tableName[0]);
 		
