@@ -163,6 +163,7 @@ class TDBMDaoGenerator {
 
 /**
  * The $baseClassName class maps the '$tableName' table in database.
+ * @dbTable $tableName
  */
 class $baseClassName extends TDBM_Object 
 {
