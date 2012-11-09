@@ -64,11 +64,17 @@
 		<require>form_renderer/base/BaseRenderer.php</require>
 		<require>classes/FieldRendererInterface.php</require>
 		<require>classes/ForeignKeyFieldDescriptor.php</require>
+		<require>classes/ColorPickerRenderer.php</require>
 		<require>classes/HiddenRenderer.php</require>
 		<require>classes/Many2ManyFieldDescriptor.php</require>
 		<require>classes/MultipleSelectFieldRenderer.php</require>
 		<require>classes/SelectFieldRenderer.php</require>
 		<require>classes/TextFieldRenderer.php</require>
+		<require>classes/PasswordFieldRenderer.php</require>
+		<require>classes/TextAreaFieldRenderer.php</require>
+		<!--<require>classes/FileUploaderRenderer.php</require>
+		<require>classes/FileUploaderFieldDescriptor.php</require>-->
+		<require>classes/TextAreaFieldRenderer.php</require>
 		<require>classes/DatePickerRenderer.php</require>
 		<require>classes/BooleanFieldRenderer.php</require>
 		<require>classes/validators/JQueryValidateHandler.php</require>
