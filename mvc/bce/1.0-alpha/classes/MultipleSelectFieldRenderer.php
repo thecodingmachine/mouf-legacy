@@ -3,7 +3,7 @@
  * A renderer class that ouputs multiple values field like checkboxes , multiselect list, ... fits for many to many relations
  * @Component
  */
-class MultipleSelectFieldRenderer implements FieldRendererInterface{
+class MultipleSelectFieldRenderer implements MultiFieldRendererInterface{
 	
 	/**
 	 * Tells if the field should display 

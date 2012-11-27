@@ -232,7 +232,7 @@ class Many2ManyFieldDescriptor extends FieldDescriptor{
 	 * Returns the values to be set for the field
 	 */
 	public function getSaveValues(){
-		return $this->saveValues;
+		return $this->saveValues== null ? array() : $this->saveValues;
 	}
 	
 }

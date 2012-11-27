@@ -6,7 +6,7 @@ require_once 'FieldRendererInterface.php';
  * @ApplyTo { "pk" : [ "pk" ] }
  * @Component
  */
-class HiddenRenderer implements FieldRendererInterface{
+class HiddenRenderer implements SingleFieldRendererInterface{
 	
 	/**
 	 * (non-PHPdoc)

@@ -19,6 +19,7 @@ class NumericValidator extends AbstractValidator implements JsValidatorInterface
 	 * @see ValidatorInterface::validate()
 	 */
 	function doValidate($value){
+		if ($value === "") return true;
 		return $this->allowDecimals ? preg_match("/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/", $value) : preg_match("/^\d+$/", $value);
 	}
 
@@ -29,6 +30,7 @@ class NumericValidator extends AbstractValidator implements JsValidatorInterface
 	function getScript(){
 		$regex = $this->allowDecimals ? "/^-?(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?$/" : "/^\d+$/";
 		return "function(value, element){
+			if (value == '') return true;
 			return $regex.test(value);
 		}";
 	}

@@ -5,7 +5,7 @@
  * @Component
  * @ApplyTo {"type": ["fk"]}
  */
-class SelectFieldRenderer implements FieldRendererInterface{
+class SelectFieldRenderer implements SingleFieldRendererInterface{
 	
 	/**
 	 * Tells if the field should display a select box or a radio button group

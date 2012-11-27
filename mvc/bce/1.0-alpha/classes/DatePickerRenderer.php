@@ -6,7 +6,7 @@ require_once 'FieldRendererInterface.php';
  * @ApplyTo { "php" :[ "timestamp", "datetime", "date" ] }
  * @Component
  */
-class DatePickerRenderer implements FieldRendererInterface{
+class DatePickerRenderer implements SingleFieldRendererInterface{
 
 	/**
 	 * @Property

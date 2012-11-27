@@ -6,7 +6,7 @@ require_once 'FieldRendererInterface.php';
  * @Component
  * @ApplyTo { "php" :[ "string" ] }
  */
-class TextAreaFieldRenderer implements FieldRendererInterface{
+class TextAreaFieldRenderer implements SingleFieldRendererInterface{
 	
 	/**
 	 * (non-PHPdoc)

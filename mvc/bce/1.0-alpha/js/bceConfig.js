@@ -443,7 +443,7 @@ function _getFieldElements(field, fieldType){
 	 */
 	var name = _getSimpleValueWrapper("Field Name", "fieldname", field.name, field.fieldName, fieldType); 
 	var label =_getSimpleValueWrapper("Label", "label", field.name, field.label, fieldType);
-	var renderer =_getListValueWrapper("Renderer", "renderer", field.name, field.renderer, renderers, null, fieldType);
+	var renderer =_getListValueWrapper("Renderer", "renderer", field.name, field.renderer, field.type == 'm2m' ? multiRenderers : singleRenderers, null, fieldType);
 	var formatter =_getListValueWrapper("formatter", "formatter", field.name, field.formatter, formatters, null, fieldType);
 	var validatorsElem =_getMultiListValueWrapper("Validators", "validators", field.name, field.validators, validators, fieldType);
 	

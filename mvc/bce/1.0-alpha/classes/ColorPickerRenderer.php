@@ -5,7 +5,7 @@ require_once 'FieldRendererInterface.php';
  * This renderer handles text input fields with the jQuery MiniColor
  * @Component
  */
-class ColorPickerRenderer implements FieldRendererInterface{
+class ColorPickerRenderer implements SingleFieldRendererInterface{
 	
 	/**
 	 * (non-PHPdoc)

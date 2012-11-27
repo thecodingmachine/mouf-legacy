@@ -6,7 +6,7 @@ require_once 'FieldRendererInterface.php';
  * @Component
  * @ApplyTo { "php" :[ "string", "int", "number"] }
  */
-class PasswordFieldRenderer implements FieldRendererInterface{
+class PasswordFieldRenderer implements SingleFieldRendererInterface{
 	
 	/**
 	 * Autocomplete the field in the form.

@@ -16,7 +16,8 @@
 <!--
 var daos = ['<?php echo implode("', '", $this->daoInstances); ?>']
 
-var renderers = ['<?php echo implode("', '", $this->renderers); ?>'];
+var singleRenderers = ['<?php echo implode("', '", $this->singleRenderers); ?>'];
+var multiRenderers = ['<?php echo implode("', '", $this->multiRenderers); ?>'];
 var formatters = ['<?php echo implode("', '", $this->formatters); ?>'];
 var validators = ['<?php echo implode("', '", $this->validators); ?>'];
 

@@ -17,7 +17,12 @@ class BceConfigController extends AbstractMoufInstanceController {
 	/**
 	 * @var array<string>
 	 */
-	protected $renderers;
+	protected $multiRenderers;
+	
+	/**
+	 * @var array<string>
+	 */
+	protected $singleRenderers;
 	
 	/**
 	 * @var array<string>
@@ -72,7 +77,8 @@ class BceConfigController extends AbstractMoufInstanceController {
 		
 		//Initialize descriptor's attributes possible values
 		$this->daoInstances = MoufReflectionProxy::getInstances("DAOInterface", false);
-		$this->renderers = MoufReflectionProxy::getInstances("FieldRendererInterface", false);
+		$this->singleRenderers = MoufReflectionProxy::getInstances("SingleFieldRendererInterface", false);
+		$this->multiRenderers = MoufReflectionProxy::getInstances("MultiFieldRendererInterface", false);
 		$this->formatters = MoufReflectionProxy::getInstances("FormatterInterface", false);
 		$this->validators = MoufReflectionProxy::getInstances("ValidatorInterface", false);
 

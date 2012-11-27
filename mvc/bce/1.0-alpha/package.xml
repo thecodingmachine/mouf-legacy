@@ -62,7 +62,8 @@
 		<require>classes/FieldDescriptor.php</require>
 		<require>classes/BaseFieldDescriptor.php</require>
 		<require>form_renderer/base/BaseRenderer.php</require>
-		<require>classes/FieldRendererInterface.php</require>
+		<require>classes/SingleFieldRendererInterface.php</require>
+		<require>classes/MultiFieldRendererInterface.php</require>
 		<require>classes/ForeignKeyFieldDescriptor.php</require>
 		<require>classes/ColorPickerRenderer.php</require>
 		<require>classes/HiddenRenderer.php</require>

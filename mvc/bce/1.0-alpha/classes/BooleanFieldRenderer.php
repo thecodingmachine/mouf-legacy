@@ -6,7 +6,7 @@ require_once 'FieldRendererInterface.php';
  * @Component
  * @ApplyTo { "php" :[ "boolean" ] }
  */
-class BooleanFieldRenderer implements FieldRendererInterface{
+class BooleanFieldRenderer implements SingleFieldRendererInterface{
 	
 	/**
 	 * (non-PHPdoc)
