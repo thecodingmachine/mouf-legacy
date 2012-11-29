@@ -126,6 +126,7 @@ class EvoluGrid implements \HtmlElementInterface {
 		if(!empty($this->rows)) {
 			return $this->rows;
 		} elseif($this->datasource != null) {
+			$this->count = $this->datasource->getRowCount();
 			return array_values($this->datasource->getRows(DS_FETCH_ASSOC));
 		} else {
 			return array();
@@ -203,11 +204,10 @@ class EvoluGrid implements \HtmlElementInterface {
 				$columnsArr[] = $columnArr;
 			}
 			$descriptor['columns'] = $columnsArr;
+			$jsonMessage['data'] = $this->getRows();
 			if ($this->count !== null) {
 				$jsonMessage['count'] = $this->count;
 			}
-			$jsonMessage['data'] = $this->getRows();
-
 			$jsonMessage['descriptor'] = $descriptor;
 			echo json_encode($jsonMessage);
 		} elseif ($format == "csv") {
