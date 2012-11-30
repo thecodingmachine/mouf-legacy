@@ -257,6 +257,9 @@ class TDBM_Object implements ArrayAccess, Iterator {
 	public function __get($var) {
 		$this->_dbLoadIfNotLoaded();
 
+		if ($this->db_row === null) {
+			return null;
+		}
 		// Let's first check if the key exist.
 		if (!array_key_exists($var, $this->db_row)) {
 		
@@ -356,7 +359,7 @@ class TDBM_Object implements ArrayAccess, Iterator {
 			$pk_set = false;
 			$pk_array = $this->getPrimaryKey();
 			foreach ($pk_array as $pk) {
-				if (isset($this->db_row[$pk])
+				if (isset($this->db_row)
 						&& $this->db_row[$pk]!==null) {
 					$pk_set=true;
 				}
