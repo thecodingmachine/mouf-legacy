@@ -1,4 +1,6 @@
 <?php
+require_once 'SingleFieldRendererInterface.php';
+
 /**
  * A renderer class that ouputs a simple select box: it doesn't handle multiple selection
  * 

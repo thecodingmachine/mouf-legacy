@@ -1,4 +1,6 @@
 <?php
+require_once 'MultiFieldRendererInterface.php';
+
 /**
  * A renderer class that ouputs multiple values field like checkboxes , multiselect list, ... fits for many to many relations
  * @Component

@@ -1,5 +1,5 @@
 <?php
-require_once 'FieldRendererInterface.php';
+require_once 'SingleFieldRendererInterface.php';
 
 /**
  * This renderer handles text input fields with the jQuery MiniColor

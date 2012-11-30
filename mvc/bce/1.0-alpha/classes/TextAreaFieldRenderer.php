@@ -1,5 +1,5 @@
 <?php
-require_once 'FieldRendererInterface.php';
+require_once 'SingleFieldRendererInterface.php';
 
 /**
  * Base class for rendering simple text area fields
