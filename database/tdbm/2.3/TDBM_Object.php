@@ -359,7 +359,7 @@ class TDBM_Object implements ArrayAccess, Iterator {
 			$pk_set = false;
 			$pk_array = $this->getPrimaryKey();
 			foreach ($pk_array as $pk) {
-				if (isset($this->db_row)
+				if (isset($this->db_row[$pk])
 						&& $this->db_row[$pk]!==null) {
 					$pk_set=true;
 				}
