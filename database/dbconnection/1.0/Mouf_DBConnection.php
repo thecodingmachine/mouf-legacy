@@ -557,7 +557,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->dbh->exec("RELEASE SAVEPOINT moufDbConnection".$this->transactionLevel);
 			$this->transactionLevel--;
 		} else {
-			throw DB_Exception("Unable to commit transaction: no transaction has been started.");
+			throw new DB_Exception("Unable to commit transaction: no transaction has been started.");
 		}
 	}
 
@@ -577,7 +577,7 @@ abstract class Mouf_DBConnection implements DB_ConnectionSettingsInterface, DB_C
 			$this->dbh->exec("ROLLBACK TO moufDbConnection".$this->transactionLevel);
 			$this->transactionLevel--;
 		} else {
-			throw DB_Exception("Unable to commit transaction: no transaction has been started.");
+			throw new DB_Exception("Unable to commit transaction: no transaction has been started.");
 		}
 	}
 
