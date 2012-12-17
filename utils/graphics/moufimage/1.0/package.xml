@@ -8,6 +8,7 @@
 		<require>MoufImageResource.php</require>
 		<require>filters/MoufImageFromFile.php</require>
 		<require>filters/MoufImageResize.php</require>
+		<require>filters/MoufImageOverlay.php</require>
 	</requires>
 	<dependencies>
 	</dependencies>

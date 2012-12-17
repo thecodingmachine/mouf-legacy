@@ -137,7 +137,7 @@ class MoufImageResize implements MoufImageInterface{
 		
 		$new_image = imagecreatetruecolor($newImageWidth, $newImageHeight);
 		
-		//If image id of type PNG or GIF, presenve Transprency
+		//If image id of type PNG or GIF, preserve Transprency
 		if(($imgInfo[2] == 1) || ($imgInfo[2]==3)){
 			imagealphablending($new_image, false);
 			imagesavealpha($new_image,true);
