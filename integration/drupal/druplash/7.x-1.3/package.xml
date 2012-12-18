@@ -14,7 +14,7 @@
 		<dependency>
 			<group>mvc</group>
 			<name>splash-common</name>
-			<version>&gt;=3.2</version>
+			<version>&gt;=3.3</version>
 		</dependency>
 		<dependency>
 			<group>security</group>

@@ -29,7 +29,15 @@ class Druplash {
 			
 			//getItemMenuSettings from annotation
 			$annotations = MoufManager::getMoufManager()->getInstanceDescriptor($urlCallback->controllerInstanceName)->getClassDescriptor()->getMethod($urlCallback->methodName)->getAnnotations("DrupalMenuSettings");
-			$settings = json_decode($annotations[0]);
+			$settings = array();
+			if ($annotations){
+				if (count($annotations) > 1){
+					throw new SplashException('Action '.$urlCallback->methodName.' for controller '.$urlCallback->controllerInstanceName.' should have at most 1 "DrupalMenuSettings" annotation');
+				}
+				else{
+					$settings = json_decode($annotations[0]);
+				}
+			}
 			
 			// Recover function filters
 			$phpDocComment = new MoufPhpDocComment($urlCallback->fullComment);

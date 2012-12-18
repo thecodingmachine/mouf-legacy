@@ -160,7 +160,7 @@ abstract class DrupalController extends Controller {
 		
 		ob_start();
 		try {
-			echo parent::executeActionMethod($methodName, $args);
+			echo call_user_func_array(array($this,$methodName), $args);
 		} catch (Exception $e) {
 			ob_end_clean();
 			throw $e;
@@ -214,7 +214,11 @@ abstract class DrupalController extends Controller {
 
 			try {
 				$filters = FilterUtils::getFilters($refMethod, $this);
-				$this->beforeActionExecute($filters);
+				
+				// Apply filters
+				for ($i=count($filters)-1; $i>=0; $i--) {
+					$filters[$i]->beforeAction();
+				}
 
 				// Ok, now, let's analyse the parameters.
 				$argsArray = $this->mapParameters($refMethod);
@@ -223,7 +227,10 @@ abstract class DrupalController extends Controller {
 				//$result = call_user_func_array(array($this,$method), $argsArray);
 				$result = $this->executeActionMethod($method, $argsArray);
 				
-				$this->afterActionExecute($filters);
+			// Apply filters
+				for ($i=count($filters)-1; $i>=0; $i--) {
+					$filters[$i]->afterAction();
+				}
 				
 				// If @DrupalAjax is set, we must echo the result, instead of returning it. This way, Drupal will not theme the output.
 				if ($this->isAjax === false) {
@@ -281,5 +288,73 @@ abstract class DrupalController extends Controller {
 	 */
 	public function setAjaxStatus($ajax) {
 		$this->isAjax = $ajax;
+	}
+	
+	/**
+	 * Analyses the method, the annotation parameters, and returns an array to be passed to the method.
+	 * TODO: optimize, remove mapParameters and use preprocessed values
+	 */
+	private function mapParameters(MoufReflectionMethod $refMethod) {
+		$parameters = $refMethod->getParameters();
+	
+		// Let's analyze the @param annotations.
+		$paramAnnotations = $refMethod->getAnnotations('param');
+	
+		$values = array();
+		foreach ($parameters as $parameter) {
+			// First step: let's see if there is an @param annotation for that parameter.
+			$found = false;
+			if ($paramAnnotations != null) {
+				foreach ($paramAnnotations as $annotation) {
+					/* @var paramAnnotation $annotation */
+						
+					if ($annotation->getParameterName() == $parameter->getName()) {
+						$value = $annotation->getValue();
+	
+						if ($value !== null) {
+							$values[] = $value;
+						} else {
+							if ($parameter->isDefaultValueAvailable()) {
+								$values[] = $parameter->getDefaultValue();
+							} else {
+								// No default value and no parameter... this is an error!
+								// TODO: we could provide a special annotation to redirect on another action on error.
+								$application_exception = new ApplicationException();
+								$application_exception->setTitle("controller.incorrect.parameter.title",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
+								$application_exception->setMessage("controller.incorrect.parameter.text",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
+								throw $application_exception;
+							}
+						}
+						$found = true;
+						break;
+					}
+				}
+			}
+				
+			if (!$found) {
+				// There is no annotation for the parameter.
+				// Let's map it to the request.
+				$paramValue = get($parameter->getName());
+	
+				if ($paramValue !== false) {
+					$values[] = $paramValue;
+				} else {
+					if ($parameter->isDefaultValueAvailable()) {
+						$values[] = $parameter->getDefaultValue();
+					} else {
+						// No default value and no parameter... this is an error!
+						// TODO: we could provide a special annotation to redirect on another action on error.
+						$application_exception = new ApplicationException();
+						$application_exception->setTitle("controller.incorrect.parameter.title",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
+						$application_exception->setMessage("controller.incorrect.parameter.text",$refMethod->getDeclaringClass()->getName(),$refMethod->getName(),$parameter->getName());
+						throw $application_exception;
+					}
+				}
+			}
+	
+	
+		}
+	
+		return $values;
 	}
 }
