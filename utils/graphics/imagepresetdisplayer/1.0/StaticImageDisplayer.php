@@ -152,7 +152,7 @@ class StaticImageDisplayer{
 			header('Content-Type: image/gif');
 			imagegif($finalImage);
 		} elseif( $image_type == IMAGETYPE_PNG ) {
-			header('Content-Type: image/jpeg');
+			header('Content-Type: image/png');
 			imagepng($finalImage);
 		}
 		imagedestroy($finalImage);
