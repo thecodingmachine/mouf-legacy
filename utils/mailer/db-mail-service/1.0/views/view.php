@@ -34,7 +34,7 @@ displayMailAddresses($this->mail->getBccRecipients(), "Bcc");
 <span><?php echo date('r', $this->mail->getDateSent()); ?></span>
 </div>
 
-<?php if ($this->mail->getBodyText()) { ?>
+<?php if ($this->mail->getBodyHtml()) { ?>
 <div>
 <iframe id="htmlBodyMail" width="100%" height="300" src="getHtmlBody?id=<?php echo $this->mail->getDbId() ?>&selfedit=<?php echo $this->selfedit ?>&instanceName=<?php echo plainstring_to_urlprotected($this->instanceName) ?>"></iframe>
 </div>
