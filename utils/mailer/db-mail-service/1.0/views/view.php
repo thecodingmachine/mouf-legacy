@@ -82,7 +82,7 @@ function displayMailAddresses(array $mailAddressList, $label) {
 
 function mailViewDisplayBackButton($controller) {
 ?>
-<form action="." method="post">
+<form action="." method="get">
 	<input type="hidden" name="instanceName" value="<?php echo plainstring_to_htmlprotected($controller->instanceName); ?>" />
 	<input type="hidden" name="selfedit" value="<?php echo plainstring_to_htmlprotected($controller->selfedit); ?>" />
 	<input type="hidden" name="fullTextSearch" value="<?php echo plainstring_to_htmlprotected($controller->fullTextSearch); ?>" />
