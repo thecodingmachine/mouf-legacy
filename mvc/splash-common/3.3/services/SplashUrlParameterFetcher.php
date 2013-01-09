@@ -46,7 +46,11 @@ class SplashUrlParameterFetcher implements SplashParameterFetcherInterface {
 	 */
 	public function fetchValue(SplashRequestContext $context) {
 		$request = $context->getUrlParameters();
-		$value = $request[$this->key];
+		if(isset($request[$this->key])) {
+			$value = $request[$this->key];
+		} else {
+			$value = null;
+		}
 		foreach ($this->validators as $validator) {
 			/* @var $validator ValidatorInterface */
 			$result = $validator->doValidate($value);
