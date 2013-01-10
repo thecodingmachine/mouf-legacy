@@ -4,7 +4,6 @@ require_once 'SingleFieldRendererInterface.php';
 /**
  * Base class for rendering simple text fields
  * @Component
- * @ApplyTo { "php" :[ "string", "int", "number"] }
  */
 class PasswordFieldRenderer implements SingleFieldRendererInterface{
 	
@@ -24,7 +23,7 @@ class PasswordFieldRenderer implements SingleFieldRendererInterface{
 		/* @var $descriptor BaseFieldDescriptor */
 		$fieldName = $descriptor->getFieldName();
 		$value = $descriptor->getFieldValue();
-		return "<input type='password' ".($this->autocomplete ? "autocomplete='on'" : "autocomplete='off'")." value='".$value."' name='".$fieldName."' id='".$fieldName."'/>";
+		return "<input type='password' ".($this->autocomplete ? "autocomplete='on'" : "autocomplete='off'")." value='' name='".$fieldName."' id='".$fieldName."'/>";
 	}
 	
 	/**
