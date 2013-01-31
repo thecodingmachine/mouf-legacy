@@ -36,7 +36,6 @@ class MoufImageOverlay implements MoufImageInterface{
 		$moufImageResource = $this->source->getResource();
 		
 		// Create a white background, the same size as the original.
-		
 		$overlay = new MoufImageFromFile();
 		$overlay->path = $this->overlayPath;
 		$overlay = $overlay->getResource()->resource;
@@ -56,9 +55,6 @@ class MoufImageOverlay implements MoufImageInterface{
 		);
 		
 		$moufImageResource->resource = $bg;
-// 		imagepng($bg, "c:/Users/Kevin/Desktop/test2.png");
-// 		imagedestroy($bg);
-// 		exit;
 			
 		$overlaySizeX = imagesx($overlay);
 		$overlaySizeY = imagesy($overlay);
@@ -83,9 +79,7 @@ class MoufImageOverlay implements MoufImageInterface{
     	
 		imagecopymerge($support, $overlay, 0, 0, 0, 0, imagesx($overlay), imagesy($overlay), 100);
 		
-		imagepng($support, "c:/Users/Kevin/Desktop/test2.png");
-		imagedestroy($support);
-		exit;
+		$moufImageResource->resource = $support;
 		
 		return $moufImageResource;
 	}
