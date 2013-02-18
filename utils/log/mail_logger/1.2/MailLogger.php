@@ -219,6 +219,17 @@ class MailLogger implements LogInterface {
 		$title = $this->titlePrefix;
 		$title .= " Errors occured in your application.";
 		
+		// First, let's check the email address we are sending to is set.
+		$recipients = $this->mail->getToRecipients(); 
+		if (empty($recipients)) {
+			return;
+		}
+		$recipient1 = $recipients[0];
+		/* @var $recipient1 MailAddressInterface */
+		if ($recipient1->getMail() == null) {
+			return;
+		}
+		
 		$this->mail->setTitle($title);
 		$this->mail->setBodyText($this->mailTextPrefix.$this->bodyText);
 		$this->mail->setBodyHtml($this->mailHTMLPrefix.$this->bodyHtml);

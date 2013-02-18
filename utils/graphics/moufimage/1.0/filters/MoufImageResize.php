@@ -111,7 +111,7 @@ class MoufImageResize implements MoufImageInterface{
 			$newImageWidth = $oWidth;
 			$newImageHeight = $oHeight;
 		}else if ($this->keepRatio){
-			//image doesn't fit the target rectangle (at least on dimension is greater), the final ratio is the one that make the resized image fit the target rectangle
+			//image doesn't fit the target rectangle (at least one dimension is greater), the final ratio is the one that makes the resized image fit the target rectangle
 			$xRation = (float) $oWidth / $this->width;
 			$yRation = (float) $oHeight / $this->height;
 			
