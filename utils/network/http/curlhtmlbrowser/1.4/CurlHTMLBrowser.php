@@ -140,13 +140,16 @@ class CurlHTMLBrowser {
 		curl_close($ch);
 		
 		if ($response['http_code'] == 404) {
-			throw new CurlHTMLBrowser404Exception("Error, the page '".$url."' access failed with a 404 Page not found error.");
+			throw new CurlHTMLBrowser404Exception("Error, the page '".$url."' access failed with a 404 Page not found error.", $response['http_code']);
 		}
 		if ($response['http_code'] == 500) {
-			throw new CurlHTMLBrowser500Exception("Error, the page '".$url."' access failed with a 500 Server error message.");
+			throw new CurlHTMLBrowser500Exception("Error, the page '".$url."' access failed with a 500 Server error message.", $response['http_code']);
 		}
-		if (strpos($response['http_code'], "4") === 0 || strpos($response['http_code'], "5") === 0) {
-			throw new CurlHTMLBrowserException("Error, the page '".$url."' access failed with a ".$response['http_code']." error code.");
+		if (strpos($response['http_code'], "4") === 0 ) {
+			throw new CurlHTMLBrowser4XXException("Error, the page '".$url."' access failed with a ".$response['http_code']." error code.", $response['http_code']);
+		}
+		if (strpos($response['http_code'], "5") === 0) {
+			throw new CurlHTMLBrowser5XXException("Error, the page '".$url."' access failed with a ".$response['http_code']." error code.", $response['http_code']);
 		}
 		
 		if ($response['http_code'] == 301 || $response['http_code'] == 302)
