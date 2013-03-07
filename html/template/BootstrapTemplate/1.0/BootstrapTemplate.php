@@ -24,14 +24,31 @@ class BootstrapTemplate extends BaseTemplate  {
 	public $favIconUrl = "plugins/html/template/MoufTemplate/1.0/images/favicon.png";
 	
 	protected $templateRootUrl;
+		
+	/**
+	 * Left column size
+	 *
+	 * @Property
+	 * @var int
+	 */
+	public $leftColumnSize = 2;
 	
 	/**
-	 * The block in the top right corner.
-	 * 
+	 * Content size
+	 *
 	 * @Property
-	 * @var HtmlBlock
+	 * @var int
 	 */
-	public $menuRight;
+	public $contentSize = 10;
+	
+	/**
+	 * Right column size
+	 *
+	 * @Property
+	 * @var int
+	 */
+	public $rightColumnSize = 2;
+	
 	
 	/**
 	 * Default constructor
