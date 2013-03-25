@@ -282,7 +282,7 @@ class $baseClassName extends TDBM_Object
 	 *
 	 * @param '.$referencedBeanName.' $object
 	 */
-	public function '.$setterName.'($object) {
+	public function '.$setterName.'('.$referencedBeanName.' $object = null) {
 		$this->__set(\''.$array["col1"].'\', ($object == null)?null:$object->__get(\''.$array["col2"].'\'));
 	}
 	
@@ -336,7 +336,7 @@ class $baseClassName extends TDBM_Object
 	 *
 	 * @param '.$referencedBeanName.' $object
 	 */
-	public function '.$shortSetterName.'($object) {
+	public function '.$shortSetterName.'('.$referencedBeanName.' $object = null) {
 		$this->__set(\''.$array["col1"].'\', ($object == null)?null:$object->__get(\''.$array["col2"].'\'));
 	}
 	
