@@ -56,7 +56,7 @@ class BootstrapTemplate extends BaseTemplate  {
 	public function __construct() {
 		parent::__construct();
 		$this->templateRootUrl = PLUGINS_URL."html/template/BootstrapTemplate/1.0/";
-		$this->private_css_files = array($this->templateRootUrl."css/bootstrap.css",$this->templateRootUrl."css/style.css");
+		$this->private_css_files = array($this->templateRootUrl."css/bootstrap.css");
 		$this->logoImg = "mouf/views/images/MoufLogo.png";
 	}
 
