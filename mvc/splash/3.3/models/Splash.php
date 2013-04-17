@@ -83,6 +83,12 @@ class Splash {
 	private $splashUrlPrefix;
 
 	/**
+	 * Count number of element in POST GET or REQUEST
+	 * @var int
+	 */
+	private $count;
+	
+	/**
 	 * Route the user to the right controller according to the URL.
 	 * 
 	 * @param string $splashUrlPrefix The beginning of the URL before Splash is activated. This is basically the webapp directory name.
@@ -106,12 +112,44 @@ class Splash {
 		
 		// TODO: add support for %instance% for injecting the instancename of the controller
 		
+
+		if(ini_get('max_input_vars') || ini_get('suhosin.get.max_vars')) {
+			$maxGet = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.get.max_vars'));
+			if($maxGet !== null) {
+				$this->count = 0;
+				array_walk_recursive($_GET, array($this, 'countRecursive'));
+				if($this->count == $maxGet) {
+					throw new SplashException('Max input vars reaches for get parameters ('.$maxGet.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.');
+				}
+			}
+		}
+		if(ini_get('max_input_vars') || ini_get('suhosin.post.max_vars')) {
+			$maxPost = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.post.max_vars'));
+			if($maxPost !== null) {
+				$this->count = 0;
+				array_walk_recursive($_GET, array($this, 'countRecursive'));
+				if($this->count == $maxPost) {
+					throw new SplashException('Max input vars reaches for post parameters ('.$maxPost.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.');
+				}
+			}
+		}
+		if(ini_get('max_input_vars') || ini_get('suhosin.request.max_vars')) {
+			$maxRequest = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.request.max_vars'));
+			if($maxRequest !== null) {
+				$this->count = 0;
+				array_walk_recursive($_GET, array($this, 'countRecursive'));
+				if($this->count == $maxRequest) {
+					throw new SplashException('Max input vars reaches for request parameters ('.$maxRequest.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.');
+				}
+			}
+		}
+		
 		$redirect_uri = $_SERVER['REQUEST_URI'];
 		$httpMethod = $_SERVER['REQUEST_METHOD'];
 
 		$pos = strpos($redirect_uri, $splashUrlPrefix);
 		if ($pos === FALSE) {
-			throw new Exception('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your MoufUniversalParameters.php file at the root of your project.');
+			throw new SplashException('Error: the prefix of the web application "'.$splashUrlPrefix.'" was not found in the URL. The application must be misconfigured. Check the ROOT_URL parameter in your MoufUniversalParameters.php file at the root of your project.');
 		}
 
 		$tailing_url = substr($redirect_uri, $pos+strlen($splashUrlPrefix));
@@ -310,6 +348,31 @@ class Splash {
 	 */
 	public function purgeUrlsCache() {
 		$this->cacheService->purge("splashUrlNodes");
+	}
+	
+	/**
+	 * Get the min in 2 values if there exist
+	 * @param int $val1
+	 * @param int $val2
+	 * @return int|NULL
+	 */
+	private function getMinInConfiguration($val1, $val2) {
+		if($val1 && $val2)
+			return min(array($val1, $val2));
+		if($val1)
+			return $val1;
+		if($val2)
+			return $val2;
+		return null;
+	}
+	
+	/**
+	 * Count number of element in array
+	 * @param mixed $item
+	 * @param mixed $key
+	 */
+	private function countRecursive($item, $key) {
+		$this->count ++;
 	}
 }
 

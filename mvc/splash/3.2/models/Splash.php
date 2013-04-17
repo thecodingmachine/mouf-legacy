@@ -110,6 +110,12 @@ class Splash {
 	 * @var string
 	 */
 	private $splashUrlPrefix;
+	
+	/**
+	 * Count number of element in POST GET or REQUEST
+	 * @var int
+	 */
+	private $count;
 
 	/**
 	 * Analyze the URL and fills the "controller", "action" and "args" variables.
@@ -216,6 +222,37 @@ class Splash {
 		// If the controller name is not specified, then let's find the root controller.
 		// The root controller by convention is called "rootController".
 
+		if(ini_get('max_input_vars') || ini_get('suhosin.get.max_vars')) {
+			$maxGet = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.get.max_vars'));
+			if($maxGet !== null) {
+				$this->count = 0;
+				array_walk_recursive($_GET, array($this, 'countRecursive'));
+				if($this->count == $maxGet) {
+					throw new Exception('Max input vars reaches for get parameters ('.$maxGet.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.get.max_vars.');
+				}
+			}
+		}
+		if(ini_get('max_input_vars') || ini_get('suhosin.post.max_vars')) {
+			$maxPost = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.post.max_vars'));
+			if($maxPost !== null) {
+				$this->count = 0;
+				array_walk_recursive($_GET, array($this, 'countRecursive'));
+				if($this->count == $maxPost) {
+					throw new Exception('Max input vars reaches for post parameters ('.$maxPost.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.post.max_vars.');
+				}
+			}
+		}
+		if(ini_get('max_input_vars') || ini_get('suhosin.request.max_vars')) {
+			$maxRequest = $this->getMinInConfiguration(ini_get('max_input_vars'), ini_get('suhosin.request.max_vars'));
+			if($maxRequest !== null) {
+				$this->count = 0;
+				array_walk_recursive($_GET, array($this, 'countRecursive'));
+				if($this->count == $maxRequest) {
+					throw new Exception('Max input vars reaches for request parameters ('.$maxRequest.'). Check your variable max_input_vars in php.ini or suhosin module suhosin.request.max_vars.');
+				}
+			}
+		}
+		
 		if (!($this->controller)) {
 			// Is there a root controller?
 			try {
@@ -264,6 +301,31 @@ class Splash {
 		$server = new SoapServer(null, array('uri' => $url));
    		$server->setObject($webserviceInstance); 
    		$server->handle();
+	}
+	
+	/**
+	 * Get the min in 2 values if there exist
+	 * @param int $val1
+	 * @param int $val2
+	 * @return int|NULL
+	 */
+	private function getMinInConfiguration($val1, $val2) {
+		if($val1 && $val2)
+			return min(array($val1, $val2));
+		if($val1)
+			return $val1;
+		if($val2)
+			return $val2;
+		return null;
+	}
+	
+	/**
+	 * Count number of element in array
+	 * @param mixed $item
+	 * @param mixed $key
+	 */
+	private function countRecursive($item, $key) {
+		$this->count ++;
 	}
 }
 
