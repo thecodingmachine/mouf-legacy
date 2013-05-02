@@ -217,7 +217,7 @@ class FileUploaderWidget implements HtmlElementInterface {
 		if($this->minSizeLimit) {
 			$fileUploaderParam['minSizeLimit'] = $this->minSizeLimit;
 		}
-		if($this->multiple)
+		if($this->debug)
 			$fileUploaderParam['debug'] = 'true';
 		else
 			$fileUploaderParam['debug'] = 'false';
