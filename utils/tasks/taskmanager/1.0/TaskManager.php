@@ -151,15 +151,15 @@ class TaskManager {
 		if ($nextTryDate != null) {
 			$nextTryDate = date('c', $nextTryDate);
 		}
+		
 		$query = "UPDATE ".$this->tableName." SET instance_name = ".$this->dbConnection->quoteSmart($task->getTaskProcessorName()).",
 					params = ".$this->dbConnection->quoteSmart($serializedParams).",
 					status = ".$this->dbConnection->quoteSmart($task->getStatus()).",
 					last_try_date = ".$this->dbConnection->quoteSmart($lastTryDate).",
 					next_try_date = ".$this->dbConnection->quoteSmart($nextTryDate).",
 					nbtries = '".$task->getNbTries()."',
-					last_output = ".$this->dbConnection->quoteSmart($task->getLastOutput())."
+					last_output = ".$this->dbConnection->quoteSmart(substr($task->getLastOutput(),0,500))."
 					WHERE id = ".$this->dbConnection->quoteSmart($task->getId());
-		
 		$this->dbConnection->exec($query);
 	}
 	
