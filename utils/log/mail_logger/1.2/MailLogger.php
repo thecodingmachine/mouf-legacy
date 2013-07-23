@@ -377,8 +377,12 @@ class MailLogger implements LogInterface {
 	 * @return string
 	 */
 	public static function getPhpVariableAsText($var, $depth = 0) {
-		if( is_string( $var ) )
-		return( '"'.str_replace( array("\x00", "\x0a", "\x0d", "\x1a", "\x09"), array('\0', '\n', '\r', '\Z', '\t'), $var ).'"' );
+		if( is_string( $var ) ){
+			if(strlen( $var ) > 200){
+				return '...';
+			}
+			return( '"'.str_replace( array("\x00", "\x0a", "\x0d", "\x1a", "\x09"), array('\0', '\n', '\r', '\Z', '\t'), $var ).'"' );
+		}
 		else if( is_int( $var ) || is_float( $var ) )
 		{
 			return( $var );
